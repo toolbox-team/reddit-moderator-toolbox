@@ -244,8 +244,9 @@ function modmacros () {
                   ban = macro.ban,
                   mute = macro.mute,
                   distinguish = macro.distinguish === undefined ? true : macro.distinguish,
-                  lockthread = macro.lockthread,
-                  lockcomment = macro.lockcomment,
+                  // saved as lockthread for legacy reasons
+                  lockitem = macro.lockthread,
+                  lockreply = macro.lockreply,
                   sticky = macro.sticky,
                   archivemodmail = macro.archivemodmail,
                   highlightmodmail = macro.highlightmodmail,
@@ -278,11 +279,11 @@ function modmacros () {
                     actionList += '<br>- This reply will be distinguished';
                 }
 
-                if (lockthread) {
-                    actionList += '<br>- This post will be locked';
+                if (lockitem) {
+                    actionList += `<br>- This ${kind} will be locked`;
                 }
 
-                if (lockcomment) {
+                if (lockreply) {
                     actionList += '<br>- This reply will be locked';
                 }
 
@@ -421,7 +422,7 @@ function modmacros () {
 
                                 const commentId = response.json.data.things[0].data.id;
 
-                                if (lockcomment) {
+                                if (lockreply) {
                                     TBUtils.lock(commentId, successful => {
                                         if (!successful) {
                                             TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
@@ -450,8 +451,8 @@ function modmacros () {
                                 TB.utils.approveThing(info.id);
                             }
 
-                            if (lockthread) {
-                                TB.utils.lockThread(info.id);
+                            if (lockitem) {
+                                TB.utils.lock(info.id);
                             }
                         }
 

@@ -292,7 +292,9 @@ function tbconfig () {
                 } else {
                     config = resp;
                     TBStorage.purifyObject(config);
-                    showConfig(subreddit, config);
+                    if (TBUtils.isConfigValidVersion(subreddit, config)) {
+                        showConfig(subreddit, config);
+                    }
                 }
             });
         });

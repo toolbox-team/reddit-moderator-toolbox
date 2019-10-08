@@ -167,6 +167,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.shortVersion = shortVersion;
         TBUtils.releaseName = 'Harmonizing Hare';
         TBUtils.configSchema = 1;
+        TBUtils.configMinSchema = 1;
+        TBUtils.configMaxSchema = 1;
         TBUtils.notesSchema = 6;
         TBUtils.notesMinSchema = 4;
         TBUtils.notesDeprecatedSchema = 4;
@@ -521,6 +523,29 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
             logger.info('Version/browser information:', debugObject);
             return debugObject;
+        };
+
+        /**
+         * Checks if a given subreddit config version is valid with this version of toolbox
+         * @function isConfigValidVersion
+         * @memberof TBUtils
+         * @param {object} config
+         * @param {string} subreddit
+         * @returns {booleean} valid
+         */
+        TBUtils.isConfigValidVersion = function isConfigValidVersion (subreddit, config) {
+            if (config.ver < TBUtils.configMinSchema || config.ver > TBUtils.configMaxSchema) {
+                TB.ui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TB.ui.FEEDBACK_NEGATIVE);
+                logger.log('Failed config version check:');
+                logger.log(`\tsubreddit: ${subreddit}`);
+                logger.log(`\tconfig.ver: ${config.ver}`);
+                logger.log(`\tTBUtils.configSchema: ${TBUtils.configSchema}`);
+                logger.log(`\tTBUtils.notesMinSchema: ${TBUtils.minConfigSchema}`);
+                logger.log(`\tTBUtils.configMaxSchema: ${TBUtils.configMaxSchema}`);
+                return false;
+            }
+
+            return true;
         };
 
         /**

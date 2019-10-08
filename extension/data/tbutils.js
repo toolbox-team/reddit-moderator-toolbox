@@ -340,6 +340,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
             // Start: version changes.
+            // reportsThreshold should be 0 by default
+            if (lastVersion < 50101) {
+                TBStorage.setSetting('QueueTools', 'reportsThreshold', 0);
+            }
+
+            // End: version changes.
 
             // This is a super extra check to make sure the wiki page for settings export really is private.
             const settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');

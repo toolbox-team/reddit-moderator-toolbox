@@ -316,8 +316,7 @@ function notifiermod () {
 
             if (expandedNewModmailCount) {
                 $tbNewModmailCount.html(`[<span class="tb-new-mm-count-number">${count - data.highlighted - data.mod}</span>, <span class="tb-new-mm-count-highlighted">${data.highlighted}</span>, <span class="tb-new-mm-count-mod">${data.mod}</span>]`);
-            }
-            else {
+            } else {
                 $tbNewModmailCount.html(`[${count}]`);
             }
         }

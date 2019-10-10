@@ -99,6 +99,10 @@ function nukecomments () {
                     <p>${removalChainLength + distinguishedCommentsLength} comments found (Already removed comments not included).</p>
                     <p>${distinguishedCommentsLength} distinguished comments found.</p>
                     <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ' checked="checked"' : ''}>Ignore distinguished comments from mods and admins</label></p>
+                    <p>
+                        <label><input type="radio" value="remove" name="tb-execution-type-radio" class="tb-execution-type-radio" checked="checked">Remove comments</label>
+                        <label><input type="radio" value="lock" name="tb-execution-type-radio" class="tb-execution-type-radio">Lock comments</label>
+                    </p>
                     `));
                     $popup.find('.tb-execute-nuke').show();
                 });
@@ -109,43 +113,52 @@ function nukecomments () {
                 TB.ui.longLoadSpinner(true);
                 const $this = $(this);
                 $this.hide();
-                let removalArray;
+                let commentArray;
                 const $nukeFeedback = $popup.find('.tb-nuke-feedback');
                 const $nukeDetails = $popup.find('.tb-nuke-details');
                 const temptIgnoreDistinguished = $popup.find('.tb-ignore-distinguished-checkbox').prop('checked');
+                const executionType = $popup.find('.tb-execution-type-radio:checked').val();
                 if ($this.hasClass('tb-retry-nuke')) {
-                    removalArray = missedComments;
+                    commentArray = missedComments;
                     missedComments = [];
                 } else {
                     if (temptIgnoreDistinguished) {
-                        removalArray = removalChain;
+                        commentArray = removalChain;
                     } else {
-                        removalArray = removalChain.concat(distinguishedComments);
+                        commentArray = removalChain.concat(distinguishedComments);
                     }
                 }
 
-                $nukeFeedback.text('Removing comments.');
+                $nukeFeedback.text(`${executionType === 'remove' ? 'Removing' : 'Locking'} comments.`);
                 $nukeDetails.html('');
 
                 // Oldest comments first.
-                removalArray = TBUtils.saneSort(removalArray);
-                const removalArrayLength = removalArray.length;
+                commentArray = TBUtils.saneSort(commentArray);
+                const removalArrayLength = commentArray.length;
                 let removalCount = 0;
-                TBUtils.forEachChunkedRateLimit(removalArray, 20, comment => {
+                TBUtils.forEachChunkedRateLimit(commentArray, 20, comment => {
                     removalCount++;
-                    TB.ui.textFeedback(`Removing comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
-                    TBUtils.removeThing(`t1_${comment}`, false, result => {
-                        if (!result) {
-                            missedComments.push(comment);
-                        }
-                    });
+                    TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
+                    if (executionType === 'remove') {
+                        TBUtils.removeThing(`t1_${comment}`, false, result => {
+                            if (!result) {
+                                missedComments.push(comment);
+                            }
+                        });
+                    } else if (executionType === 'lock') {
+                        TBUtils.lock(`t1_${comment}`, result => {
+                            if (!result) {
+                                missedComments.push(comment);
+                            }
+                        });
+                    }
                 }, () => {
                     removalRunning = false;
                     TB.ui.longLoadSpinner(false);
-                    $nukeFeedback.text('Done removing comments.');
+                    $nukeFeedback.text(`Done ${executionType === 'remove' ? 'removing' : 'locking'} comments.`);
                     const missedLength = missedComments.length;
                     if (missedLength) {
-                        $nukeDetails.text(`${missedLength}: not removed because of API errors. Hit retry to attempt removing them again.`);
+                        $nukeDetails.text(`${missedLength}: not ${executionType === 'remove' ? 'removed' : 'locked'} because of API errors. Hit retry to attempt removing them again.`);
                         $popup.find('.tb-retry-nuke').show;
                     } else {
                         setTimeout(() => {

@@ -15,6 +15,14 @@ function nukecomments () {
         title: 'Ignore distinguished comments from mods and admins when nuking a chain.',
     });
 
+    self.register_setting('executionType', {
+        type: 'selector',
+        values: ['remove', 'lock'],
+        default: 'remove',
+        advanced: true,
+        title: 'Default nuke type selected when nuking',
+    });
+
     // Settings for old reddit only
     self.register_setting('showNextToUser', {
         type: 'boolean',
@@ -36,7 +44,8 @@ function nukecomments () {
         const $body = $('body');
 
         const ignoreDistinguished = self.setting('ignoreDistinguished'),
-              showNextToUser = self.setting('showNextToUser');
+              showNextToUser = self.setting('showNextToUser'),
+              executionType = self.setting('executionType');
 
         // Nuke button clicked
         $body.on('click', '.tb-nuke-button', function (event) {
@@ -94,14 +103,13 @@ function nukecomments () {
                     const removalChainLength = removalChain.length;
                     // Distinguished chain
                     const distinguishedCommentsLength = distinguishedComments.length;
-
                     $popup.find('.tb-nuke-details').html(TBStorage.purify(`
                     <p>${removalChainLength + distinguishedCommentsLength} comments found (Already removed comments not included).</p>
                     <p>${distinguishedCommentsLength} distinguished comments found.</p>
                     <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ' checked="checked"' : ''}>Ignore distinguished comments from mods and admins</label></p>
                     <p>
-                        <label><input type="radio" value="remove" name="tb-execution-type-radio" class="tb-execution-type-radio" checked="checked">Remove comments</label>
-                        <label><input type="radio" value="lock" name="tb-execution-type-radio" class="tb-execution-type-radio">Lock comments</label>
+                        <label><input type="radio" value="remove" name="tb-execution-type-radio" class="tb-execution-type-radio" ${executionType === 'remove' ? ' checked="checked"' : ''}>Remove comments</label>
+                        <label><input type="radio" value="lock" name="tb-execution-type-radio" class="tb-execution-type-radio" ${executionType === 'lock' ? ' checked="checked"' : ''}>Lock comments</label>
                     </p>
                     `));
                     $popup.find('.tb-execute-nuke').show();

@@ -305,6 +305,14 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     z-index: 2147483646 !important;
 }
 
+.mod-toolbox-rd .tb-oldreddit-settings {
+    background-color: #f3f3f3;
+}
+
+.mod-toolbox-rd .tb-oldreddit-settings h1 {
+    font-size: 18px;
+    font-weight: bold;
+}
 .mod-toolbox-rd ul.inline-list { display: inline; }
 .mod-toolbox-rd ul.inline-list li { display: inline; }
 .mod-toolbox-rd ul.inline-list li:after { content: ','; }

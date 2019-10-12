@@ -165,17 +165,25 @@ function getOAuthTokens (tries = 1) {
     return new Promise((resolve, reject) => {
         // This function will fetch the cookie and if there is no cookie attempt to create one by visiting modmail.
         // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
-        chrome.cookies.get({url: 'https://www.reddit.com', name: 'token'}, rawCookie => {
+        chrome.cookies.get({url: 'https://mod.reddit.com', name: 'token'}, rawCookie => {
+            // If we do get a rawcookie we first want to make sure it is still valid.
+            let expired = false;
+            if (rawCookie) {
+                const cookieExpiration = new Date(rawCookie.expirationDate * 1000).valueOf();
+                const timeNow = new Date().valueOf();
+                expired = timeNow > cookieExpiration ? true : false;
+                console.log('Found cookie expired:', expired);
+            }
             // If no cookie is returned it is probably expired and we will need to generate a new one.
             // Instead of trying to do the oauth refresh thing ourselves we just do a GET request for modmail.
-            // We trie this three times, if we don't have a cookie after that the user clearly isn't logged in.
-            if (!rawCookie && tries < 3) {
+            // We try this three times, if we don't have a cookie after that the user clearly isn't logged in.
+            if ((!rawCookie || expired) && tries < 3) {
                 $.get('https://mod.reddit.com/mail/all').done(data => {
                     console.log('data:', data);
                     // Ok we have the data, let's give this a second attempt.
                     getOAuthTokens(tries++).then(resolve);
                 });
-            } else if (!rawCookie && tries > 2) {
+            } else if ((!rawCookie || expired) && tries > 2) {
                 reject(new Error('user not logged into new modmail'));
             } else {
                 // The cookie we grab has a base64 encoded string with data. Sometimes is invalid data at the end.

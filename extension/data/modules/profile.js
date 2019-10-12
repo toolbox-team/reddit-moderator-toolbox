@@ -1,4 +1,5 @@
 'use strict';
+/** @module ProfilePro **/
 function profilepro () {
     const self = new TB.Module('Profile Pro');
     self.shortname = 'Profile';
@@ -44,6 +45,7 @@ function profilepro () {
         const $body = $('body');
         let filterModThings = false;
         let hideModActions = false;
+        let cancelSearch = true;
 
         const alwaysTbProfile = self.setting('alwaysTbProfile'),
               directProfileToLegacy = self.setting('directProfileToLegacy'),
@@ -51,6 +53,7 @@ function profilepro () {
               profileButtonEnabled = self.setting('profileButtonEnabled'),
               onlyshowInhover = self.setting('onlyshowInhover');
 
+        // When profile links are clicked open them in the legacy view directly
         if (directProfileToLegacy) {
             $body.on('click', 'a', function (event) {
                 const userProfileRegex = /(?:\.reddit\.com)?\/(?:user|u)\/[^/]*?\/?$/;
@@ -70,6 +73,11 @@ function profilepro () {
             });
         }
 
+        /**
+         * Will hide or reveal mod actions in the toolbox profile overlay.
+         * @function hideModActionsThings
+         * @param {boolean} hide determines if actions should be shown or hidden.
+         */
         function hideModActionsThings (hide) {
             const $things = $('.tb-thing');
             if (hide) {
@@ -91,6 +99,11 @@ function profilepro () {
             }
         }
 
+        /**
+         * Will hide or reveal items in the profile overlay that can't be modded.
+         * @function filterModdable
+         * @param {boolean} hide determines if items should be shown or hidden.
+         */
         function filterModdable (hide) {
             const $things = $('.tb-thing');
             if (hide) {
@@ -111,7 +124,17 @@ function profilepro () {
             }
         }
 
+        /**
+         * Adds items to the toolbox profile overlay siteTable element
+         * @function addToSiteTable
+         * @param {array} data array of reddit things to be added in reddit API format
+         * @param {jqueryObject} $siteTable jquery object representing the siteTable
+         * @param {string} after reddit thing ID representing the start of the next page. If present will add a "load more" at the end of the siteTable
+         * @param {callback} callback callback function
+         * @returns {callback} returned when done
+         */
         function addToSiteTable (data, $siteTable, after, callback) {
+            // prepare comment options for TBUi comment creator.
             const commentOptions = {
                 parentLink: true,
                 contextLink: true,
@@ -122,11 +145,15 @@ function profilepro () {
 
             const submissionOptions = {};
 
+            // Add subredditColor if applicable.
             if (subredditColor) {
                 commentOptions.subredditColor = true;
                 submissionOptions.subredditColor = true;
             }
+
+            // Use dynamic chuncking to add all things to the sitetable.
             TBUtils.forEachChunkedDynamic(data, entry => {
+                // Comment
                 if (entry.kind === 't1') {
                     const $comment = TBui.makeSingleComment(entry, commentOptions);
                     if (entry.highlight) {
@@ -136,6 +163,7 @@ function profilepro () {
                     $('time.timeago').timeago();
                 }
 
+                // Submission
                 if (entry.kind === 't3') {
                     const $submission = TBui.makeSubmissionEntry(entry, submissionOptions);
                     if (entry.highlight) {
@@ -145,9 +173,12 @@ function profilepro () {
                     $('time.timeago').timeago();
                 }
             }).then(() => {
+                // More items available on a next page. Add load more element
                 if (after) {
                     $siteTable.append(`<div data-after="${after}" class="tb-load-more">load more</div>`);
                 }
+
+                // Fire jsAPI events and apply profile overlay filters where needed.
                 setTimeout(() => {
                     TBui.tbRedditEvent($siteTable, 'comment,submission');
                     if (filterModThings) {
@@ -156,11 +187,19 @@ function profilepro () {
                     if (hideModActions) {
                         hideModActionsThings(true);
                     }
+
+                    // Done, return callback.
                     return callback();
                 }, 1000);
             });
         }
 
+        /**
+         * Adds the user's trophies to the given sidebar element.
+         * @function addTrophiesToSidebar
+         * @param {string} user reddit username
+         * @param {jqueryObject} $sidebar jquery sidebar element to which the trophies need to be added
+         */
         function addTrophiesToSidebar (user, $sidebar) {
             const inputURL = `/user/${user}/trophies.json`;
             TBUtils.getJSON(inputURL).then(data => {
@@ -199,6 +238,12 @@ function profilepro () {
             });
         }
 
+        /**
+         * Adds the user's moderated subs to the given sidebar element.
+         * @function addModSubsToSidebar
+         * @param {string} user reddit username
+         * @param {jqueryObject} $sidebar jquery sidebar element to which the subreddits need to be added
+         */
         function addModSubsToSidebar (user, $sidebar) {
             const inputURL = `/user/${user}/moderated_subreddits.json`;
             TBUtils.getJSON(inputURL).then(data => {
@@ -258,6 +303,13 @@ function profilepro () {
                 }
             });
         }
+
+        /**
+         * Creates a user sidebar element for the given overlay
+         * @function makeUserSidebar
+         * @param {string} user reddit username
+         * @param {jqueryObject} $overlay jquery overlay element to which the sidebar needs to be added
+         */
         function makeUserSidebar (user, $overlay) {
             const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
             const inputURL = `/user/${user}/about.json`;
@@ -288,6 +340,20 @@ function profilepro () {
             });
         }
 
+        /**
+         * Searches a user profile for the given subreddit and/or string
+         * @function searchProfile
+         * @param {string} user reddit username
+         * @param {string} type the listing type that is to be searched
+         * @param {string} sortMethod the listing type that is to be searched
+         * @param {jqueryObject} $siteTable jquery siteTable element to which the search results need to be added
+         * @param {object} options search options
+         * @param {string} after reddit thing id indicating the next page
+         * @param {boolean} match indicates if there are previous
+         * @param {integer} pageCount what page we are on
+         * @param {callback} callback callback function
+         * @returns {callback} returns true when results have been found, false when none are found
+         */
         function searchProfile (user, type, sortMethod, $siteTable, options, after, match, pageCount, callback) {
             pageCount++;
             let hits = match || false;
@@ -298,6 +364,12 @@ function profilepro () {
             if (!subredditPattern && !searchPattern) {
                 return callback(false);
             }
+
+            // Cancel search if needed.
+            if (cancelSearch) {
+                TB.ui.textFeedback('Search canceled', TB.ui.FEEDBACK_NEUTRAL);
+                return callback(hits);
+            }
             const inputURL = `/user/${user}/${type}.json`;
             TBUtils.getJSON(inputURL, {
                 raw_json: 1,
@@ -306,6 +378,11 @@ function profilepro () {
                 limit: 100,
                 t: 'all',
             }).then(data => {
+                // Also cancel search here as we really don't need to go over these results.
+                if (cancelSearch) {
+                    TB.ui.textFeedback('Search canceled', TB.ui.FEEDBACK_NEUTRAL);
+                    return callback(hits);
+                }
                 TB.ui.textFeedback(`Searching profile page ${pageCount} with ${data.data.children.length} items`, TB.ui.FEEDBACK_NEUTRAL);
                 TBStorage.purifyObject(data);
                 data.data.children.forEach(value => {
@@ -356,10 +433,17 @@ function profilepro () {
             });
         }
 
+        /**
+         * Escapes a string so it is suitable to be inserted in to a regex match
+         * @function regExpEscape
+         * @param {string} query reddit username
+         * @returns {string} string escaped for regex use
+         */
         function regExpEscape (query) {
             return query.trim().replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
         }
 
+        // Initate user search
         $body.on('submit', '.tb-searchuser', function () {
             TB.ui.longLoadSpinner(true);
             const $this = $(this);
@@ -393,7 +477,11 @@ function profilepro () {
                 searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');
                 searchOptions.searchString = contentsearch;
             }
+
+            cancelSearch = false;
+            $('.tb-cancel-profile-search').show();
             searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, 0, results => {
+                $('.tb-cancel-profile-search').hide();
                 TB.ui.textFeedback('Search complete', TB.ui.FEEDBACK_POSITIVE);
                 if (results) {
                     TB.ui.longLoadSpinner(false);
@@ -401,8 +489,18 @@ function profilepro () {
                     TB.ui.longLoadSpinner(false);
                     $siteTable.append('<div class="error">no results found</div>');
                 }
+
+                if (cancelSearch) {
+                    $siteTable.append('<div class="error">Search was canceled, results might be incomplete</div>');
+                }
             });
             return false;
+        });
+
+        // Cancel search
+        $body.on('click', '.tb-cancel-profile-search', () => {
+            TB.ui.textFeedback('Canceling search', TB.ui.FEEDBACK_NEUTRAL);
+            cancelSearch = true;
         });
 
         function populateSearchSuggestion (subreddit) {
@@ -525,6 +623,8 @@ function profilepro () {
 
                 makeUserSidebar(user, $overlay);
                 $body.on('click', '.tb-profile-overlay .tb-window-header .close', () => {
+                    // Cancel any ongoing search
+                    cancelSearch = true;
                     $('.tb-profile-overlay').remove();
                     $body.css('overflow', 'auto');
                     filterModThings = false;
@@ -566,7 +666,8 @@ function profilepro () {
                         search: <input type="text" placeholder="subreddit" class="tb-subredditsearch tb-input tb-search-input"> <input type="text" placeholder="content (optional)" class="tb-contentsearch tb-input tb-search-input">
                         <label> <input type="checkbox" class="tb-search-sort"> use sort selection </label>
                         <input type="submit" value=" search " class="tb-action-button">
-                </form>`);
+                </form>
+                <input type="button" value="cancel search" class="tb-action-button tb-cancel-profile-search">`);
                 initSearchSuggestion(subreddit);
             }
 
@@ -646,6 +747,10 @@ function profilepro () {
         });
 
         $body.on('click', '.tb-profile-overlay .tb-window-tabs a', function () {
+            // Cancel any ongoing profile search first.
+            cancelSearch = true;
+
+            // Start creating specific listing overlay tab
             const $this = $(this);
             const listing = $this.attr('data-module'),
                   user = $this.closest('.tb-page-overlay').attr('data-user');

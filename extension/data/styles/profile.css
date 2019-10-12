@@ -16,6 +16,10 @@
     display: inline-block;
 }
 
+.mod-toolbox-rd .tb-profile-overlay .tb-cancel-profile-search {
+    display: none;
+}
+
 .mod-toolbox-rd .tb-mod-hidden,
 .mod-toolbox-rd .tb-mod-filtered {
     display: none;

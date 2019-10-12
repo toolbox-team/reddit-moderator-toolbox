@@ -3,7 +3,11 @@
 <dl>
 <dt><a href="#module_CommentNuke">CommentNuke</a></dt>
 <dd></dd>
+<dt><a href="#module_ProfilePro">ProfilePro</a></dt>
+<dd></dd>
 <dt><a href="#module_QueueTools">QueueTools</a></dt>
+<dd></dd>
+<dt><a href="#module_TBLog">TBLog</a></dt>
 <dd></dd>
 <dt><a href="#module_BackgroundPage">BackgroundPage</a></dt>
 <dd><p>This refers to the webextension background page.</p></dd>
@@ -30,7 +34,7 @@
 ## CommentNuke
 <a name="module_CommentNuke..parseComments"></a>
 
-### CommentNuke~parseComments(object, postID, subreddit, callback)
+### CommentNuke~parseComments(object, postID, subreddit) ⇒ <code>Promise</code>
 <p>Will given a reddit API comment object go through the chain and put all comments</p>
 
 **Kind**: inner method of [<code>CommentNuke</code>](#module_CommentNuke)  
@@ -40,7 +44,125 @@
 | object | <code>object</code> | <p>Comment chain object</p> |
 | postID | <code>string</code> | <p>Post id the comments belong to</p> |
 | subreddit | <code>string</code> | <p>Subreddit the comment chain belongs to.</p> |
-| callback | <code>function</code> |  |
+
+<a name="module_ProfilePro"></a>
+
+## ProfilePro
+
+* [ProfilePro](#module_ProfilePro)
+    * [~hideModActionsThings(hide)](#module_ProfilePro..hideModActionsThings)
+    * [~filterModdable(hide)](#module_ProfilePro..filterModdable)
+    * [~addToSiteTable(data, $siteTable, after, callback)](#module_ProfilePro..addToSiteTable) ⇒ <code>callback</code>
+    * [~addTrophiesToSidebar(user, $sidebar)](#module_ProfilePro..addTrophiesToSidebar)
+    * [~addModSubsToSidebar(user, $sidebar)](#module_ProfilePro..addModSubsToSidebar)
+    * [~makeUserSidebar(user, $overlay)](#module_ProfilePro..makeUserSidebar)
+    * [~searchProfile(user, type, sortMethod, $siteTable, options, after, match, pageCount, callback)](#module_ProfilePro..searchProfile) ⇒ <code>callback</code>
+    * [~regExpEscape(query)](#module_ProfilePro..regExpEscape) ⇒ <code>string</code>
+
+<a name="module_ProfilePro..hideModActionsThings"></a>
+
+### ProfilePro~hideModActionsThings(hide)
+<p>Will hide or reveal mod actions in the toolbox profile overlay.</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| hide | <code>boolean</code> | <p>determines if actions should be shown or hidden.</p> |
+
+<a name="module_ProfilePro..filterModdable"></a>
+
+### ProfilePro~filterModdable(hide)
+<p>Will hide or reveal items in the profile overlay that can't be modded.</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| hide | <code>boolean</code> | <p>determines if items should be shown or hidden.</p> |
+
+<a name="module_ProfilePro..addToSiteTable"></a>
+
+### ProfilePro~addToSiteTable(data, $siteTable, after, callback) ⇒ <code>callback</code>
+<p>Adds items to the toolbox profile overlay siteTable element</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+**Returns**: <code>callback</code> - <p>returned when done</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>array</code> | <p>array of reddit things to be added in reddit API format</p> |
+| $siteTable | <code>jqueryObject</code> | <p>jquery object representing the siteTable</p> |
+| after | <code>string</code> | <p>reddit thing ID representing the start of the next page. If present will add a &quot;load more&quot; at the end of the siteTable</p> |
+| callback | <code>callback</code> | <p>callback function</p> |
+
+<a name="module_ProfilePro..addTrophiesToSidebar"></a>
+
+### ProfilePro~addTrophiesToSidebar(user, $sidebar)
+<p>Adds the user's trophies to the given sidebar element.</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| user | <code>string</code> | <p>reddit username</p> |
+| $sidebar | <code>jqueryObject</code> | <p>jquery sidebar element to which the trophies need to be added</p> |
+
+<a name="module_ProfilePro..addModSubsToSidebar"></a>
+
+### ProfilePro~addModSubsToSidebar(user, $sidebar)
+<p>Adds the user's moderated subs to the given sidebar element.</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| user | <code>string</code> | <p>reddit username</p> |
+| $sidebar | <code>jqueryObject</code> | <p>jquery sidebar element to which the subreddits need to be added</p> |
+
+<a name="module_ProfilePro..makeUserSidebar"></a>
+
+### ProfilePro~makeUserSidebar(user, $overlay)
+<p>Creates a user sidebar element for the given overlay</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| user | <code>string</code> | <p>reddit username</p> |
+| $overlay | <code>jqueryObject</code> | <p>jquery overlay element to which the sidebar needs to be added</p> |
+
+<a name="module_ProfilePro..searchProfile"></a>
+
+### ProfilePro~searchProfile(user, type, sortMethod, $siteTable, options, after, match, pageCount, callback) ⇒ <code>callback</code>
+<p>Searches a user profile for the given subreddit and/or string</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+**Returns**: <code>callback</code> - <p>returns true when results have been found, false when none are found</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| user | <code>string</code> | <p>reddit username</p> |
+| type | <code>string</code> | <p>the listing type that is to be searched</p> |
+| sortMethod | <code>string</code> | <p>the listing type that is to be searched</p> |
+| $siteTable | <code>jqueryObject</code> | <p>jquery siteTable element to which the search results need to be added</p> |
+| options | <code>object</code> | <p>search options</p> |
+| after | <code>string</code> | <p>reddit thing id indicating the next page</p> |
+| match | <code>boolean</code> | <p>indicates if there are previous</p> |
+| pageCount | <code>integer</code> | <p>what page we are on</p> |
+| callback | <code>callback</code> | <p>callback function</p> |
+
+<a name="module_ProfilePro..regExpEscape"></a>
+
+### ProfilePro~regExpEscape(query) ⇒ <code>string</code>
+<p>Escapes a string so it is suitable to be inserted in to a regex match</p>
+
+**Kind**: inner method of [<code>ProfilePro</code>](#module_ProfilePro)  
+**Returns**: <code>string</code> - <p>string escaped for regex use</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| query | <code>string</code> | <p>reddit username</p> |
 
 <a name="module_QueueTools"></a>
 
@@ -108,6 +230,9 @@
 | --- | --- | --- |
 | result | <code>Boolean</code> \| <code>Object</code> | <p>Either false or an object with actions</p> |
 
+<a name="module_TBLog"></a>
+
+## TBLog
 <a name="module_BackgroundPage"></a>
 
 ## BackgroundPage
@@ -115,9 +240,67 @@
 
 
 * [BackgroundPage](#module_BackgroundPage)
+    * [~uuidv4()](#module_BackgroundPage..uuidv4) ⇒ <code>string</code>
+    * [~sendNativeNotification(options)](#module_BackgroundPage..sendNativeNotification)
+    * [~sendPageNotification(options)](#module_BackgroundPage..sendPageNotification)
+    * [~clearNotification(notificationID)](#module_BackgroundPage..clearNotification)
+    * [~onClickNotification(notificationID)](#module_BackgroundPage..onClickNotification)
     * [~getOAuthTokens([tries])](#module_BackgroundPage..getOAuthTokens) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [~makeHeaderObject(headerString)](#module_BackgroundPage..makeHeaderObject) ⇒ <code>headerObject</code>
     * [~makeRequest(options, sendResponse)](#module_BackgroundPage..makeRequest)
+    * [~emptyCacheTimeout(timeoutDuration, cacheType)](#module_BackgroundPage..emptyCacheTimeout)
+    * [~initCachetimeout(forceRefresh)](#module_BackgroundPage..initCachetimeout)
+
+<a name="module_BackgroundPage..uuidv4"></a>
+
+### BackgroundPage~uuidv4() ⇒ <code>string</code>
+<p>Generates a UUID. We use this instead of something simpler because Firefox
+requires notification IDs to be UUIDs.</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+<a name="module_BackgroundPage..sendNativeNotification"></a>
+
+### BackgroundPage~sendNativeNotification(options)
+<p>Sends a native Chrome notification.</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | <p>The notification options</p> |
+
+<a name="module_BackgroundPage..sendPageNotification"></a>
+
+### BackgroundPage~sendPageNotification(options)
+<p>Sends an in-page notification on all open Reddit windows</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | <p>The notification options</p> |
+
+<a name="module_BackgroundPage..clearNotification"></a>
+
+### BackgroundPage~clearNotification(notificationID)
+<p>Clears a notification</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| notificationID | <code>string</code> | <p>The ID of the notification</p> |
+
+<a name="module_BackgroundPage..onClickNotification"></a>
+
+### BackgroundPage~onClickNotification(notificationID)
+<p>Handles a click on a notification</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| notificationID | <code>string</code> | <p>The ID of the notification</p> |
 
 <a name="module_BackgroundPage..getOAuthTokens"></a>
 
@@ -155,6 +338,29 @@
 | --- | --- |
 | options | <p>The options for the request</p> |
 | sendResponse | <p>The <code>sendResponse</code> callback that will be called</p> |
+
+<a name="module_BackgroundPage..emptyCacheTimeout"></a>
+
+### BackgroundPage~emptyCacheTimeout(timeoutDuration, cacheType)
+<p>emptyshort or long cache if it expires</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Description |
+| --- | --- |
+| timeoutDuration | <p>Timeout value in minutes</p> |
+| cacheType | <p>The type of cache, either <code>short</code> or <code>long</code></p> |
+
+<a name="module_BackgroundPage..initCachetimeout"></a>
+
+### BackgroundPage~initCachetimeout(forceRefresh)
+<p>Initiates cache timeouts based on toolbox settings.</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| forceRefresh | <code>Boolean</code> | <p>when true will clear both caches and start fresh.</p> |
 
 <a name="TBListener"></a>
 
@@ -235,6 +441,9 @@ The callback's <code>this</code> is event.target</p>
 
 * [TBui](#TBui) : <code>object</code>
     * [.icons](#TBui.icons) : <code>object</code>
+    * [.showNotification(options)](#TBui.showNotification)
+    * [.clearNotification(id)](#TBui.clearNotification)
+    * [.popup(options, [draggable])](#TBui.popup) ⇒ <code>jQuery</code>
     * [.contextTrigger(triggerId, options)](#TBui.contextTrigger)
     * [.tbRedditEvent($elements, types)](#TBui.tbRedditEvent)
     * [.makeSubmissionEntry(submission, submissionOptions)](#TBui.makeSubmissionEntry) ⇒ <code>object</code>
@@ -248,6 +457,47 @@ The callback's <code>this</code> is event.target</p>
 <p>Usage <code>&lt;div class=&quot;tb-icon&quot;&gt;${TBui.icons.NAME}&lt;/div&gt;</code></p>
 
 **Kind**: static property of [<code>TBui</code>](#TBui)  
+<a name="TBui.showNotification"></a>
+
+### TBui.showNotification(options)
+<p>Show an in-page notification on the current tab.</p>
+
+**Kind**: static method of [<code>TBui</code>](#TBui)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>object</code> | <p>The options for the notification</p> |
+| options.id | <code>string</code> | <p>The notification's ID</p> |
+| options.title | <code>string</code> | <p>The notification's title</p> |
+| options.body | <code>string</code> | <p>The notification's body</p> |
+
+<a name="TBui.clearNotification"></a>
+
+### TBui.clearNotification(id)
+<p>Clears an in-page notification on the current tab.</p>
+
+**Kind**: static method of [<code>TBui</code>](#TBui)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>string</code> | <p>The ID of the notification to clear</p> |
+
+<a name="TBui.popup"></a>
+
+### TBui.popup(options, [draggable]) ⇒ <code>jQuery</code>
+<p>Generate a popup.</p>
+
+**Kind**: static method of [<code>TBui</code>](#TBui)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>object</code> |  | <p>Options for the popup</p> |
+| options.title | <code>string</code> |  | <p>The popup's title (raw HTML)</p> |
+| options.tabs | <code>Array.&lt;object&gt;</code> |  | <p>The tabs for the popup</p> |
+| options.cssClass | <code>string</code> |  | <p>Extra CSS class to add to the popup</p> |
+| options.meta | <code>string</code> |  | <p>Raw HTML to add to a &quot;meta&quot; container</p> |
+| [draggable] | <code>boolean</code> | <code>true</code> | <p>Whether the user can move the popup</p> |
+
 <a name="TBui.contextTrigger"></a>
 
 ### TBui.contextTrigger(triggerId, options)
@@ -324,11 +574,12 @@ Only support 'comment' for now and will only send the commentAuthor event.</p>
 
 * [TBUtils](#TBUtils) : <code>object</code>
     * [.baseDomain](#TBUtils.baseDomain) : <code>string</code>
-    * [.tempBaseDomain](#TBUtils.tempBaseDomain) : <code>string</code>
     * [.apiOauthPOST](#TBUtils.apiOauthPOST)
     * [.apiOauthGET](#TBUtils.apiOauthGET)
+    * [.updateCache(cacheNAme, value, subreddit)](#TBUtils.updateCache)
     * [.link(link)](#TBUtils.link) ⇒ <code>string</code>
     * [.debugInformation()](#TBUtils.debugInformation) ⇒ [<code>debugObject</code>](#TBUtils.debugObject)
+    * [.isConfigValidVersion(config, subreddit)](#TBUtils.isConfigValidVersion) ⇒ <code>booleean</code>
     * [.getToolboxDevs()](#TBUtils.getToolboxDevs) ⇒ <code>array</code>
     * [.moveArrayItem(array, old_index, new_index)](#TBUtils.moveArrayItem) ⇒ <code>array</code>
     * [.escapeHTML(html)](#TBUtils.escapeHTML) ⇒ <code>string</code>
@@ -342,7 +593,7 @@ Only support 'comment' for now and will only send the commentAuthor event.</p>
     * [.niceDateDiff(origdate, newdate)](#TBUtils.niceDateDiff) ⇒ <code>string</code>
     * [.timeConverterRead(UNIX_timestamp)](#TBUtils.timeConverterRead) ⇒ <code>string</code>
     * [.title_to_url(title)](#TBUtils.title_to_url) ⇒ <code>string</code>
-    * [.alert(message, callback, showClose)](#TBUtils.alert) ⇒ <code>callback</code>
+    * [.alert(options, callback)](#TBUtils.alert) ⇒ <code>callback</code>
     * [.notification(title, body, path, markreadid)](#TBUtils.notification)
     * [.humaniseDays(days)](#TBUtils.humaniseDays) ⇒ <code>string</code>
     * [.stringFormat()](#TBUtils.stringFormat)
@@ -367,16 +618,6 @@ Only support 'comment' for now and will only send the commentAuthor event.</p>
 <p>If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain. Used because some browsers do not like relative urls in extensions</p>
 
 **Kind**: static property of [<code>TBUtils</code>](#TBUtils)  
-<a name="TBUtils.tempBaseDomain"></a>
-
-### TBUtils.tempBaseDomain : <code>string</code>
-<p>Pretty much as the name suggests</p>
-
-**Kind**: static property of [<code>TBUtils</code>](#TBUtils)  
-**Todo**
-
-- [ ] Once the redesign is no longer alpha/beta switch all instances that use this.
-
 <a name="TBUtils.apiOauthPOST"></a>
 
 ### TBUtils.apiOauthPOST
@@ -401,6 +642,19 @@ Only support 'comment' for now and will only send the commentAuthor event.</p>
 | endpoint | <code>string</code> | <p>The endpoint to request</p> |
 | data | <code>object</code> | <p>Query parameters as an object</p> |
 
+<a name="TBUtils.updateCache"></a>
+
+### TBUtils.updateCache(cacheNAme, value, subreddit)
+<p>Updates in page cache and background page.</p>
+
+**Kind**: static method of [<code>TBUtils</code>](#TBUtils)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| cacheNAme | <code>string</code> | <p>the cache to be written.</p> |
+| value |  | <p>the cache value to be updated</p> |
+| subreddit | <code>string</code> | <p>when present cache is threated as an object and the value will be written to subreddit property. If missing the value is pushed.</p> |
+
 <a name="TBUtils.link"></a>
 
 ### TBUtils.link(link) ⇒ <code>string</code>
@@ -421,6 +675,19 @@ links work everywhere.</p>
 
 **Kind**: static method of [<code>TBUtils</code>](#TBUtils)  
 **Returns**: [<code>debugObject</code>](#TBUtils.debugObject) - <p>Object with debug information</p>  
+<a name="TBUtils.isConfigValidVersion"></a>
+
+### TBUtils.isConfigValidVersion(config, subreddit) ⇒ <code>booleean</code>
+<p>Checks if a given subreddit config version is valid with this version of toolbox</p>
+
+**Kind**: static method of [<code>TBUtils</code>](#TBUtils)  
+**Returns**: <code>booleean</code> - <p>valid</p>  
+
+| Param | Type |
+| --- | --- |
+| config | <code>object</code> | 
+| subreddit | <code>string</code> | 
+
 <a name="TBUtils.getToolboxDevs"></a>
 
 ### TBUtils.getToolboxDevs() ⇒ <code>array</code>
@@ -574,7 +841,7 @@ from r2.lib.utils import title_to_url</p>
 
 <a name="TBUtils.alert"></a>
 
-### TBUtils.alert(message, callback, showClose) ⇒ <code>callback</code>
+### TBUtils.alert(options, callback) ⇒ <code>callback</code>
 <p>Opens the toolbox &quot;nag&quot; alert everyone loves so much.
 USE SPARINGLY</p>
 
@@ -583,9 +850,11 @@ USE SPARINGLY</p>
 
 | Param | Type | Description |
 | --- | --- | --- |
-| message | <code>string</code> |  |
+| options | <code>object</code> | <p>The options for the alert</p> |
+| options.message | <code>string</code> | <p>The text of the alert</p> |
+| options.noteID | <code>number</code> | <p>The ID of the note we're displaying</p> |
+| options.showClose | <code>boolean</code> | <p>Whether to show a close button</p> |
 | callback | <code>callback</code> | <p>callback function</p> |
-| showClose | <code>boolean</code> | <p>If true the alert can be dismissed by a clost button otherwise it needs to be clicked.</p> |
 
 <a name="TBUtils.notification"></a>
 

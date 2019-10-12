@@ -56,6 +56,7 @@ function oldReddit () {
                                 author: info.author,
                                 id: info.id,
                                 isRemoved: info.ham,
+                                permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
                                 subreddit: {
                                     name: info.subreddit,
                                     type: info.subredditType,

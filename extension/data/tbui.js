@@ -934,6 +934,7 @@
                         data: {
                             author: submissionAuthor,
                             id: postID,
+                            permalink: `https://www.reddit.com/r/${subredditName}/comments/${postID.substring(3)}/`,
                             subreddit: {
                                 name: subredditName,
                                 type: subredditType,

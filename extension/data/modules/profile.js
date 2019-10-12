@@ -1,3 +1,4 @@
+'use strict';
 function profilepro () {
     const self = new TB.Module('Profile Pro');
     self.shortname = 'Profile';

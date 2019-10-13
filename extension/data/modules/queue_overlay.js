@@ -30,6 +30,7 @@ function queueOverlay () {
 
         if (TBUtils.isModpage && TBUtils.isEmbedded) {
             $body.addClass('tb-embedded-queues');
+            $body.find('.drop-choices a.choice').attr('target', '_self');
         }
 
         function makeQueueOverlay (type, subreddit) {

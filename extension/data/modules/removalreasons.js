@@ -680,6 +680,9 @@ function removalreasons () {
             subject = TBUtils.replaceTokens(data, subject);
             logTitle = TBUtils.replaceTokens(data, logTitle);
 
+            // At this point make extra sure the item actually does get removed
+            TBUtils.removeThing(data.fullname, false);
+
             // // Clean up reason
             reason = reason.trim();
 

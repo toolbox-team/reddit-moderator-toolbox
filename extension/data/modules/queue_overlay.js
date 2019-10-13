@@ -29,6 +29,7 @@ function queueOverlay () {
         };
 
         if (TBUtils.isModpage && TBUtils.isEmbedded) {
+            $('head link[href*="//www.redditstatic.com/embedded."]').remove();
             $body.addClass('tb-embedded-queues');
             $body.find('.drop-choices a.choice').attr('target', '_self');
         }

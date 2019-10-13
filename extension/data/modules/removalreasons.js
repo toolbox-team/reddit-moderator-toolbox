@@ -161,21 +161,19 @@ function removalreasons () {
 
         // UI components
         // UI event handling
-        if (TBUtils.pageDetails.pageType !== 'queueListing') {
-            TB.listener.on('post', e => {
-                if (e.detail.data.isRemoved) {
+        TB.listener.on('post', e => {
+            if (e.detail.data.isRemoved && TBUtils.pageDetails.pageType !== 'queueListing') {
+                const $target = $(e.target);
+                $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
+            }
+        });
+        if (commentReasons) {
+            TB.listener.on('comment', e => {
+                if (e.detail.data.isRemoved && TBUtils.pageDetails.pageType !== 'queueListing') {
                     const $target = $(e.target);
                     $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
                 }
             });
-            if (commentReasons) {
-                TB.listener.on('comment', e => {
-                    if (e.detail.data.isRemoved) {
-                        const $target = $(e.target);
-                        $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
-                    }
-                });
-            }
         }
 
         // Open reason drop-down when we remove something as ham.

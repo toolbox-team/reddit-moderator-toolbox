@@ -161,19 +161,21 @@ function removalreasons () {
 
         // UI components
         // UI event handling
-        TB.listener.on('post', e => {
-            if (e.detail.data.isRemoved) {
-                const $target = $(e.target);
-                $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
-            }
-        });
+        if (TBUtils.pageDetails.pageType !== 'queueListing') {
+            TB.listener.on('post', e => {
+                if (e.detail.data.isRemoved) {
+                    const $target = $(e.target);
+                    $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
+                }
+            });
 
-        TB.listener.on('comment', e => {
-            if (e.detail.data.isRemoved) {
-                const $target = $(e.target);
-                $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
-            }
-        });
+            TB.listener.on('comment', e => {
+                if (e.detail.data.isRemoved && commentReasons) {
+                    const $target = $(e.target);
+                    $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
+                }
+            });
+        }
 
         // Open reason drop-down when we remove something as ham.
         $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {

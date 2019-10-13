@@ -275,11 +275,11 @@ function modbar () {
 <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
     <td class="tb-my-subreddits-name"><a href="${TBUtils.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
     <td class="tb-my-subreddits-subreddit">
-        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/message/moderator`)}" class="tb-icons">${TBui.icons.oldModmail}</a>
-        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/modqueue`)}" class="tb-icons">${TBui.icons.modqueue}</a>
-        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/unmoderated`)}" class="tb-icons">${TBui.icons.unmoderated}</a>
-        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/log`)}" class="tb-icons">${TBui.icons.modlog}</a>
-        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/traffic`)}" class="tb-icons">${TBui.icons.subTraffic}</a>
+        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
+        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
+        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
         ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
     </td>
 </tr>

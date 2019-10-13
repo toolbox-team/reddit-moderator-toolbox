@@ -140,13 +140,28 @@ function queueOverlay () {
         });
 
         $body.on('click', '#tb-modqueue, #tb-queueCount', event => {
+            if (event.ctrlKey || event.metaKey) {
+                return;
+            }
             event.preventDefault();
             makeQueueOverlay('modqueue');
         });
 
         $body.on('click', '#tb-unmoderated, #tb-unmoderatedCount', event => {
+            if (event.ctrlKey || event.metaKey) {
+                return;
+            }
             event.preventDefault();
             makeQueueOverlay('unmoderated');
+        });
+
+        $body.on('click', '.tb-my-subreddits-subreddit a[data-type="unmoderated"], .tb-my-subreddits-subreddit a[data-type="modqueue"]', event => {
+            if (event.ctrlKey || event.metaKey) {
+                return;
+            }
+            event.preventDefault();
+            const $this = $(event.target);
+            makeQueueOverlay($this.attr('data-type'), $this.attr('data-subreddit'));
         });
     };
 }

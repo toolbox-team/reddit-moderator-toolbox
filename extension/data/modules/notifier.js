@@ -276,7 +276,7 @@ function notifiermod () {
         }
 
         function updateUnmodCount (count) {
-            $('#tb-unmoderatedcount').text(`[${count}]`);
+            $('#tb-unmoderatedCount').text(`[${count}]`);
         }
 
         // Here we update the count for new modmail. Is somewhat simpler than old modmail.

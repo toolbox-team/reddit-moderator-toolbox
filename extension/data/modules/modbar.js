@@ -245,7 +245,7 @@ function modbar () {
             const unModQueueUrl = TBUtils.link(unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
             $modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">${TBui.icons.unmoderated}</a>
-<a href="${unModQueueUrl}" id="tb-unmoderatedcount"></a>
+<a href="${unModQueueUrl}" id="tb-unmoderatedCount"></a>
 `);
         }
 

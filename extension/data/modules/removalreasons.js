@@ -168,13 +168,14 @@ function removalreasons () {
                     $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
                 }
             });
-
-            TB.listener.on('comment', e => {
-                if (e.detail.data.isRemoved && commentReasons) {
-                    const $target = $(e.target);
-                    $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
-                }
-            });
+            if (commentReasons) {
+                TB.listener.on('comment', e => {
+                    if (e.detail.data.isRemoved) {
+                        const $target = $(e.target);
+                        $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
+                    }
+                });
+            }
         }
 
         // Open reason drop-down when we remove something as ham.

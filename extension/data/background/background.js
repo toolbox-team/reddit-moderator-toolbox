@@ -169,9 +169,7 @@ function getOAuthTokens (tries = 1) {
             // If we do get a rawcookie we first want to make sure it is still valid.
             let expired = false;
             if (rawCookie) {
-                // Firefox returns an integer for expirationDate Chromium based browser a float.
-                // So to make sure we are comparing the correct thing we convert it first to a date and then back to a javascript epoch.
-                const cookieExpiration = new Date(rawCookie.expirationDate * 1000).valueOf();
+                const cookieExpiration = rawCookie.expirationDate * 1000;
                 const timeNow = Date.now();
                 expired = timeNow > cookieExpiration ? true : false;
                 console.log('Found cookie expired:', expired);

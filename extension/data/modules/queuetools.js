@@ -11,6 +11,13 @@ function queuetools () {
         default: true,
         title: 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog',
     });
+
+    self.register_setting('showSecondOpinionButton', {
+        type: 'boolean',
+        default: true,
+        title: 'Show a second opinion button under posts and comments in queues that will open up a modmail composition window when clicked',
+    });
+
     self.register_setting('expandActionReasonQueue', {
         type: 'boolean',
         default: true,
@@ -1110,6 +1117,7 @@ Action reason: ${value.data.details}
 
         // Cached data
         const showActionReason = self.setting('showActionReason'),
+              showSecondOpinionButton = self.setting('showSecondOpinionButton'),
               expandActionReasonQueue = self.setting('expandActionReasonQueue'),
               queueCreature = self.setting('queueCreature');
         // expandReports = self.setting('expandReports');
@@ -1340,6 +1348,43 @@ Action reason: ${value.data.details}
                 } else {
                     $actionTable.show();
                     $this.text('hide recent actions');
+                }
+            });
+        }
+
+        function makeSecondOpinionButton ($target, details) {
+            const $secondOpinionButton = `<a class="tb-bracket-button" target="_blank" href="${details}">second opinion</span>`;
+            requestAnimationFrame(() => {
+                $target.append($secondOpinionButton);
+
+            });
+        }
+
+        if (showSecondOpinionButton) {
+            TB.listener.on('post', e => {
+                if (TBUtils.pageDetails.pageType === 'queueListing') {
+                    const $target = $(e.target);
+                    const details = {
+                        type: 'post',
+                        permalink: e.detail.data.permalink.replace('https://www.reddit.com', ''),
+                        title: e.detail.data.title,
+                        author: e.detail.data.author,
+                    };
+                    makeSecondOpinionButton($target, details);
+                }
+            });
+
+            TB.listener.on('comment', e => {
+                if (TBUtils.pageDetails.pageType === 'queueListing') {
+                    const $target = $(e.target);
+                    const permalink = '';
+                    const details = {
+                        type: 'comment',
+                        permalink,
+                        title: 'this comment',
+                        author: e.detail.data.author,
+                    };
+                    makeSecondOpinionButton($target, details);
                 }
             });
         }

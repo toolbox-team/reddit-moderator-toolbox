@@ -238,7 +238,11 @@ function tbmodule () {
                             <td><a href="https://www.reddit.com/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>
                             <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
                             <td><a href="https://www.reddit.com/user/geo1088">/u/geo1088</a></td>
-                          </tr>
+                        </tr><tr>
+                            <td><a href="https://www.reddit.com/user/SpyTec13" title="Literally">/u/SpyTec13</a></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
                     </table>
                     <h3>Documentation by:</h3>
                     <table class="tb-about-credits">

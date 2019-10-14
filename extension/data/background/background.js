@@ -350,7 +350,14 @@ chrome.storage.local.get('tbsettings', sObject => {
 //
 // Webextension messaging handling.
 //
+const messageHandlers = new Map();
 browser.runtime.onMessage.addListener(async (request, sender) => {
+    const handler = messageHandlers.get(request.action);
+    if (handler) {
+        return handler(request, sender);
+    // } else {
+    //     console.log('Unknown message type:', request, sender);
+    }
     // Request to reload the extension. Let's do so.
     if (request.action === 'tb-reload') {
         chrome.runtime.reload();

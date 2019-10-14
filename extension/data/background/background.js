@@ -223,13 +223,15 @@ function makeHeaderObject (headerString) {
  * @param options The options for the request
  * @param sendResponse The `sendResponse` callback that will be called
  */
-function makeRequest (options, sendResponse) {
-    $.ajax(options).then((data, textStatus, jqXHR) => {
-        jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
-        sendResponse({data, textStatus, jqXHR});
-    }, (jqXHR, textStatus, errorThrown) => {
-        jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
-        sendResponse({jqXHR, textStatus, errorThrown});
+function makeRequest (options) {
+    return new Promise(resolve => {
+        $.ajax(options).then((data, textStatus, jqXHR) => {
+            jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
+            resolve({data, textStatus, jqXHR});
+        }, (jqXHR, textStatus, errorThrown) => {
+            jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
+            resolve({jqXHR, textStatus, errorThrown});
+        });
     });
 }
 //
@@ -348,12 +350,12 @@ chrome.storage.local.get('tbsettings', sObject => {
 //
 // Webextension messaging handling.
 //
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browser.runtime.onMessage.addListener(async (request, sender) => {
     // Request to reload the extension. Let's do so.
     if (request.action === 'tb-reload') {
         chrome.runtime.reload();
         console.log('reloaded');
-        sendResponse();
+        return;
     }
 
     if (request.action === 'tb-global') {
@@ -418,7 +420,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (!endpoint.startsWith('/')) {
             // Old code used to send a full URL to these methods, so this check
             // is to identify old uses of the code
-            return sendResponse({errorThrown: `Request endpoint '${endpoint}' does not start with a slash`});
+            return {errorThrown: `Request endpoint '${endpoint}' does not start with a slash`};
         }
 
         const host = `https://${oauth ? 'oauth' : 'old'}.reddit.com`;
@@ -430,20 +432,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         if (oauth) {
             // We have to get the OAuth token before we can send it
-            getOAuthTokens().then(tokens => {
+            try {
+                const tokens = await getOAuthTokens();
                 // Set beforeSend to add the header
                 options.beforeSend = jqXHR => jqXHR.setRequestHeader('Authorization', `bearer ${tokens.accessToken}`);
                 // And make the request
-                makeRequest(options, sendResponse);
-            }).catch(error => {
+                return await makeRequest(options);
+            } catch (error) {
                 // If we can't get a token, return the error as-is
-                sendResponse({errorThrown: error.toString()});
-            });
+                return {errorThrown: error.toString()};
+            }
         } else {
             // We don't need to do anything extra, just make the request
-            makeRequest(options, sendResponse);
+            return await makeRequest(options);
         }
-        return true;
     }
 
     if (request.action === 'tb-cache') {
@@ -471,18 +473,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 }
             }
 
-            sendResponse(result);
+            return result;
         }
 
         if (method === 'set') {
             localStorage[storageKey] = JSON.stringify(inputValue);
-            sendResponse();
+            return;
         }
 
         if (method === 'clear') {
             localStorage.clear();
-            sendResponse();
+            return;
         }
-        return true;
     }
 });

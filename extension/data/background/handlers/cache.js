@@ -18,7 +18,7 @@ const cachedata = {
  * @param timeoutDuration Timeout value in minutes
  * @param cacheType The type of cache, either `short` or `long`
  */
-function emptyCacheTimeout (timeoutDuration, cacheType) {
+async function emptyCacheTimeout (timeoutDuration, cacheType) {
     // Make sure we always clear any running timeouts so we don't get things running multiple times.
     clearTimeout(cachedata.timeouts[cacheType]);
 
@@ -41,16 +41,15 @@ function emptyCacheTimeout (timeoutDuration, cacheType) {
     }
 
     // Let's make sure all our open tabs know that cache has been cleared for these types.
-    chrome.tabs.query({}, tabs => {
-        for (let i = 0; i < tabs.length; ++i) {
-            if (tabs[i].url.includes('reddit.com')) {
-                chrome.tabs.sendMessage(tabs[i].id, {
-                    action: 'tb-cache-timeout',
-                    payload: cacheType,
-                });
-            }
+    const tabs = await browser.tabs.query({});
+    for (let i = 0; i < tabs.length; ++i) {
+        if (tabs[i].url.includes('reddit.com')) {
+            browser.tabs.sendMessage(tabs[i].id, {
+                action: 'tb-cache-timeout',
+                payload: cacheType,
+            });
         }
-    });
+    }
 
     // Done, go for another round.
     cachedata.timeouts[cacheType] = setTimeout(() => {

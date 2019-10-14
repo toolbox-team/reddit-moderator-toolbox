@@ -1462,7 +1462,7 @@ body.mod-toolbox-rd .tb-action-button:hover {
 
 /* link colors (for those themes that change all the link colors */
 body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
-body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter),
+body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
 body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons) {
     color: #369;
 }

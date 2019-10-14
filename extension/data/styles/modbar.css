@@ -270,15 +270,15 @@
     z-index: 10001;
     position: fixed;
     text-align: left;
-    width: 500px;
-    height: 70px;
+    width: 300px;
+    height: 52px;
     background-color: rgba(206, 227, 248, 1);
-    font-size: 14px;
+    font-size: 11px;
     color: #000;
     padding: 2px !important;
-    border: solid 2px #B83E3E;
+    border: solid 2px rgb(159, 186, 214);
     top: auto;
-    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
+    box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     cursor: pointer;
 }
 .mod-toolbox-rd #tb-notification-alert span {

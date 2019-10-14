@@ -265,7 +265,7 @@ function queueOverlay () {
         });
 
         // eslint-disable-next-line no-extra-parens
-        if ((TBUtils.isOldReddit && overlayFromBarOld) || (!TBUtils.isOldReddit && overlayFromBarRedesign)) {
+        if ((TBUtils.isOldReddit && overlayFromBarOld) || (!TBUtils.isOldReddit && overlayFromBarRedesign && !TBUtils.isNewModmail)) {
             $body.on('click', '#tb-modqueue, #tb-queueCount', event => {
                 if (event.ctrlKey || event.metaKey) {
                     return;

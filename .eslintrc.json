@@ -17,6 +17,7 @@
         "CodeMirror": true,
         "redditapi": true,
         "chrome": true,
+        "browser": true,
         "safari": true,
         "SnuOwnd": true,
         "pako": true,

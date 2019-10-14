@@ -153,8 +153,6 @@ chrome.notifications.onClosed.addListener(id => {
     delete notificationData[id];
 });
 
-// Request stuff
-
 //
 // Cache handling.
 //
@@ -278,12 +276,6 @@ browser.runtime.onMessage.addListener((request, sender) => {
         return Promise.resolve(handler(request, sender));
     // } else {
     //     console.log('Unknown message type:', request, sender);
-    }
-    // Request to reload the extension. Let's do so.
-    if (request.action === 'tb-reload') {
-        chrome.runtime.reload();
-        console.log('reloaded');
-        return;
     }
 
     if (request.action === 'tb-global') {

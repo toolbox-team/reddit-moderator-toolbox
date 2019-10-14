@@ -34,7 +34,8 @@
             "data/libs/browser-polyfill.min.js",
             "data/libs/jquery-3.4.1.min.js",
             "data/background/background.js",
-            "data/background/handlers/webrequest.js"
+            "data/background/handlers/webrequest.js",
+            "data/background/handlers/reload.js"
         ],
         "persistent": true
     },

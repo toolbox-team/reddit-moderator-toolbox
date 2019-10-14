@@ -1,4 +1,5 @@
 /* eslint-env node */
+'use strict';
 const jsdoc2md = require('jsdoc-to-markdown');
 const fs = require('fs');
 const path = require('path');

@@ -6,7 +6,9 @@
   "scripts": {
     "build": "node build.js",
     "build-watch": "nodemon --exec npm run build",
-    "docs": "node build.js --docs"
+    "docs": "node build.js --docs",
+    "e2e": "node build.js && nightwatch --env",
+    "e2eFirefox": "node build.js && node e2e_prep.js && nightwatch --env firefox"
   },
   "homepage": "http://www.reddit.com/r/toolbox",
   "repository": {
@@ -18,6 +20,7 @@
     "archiver": "^3.1.1",
     "docdash": "^1.1.1",
     "jsdoc-to-markdown": "^5.0.0",
+    "nightwatch": "^1.2.4",
     "nodemon": "^1.19.1",
     "yargs": "^13.3.0"
   },

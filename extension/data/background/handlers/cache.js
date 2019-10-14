@@ -154,9 +154,3 @@ messageHandlers.set('tb-cache', request => {
 messageHandlers.set('tb-cache-force-timeout', () => {
     initCacheTimeout(true);
 });
-
-// Handle settings updates by overwriting the stored settings object
-messageHandlers.set('tb-settings-update', request => {
-    TBsettingsObject = request.payload;
-    initCacheTimeout();
-});

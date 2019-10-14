@@ -17,47 +17,39 @@ function uuidv4 () {
 }
 
 /**
- * Sends a native Chrome notification.
+ * Sends a native browser notification.
  * @param {object} options The notification options
  */
-function sendNativeNotification ({title, body, url, modHash, markreadid}) {
-    return new Promise((resolve, reject) => {
-        if (typeof chrome.notifications.getPermissionLevel === 'undefined') {
-            send();
-        } else {
-            chrome.notifications.getPermissionLevel(permission => {
-                if (permission === 'granted') {
-                    send();
-                } else {
-                    reject();
-                }
-            });
+async function sendNativeNotification ({title, body, url, modHash, markreadid}) {
+    // If we have the getPermissionLevel function, check if we have permission
+    // to send notifications. This function doesn't currently exist on Firefox
+    // for some reason. (https://bugzilla.mozilla.org/show_bug.cgi?id=1213455)
+    if (typeof browser.notifications.getPermissionLevel !== 'undefined') {
+        const permission = await browser.notifications.getPermissionLevel();
+        if (permission !== 'granted') {
+            throw new Error('No permission to send native notifications');
         }
-
-        function send () {
-            chrome.notifications.create(uuidv4(), {
-                type: 'basic',
-                iconUrl: chrome.runtime.getURL('data/images/icon48.png'),
-                title,
-                message: body,
-            }, notificationID => {
-                notificationData[notificationID] = {
-                    type: 'native',
-                    url,
-                    modHash,
-                    markreadid,
-                };
-                resolve(notificationID);
-            });
-        }
+    }
+    const notificationID = await browser.notifications.create(uuidv4(), {
+        type: 'basic',
+        iconUrl: browser.runtime.getURL('data/images/icon48.png'),
+        title,
+        message: body,
     });
+    notificationData[notificationID] = {
+        type: 'native',
+        url,
+        modHash,
+        markreadid,
+    };
+    return notificationID;
 }
 
 /**
  * Sends an in-page notification on all open Reddit windows
  * @param {object} options The notification options
  */
-function sendPageNotification ({title, body, url, modHash, markreadid}) {
+async function sendPageNotification ({title, body, url, modHash, markreadid}) {
     const notificationID = uuidv4();
     notificationData[notificationID] = {
         type: 'page',
@@ -73,14 +65,11 @@ function sendPageNotification ({title, body, url, modHash, markreadid}) {
             body,
         },
     };
-    return new Promise(resolve => {
-        chrome.tabs.query({url: 'https://*.reddit.com/*'}, tabs => {
-            for (const tab of tabs) {
-                chrome.tabs.sendMessage(tab.id, message);
-            }
-            resolve(notificationID);
-        });
-    });
+    const tabs = await browser.tabs.query({url: 'https://*.reddit.com/*'});
+    for (const tab of tabs) {
+        browser.tabs.sendMessage(tab.id, message);
+    }
+    return notificationID;
 }
 
 // Handle notification creation
@@ -99,7 +88,7 @@ messageHandlers.set('tb-notification', request => {
  * Clears a notification
  * @param {string} notificationID The ID of the notification
  */
-function clearNotification (notificationID) {
+async function clearNotification (notificationID) {
     const metadata = notificationData[notificationID];
     if (!metadata) {
         // Notification has already been cleared
@@ -107,18 +96,17 @@ function clearNotification (notificationID) {
     }
     if (metadata.type === 'native') {
         // Clear a native notification
-        chrome.notifications.clear(notificationID);
+        browser.notifications.clear(notificationID);
     } else {
         // Tell all tabs to clear the in-page notification
         const message = {
             action: 'tb-clear-page-notification',
             id: notificationID,
         };
-        chrome.tabs.query({url: 'https://*.reddit.com/*'}, tabs => {
-            for (const tab of tabs) {
-                chrome.tabs.sendMessage(tab.id, message);
-            }
-        });
+        const tabs = await browser.tabs.query({url: 'https://*.reddit.com/*'});
+        for (const tab of tabs) {
+            browser.tabs.sendMessage(tab.id, message);
+        }
         // We don't get a callback when the notifications are closed, so we just
         // clean up the data here
         delete notificationData[notificationID];
@@ -129,7 +117,7 @@ function clearNotification (notificationID) {
  * Handles a click on a notification
  * @param {string} notificationID The ID of the notification
  */
-function onClickNotification (notificationID) {
+async function onClickNotification (notificationID) {
     // Store the metadata so we can work with it after clearing the notification
     const metadata = notificationData[notificationID];
     console.log('notification clikcked: ', metadata);
@@ -144,11 +132,10 @@ function onClickNotification (notificationID) {
     }
 
     // Open up in new tab.
-    chrome.windows.getLastFocused(window => {
-        chrome.tabs.create({
-            url: metadata.url,
-            windowId: window.id,
-        });
+    const window = await browser.windows.getLastFocused();
+    browser.tabs.create({
+        url: metadata.url,
+        windowId: window.id,
     });
 
     // Notification no longer needed, clear it.
@@ -165,8 +152,8 @@ messageHandlers.set('tb-page-notification-close', request => {
 });
 
 // Handle events on native notifications
-chrome.notifications.onClicked.addListener(onClickNotification);
-chrome.notifications.onClosed.addListener(id => {
+browser.notifications.onClicked.addListener(onClickNotification);
+browser.notifications.onClosed.addListener(id => {
     // Clearing native notifications is done for us, so we don't need to call
     // clearNotification, but we do still need to clean up metadata.
     delete notificationData[id];

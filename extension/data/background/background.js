@@ -351,10 +351,10 @@ chrome.storage.local.get('tbsettings', sObject => {
 // Webextension messaging handling.
 //
 const messageHandlers = new Map();
-browser.runtime.onMessage.addListener(async (request, sender) => {
+browser.runtime.onMessage.addListener((request, sender) => {
     const handler = messageHandlers.get(request.action);
     if (handler) {
-        return handler(request, sender);
+        return Promise.resolve(handler(request, sender));
     // } else {
     //     console.log('Unknown message type:', request, sender);
     }
@@ -384,7 +384,6 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
             TBsettingsObject = request.payload;
             initCachetimeout();
         }
-        return true;
     }
 
     if (request.action === 'tb-cache-force-timeout') {
@@ -473,14 +472,12 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
 
                 // send back the default if, somehow, someone stored `null`
                 // NOTE: never, EVER store `null`!
-                if (result.value === null
-                && inputValue !== null
-                ) {
+                if (result.value === null && inputValue !== null) {
                     result.value = inputValue;
                 }
             }
 
-            return result;
+            return Promise.resolve(result);
         }
 
         if (method === 'set') {

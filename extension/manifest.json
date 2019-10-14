@@ -37,7 +37,8 @@
             "data/background/handlers/webrequest.js",
             "data/background/handlers/reload.js",
             "data/background/handlers/cache.js",
-            "data/background/handlers/globalmessage.js"
+            "data/background/handlers/globalmessage.js",
+            "data/background/handlers/notifications.js"
         ],
         "persistent": true
     },

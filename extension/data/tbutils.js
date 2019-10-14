@@ -93,6 +93,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'toolbox is on strike, we demand more karma!',
                   'brb... kicking Gustavobc from #toolbox',
                   'Requesting a new insurance quote from /u/andytuba',
+                  'Sending all your data to Pyongyang',
+                  'Contacting lizard overlords for instructions',
+                  'Releasing raptors',
+                  'Booting robot uprising',
+                  'I need to tell you something critically important! I am sure I will remember in a moment...',
                   "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
         let gettingModSubs = false;

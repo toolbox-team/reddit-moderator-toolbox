@@ -5,6 +5,8 @@
 <dd></dd>
 <dt><a href="#module_ProfilePro">ProfilePro</a></dt>
 <dd></dd>
+<dt><a href="#module_queueOverlay">queueOverlay</a></dt>
+<dd></dd>
 <dt><a href="#module_QueueTools">QueueTools</a></dt>
 <dd></dd>
 <dt><a href="#module_TBLog">TBLog</a></dt>
@@ -163,6 +165,56 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | query | <code>string</code> | <p>reddit username</p> |
+
+<a name="module_queueOverlay"></a>
+
+## queueOverlay
+
+* [queueOverlay](#module_queueOverlay)
+    * [~figureOutMulti($tbQueueUrl, type)](#module_queueOverlay..figureOutMulti) ⇒ <code>string</code>
+    * [~reloadIframe($reloadListing, $tbQueueUrl, $iframe, type)](#module_queueOverlay..reloadIframe)
+    * [~makeQueueOverlay(type, options)](#module_queueOverlay..makeQueueOverlay)
+
+<a name="module_queueOverlay..figureOutMulti"></a>
+
+### queueOverlay~figureOutMulti($tbQueueUrl, type) ⇒ <code>string</code>
+<p>Figures out what listing path to use and adds the multireddit representation to the input field on the respective tab.</p>
+
+**Kind**: inner method of [<code>queueOverlay</code>](#module_queueOverlay)  
+**Returns**: <code>string</code> - <p>the listing path to be used in overlays</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| $tbQueueUrl | <code>jqueryObject</code> | <p>input element which will hold the multireddit representation</p> |
+| type | <code>string</code> | <p>the listing type</p> |
+
+<a name="module_queueOverlay..reloadIframe"></a>
+
+### queueOverlay~reloadIframe($reloadListing, $tbQueueUrl, $iframe, type)
+<p>Reload the iframe belonging to a queue listing based on latest data.</p>
+
+**Kind**: inner method of [<code>queueOverlay</code>](#module_queueOverlay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| $reloadListing | <code>jqueryObject</code> | <p>reload button on the listing tab.</p> |
+| $tbQueueUrl | <code>jqueryObject</code> | <p>input element which will hold the multireddit representation</p> |
+| $iframe | <code>jqueryObject</code> | <p>iframe element to be reloaded</p> |
+| type | <code>string</code> | <p>listing type</p> |
+
+<a name="module_queueOverlay..makeQueueOverlay"></a>
+
+### queueOverlay~makeQueueOverlay(type, options)
+<p>Creates the queue overlay or adds data to it if it is already open.</p>
+
+**Kind**: inner method of [<code>queueOverlay</code>](#module_queueOverlay)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| type | <code>string</code> | <p>listing type</p> |
+| options | <code>object</code> |  |
+| options.subreddit | <code>string</code> | <p>optional, when not given the user's toolbox settings for the listing will be used.</p> |
+| options.overwrite | <code>boolean</code> | <p>when true will set the base over the overlay to the given subreddit and will reload the tab with this data.</p> |
 
 <a name="module_QueueTools"></a>
 

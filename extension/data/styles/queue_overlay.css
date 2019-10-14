@@ -69,6 +69,11 @@
     display: none;
 }
 
+/* Make sure RES floater isn't floating in the way of queuetools bar */
+.embedded-page.moderator .res-floater-visibleAfterScroll {
+    top: 50px !important;
+}
+
 /* spam spam delicious spam */
 .embedded-page.moderator .thing.spam.spam {
     background-color: #fa8072

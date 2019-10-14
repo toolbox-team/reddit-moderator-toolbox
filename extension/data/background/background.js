@@ -451,7 +451,7 @@ browser.runtime.onMessage.addListener(async (request, sender) => {
             }
         } else {
             // We don't need to do anything extra, just make the request
-            return await makeRequest(options);
+            return makeRequest(options);
         }
     }
 

@@ -239,7 +239,7 @@ function tbmodule () {
                             <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
                             <td><a href="https://www.reddit.com/user/geo1088">/u/geo1088</a></td>
                         </tr><tr>
-                            <td><a href="https://www.reddit.com/user/SpyTec13" title="Literally">/u/SpyTec13</a></td>
+                            <td><a href="https://www.reddit.com/user/SpyTec13">/u/SpyTec13</a></td>
                             <td></td>
                             <td></td>
                         </tr>

@@ -39,7 +39,7 @@ function devtools () {
             </span>
             `);
             $target.on('click', '.tb-show-api-info', event => {
-                const $pasteContent = $(`<pre class="tb-api-info"><code>${TBUtils.escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
+                const $pasteContent = $(`<pre class="tb-api-info"><code>${TBHelpers.escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
                 // Prepare for the popup.
                 let leftPosition;
                 if (document.documentElement.clientWidth - event.pageX < 400) {
@@ -105,7 +105,7 @@ function devtools () {
                             <div id="notification">
                                 <h1> Notification tester </h1>
                                 <code>
-                                    TBUtils.notification = function (title, body, path, markreadid = false)
+                                    TBCore.notification = function (title, body, path, markreadid = false)
                                 </code>
                                 <hr>
                                 <input type="text" placeholder="title" id="tb-test-notification-title" class="tb-input"><br>
@@ -135,7 +135,7 @@ function devtools () {
                       path = $body.find('#tb-test-notification-path').val(),
                       markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
 
-                TBUtils.notification(title, body, path, markreadid);
+                TBCore.notification(title, body, path, markreadid);
             });
 
             $body.on('click', '.tb-testCommentUI-button', async function () {
@@ -144,7 +144,7 @@ function devtools () {
                 $siteTable.empty();
                 // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                const data = await TBUtils.getJSON(inputURL, {raw_json: 1});
+                const data = await TBApi.getJSON(inputURL, {raw_json: 1});
                 TBStorage.purifyObject(data);
                 const commentOptions = {
                     parentLink: true,
@@ -169,9 +169,9 @@ function devtools () {
                 const $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                const data = await TBUtils.getJSON(inputURL, {raw_json: 1});
+                const data = await TBApi.getJSON(inputURL, {raw_json: 1});
                 TBStorage.purifyObject(data);
-                TBUtils.forEachChunkedDynamic(data.data.children, entry => {
+                TBCore.forEachChunkedDynamic(data.data.children, entry => {
                     if (entry.kind === 't3') {
                         const $submission = TBui.makeSubmissionEntry(entry);
                         $siteTable.append($submission);

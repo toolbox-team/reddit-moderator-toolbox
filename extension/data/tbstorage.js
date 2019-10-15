@@ -1,5 +1,5 @@
 'use strict';
-// This is here because we load even before TBUtils.
+// This is here because we load even before TBCore.
 const domain = window.location.hostname.split('.')[0];
 
 // Reset toolbox settings support

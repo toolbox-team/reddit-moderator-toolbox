@@ -148,7 +148,7 @@ function modmailpro () {
     }
 
     self.init = function () {
-        if (!TBUtils.isModmail) {
+        if (!TBCore.isModmail) {
             return;
         }
 
@@ -183,7 +183,7 @@ function modmailpro () {
               botsToFilter = self.setting('botsToFilter'),
               filteredSubs = self.setting('filteredSubs'),
               newTabLinks = self.setting('newTabLinks'),
-              unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), // TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
+              unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), // TBCore.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
               moreCommentThreads = [],
               unreadThreads = [],
               unansweredThreads = [];
@@ -293,11 +293,11 @@ function modmailpro () {
             }
 
             function processThreads (threads, chunkSize, processRate, completeAction, profileKey) {
-                TBUtils.forEachChunked(
+                TBCore.forEachChunked(
                     threads, chunkSize, processRate,
                     (thread, count, array) => {
                         self.log(`Running thread batch: ${count + 1} of ${array.length}`);
-                        // self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
+                        // self.log('\tUser = ' + TBCore.getThingInfo(thread).user);
                         processThread(thread);
                     },
                     () => {
@@ -336,7 +336,7 @@ function modmailpro () {
                           newCount = $entries.length;
 
                     setView(ALL);
-                    $menuList.html(`<a href="${TBUtils.link('/message/moderator/')}">go to full mod mail</a>`);
+                    $menuList.html(`<a href="${TBCore.link('/message/moderator/')}">go to full mod mail</a>`);
                     $('.unread-count').html(TBStorage.purify(`<b>${newCount}</b> - new mod mail thread${newCount === 1 ? '' : 's'}`));
                     $entries.click();
                 } else {
@@ -393,7 +393,7 @@ function modmailpro () {
                   $collapseLink = $thread.find('.tb-collapse-link'),
                   $subredditArea = $thread.find('.correspondent:first'),
 
-                  threadInfo = TB.utils.getThingInfo($thread),
+                  threadInfo = TBCore.getThingInfo($thread),
                   threadID = threadInfo.id,
                   subreddit = threadInfo.subreddit,
                   title = threadInfo.title,
@@ -461,7 +461,7 @@ function modmailpro () {
                 self.startProfile('thread-sr-color');
 
                 const subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
-                      colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
+                      colorForSub = TBHelpers.stringToColor(subredditName + subredditColorSalt);
 
                 $thread.attr('style', `border-left: solid 3px ${colorForSub} !important`);
                 $thread.addClass('tb-subreddit-color');
@@ -472,7 +472,7 @@ function modmailpro () {
 
             // Don't parse all entries if we don't need to.
             if (fadeRecipient) {
-                TBUtils.forEachChunked(
+                TBCore.forEachChunked(
                     $entries, 5, entryProcessRate,
                     entry => {
                         self.startProfile('fade-recipient-internal');
@@ -648,7 +648,7 @@ function modmailpro () {
 
             self.endProfile('highlight-new-jquery');
 
-            TBUtils.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
+            TBCore.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
                 self.startProfile('highlight-new-internal');
 
                 const $message = $(message),
@@ -861,7 +861,7 @@ function modmailpro () {
             $body.find('.entry').css('display', '');
             $body.find('.expand-btn').css('display', '');
 
-            TBUtils.forEachChunked(threads, 10, 300, thread => {
+            TBCore.forEachChunked(threads, 10, 300, thread => {
                 const $this = $(thread);
 
                 if (expandReplies) {
@@ -983,7 +983,7 @@ function modmailpro () {
             TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
             self.log(`real time a gogo: ${limit}`);
-            TBUtils.addToSiteTable(updateURL + String(limit), resp => {
+            TBCore.addToSiteTable(updateURL + String(limit), resp => {
                 if (!resp) {
                     return;
                 }
@@ -1004,7 +1004,7 @@ function modmailpro () {
               $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
               $mmpMenu = $('.mmp-menu');
 
-        TBUtils.getModSubs(() => {
+        TBCore.getModSubs(() => {
             populateDropDowns();
         });
 
@@ -1012,7 +1012,7 @@ function modmailpro () {
             $mmpMenu.append($composeSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
             $mmpMenu.append($switchSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
-            $(TBUtils.mySubs).each(function () {
+            $(TBCore.mySubs).each(function () {
                 $('.compose-mail').append($('<option>', {
                     value: this,
                 }).text(this));

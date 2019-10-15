@@ -28,8 +28,8 @@ Info| &nbsp;
 *Cookies Enabled*|{{cookiesEnabled}}
 `;
 
-        const debugInfo = TBUtils.debugInformation();
-        const submissionAddition = TBUtils.template(debugTemplate, {
+        const debugInfo = TBCore.debugInformation();
+        const submissionAddition = TBHelpers.template(debugTemplate, {
             toolboxVersion: debugInfo.toolboxVersion,
             browserName: debugInfo.browser,
             browserVersion: debugInfo.browserVersion,

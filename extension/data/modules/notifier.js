@@ -49,7 +49,7 @@ function notifiermod () {
         type: 'action',
         title: 'sample sound',
         class: 'tb-sample-sound',
-        event: TB.utils.events.TB_SAMPLE_SOUND,
+        event: TBCore.events.TB_SAMPLE_SOUND,
     });
 
     self.register_setting('messageUnreadLink', {
@@ -149,7 +149,7 @@ function notifiermod () {
     });
 
     self.init = function () {
-        if (TBUtils.isEmbedded) {
+        if (TBCore.isEmbedded) {
             return;
         }
 
@@ -173,7 +173,7 @@ function notifiermod () {
 
               messageunreadlink = self.setting('messageUnreadLink'),
 
-              checkInterval = TB.utils.minutesToMilliseconds(self.setting('checkInterval')), // setting is in seconds, convert to milliseconds.
+              checkInterval = TBHelpers.minutesToMilliseconds(self.setting('checkInterval')), // setting is in seconds, convert to milliseconds.
               $body = $('body');
         let modmailFilteredSubreddits = modmailSubreddits, // wat?
             newLoad = true,
@@ -205,26 +205,26 @@ function notifiermod () {
 
         // Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
         // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab.
-        if (TBUtils.isModmailUnread || TBUtils.isModmail) {
+        if (TBCore.isModmailUnread || TBCore.isModmail) {
             self.log('clearing all unread stuff');
 
             // We have nothing unread if we're on the mod mail page.
             self.setting('lastSeenModmail', now);
             self.setting('modmailCount', 0);
 
-            TBUtils.getJSON(`/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
+            TBApi.getJSON(`/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
                 TBStorage.purifyObject(json);
                 $.each(json.data.children, (i, value) => {
                     const unreadmessageid = value.data.name;
 
-                    TBUtils.markMessageRead(unreadmessageid, () => {
+                    TBApi.markMessageRead(unreadmessageid, () => {
                         // TODO: Insert useful error handling here
                     });
                 });
             });
         }
 
-        TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, () => {
+        TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
             self.log('playing sound');
 
             const audio = new Audio(NOTIFICATION_SOUND);
@@ -243,26 +243,26 @@ function notifiermod () {
                   $mailcount = $('#mailcount'),
                   $tb_mail = $('#tb-mail'),
                   $tb_mailCount = $('#tb-mailCount');
-            // TODO: only call TBUtils.link once per string literal in this section
+            // TODO: only call TBCore.link once per string literal in this section
             if (count < 1) {
                 $mailCount.empty();
                 $mail.attr('class', 'nohavemail');
                 $mail.attr('title', 'no new mail!');
-                $mail.attr('href', TBUtils.link('/message/inbox/'));
-                $mailcount.attr('href', TBUtils.link(messageunreadurl));
+                $mail.attr('href', TBCore.link('/message/inbox/'));
+                $mailcount.attr('href', TBCore.link(messageunreadurl));
                 $tb_mail.toggleClass('nohavemail', true).toggleClass('havemail', false);
                 $tb_mail.attr('title', 'no new mail!');
-                $tb_mail.attr('href', TBUtils.link('/message/inbox/'));
-                $('#tb-mailCount').attr('href', TBUtils.link('/message/inbox/'));
+                $tb_mail.attr('href', TBCore.link('/message/inbox/'));
+                $('#tb-mailCount').attr('href', TBCore.link('/message/inbox/'));
             } else {
                 $mail.attr('class', 'havemail');
                 $mail.attr('title', 'new mail!');
-                $mail.attr('href', TBUtils.link(messageunreadurl));
-                $mailcount.attr('href', TBUtils.link(messageunreadurl));
+                $mail.attr('href', TBCore.link(messageunreadurl));
+                $mailcount.attr('href', TBCore.link(messageunreadurl));
                 $tb_mail.toggleClass('havemail', true).toggleClass('nohavemail', false);
                 $tb_mail.attr('title', 'new mail!');
-                $tb_mail.attr('href', TBUtils.link(messageunreadurl));
-                $tb_mailCount.attr('href', TBUtils.link(messageunreadurl));
+                $tb_mail.attr('href', TBCore.link(messageunreadurl));
+                $tb_mailCount.attr('href', TBCore.link(messageunreadurl));
             }
             $tb_mailCount.text(`[${count}]`);
 
@@ -318,7 +318,7 @@ function notifiermod () {
             self.log('updating all counters accross tabs');
             chrome.runtime.sendMessage({
                 action: 'tb-global',
-                globalEvent: TBUtils.events.TB_UPDATE_COUNTERS,
+                globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
                 payload: {
                     unreadMessageCount: self.setting('unreadMessageCount'),
                     modqueueCount: self.setting('modqueueCount'),
@@ -334,7 +334,7 @@ function notifiermod () {
             if (!activeNewMMcheck) {
                 activeNewMMcheck = true;
                 setTimeout(() => {
-                    TBUtils.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
+                    TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
                         const data = response.data;
                         const modmailFreshCount = data.notifications + data.archived + data.new + data.inprogress + data.mod;
                         self.setting('newModmailCount', modmailFreshCount);
@@ -353,7 +353,7 @@ function notifiermod () {
 
         // New Modmail actions.
         // Whenever something is clicked that potentially changes the modmail count
-        if (TBUtils.isNewModmail) {
+        if (TBCore.isNewModmail) {
             // Since this is a non ww domain counts will never be checked through the regular getMessages() function.
             // So we do a check here.
             newModMailCheck();
@@ -369,7 +369,7 @@ function notifiermod () {
             });
         }
 
-        window.addEventListener(TBUtils.events.TB_UPDATE_COUNTERS, event => {
+        window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
             self.log('updating counters from background');
             updateMessagesCount(event.detail.unreadMessageCount);
             updateModqueueCount(event.detail.modqueueCount);
@@ -385,7 +385,7 @@ function notifiermod () {
             const lastchecked = self.setting('lastChecked');
 
             // Update now.
-            now = TB.utils.getTime();
+            now = TBHelpers.getTime();
 
             // Update counters.
             unreadMessageCount = self.setting('unreadMessageCount');
@@ -422,21 +422,21 @@ function notifiermod () {
             // a silly function to get the title anyway. The getJSON is wrapped in a function to prevent if from running async outside the loop.
 
             function getcommentitle (unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
-                TBUtils.getJSON(unreadcontexturl).then(jsondata => {
+                TBApi.getJSON(unreadcontexturl).then(jsondata => {
                     TBStorage.purifyObject(jsondata);
                     const commenttitle = jsondata[0].data.children[0].data.title;
                     if (straightToInbox && messageunreadlink) {
-                        TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
+                        TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
                     } else if (straightToInbox) {
-                        TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
+                        TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
                     } else {
-                        TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
+                        TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
                     }
                 });
             }
 
             // getting unread messages
-            TBUtils.getJSON('/message/unread.json').then(json => {
+            TBApi.getJSON('/message/unread.json').then(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0; // TODO: what does `|| 0` do in this case? if children is an array, length will alwaus be a number, so `|| 0` does nothing
                 self.setting('unreadMessageCount', count);
@@ -499,10 +499,10 @@ function notifiermod () {
                         // $.log(messagecount);
                         // $.log(notificationbody);
                         if (messagecount === 1) {
-                            TBUtils.notification('One new message!', notificationbody, messageunreadurl);
+                            TBCore.notification('One new message!', notificationbody, messageunreadurl);
                             youveGotMail();
                         } else if (messagecount > 1) {
-                            TBUtils.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
+                            TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
                             youveGotMail();
                         }
                     } else {
@@ -518,7 +518,7 @@ function notifiermod () {
 
                             if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
                                 context = value.data.context;
-                                body_html = TBUtils.htmlDecode(value.data.body_html);
+                                body_html = TBHelpers.htmlDecode(value.data.body_html);
                                 author = value.data.author;
                                 subreddit = value.data.subreddit;
                                 commentid = value.data.name;
@@ -530,7 +530,7 @@ function notifiermod () {
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                             } else if ($.inArray(value.data.name, pushedunread) === -1) {
                                 author = value.data.author;
-                                body_html = TBUtils.htmlDecode(value.data.body_html);
+                                body_html = TBHelpers.htmlDecode(value.data.body_html);
                                 subject = value.data.subject;
                                 id = value.data.id;
 
@@ -540,7 +540,7 @@ function notifiermod () {
                                     author = value.data.subreddit;
                                 }
 
-                                TBUtils.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
+                                TBCore.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
                                 pushedunread.push(value.data.name);
                             }
                         });
@@ -559,13 +559,13 @@ function notifiermod () {
             //
             // wrapper around getJSON so it can be part of a loop
             function procesmqcomments (mqlinkid, mqreportauthor, mqidname) {
-                TBUtils.getJSON(mqlinkid).then(jsondata => {
+                TBApi.getJSON(mqlinkid).then(jsondata => {
                     TBStorage.purifyObject(jsondata);
                     let infopermalink = jsondata.data.children[0].data.permalink;
                     const infotitle = jsondata.data.children[0].data.title,
                           infosubreddit = jsondata.data.children[0].data.subreddit;
                     infopermalink += mqidname.substring(3);
-                    TBUtils.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
+                    TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
                 });
             }
 
@@ -577,7 +577,7 @@ function notifiermod () {
                 modQueueURL = `/r/${modSubreddits}/about/modqueue`;
             }
 
-            TBUtils.getJSON(`${modQueueURL}.json?limit=100`).then(json => {
+            TBApi.getJSON(`${modQueueURL}.json?limit=100`).then(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0;
                 updateModqueueCount(count);
@@ -638,9 +638,9 @@ function notifiermod () {
                         // $.log(queuecount);
                         // $.log(notificationbody);
                         if (queuecount === 1) {
-                            TBUtils.notification('One new modqueue item!', notificationbody, modQueueURL);
+                            TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
                         } else if (queuecount > 1) {
-                            TBUtils.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
+                            TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                         }
                     } else {
                         $.each(json.data.children, (i, value) => {
@@ -650,7 +650,7 @@ function notifiermod () {
                                       mqauthor = value.data.author,
                                       mqsubreddit = value.data.subreddit;
 
-                                TBUtils.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
+                                TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                                 pusheditems.push(value.data.name);
                             } else if ($.inArray(value.data.name, pusheditems) === -1) {
                                 const reportauthor = value.data.author,
@@ -683,7 +683,7 @@ function notifiermod () {
                     unModeratedURL = `/r/${unmoderatedSubreddits}/about/unmoderated`;
                 }
 
-                TBUtils.getJSON(`${unModeratedURL}.json?limit=100`).then(json => {
+                TBApi.getJSON(`${unModeratedURL}.json?limit=100`).then(json => {
                     TBStorage.purifyObject(json);
                     const count = json.data.children.length || 0;
 
@@ -715,9 +715,9 @@ function notifiermod () {
                             }
 
                             if (queuecount === 1) {
-                                TBUtils.notification('One new unmoderated item!', notificationbody, unModeratedURL);
+                                TBCore.notification('One new unmoderated item!', notificationbody, unModeratedURL);
                             } else {
-                                TBUtils.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
+                                TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                             }
                         } else {
                             $.each(json.data.children, (i, value) => {
@@ -727,7 +727,7 @@ function notifiermod () {
                                           uqauthor = value.data.author,
                                           uqsubreddit = value.data.subreddit;
 
-                                    TBUtils.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
+                                    TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
                                 }
                             });
                         }
@@ -757,7 +757,7 @@ function notifiermod () {
             //
             // New modmail
             //
-            TBUtils.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
+            TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
                 const data = response.data;
                 const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
                 self.setting('newModmailCount', modmailFreshCount);

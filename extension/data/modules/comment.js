@@ -104,11 +104,11 @@ function comments () {
             if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
                 const $things = $('.thing.comment:not(.tb-comments-checked)');
-                TBUtils.forEachChunkedDynamic($things, item => {
+                TBCore.forEachChunkedDynamic($things, item => {
                     const $thing = $(item);
                     $thing.addClass('tb-comments-checked');
 
-                    const thing = TBUtils.getThingInfo($thing, true);
+                    const thing = TBCore.getThingInfo($thing, true);
 
                     if (self.approveComments) {
                     // only for subreddits we mod
@@ -150,7 +150,7 @@ function comments () {
         }
 
         // Perform comment actions on pages where you are mod and which are not modmail.
-        if (TBUtils.isMod && !TBUtils.isModmail) {
+        if (TBCore.isMod && !TBCore.isModmail) {
             $body.on('click', '#tb-toggle-removed', () => {
                 const $comment_spam = $('.tb-comment-spam');
                 if ($comment_spam.is(':visible')) {
@@ -177,7 +177,7 @@ function comments () {
         let hidden = false;
         function addHideModButton () {
             // hide mod comments option.
-            if (TB.utils.isUserPage) {
+            if (TBCore.isUserPage) {
                 const $modActions = $('.moderator, [data-subreddit="spam"]');
                 if ($modActions.length > 0) {
                     self.log('found mod actions');
@@ -251,7 +251,7 @@ function comments () {
     self.init = function () {
         const $body = $('body');
 
-        if (TBUtils.isOldReddit) {
+        if (TBCore.isOldReddit) {
             self.initOldReddit();
         }
         // Do not open lightbox but go to full comment page.
@@ -273,8 +273,8 @@ function comments () {
             TB.listener.on('comment', e => {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
-                TBUtils.getModSubs(() => {
-                    if (TBUtils.modsSub(subreddit)) {
+                TBCore.getModSubs(() => {
+                    if (TBCore.modsSub(subreddit)) {
                         $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                         $target.closest('.Comment').find('p').highlight(highlighted);
                     }
@@ -284,7 +284,7 @@ function comments () {
             $body.on('click', '.expando-button', function () {
                 const $this = $(this);
                 const $thing = $this.closest('.thing');
-                const thingInfo = TBUtils.getThingInfo($thing, true);
+                const thingInfo = TBCore.getThingInfo($thing, true);
                 if (thingInfo.subreddit) {
                     setTimeout(() => {
                         $thing.find('.md').highlight(highlighted);
@@ -297,8 +297,8 @@ function comments () {
 
                 if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                     const subreddit = event.detail.subreddit;
-                    TBUtils.getModSubs(() => {
-                        if (TBUtils.modsSub(subreddit)) {
+                    TBCore.getModSubs(() => {
+                        if (TBCore.modsSub(subreddit)) {
                             $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
                         }
                     });
@@ -412,13 +412,13 @@ function comments () {
             const jsonurl = `${location.pathname}.json`;
             TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
-            const data = await TBUtils.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
+            const data = await TBApi.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
             TBStorage.purifyObject(data);
             // put the json through our deconstructor.
             data[1].isreply = false;
             parseComments(data[1]);
             // and get back a nice flat listing of ids
-            idListing = TBUtils.saneSortAs(idListing);
+            idListing = TBHelpers.saneSortAs(idListing);
             const commentOptions = {
                 parentLink: true,
                 contextLink: true,
@@ -428,7 +428,7 @@ function comments () {
             };
             let count = 0;
             // from each id in the idlisting we construct a new comment.
-            TBUtils.forEachChunkedDynamic(idListing, value => {
+            TBCore.forEachChunkedDynamic(idListing, value => {
                 count++;
                 const msg = `Building comment ${count}/${idListing.length}`;
                 TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
@@ -447,7 +447,7 @@ function comments () {
         });
         if (openContextInPopup) {
             // Add context button to the queue in old reddit
-            if (TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage || TBUtils.isSubCommentsPage)) {
+            if (TBCore.isOldReddit && (TBCore.isModpage || TBCore.isUserPage || TBCore.isSubCommentsPage)) {
                 TB.listener.on('comment', e => {
                     const $target = $(e.target);
                     const data = e.detail.data;
@@ -488,7 +488,7 @@ function comments () {
                 }
 
                 // Get the context
-                TBUtils.getJSON(contextUrl, {raw_json: 1}).then(data => {
+                TBApi.getJSON(contextUrl, {raw_json: 1}).then(data => {
                     TBStorage.purifyObject(data);
                     const commentOptions = {
                         parentLink: true,

@@ -9,31 +9,31 @@ function modmacros () {
               MACROS = 'TB-MACROS';
 
         function getConfig (sub, callback) {
-            if (TBUtils.noConfig.indexOf(sub) !== -1) {
-                self.log('TBUtils.noConfig.indexOf(sub) != -1');
+            if (TBCore.noConfig.indexOf(sub) !== -1) {
+                self.log('TBCore.noConfig.indexOf(sub) != -1');
                 callback(false);
             }
 
             // get our config.
-            if (TBUtils.configCache[sub] !== undefined) {
-                callback(checkConfig(TBUtils.configCache[sub]), TBUtils.configCache[sub].modMacros);
+            if (TBCore.configCache[sub] !== undefined) {
+                callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
             } else {
-                TBUtils.readFromWiki(sub, 'toolbox', true, resp => {
-                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                        self.log('!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN');
+                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
+                        self.log('!resp || resp === TBCore.WIKI_PAGE_UNKNOWN');
                         callback(false);
                     }
 
-                    if (resp === TBUtils.NO_WIKI_PAGE) {
-                        self.log('resp === TBUtils.NO_WIKI_PAGE');
-                        TBUtils.updateCache('noConfig', sub, false);
+                    if (resp === TBCore.NO_WIKI_PAGE) {
+                        self.log('resp === TBCore.NO_WIKI_PAGE');
+                        TBCore.updateCache('noConfig', sub, false);
                         callback(false);
                     }
                     TBStorage.purifyObject(resp);
 
                     // We likely have a good config, but maybe not domain tags.
-                    TBUtils.updateCache('configCache', resp, sub);
-                    callback(checkConfig(TBUtils.configCache[sub]), TBUtils.configCache[sub].modMacros);
+                    TBCore.updateCache('configCache', resp, sub);
+                    callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
                 });
             }
 
@@ -74,16 +74,16 @@ function modmacros () {
             });
         }
 
-        if (TBUtils.isOldReddit) {
-            TB.utils.getModSubs(() => {
-                if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) !== -1) {
+        if (TBCore.isOldReddit) {
+            TBCore.getModSubs(() => {
+                if (TBCore.post_site && $.inArray(TBCore.post_site, TBCore.mySubs) !== -1) {
                     self.log('getting config');
-                    getConfig(TB.utils.post_site, (success, config) => {
+                    getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {
                             const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
                             const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                                  macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TB.utils.post_site}"><option value=${MACROS}>macros</option></select>`;
+                                  macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TBCore.post_site}"><option value=${MACROS}>macros</option></select>`;
 
                             if ($tbUsertextButtons.length) {
                                 $tbUsertextButtons.append(macroButtonHtml);
@@ -91,7 +91,7 @@ function modmacros () {
                                 $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                             }
 
-                            populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
+                            populateSelect('.tb-top-macro-select', TBCore.post_site, config);
                         }
                     });
                 }
@@ -102,7 +102,7 @@ function modmacros () {
                 const $this = $(this);
                 if ($this.text() === 'reply') {
                     const $thing = $this.closest('.thing'),
-                          info = TB.utils.getThingInfo($thing, true);
+                          info = TBCore.getThingInfo($thing, true);
 
                     // This is because reddit clones the top-level reply box for all reply boxes.
                     // We need to remove it before adding the new one, because the new one works differently.
@@ -141,7 +141,7 @@ function modmacros () {
         // Add macro button in new modmail
         function addNewMMMacro () {
             const $thing = $body.find('.InfoBar'),
-                  info = TB.utils.getThingInfo($thing, true);
+                  info = TBCore.getThingInfo($thing, true);
 
             // Don't add macro button twice.
             if ($body.find('.tb-usertext-buttons').length) {
@@ -166,12 +166,12 @@ function modmacros () {
             });
         }
         setTimeout(() => {
-            if (TBUtils.isNewMMThread) {
+            if (TBCore.isNewMMThread) {
                 addNewMMMacro();
             }
         }, 1000);
 
-        if (!TBUtils.isNewModmail && !TBUtils.isOldReddit) {
+        if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
             $('body').on('click', 'button:contains("Reply")', function () {
                 const $this = $(this);
                 const $comment = $this.closest('.Comment');
@@ -179,8 +179,8 @@ function modmacros () {
                 const subreddit = commentDetails.data.subreddit.name;
                 const thingID = commentDetails.data.id;
 
-                TBUtils.getModSubs(() => {
-                    if (TBUtils.modsSub(subreddit)) {
+                TBCore.getModSubs(() => {
+                    if (TBCore.modsSub(subreddit)) {
                         getConfig(subreddit, (success, config) => {
                             // if we're a mod, add macros to top level reply button.
                             if (success && config.length > 0) {
@@ -204,8 +204,8 @@ function modmacros () {
             if (event.detail.pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.pageDetails.subreddit;
 
-                TBUtils.getModSubs(() => {
-                    if (TBUtils.modsSub(subreddit)) {
+                TBCore.getModSubs(() => {
+                    if (TBCore.modsSub(subreddit)) {
                         getConfig(subreddit, (success, config) => {
                             // if we're a mod, add macros to top level reply button.
                             if (success && config.length > 0) {
@@ -230,7 +230,7 @@ function modmacros () {
 
         // NER support.
         window.addEventListener('TBNewThings', () => {
-            if (TBUtils.isNewModmail) {
+            if (TBCore.isNewModmail) {
                 setTimeout(() => {
                     addNewMMMacro();
                 }, 1000);
@@ -262,11 +262,11 @@ function modmacros () {
             if (!$usertext.length) {
                 $usertext = dropdown.closest('div');
             }
-            if (TBUtils.isNewModmail) {
+            if (TBCore.isNewModmail) {
                 $usertext = $body.find('.ThreadViewerReplyForm');
             }
 
-            if (!TB.utils.isModmail && !TB.utils.isNewModmail) {
+            if (!TBCore.isModmail && !TBCore.isNewModmail) {
                 if (remove) {
                     actionList += `<br>- This ${kind} will be removed`;
                 }
@@ -300,7 +300,7 @@ function modmacros () {
                 actionList += '<br>- This user will be muted';
             }
 
-            if (TB.utils.isNewModmail) {
+            if (TBCore.isNewModmail) {
                 if (archivemodmail) {
                     actionList += '<br>- This modmail thread will be archived.';
                 }
@@ -311,7 +311,7 @@ function modmacros () {
             }
 
             // replace token.
-            comment = TB.utils.replaceTokens(info, comment);
+            comment = TBHelpers.replaceTokens(info, comment);
 
             const offset = $usertext.offset(),
                   offsetLeft = offset.left,
@@ -344,7 +344,7 @@ function modmacros () {
                     'display': 'block',
                 });
 
-            if (TBUtils.isNewModmail) {
+            if (TBCore.isNewModmail) {
                 $macroPopup.css('max-width', '100%');
             }
             $macroPopup.find('.macro-edit-area').css({
@@ -362,7 +362,7 @@ function modmacros () {
                     self.log(`  ${editedcomment}`);
 
                     // We split of new modmail from the rest of reddit because... well easier.
-                    if (TBUtils.isNewModmail) {
+                    if (TBCore.isNewModmail) {
                         // Since we are doing things on the page that need to finish we probably should make that clear.
                         TB.ui.longLoadSpinner(true);
 
@@ -376,7 +376,7 @@ function modmacros () {
                         self.log('Performing user actions');
 
                         if (ban) {
-                            TBUtils.friendUser(
+                            TBApi.friendUser(
                                 info.author, 'banned', info.subreddit,
                                 `Banned from: ${info.permalink}`,
                                 `For the following ${kind}: ${info.permalink}`
@@ -407,7 +407,7 @@ function modmacros () {
                             TB.ui.longLoadSpinner(false);
                         }, 1500);
                     } else {
-                        TBUtils.postComment(info.id, editedcomment, (successful, response) => {
+                        TBApi.postComment(info.id, editedcomment, (successful, response) => {
                             if (!successful) {
                                 TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
                             } else {
@@ -423,15 +423,15 @@ function modmacros () {
                                 const commentId = response.json.data.things[0].data.id;
 
                                 if (lockreply) {
-                                    TBUtils.lock(commentId, successful => {
+                                    TBApi.lock(commentId, successful => {
                                         if (!successful) {
                                             TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
                                         }
                                     });
                                 }
-                                if (distinguish && !TB.utils.isModmail) {
+                                if (distinguish && !TBCore.isModmail) {
                                     // Distinguish the new reply
-                                    TBUtils.distinguishThing(commentId, sticky && topLevel, successful => {
+                                    TBApi.distinguishThing(commentId, sticky && topLevel, successful => {
                                         if (!successful) {
                                             TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
                                         }
@@ -440,26 +440,26 @@ function modmacros () {
                             }
                         });
 
-                        if (!TB.utils.isModmail && !TB.utils.isNewModmail) {
+                        if (!TBCore.isModmail && !TBCore.isNewModmail) {
                             self.log('Performing non-modmail actions');
 
                             if (remove) {
-                                TB.utils.removeThing(info.id, false);
+                                TBApi.removeThing(info.id, false);
                             }
 
                             if (approve) {
-                                TB.utils.approveThing(info.id);
+                                TBApi.approveThing(info.id);
                             }
 
                             if (lockitem) {
-                                TB.utils.lock(info.id);
+                                TBApi.lock(info.id);
                             }
                         }
 
                         self.log('Performing user actions');
 
                         if (ban) {
-                            TBUtils.friendUser(
+                            TBApi.friendUser(
                                 info.author, 'banned', info.subreddit,
                                 `Banned from: ${info.permalink}`,
                                 `For the following ${kind}: ${info.permalink}`
@@ -468,7 +468,7 @@ function modmacros () {
 
                         if (mute) {
                             self.log(`  Muting "${info.author}" from /r/${info.subreddit} @ ${info.permalink}`);
-                            TBUtils.friendUser(
+                            TBApi.friendUser(
                                 info.author, 'muted', info.subreddit,
                                 `Muted from: ${info.permalink}`
                             );
@@ -504,9 +504,9 @@ function modmacros () {
             // If it's a top-level reply we need to find the post's info.
             if (topLevel) {
                 self.log('toplevel');
-                info = TB.utils.getThingInfo($('#siteTable').find('.thing:first'));
+                info = TBCore.getThingInfo($('#siteTable').find('.thing:first'));
             } else {
-                info = TB.utils.getThingInfo($this.closest('.thing'));
+                info = TBCore.getThingInfo($this.closest('.thing'));
             }
 
             self.log(info);
@@ -516,7 +516,7 @@ function modmacros () {
                     const macro = config[index];
 
                     if (thingID) {
-                        TBUtils.getApiThingInfo(thingID, sub, false, thinginfo => {
+                        TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
                             $this.attr('id', `macro-dropdown-${thinginfo.id}`);
                             editMacro($this, thinginfo, macro, topLevel);
                         });

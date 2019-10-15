@@ -1,7 +1,6 @@
 'use strict';
 function tbmodule () {
     window.TB = {
-        utils: TBCore,
         ui: TBui,
         storage: TBStorage,
         listener: TBListener,

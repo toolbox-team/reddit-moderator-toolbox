@@ -116,7 +116,6 @@ function createZip (browser) {
     });
 }
 
-
 async function doZips () {
     await createZip('firefox');
     await createZip('chrome');

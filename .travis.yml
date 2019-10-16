@@ -3,10 +3,10 @@ node_js: 10
 install:
   - npm install
 script:
-    - npm run docs
+  - npm run docs
 cache:
-    directories:
-        - node_modules
+  directories:
+    - node_modules
 deploy:
   provider: pages
   local_dir: docs

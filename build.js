@@ -1,5 +1,4 @@
 /* eslint-env node */
-const jsdoc2md = require('jsdoc-to-markdown');
 const fs = require('fs');
 const path = require('path');
 const argv = require('yargs').argv;
@@ -8,21 +7,9 @@ const archiver = require('archiver');
 //
 // Input arguments
 //
-const makeDocs = argv.docs;
 // `new_version` because `version` does not work.
 const version = argv.new_version;
 const versionName = argv.version_name;
-
-//
-// Documentation constants
-//
-const docInput = [
-    './extension/data/modules/*.js',
-    './extension/data/*.js',
-    './extension/data/background/*.js',
-];
-const docOutput = path.resolve(__dirname, 'code_jsdocs.md');
-const jsdocConfig = path.resolve(__dirname, 'jsdoc.json');
 
 //
 // Building constants
@@ -34,22 +21,6 @@ const buildOutputDir = path.resolve(__dirname, 'build');
 //
 // Build functions.
 //
-
-// Update the code documentation. For now just to a simple markdown file.
-function updateDocs () {
-    console.log('Rendering docs.');
-    jsdoc2md.render({
-        files: docInput,
-        configure: jsdocConfig,
-    }).then(output => {
-        fs.writeFileSync(docOutput, output, 'utf8', err => {
-            if (err) {
-                throw err;
-            }
-        });
-        console.log('Docs have been updated.\n');
-    });
-}
 
 // Update the manifest with new versions and versionnames.
 function updateManifest ({version, versionName, browser}) {
@@ -145,9 +116,6 @@ function createZip (browser) {
     });
 }
 
-if (makeDocs) {
-    updateDocs();
-}
 
 async function doZips () {
     await createZip('firefox');

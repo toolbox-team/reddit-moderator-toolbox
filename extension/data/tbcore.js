@@ -1392,7 +1392,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 const $sitetable = $(resp).find('#siteTable');
                 $sitetable.find('.nextprev').remove();
 
-                if ($sitetable) {
+                if ($sitetable.length) {
                     callback($sitetable);
                 } else {
                     callback(null);

@@ -3324,7 +3324,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         });
     }
 
-    function getUserDetails (tries) {
+    function getUserDetails (tries = 0) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
                 action: 'tb-request',
@@ -3389,7 +3389,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         let userDetails;
 
         try {
-            userDetails = await getUserDetails(0);
+            userDetails = await getUserDetails();
             if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
                 TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
             }

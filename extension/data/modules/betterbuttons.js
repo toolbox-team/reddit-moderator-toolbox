@@ -144,7 +144,7 @@ function betterbuttons () {
 
                 if (!$this.closest('.comment').hasClass('tb-sticky-processed') && !distinguished) {
                     $this.after(stickyHtml);
-                    !$this.closest('.comment').addClass('tb-sticky-processed');
+                    $this.closest('.comment').addClass('tb-sticky-processed');
                 }
             });
         }

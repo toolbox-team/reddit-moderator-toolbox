@@ -3324,7 +3324,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         });
     }
 
-    function getUserDetails () {
+    function getUserDetails (tries) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
                 action: 'tb-request',
@@ -3334,9 +3334,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (errorThrown) {
                     console.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
                     console.log(jqXHR);
-                    if (jqXHR.status === 504) {
+                    if (jqXHR.status === 504 && tries < 4) {
+                        tries++;
                         console.log('504 Timeout retrying request');
-                        getUserDetails(details => resolve(details));
+                        resolve(getUserDetails(tries));
                     } else {
                         return reject(errorThrown);
                     }
@@ -3388,7 +3389,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         let userDetails;
 
         try {
-            userDetails = await getUserDetails();
+            userDetails = await getUserDetails(0);
             if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
                 TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
             }

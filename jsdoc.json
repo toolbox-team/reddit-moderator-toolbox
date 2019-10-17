@@ -1,13 +1,14 @@
 {
-    "opts": {
-        "encoding": "utf8"
+    "source": {
+        "include": [
+            "extension/data/",
+            "extension/data/modules",
+            "extension/data/background"
+        ]
     },
-    "plugins": [
-        "plugins/markdown"
-    ],
-    "templates": {
-        "default": {
-            "includeDate": false
-        }
+    "opts": {
+        "encoding": "utf8",
+        "template": "node_modules/docdash",
+        "destination": "docs/"
     }
 }

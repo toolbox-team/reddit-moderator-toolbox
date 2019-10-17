@@ -115,7 +115,7 @@ function storagewrapper () {
 
         // methods.
         TBStorage.setCache = async function (module, setting, value) {
-            return await setCache(module, setting, value, true);
+            return await setCache(module, setting, value);
         };
 
         TBStorage.getCache = async function (module, setting, defaultVal) {
@@ -197,7 +197,7 @@ function storagewrapper () {
                 }
 
                 function undefindedOrTrue (setting) {
-                    if (!setting || setting === undefined) {
+                    if (!setting) {
                         return false;
                     }
                     if (setting.length > 0) {

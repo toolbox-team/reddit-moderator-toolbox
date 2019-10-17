@@ -167,7 +167,7 @@ function nukecomments () {
                     const missedLength = missedComments.length;
                     if (missedLength) {
                         $nukeDetails.text(`${missedLength}: not ${executionType === 'remove' ? 'removed' : 'locked'} because of API errors. Hit retry to attempt removing them again.`);
-                        $popup.find('.tb-retry-nuke').show;
+                        $popup.find('.tb-retry-nuke').show();
                     } else {
                         setTimeout(() => {
                             $popup.find('.close').click();

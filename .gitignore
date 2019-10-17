@@ -3,6 +3,7 @@
 /.settings
 /.vscode
 /project.json
+/docs
 *.zip
 *.xpi
 *.nex

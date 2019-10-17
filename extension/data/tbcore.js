@@ -1917,7 +1917,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         });
     }
 
-    function getUserDetails () {
+    function getUserDetails (tries = 0) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
                 action: 'tb-request',
@@ -1927,9 +1927,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (errorThrown) {
                     console.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
                     console.log(jqXHR);
-                    if (jqXHR.status === 504) {
+                    if (jqXHR.status === 504 && tries < 4) {
+                        tries++;
                         console.log('504 Timeout retrying request');
-                        getUserDetails(details => resolve(details));
+                        resolve(getUserDetails(tries));
                     } else {
                         return reject(errorThrown);
                     }

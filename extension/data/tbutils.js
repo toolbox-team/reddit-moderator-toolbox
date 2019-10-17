@@ -170,7 +170,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBUtils.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
-        TBUtils.releaseName = 'Harmonizing Hare';
+        TBUtils.releaseName = 'Spying Squirrel';
         TBUtils.configSchema = 1;
         TBUtils.configMinSchema = 1;
         TBUtils.configMaxSchema = 1;

@@ -55,7 +55,7 @@ function oldReddit () {
                             data: {
                                 author: info.author,
                                 id: info.id,
-                                isRemoved: info.ham,
+                                isRemoved: info.ham || info.spam,
                                 permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
                                 subreddit: {
                                     name: info.subreddit,
@@ -96,7 +96,7 @@ function oldReddit () {
                                 post: {
                                     id: info.postID,
                                 },
-                                isRemoved: info.ham,
+                                isRemoved: info.ham || info.spam,
                                 id: info.id,
                                 subreddit: {
                                     name: info.subreddit,

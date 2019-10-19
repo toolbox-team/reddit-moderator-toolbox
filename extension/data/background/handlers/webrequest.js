@@ -14,9 +14,9 @@ function getOAuthTokens (tries = 1) {
         // If we do get a rawcookie we first want to make sure it is still valid.
         let expired = false;
         if (rawCookie) {
-            const cookieExpiration = new Date(rawCookie.expirationDate * 1000).valueOf();
-            const timeNow = new Date().valueOf();
-            expired = timeNow > cookieExpiration ? true : false;
+            const cookieExpiration = rawCookie.expirationDate * 1000;
+            const timeNow = Date.now();
+            expired = timeNow > cookieExpiration;
             console.log('Found cookie expired:', expired);
         }
         // If no cookie is returned it is probably expired and we will need to generate a new one.

@@ -5,7 +5,7 @@
 'use strict';
 
 /**
- * @var {Map<string, function>} messageHandlers  A map storing handlers for the
+ * @var {Map<string, function>} messageHandlers A map storing handlers for the
  * various toolbox-defined message types
  */
 const messageHandlers = new Map();

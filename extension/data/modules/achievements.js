@@ -109,7 +109,7 @@ function achievements () {
                 }
             }
 
-            if (saves[saveIndex] > achievement.maxValue) {
+            if (achievement && saves[saveIndex] > achievement.maxValue) {
                 saves[saveIndex] = achievement.maxValue;
             }
             this.save();

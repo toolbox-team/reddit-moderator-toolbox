@@ -1380,7 +1380,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBCore.addToSiteTable = function (URL, callback) {
-            if (!URL || !callback) {
+            if (!callback) {
+                return;
+            }
+
+            if (!URL) {
                 callback(null);
             }
 

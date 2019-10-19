@@ -585,7 +585,7 @@
         }
 
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
-        if (feedbackKind !== undefined && feedbackKind !== undefined) {
+        if (feedbackText && feedbackKind) {
             // If there is still a previous feedback element on the page we remove it.
             $body.find('#tb-feedback-window').remove();
 

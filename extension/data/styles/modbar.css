@@ -168,7 +168,6 @@
 .mod-toolbox-rd #tb-my-subreddits {
     max-height: 65vh;
     width: 300px;
-    padding: 0;
     overflow: auto;
     /* font-size: 11px; */
     color: #696969;
@@ -365,7 +364,6 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     padding: 2px !important;
     white-space: pre-wrap;
     word-wrap: break-word;
-    background-color: white;
 }
 
 .mod-toolbox-rd span.tb-settings-display {
@@ -396,7 +394,7 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
 
 .mod-toolbox-rd .tb-window-tab.about h1#tb-random-about-quote {
     font-style: italic;
-    font-family: non-serif;
+    font-family: Serif;
     font-size: 25px;
     line-height: normal;
     margin: 10px 0;

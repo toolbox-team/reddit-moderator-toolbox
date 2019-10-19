@@ -829,7 +829,13 @@ function queuetools () {
                 let A, B;
                 const $sitetable = $('#siteTable');
                 const things = $('#siteTable .thing').sort((a, b) => {
-                    asc ? (A = a, B = b) : (A = b, B = a);
+                    if (asc) {
+                        A = a;
+                        B = b;
+                    } else {
+                        A = b;
+                        B = a;
+                    }
 
                     const $A = $(A),
                           $B = $(B);

@@ -31,7 +31,7 @@
     },
     "background": {
         "scripts": [
-            "data/libs/jquery-3.4.1.min.js",
+            "data/libs/jquery-3.4.1.js",
             "data/background/background.js"
         ],
         "persistent": true
@@ -54,7 +54,7 @@
             ],
             "js": [
                 "data/tbmigrate.js",
-                "data/libs/jquery-3.4.1.min.js",
+                "data/libs/jquery-3.4.1.js",
                 "data/libs/snuownd.js",
                 "data/libs/purify.js",
                 "data/libs/codemirror/codemirror.js",

@@ -170,7 +170,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBCore.shortVersion = shortVersion;
-        TBCore.releaseName = 'Harmonizing Hare';
+        TBCore.releaseName = 'Spying Squirrel';
         TBCore.configSchema = 1;
         TBCore.configMinSchema = 1;
         TBCore.configMaxSchema = 1;

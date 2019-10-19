@@ -82,7 +82,7 @@ function queueOverlay () {
                 listUrl = `/r/${subreddit}/about/${type}`;
                 $tbQueueUrl.val(subreddit);
             } else if (baseUrls[type].fmod) {
-                listUrl = `/f/mod/about/${type}/`;
+                listUrl = `/me/f/mod/about/${type}/`;
                 $tbQueueUrl.val('mod');
             } else {
                 listUrl = `/r/${baseUrls[type].subreddits}/about/${type}/`;
@@ -104,7 +104,13 @@ function queueOverlay () {
             $reloadListing.addClass('loading');
             TBui.longLoadSpinner(true);
             const multi = TBStorage.purify($tbQueueUrl.val());
-            $iframe.attr('src', `${TBCore.link(`/r/${multi}/about/${type}/`)}?embedded=true`);
+            let newUrl;
+            if (multi === 'mod' && baseUrls[type].fmod) {
+                newUrl = `/me/f/mod/about/${type}/`;
+            } else {
+                newUrl = `/r/${multi}/about/${type}/`;
+            }
+            $iframe.attr('src', `${TBCore.link(newUrl)}?embedded=true`);
         }
 
         /**

@@ -153,3 +153,8 @@ messageHandlers.set('tb-cache', request => {
 messageHandlers.set('tb-cache-force-timeout', () => {
     initCacheTimeout(true);
 });
+
+messageHandlers.set('tb-settings-update', request => {
+    TBsettingsObject = request.payload;
+    initCacheTimeout();
+});

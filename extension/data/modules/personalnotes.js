@@ -21,7 +21,7 @@ function personalnotes () {
     });
 
     self.init = function () {
-        if (TBUtils.isEmbedded) {
+        if (TBCore.isEmbedded) {
             return;
         }
         const notewiki = self.setting('noteWiki').toLowerCase(),
@@ -71,20 +71,20 @@ function personalnotes () {
             $editArea.val('loading stuff...').attr('disabled', true);
             $editArea.css('display', 'block');
 
-            TBUtils.readFromWiki(notewiki, `notes/${wikiPage}`, false, resp => {
-                if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+            TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false, resp => {
+                if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                     $editArea.val('error getting wiki data.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
                     return;
                 }
 
-                if (resp === TBUtils.NO_WIKI_PAGE) {
+                if (resp === TBCore.NO_WIKI_PAGE) {
                     $editArea.val('Not sure how you did this, but this is not an existing page.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
                     return;
                 }
 
-                resp = TBUtils.unescapeJSON(resp);
+                resp = TBHelpers.unescapeJSON(resp);
 
                 // Found it, show it.
                 $editArea.val(resp).attr('disabled', false);
@@ -98,7 +98,7 @@ function personalnotes () {
         function saveNoteWiki (page, subreddit, data, reason, newnote) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBUtils.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, (succ, err) => {
+            TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, (succ, err) => {
                 self.log(`save succ = ${succ}`);
                 if (!succ) {
                     self.log(err.responseText);
@@ -113,7 +113,7 @@ function personalnotes () {
                         if (!$body.find('#tb-personal-notes-ul').length) {
                             $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul>');
                         }
-                        const $noteItem = $(TBUtils.template(noteListTemplate, {name: page}));
+                        const $noteItem = $(TBHelpers.template(noteListTemplate, {name: page}));
                         $noteItem.toggleClass('tb-personal-notes-active', true);
                         $body.find('#tb-personal-notes-ul').append($noteItem);
 
@@ -134,10 +134,10 @@ function personalnotes () {
             if (!$this.hasClass('tb-notes-activated')) {
                 $this.addClass('tb-notes-activated');
                 // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-                TBUtils.getModSubs(() => {
+                TBCore.getModSubs(() => {
                     // We can't expect people to get the capitalizing right.
                     const mySubsLowerCase = [];
-                    $(TBUtils.mySubs).each(function () {
+                    $(TBCore.mySubs).each(function () {
                         mySubsLowerCase.push(this.toLowerCase());
                     });
 
@@ -177,7 +177,7 @@ function personalnotes () {
                     </tr></table>`;
 
                         // Lets get a list of notes!
-                        TBUtils.getJSON(`/r/${notewiki}/wiki/pages.json`)
+                        TBApi.getJSON(`/r/${notewiki}/wiki/pages.json`)
                             .then(json => {
                                 notesArray = [];
                                 let notesList;
@@ -194,7 +194,7 @@ function personalnotes () {
                                             value = value.replace('notes/', '');
                                             notecount++;
                                             notesArray.push(value);
-                                            noteListConstruction += TBUtils.template(noteListTemplate, {name: value});
+                                            noteListConstruction += TBHelpers.template(noteListTemplate, {name: value});
                                         }
                                     });
 
@@ -206,7 +206,7 @@ function personalnotes () {
                                     }
                                 }
 
-                                notesPopupContent = TBUtils.template(notesPopupContentTemplate, {
+                                notesPopupContent = TBHelpers.template(notesPopupContentTemplate, {
                                     notesList,
                                 });
                                 createPersonalNotesPopup(notesPopupContent);
@@ -243,11 +243,11 @@ function personalnotes () {
 
             const confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
-                TBUtils.post(`/r/${notewiki}/wiki/settings/`, {
+                TBApi.post(`/r/${notewiki}/wiki/settings/`, {
                     page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,
-                    uh: TBUtils.modhash,
+                    uh: TBCore.modhash,
                 })
 
                     .catch(() => {
@@ -262,7 +262,7 @@ function personalnotes () {
             let newNotename = $(this).siblings('#tb-new-personal-note').val();
 
             newNotename = newNotename.trim();
-            newNotename = TBUtils.title_to_url(newNotename);
+            newNotename = TBHelpers.title_to_url(newNotename);
 
             if (newNotename === '') {
                 TB.ui.textFeedback('You should try filling in an actual name...', TB.ui.FEEDBACK_NEGATIVE);

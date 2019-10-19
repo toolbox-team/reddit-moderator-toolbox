@@ -214,11 +214,11 @@ function modmatrix () {
         });
 
         // Unless we're on /r/mod or a /m/ulti, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
-        if (this.subredditName && this.subredditName !== 'mod' && !TBUtils.isModLogPage) {
+        if (this.subredditName && this.subredditName !== 'mod' && !TBCore.isModLogPage) {
             const subredditNames = this.subredditName.split('+');
 
             for (let i = 0; i < subredditNames.length; i++) {
-                TBUtils.getJSON(`/r/${subredditNames[i]}/about/moderators.json`).then(moderatorData => {
+                TBApi.getJSON(`/r/${subredditNames[i]}/about/moderators.json`).then(moderatorData => {
                     TBStorage.purifyObject(moderatorData);
                     for (let j = 0; j < moderatorData.data.children.length; j++) {
                         $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
@@ -386,7 +386,7 @@ function modmatrix () {
         }
         const row = $('<tr></tr>').addClass(`moderator-${moderator}`).addClass('mod-row');
 
-        row.append(`<td><a href="${TBUtils.link(`/user/${moderator}`)}" target="_blank" title="${moderator}">${moderator}</a></td>`);
+        row.append(`<td><a href="${TBCore.link(`/user/${moderator}`)}" target="_blank" title="${moderator}">${moderator}</a></td>`);
         for (const subredditAction of Object.keys(this.subredditActions)) {
             const td = $(`<td class="action-cell action-${subredditAction}"><a title="${this.subredditActions[subredditAction].title} actions by ${moderator}" target="_blank" class="action-number" href="${this.subredditUrl}about/log?type=${subredditAction}&mod=${moderator}">0</a></td>`);
             row.append(td);
@@ -425,7 +425,7 @@ function modmatrix () {
         if (this.dataCache[cacheKey] != null) {
             self.processData(this.dataCache[cacheKey], callback);
         } else {
-            TBUtils.getJSON(url, requestData).then(response => {
+            TBApi.getJSON(url, requestData).then(response => {
                 TBStorage.purifyObject(response);
                 self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
                 const data = response.data;
@@ -718,7 +718,7 @@ function modmatrix () {
     };
 
     self.init = function () {
-        if (!TBUtils.isModLogPage) {
+        if (!TBCore.isModLogPage) {
             return;
         }
 
@@ -738,7 +738,7 @@ function modmatrix () {
         function getComments (modlogUrl) {
             TB.ui.longLoadSpinner(true);
 
-            TBUtils.getJSON(modlogUrl, {
+            TBApi.getJSON(modlogUrl, {
                 raw_json: 1,
             }).then(result => {
                 TBStorage.purifyObject(result);

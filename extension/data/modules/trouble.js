@@ -66,11 +66,11 @@ function trouble () {
               $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start);
         let $sitetable;
 
-        if (!TBUtils.isMod) {
+        if (!TBCore.isMod) {
             return;
         }
 
-        if (!TBUtils.isCommentsPage) {
+        if (!TBCore.isCommentsPage) {
             return;
         }
 
@@ -161,7 +161,7 @@ function trouble () {
             let neg_thresh = neg_thresh_pref;
 
             // lower the threashold by one for user's comments
-            if (RegExp(`/${TBUtils.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
+            if (RegExp(`/${TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
                 --neg_thresh;
             }
 

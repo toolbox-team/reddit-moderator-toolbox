@@ -94,7 +94,7 @@ function nukecomments () {
                     display: 'block',
                 });
 
-            TBUtils.getJSON(fetchURL, {raw_json: 1}).then(data => {
+            TBApi.getJSON(fetchURL, {raw_json: 1}).then(data => {
                 TBStorage.purifyObject(data);
                 parseComments(data[1].data.children[0], postID, subreddit).then(() => {
                     TB.ui.longLoadSpinner(false);
@@ -141,20 +141,20 @@ function nukecomments () {
                 $nukeDetails.html('');
 
                 // Oldest comments first.
-                commentArray = TBUtils.saneSort(commentArray);
+                commentArray = TBHelpers.saneSort(commentArray);
                 const removalArrayLength = commentArray.length;
                 let removalCount = 0;
-                TBUtils.forEachChunkedRateLimit(commentArray, 20, comment => {
+                TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
                     removalCount++;
                     TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
                     if (executionType === 'remove') {
-                        TBUtils.removeThing(`t1_${comment}`, false, result => {
+                        TBApi.removeThing(`t1_${comment}`, false, result => {
                             if (!result) {
                                 missedComments.push(comment);
                             }
                         });
                     } else if (executionType === 'lock') {
-                        TBUtils.lock(`t1_${comment}`, result => {
+                        TBApi.lock(`t1_${comment}`, result => {
                             if (!result) {
                                 missedComments.push(comment);
                             }
@@ -231,7 +231,7 @@ function nukecomments () {
                 for (const id of commentIDs) {
                     const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                     // Lets get the comments.
-                    const data = await TBUtils.getJSON(fetchUrl, {raw_json: 1});
+                    const data = await TBApi.getJSON(fetchUrl, {raw_json: 1});
                     TBStorage.purifyObject(data);
                     await parseComments(data[1].data.children[0], postID, subreddit);
                 }
@@ -246,15 +246,15 @@ function nukecomments () {
 
         // Add nuke buttons where needed
         TB.listener.on('comment', e => {
-            const pageType = TBUtils.pageDetails.pageType;
+            const pageType = TBCore.pageDetails.pageType;
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const commentID = e.detail.data.id.substring(3);
             const postID = e.detail.data.post.id.substring(3);
 
-            TBUtils.getModSubs(() => {
+            TBCore.getModSubs(() => {
                 // We have to mod the subreddit to show the button
-                if (!TBUtils.modsSub(subreddit)) {
+                if (!TBCore.modsSub(subreddit)) {
                     return;
                 }
                 // We also have to be on a comments page or looking at a context popup
@@ -263,7 +263,7 @@ function nukecomments () {
                 }
 
                 const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
-                if (showNextToUser && TBUtils.isOldReddit) {
+                if (showNextToUser && TBCore.isOldReddit) {
                     const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container .tb-frontend-container');
                     $userContainter.append(NukeButtonHTML);
                 } else {

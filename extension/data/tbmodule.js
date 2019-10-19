@@ -1,7 +1,6 @@
 'use strict';
 function tbmodule () {
     window.TB = {
-        utils: TBUtils,
         ui: TBui,
         storage: TBStorage,
         listener: TBListener,
@@ -44,7 +43,7 @@ function tbmodule () {
                             continue;
                         }
 
-                        if (!TBUtils.isOldReddit && module.oldReddit) {
+                        if (!TBCore.isOldReddit && module.oldReddit) {
                             $.log(`Module not suitable for new reddit. Skipping ${module.name} module`, false, 'TBinit');
                             continue;
                         }
@@ -70,10 +69,10 @@ function tbmodule () {
             //
             // preload some generic variables
             //
-            const debugMode = TBUtils.debugMode,
-                  betaMode = TBUtils.betaMode,
-                  devMode = TBUtils.devMode,
-                  advancedMode = TBUtils.advancedMode,
+            const debugMode = TBCore.debugMode,
+                  betaMode = TBCore.betaMode,
+                  devMode = TBCore.devMode,
+                  advancedMode = TBCore.advancedMode,
 
                   settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
                   shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
@@ -82,7 +81,7 @@ function tbmodule () {
                   // last export stuff
                   lastExport = self.modules['Modbar'].setting('lastExport'),
                   showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
-                  lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
+                  lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport)),
                   lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
             let lastExportState = '';
@@ -106,7 +105,7 @@ function tbmodule () {
                     settingName: 'settingssub',
                     content: `
                         Backup/restore toolbox settings to a wiki page:<br>
-                        <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBUtils.htmlEncode(unescape(settingSub))}">
+                        <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBHelpers.htmlEncode(unescape(settingSub))}">
                         <input class="tb-settings-export tb-action-button" type="button" value="backup">
                         <input class="tb-settings-import tb-action-button" type="button" value="restore">
                         <b> Important:</b> This will reload the page without saving!
@@ -213,8 +212,8 @@ function tbmodule () {
                     help_page: 'about',
                     id: 'about',
                     content: `
-                <h1 id="tb-random-about-quote">"${TBUtils.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="${TBUtils.link('/r/toolbox')}" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>
+                <h1 id="tb-random-about-quote">"${TBCore.RandomQuote}"</h1>
+                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox v${TBCore.toolboxVersion}: "${TBCore.releaseName}"</a>
                     <h3> Open source </h3>
                     Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
                     <h3> Privacy </h3>
@@ -262,8 +261,8 @@ function tbmodule () {
                     <h3>Credits:</h3>
                     <a href="https://www.reddit.com/user/ShaneH7646">/u/ShaneH7646 for the snoo running gif</a><br>
                     <a href="https://material.io/tools/icons/" target="_blank">Material icons</a><br>
-                    <a href="${TBUtils.link('/user/DEADB33F')}" target="_blank">Modtools base code by DEADB33F</a><br>
-                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${TBUtils.link('/u/djimbob')}" target="_blank">/u/djimbob</a><br>
+                    <a href="${TBCore.link('/user/DEADB33F')}" target="_blank">Modtools base code by DEADB33F</a><br>
+                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${TBCore.link('/u/djimbob')}" target="_blank">/u/djimbob</a><br>
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>
@@ -274,7 +273,7 @@ function tbmodule () {
                     <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
                     <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>
-                    <p ${debugMode && !TB.utils.devModeLock ? ' ' : 'style="display:none;" '}>
+                    <p ${debugMode && !TBCore.devModeLock ? ' ' : 'style="display:none;" '}>
                         <label><input type="checkbox" id="devMode" ${devMode ? 'checked' : ''}> DEVMODE: DON'T EVER ENABLE THIS!</label>
                     </p>`,
                 },
@@ -293,7 +292,7 @@ function tbmodule () {
                 // overlay main class
                 'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
                 // optional, overriding single footer
-                `<input class="tb-save tb-action-button" type="button" value="save">${TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
+                `<input class="tb-save tb-action-button" type="button" value="save">${TBCore.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
             );
 
             // Add ordering attributes to the existing tabs so we can insert other special tabs around them
@@ -347,7 +346,7 @@ function tbmodule () {
                 let sub = $('input[name=settingssub]').val();
                 if (sub) {
                 // Just to be safe.
-                    sub = TB.utils.cleanSubredditName(sub);
+                    sub = TBHelpers.cleanSubredditName(sub);
 
                     // Save the sub, first.
                     TB.storage.setSetting('Utils', 'settingSub', sub);
@@ -366,7 +365,7 @@ function tbmodule () {
                 TB.storage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
 
                 if ($('#clearcache').prop('checked')) {
-                    TBUtils.clearCache();
+                    TBCore.clearCache();
                 }
 
                 $(settingsDialog).remove();
@@ -400,15 +399,15 @@ function tbmodule () {
                 }
 
                 // Just to be safe.
-                sub = TB.utils.cleanSubredditName(sub);
+                sub = TBHelpers.cleanSubredditName(sub);
 
                 // Save the sub, first.
                 TB.storage.setSetting('Utils', 'settingSub', sub);
 
                 if ($(e.target).hasClass('tb-settings-import')) {
-                    TBUtils.importSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
-                        TBUtils.clearCache();
+                    TBCore.importSettings(sub, () => {
+                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                        TBCore.clearCache();
                         TB.storage.verifiedSettingsSave(succ => {
                             if (succ) {
                                 TB.ui.textFeedback('Settings imported and verified', TB.ui.FEEDBACK_POSITIVE);
@@ -421,9 +420,9 @@ function tbmodule () {
                         });
                     });
                 } else {
-                    TBUtils.exportSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
-                        TBUtils.clearCache();
+                    TBCore.exportSettings(sub, () => {
+                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                        TBCore.clearCache();
                         window.location.reload();
                     });
                 }
@@ -534,7 +533,7 @@ function tbmodule () {
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting === 'enabled') {
                         moduleIsEnabled = module.setting(setting) ? true : false;
-                        if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) {
+                        if (options.hasOwnProperty('hidden') && options['hidden'] && !TBCore.devMode) {
                             continue;
                         }
                         const name = module.shortname.toLowerCase();
@@ -590,7 +589,7 @@ function tbmodule () {
 
                     // hide hidden settings, ofc
                     if (options.hasOwnProperty('hidden')
-                        && options['hidden'] && !TB.utils.devMode
+                        && options['hidden'] && !TBCore.devMode
                     ) {
                         continue;
                     }
@@ -598,7 +597,7 @@ function tbmodule () {
                     // hide advanced settings, but do it via CSS so it can be overridden.
                     let displaySetting = true;
                     if (options.hasOwnProperty('advanced')
-                        && options['advanced'] && !TB.utils.advancedMode
+                        && options['advanced'] && !TBCore.advancedMode
                     ) {
                         displaySetting = false;
                     }
@@ -622,7 +621,7 @@ function tbmodule () {
                         $setting.append(TB.ui.actionButton(title, options.class));
 
                         $body.on('click', `.${options.class}`, () => {
-                            TB.utils.sendEvent(event);
+                            TBCore.sendEvent(event);
                         });
 
                         break;
@@ -662,7 +661,7 @@ function tbmodule () {
                     case 'sublist':
                     {
                         $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TB.utils.mySubs, module.setting(setting)]));
+                        $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TBCore.mySubs, module.setting(setting)]));
                         break;
                     }
                     case 'map':
@@ -729,7 +728,7 @@ body {
                                 });
                             });
 
-                            TBUtils.catchEvent(TBUtils.events.TB_SYNTAX_SETTINGS, () => {
+                            TBCore.catchEvent(TBCore.events.TB_SYNTAX_SETTINGS, () => {
                                 setTimeout(() => {
                                     editorSettings.refresh();
                                 }, 5);
@@ -774,7 +773,7 @@ body {
                                     aDescr = '??????',
                                     aClass = '';
 
-                                if (module.manager.isUnlocked(saveIndex, index, save) || TB.utils.devMode) {
+                                if (module.manager.isUnlocked(saveIndex, index, save) || TBCore.devMode) {
                                     const a = module.manager.getAchievement(saveIndex, index);
                                     aTitle = a.title;
                                     aDescr = a.descr;
@@ -948,7 +947,7 @@ body {
                             value = $this.find('textarea').val();
                             break;
                         case 'subreddit':
-                            value = TB.utils.cleanSubredditName($this.find('input').val());
+                            value = TBHelpers.cleanSubredditName($this.find('input').val());
                             break;
                         case 'text':
                             value = $this.find('input').val();
@@ -1046,7 +1045,7 @@ body {
               startTimes = new Map();
 
         this.startProfile = function (key) {
-            if (!TB.utils.debugMode) {
+            if (!TBCore.debugMode) {
                 return;
             }
 
@@ -1062,7 +1061,7 @@ body {
         };
 
         this.endProfile = function (key) {
-            if (!TB.utils.debugMode) {
+            if (!TBCore.debugMode) {
                 return;
             }
 
@@ -1117,10 +1116,10 @@ body {
     };
 }
 
-window.addEventListener('TBUtilsLoaded', () => {
+window.addEventListener('TBCoreLoaded', () => {
     profileResults('moduleStart', performance.now());
 
-    $.log('TBModule has TBUtils', false, 'TBinit');
+    $.log('TBModule has TBCore', false, 'TBinit');
     tbmodule();
     profileResults('moduleLoaded', performance.now());
     const event = new CustomEvent('TBModuleLoaded');

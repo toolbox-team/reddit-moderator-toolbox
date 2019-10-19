@@ -55,7 +55,7 @@ function newmodmailpro () {
         }
     }
     // All stuff we want to do when we are on new modmail
-    if (TBUtils.isNewModmail) {
+    if (TBCore.isNewModmail) {
         // Add a class to body
         $body.addClass('tb-new-modmail');
 
@@ -100,7 +100,7 @@ function newmodmailpro () {
             });
         }
 
-        if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
+        if (lastReplyTypeCheck && TBCore.isNewMMThread) {
             $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {
                 // Get all mod replies and see if they are something we need to warn the user about.
                 const $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
@@ -138,7 +138,7 @@ function newmodmailpro () {
     }
 
     // Below all stuff we do when we are NOT on new modmail.
-    if (!TBUtils.isNewModmail) {
+    if (!TBCore.isNewModmail) {
         // ready some variables.
         const modmailLink = self.setting('modmaillink'),
               openMailTab = self.setting('openmailtab');

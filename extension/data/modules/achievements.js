@@ -12,7 +12,7 @@ function achievements () {
 
     self.register_setting('lastSeen', {
         type: 'number',
-        default: TBUtils.getTime(),
+        default: TBHelpers.getTime(),
         hidden: true,
     });
 
@@ -56,7 +56,7 @@ function achievements () {
                       maxValue = maxValues[i];
 
                 self.log('Registering Achievement');
-                if (TB.utils.devMode) {
+                if (TBCore.devMode) {
                     self.log(`  name=${title}`);
                 } // spoilers
                 self.log(`  maxValue=${maxValue}`);
@@ -105,7 +105,7 @@ function achievements () {
                     }
 
                     self.log(`${title} Unlocked!`);
-                    TBUtils.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.shortname}`);
+                    TBCore.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.shortname}`);
                 }
             }
 
@@ -200,7 +200,7 @@ function achievements () {
         // Random awesome
         self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", saveIndex => {
             const awesome = 7,
-                  chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
+                  chanceOfBeingAwesome = TBHelpers.getRandomNumber(10000);
 
             self.log(`You rolled a: ${chanceOfBeingAwesome}`);
             if (awesome === chanceOfBeingAwesome) {
@@ -212,9 +212,9 @@ function achievements () {
         self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', saveIndex => {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
-            const now = TBUtils.getTime(),
+            const now = TBHelpers.getTime(),
                   timeSince = now - lastSeen,
-                  daysSince = TBUtils.millisecondsToDays(timeSince);
+                  daysSince = TBHelpers.millisecondsToDays(timeSince);
             self.log(`daysSince: ${daysSince}`);
 
             if (daysSince >= 7) {
@@ -226,15 +226,15 @@ function achievements () {
         });
 
         // toolbox Loves You: Look at the about page
-        self.manager.register(`<a href="${TBUtils.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
-            TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, () => {
+        self.manager.register(`<a href="${TBCore.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
+            TBCore.catchEvent(TBCore.events.TB_ABOUT_PAGE, () => {
                 self.manager.unlock(saveIndex);
             });
         });
 
         // Beta testers
         self.manager.register('bug hunter', 'Beta testing toolbox', saveIndex => {
-            if (TB.utils.betaRelease) {
+            if (TBCore.betaRelease) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
@@ -243,9 +243,9 @@ function achievements () {
         self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", saveIndex => {
             $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
                 const $this = $(this);
-                const auth = TB.utils.getThingInfo($this).author;
+                const auth = TBCore.getThingInfo($this).author;
 
-                if (TB.utils.tbDevs.indexOf(auth) !== -1) {
+                if (TBCore.tbDevs.indexOf(auth) !== -1) {
                     self.manager.unlock(saveIndex, 1);
                 }
             // TODO: wait for 'yes' click.
@@ -266,35 +266,35 @@ function achievements () {
             });
 
             // If the API is used
-            TB.utils.catchEvent(TB.utils.events.TB_APPROVE_THING, () => {
+            TBCore.catchEvent(TBCore.events.TB_APPROVE_THING, () => {
                 self.manager.unlock(saveIndex, 1);
             });
         });
 
         // Mod mail
         self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=425GpjTSlS4" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], saveIndex => {
-            if (TB.utils.isModmail) {
+            if (TBCore.isModmail) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Empty queue
         self.manager.registerSeries(['kitteh get!', 'puppy power!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], saveIndex => {
-            if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
+            if (TBCore.isModpage && $body.find('p#noresults').length > 0) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Found flying Snoo
         self.manager.register('Cadbury Bunny', 'Found flying Snoo.', saveIndex => {
-            TB.utils.catchEvent(TB.utils.events.TB_FLY_SNOO, () => {
+            TBCore.catchEvent(TBCore.events.TB_FLY_SNOO, () => {
                 self.manager.unlock(saveIndex);
             });
         });
 
         // Killed Snoo
         self.manager.register('you bastard!', 'Killed Snoo.', saveIndex => {
-            TB.utils.catchEvent(TB.utils.events.TB_KILL_SNOO, () => {
+            TBCore.catchEvent(TBCore.events.TB_KILL_SNOO, () => {
                 self.manager.unlock(saveIndex);
             });
         });

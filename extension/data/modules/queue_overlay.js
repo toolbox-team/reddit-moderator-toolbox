@@ -63,7 +63,7 @@ function queueOverlay () {
             },
         };
 
-        if (TBUtils.isModpage && TBUtils.isEmbedded) {
+        if (TBCore.isModpage && TBCore.isEmbedded) {
             $('head link[href*="//www.redditstatic.com/embedded."]').remove();
             $body.addClass('tb-embedded-queues');
             $body.find('.drop-choices a.choice').attr('target', '_self');
@@ -110,7 +110,7 @@ function queueOverlay () {
             } else {
                 newUrl = `/r/${multi}/about/${type}/`;
             }
-            $iframe.attr('src', `${TBUtils.link(newUrl)}?embedded=true`);
+            $iframe.attr('src', `${TBCore.link(newUrl)}?embedded=true`);
         }
 
         /**
@@ -222,7 +222,7 @@ function queueOverlay () {
                 $reloadListing.addClass('loading');
                 TBui.longLoadSpinner(true);
 
-                $iframe.attr('src', `${TBUtils.link(listUrl)}?embedded=true`);
+                $iframe.attr('src', `${TBCore.link(listUrl)}?embedded=true`);
             }
 
             // No listing is open in the tab yet. Create needed elements and load iframe.
@@ -234,7 +234,7 @@ function queueOverlay () {
                 const $reloadListing = $tabContent.find('.tb-queue-reload');
                 const listUrl = figureOutMulti($tbQueueUrl, type, subreddit);
 
-                const $iframe = $(`<iframe src="${TBUtils.link(listUrl)}?embedded=true" class="tb-queue-iframe"></iframe>`).appendTo($tabContent);
+                const $iframe = $(`<iframe src="${TBCore.link(listUrl)}?embedded=true" class="tb-queue-iframe"></iframe>`).appendTo($tabContent);
 
                 // Handle reloading from the reload button.
                 $reloadListing.on('click', () => {
@@ -271,7 +271,7 @@ function queueOverlay () {
         });
 
         // eslint-disable-next-line no-extra-parens
-        if ((TBUtils.isOldReddit && overlayFromBarOld) || (!TBUtils.isOldReddit && overlayFromBarRedesign && !TBUtils.isNewModmail)) {
+        if ((TBCore.isOldReddit && overlayFromBarOld) || (!TBCore.isOldReddit && overlayFromBarRedesign && !TBCore.isNewModmail)) {
             $body.on('click', '#tb-modqueue, #tb-queueCount', event => {
                 if (event.ctrlKey || event.metaKey) {
                     return;

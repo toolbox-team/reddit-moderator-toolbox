@@ -3,7 +3,7 @@
 
 /**
  * Retrieves the user's OAuth tokens from cookies.
- * @param {number?} [tries=1] Number of tries to get the token (recursive)
+ * @param {number} [tries=1] Number of tries to get the token (recursive)
  * @returns {Promise<Object>} An object with properties `accessToken`,
  * `refreshToken`, `scope`, and some others
  */

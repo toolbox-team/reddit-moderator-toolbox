@@ -129,7 +129,7 @@ function modbar () {
 
         // Ready some details for new modmail linking
         const modmailLink = TB.storage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
-              openMailTab = TB.storage.getSetting('NewModMail', 'openmailtab', false),
+              openMailTab = TB.storage.getSetting('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
               newModmailBaseUrl = 'https://mod.reddit.com/mail/';
         let newModmailUrl;
 

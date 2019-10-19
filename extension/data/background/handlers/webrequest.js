@@ -1,4 +1,3 @@
-/* global messageHandlers */
 'use strict';
 
 /**

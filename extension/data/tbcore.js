@@ -1168,23 +1168,26 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // Chunking abused for ratelimiting
         TBCore.forEachChunkedRateLimit = function (array, chunkSize, call, complete, start) {
+            let length,
+                limit,
+                counter;
+            const delay = 100;
+
             if (array === null) {
                 finish();
-            }
-            if (chunkSize === null || chunkSize < 1) {
+            } else if (chunkSize === null || chunkSize < 1) {
                 finish();
-            }
-            if (call === null) {
+            } else if (call === null) {
                 finish();
-            }
+            } else {
+                length = array.length;
+                limit = length > chunkSize ? 20 : 0;
+                counter = 0;
 
-            const length = array.length,
-                  delay = 100,
-                  limit = length > chunkSize ? 20 : 0;
-            let counter = 0;
-
-            if (length < chunkSize) {
-                chunkSize = length;
+                if (length < chunkSize) {
+                    chunkSize = length;
+                }
+                getRatelimit();
             }
 
             function doChunk () {
@@ -1256,8 +1259,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     }
                 );
             }
-
-            getRatelimit();
 
             function finish () {
                 return complete ? complete() : false;

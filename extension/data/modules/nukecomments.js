@@ -213,7 +213,7 @@ function nukecomments () {
                     removalChain.push(object.data.id);
                 }
 
-                if (object.data.hasOwnProperty('replies') && object.data.replies && typeof object.data.replies === 'object') {
+                if (Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies && typeof object.data.replies === 'object') {
                     await parseComments(object.data.replies, postID, subreddit); // we need to go deeper.
                 }
                 break;

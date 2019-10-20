@@ -315,7 +315,7 @@ function storagewrapper () {
 
         function purifyObject (input) {
             for (const key in input) {
-                if (input.hasOwnProperty(key)) {
+                if (Object.prototype.hasOwnProperty.call(input, key)) {
                     const itemType = typeof input[key];
                     switch (itemType) {
                     case 'object':

@@ -65,7 +65,7 @@ function usernotes () {
         });
 
         function getUser (users, name) {
-            if (users.hasOwnProperty(name)) {
+            if (Object.prototype.hasOwnProperty.call(users, name)) {
                 return users[name];
             }
             return undefined;
@@ -91,14 +91,14 @@ function usernotes () {
 
         function queueProcessSub (subreddit, $target) {
             clearTimeout(queueTimeout);
-            if (listnerSubs.hasOwnProperty(subreddit)) {
+            if (Object.prototype.hasOwnProperty.call(listnerSubs, subreddit)) {
                 listnerSubs[subreddit] = listnerSubs[subreddit].add($target);
             } else {
                 listnerSubs[subreddit] = $target;
             }
             queueTimeout = setTimeout(() => {
                 for (const sub in listnerSubs) {
-                    if (listnerSubs.hasOwnProperty(sub)) {
+                    if (Object.prototype.hasOwnProperty.call(listnerSubs, sub)) {
                         processSub(sub, listnerSubs[sub]);
                     }
                 }

@@ -234,7 +234,7 @@ function domaintagger () {
             // Init color selector
             const colors = [];
             for (const c in TBui.standardColors) {
-                if (TBui.standardColors.hasOwnProperty(c)) {
+                if (Object.prototype.hasOwnProperty.call(TBui.standardColors, c)) {
                     colors.push(TBui.standardColors[c]);
                 }
             }

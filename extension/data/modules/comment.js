@@ -339,7 +339,7 @@ function comments () {
                     flatListing[object.data.id] = JSON.parse(JSON.stringify(object)); // deep copy, we don't want references
                     idListing.push(object.data.id);
 
-                    if (flatListing[object.data.id].data.hasOwnProperty('replies') && flatListing[object.data.id].data.replies && typeof flatListing[object.data.id].data.replies === 'object') {
+                    if (Object.prototype.hasOwnProperty.call(flatListing[object.data.id].data, 'replies') && flatListing[object.data.id].data.replies && typeof flatListing[object.data.id].data.replies === 'object') {
                         parseComments(object.data.replies); // we need to go deeper.
                     }
                     break;

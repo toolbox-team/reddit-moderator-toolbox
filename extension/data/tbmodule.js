@@ -533,7 +533,7 @@ function tbmodule () {
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting === 'enabled') {
                         moduleIsEnabled = module.setting(setting) ? true : false;
-                        if (options.hasOwnProperty('hidden') && options['hidden'] && !TBCore.devMode) {
+                        if (Object.prototype.hasOwnProperty.call(options, 'hidden') && options['hidden'] && !TBCore.devMode) {
                             continue;
                         }
                         const name = module.shortname.toLowerCase();
@@ -572,7 +572,7 @@ function tbmodule () {
                     }
 
                     // hide beta stuff unless beta mode enabled
-                    if (options.hasOwnProperty('betamode')
+                    if (Object.prototype.hasOwnProperty.call(options, 'betamode')
                         && !TB.storage.getSetting('Utils', 'betaMode', false)
                         && options['betamode']
                     ) {
@@ -580,7 +580,7 @@ function tbmodule () {
                     }
 
                     // hide dev stuff unless debug mode enabled
-                    if (options.hasOwnProperty('devmode')
+                    if (Object.prototype.hasOwnProperty.call(options, 'devmode')
                         && !TB.storage.getSetting('Utils', 'debugMode', false)
                         && options['devmode']
                     ) {
@@ -588,7 +588,7 @@ function tbmodule () {
                     }
 
                     // hide hidden settings, ofc
-                    if (options.hasOwnProperty('hidden')
+                    if (Object.prototype.hasOwnProperty.call(options, 'hidden')
                         && options['hidden'] && !TBCore.devMode
                     ) {
                         continue;
@@ -596,7 +596,7 @@ function tbmodule () {
 
                     // hide advanced settings, but do it via CSS so it can be overridden.
                     let displaySetting = true;
-                    if (options.hasOwnProperty('advanced')
+                    if (Object.prototype.hasOwnProperty.call(options, 'advanced')
                         && options['advanced'] && !TBCore.advancedMode
                     ) {
                         displaySetting = false;
@@ -1024,8 +1024,8 @@ body {
             } else {
             // getting
             // do we have a default?
-                if (this.settings.hasOwnProperty(name)
-                && this.settings[name].hasOwnProperty('default')
+                if (Object.prototype.hasOwnProperty.call(this.settings, name)
+                && Object.prototype.hasOwnProperty.call(this.settings[name], 'default')
                 ) {
                 // we know what the default should be
                     return TB.storage.getSetting(this.shortname, name, this.settings[name]['default']);

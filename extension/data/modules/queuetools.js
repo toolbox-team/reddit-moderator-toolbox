@@ -1190,7 +1190,7 @@ Action reason: ${value.data.details}
                     if (!fullName) {
                         return;
                     }
-                    if (!modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
+                    if (!Object.prototype.hasOwnProperty.call(modlogCache[subreddit].actions, fullName)) {
                         modlogCache[subreddit].actions[fullName] = {};
                     }
                     modlogCache[subreddit].actions[fullName][actionID] = value.data;
@@ -1209,7 +1209,7 @@ Action reason: ${value.data.details}
          * @returns {(false|object)} Either false or an object with actions
          */
         function checkForActions (subreddit, fullName) {
-            if (modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
+            if (Object.prototype.hasOwnProperty.call(modlogCache[subreddit].actions, fullName)) {
                 return modlogCache[subreddit].actions[fullName];
             } else {
                 return false;
@@ -1236,7 +1236,7 @@ Action reason: ${value.data.details}
             const dateNow = Date.now();
 
             // check if we even have data
-            if (!modlogCache.hasOwnProperty(subreddit)) {
+            if (!Object.prototype.hasOwnProperty.call(modlogCache, subreddit)) {
                 modlogCache[subreddit] = {
                     actions: {},
                     activeFetch: true,
@@ -1248,7 +1248,7 @@ Action reason: ${value.data.details}
                 });
 
             // If we do have data but it is being refreshed we wait and try again.
-            } else if (modlogCache.hasOwnProperty(subreddit) && modlogCache[subreddit].activeFetch) {
+            } else if (Object.prototype.hasOwnProperty.call(modlogCache, subreddit) && modlogCache[subreddit].activeFetch) {
                 setTimeout(() => {
                     getActions(subreddit, fullName, callback);
                 }, 100);

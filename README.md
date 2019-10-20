@@ -15,33 +15,6 @@ Documentation: https://www.reddit.com/r/toolbox/w/docs
 
 Thinking about contributing to toolbox? Awesome! [Here is some information to get you started!][contributing]
 
-## Development
-
-Building the extension is relatively easy through [Node.js][nodejs].
-
-```sh
-$ npm install          # Install dependencies
-$ npm run build        # Build extension .zip files for Chrome and Firefox
-$ npm run build-watch  # Automatically rebuild on file changes
-$ npm run docs         # Build documentation of internal interfaces
-```
-
-Once you've built a .zip for your platform, you're ready to test! Remember to reload the extension between builds.
-
-### Testing on Chrome
-**Note:** It is not needed to build for chrome as it can be run directly from source. 
-
-- Go to `chrome://extensions`.
-- Check the "Developer mode" checkbox if it's not already checked.
-- Click the "Load unpacked extension..." button.
-- Load the `extension` directory.
-
-### Testing on Firefox (Developer or Nightly Editions)
-
-- Go to `about:debugging`.
-- Click the "Load Temporary Add-on" button.
-- Load the `/build/toolbox_v<version>_firefox.zip` file.
-
 ## Third-party Application Support
 
 All shared features settings and data are stored in subreddit wikis through versioned JSON. Third party applications can use this data to hook into toolbox features like usernotes. Documentation for third-party application developers looking to integrate with toolbox can be found [on the wiki][third-party-docs].

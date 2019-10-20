@@ -51,19 +51,31 @@ You can find the documentation for all this on the following locations:
 - `extension/data/modules/`: Contains the individual toolbox modules. 
 - `extension/data/styles/`: Contains all CSS
 
+## Building
 
-## Loading toolbox into your browser
+Building is only needed if you want to test in Firefox as the build process makes some changes to `extension/manifest.json` for firefox. For Chrome and other chromium based browsers the building steps below are not needed.
 
-##### Chrome
+Building the extension is relatively easy through [Node.js][nodejs].
 
-1. Run `npm install && npm build`
-1. Go to `Menu->Tools->Extensions` and tick the `Developer Mode` checkbox.
-1. Click `Load unpacked extension` and select the `/build/toolbox_v<version>_chrome.zip`.
-1. Any time you make changes, you must go back to the `Menu->Tools->Extensions` page and `Reload` the extension.
+```sh
+$ npm install          # Install dependencies
+$ npm run build        # Build extension .zip files for Chrome and Firefox
+$ npm run build-watch  # Automatically rebuild on file changes
+$ npm run docs         # Build documentation of internal interfaces
+```
 
-##### Firefox
+Once you've built a .zip for your platform, you're ready to test! Remember to reload the extension between builds.
 
-1. Run `npm install && npm build`
-1. Go to `about:debugging` and tick the `Enable add-on debugging` checkbox.
-1. Click `Load Temporary Add-on` and select `/build/toolbox_v<version>_firefox.zip`.
-1. Any time you make changes, you must go back to the `about:debugging` page and `Reload` the extension.
+## Testing on Chrome
+**Note:** It is not needed to build for chrome as it can be run directly from source. 
+
+- Go to `chrome://extensions`.
+- Check the "Developer mode" checkbox if it's not already checked.
+- Click the "Load unpacked extension..." button.
+- Load the `extension` directory.
+
+## Testing on Firefox (Developer or Nightly Editions)
+
+- Go to `about:debugging`.
+- Click the "Load Temporary Add-on" button.
+- Load the `/build/toolbox_v<version>_firefox.zip` file.

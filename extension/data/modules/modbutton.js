@@ -210,7 +210,7 @@ function modbutton () {
                 $appendTo = $('body');
             }
 
-            let $popup = TB.ui.popup({
+            const $popup = TB.ui.popup({
                 title: `Mod Actions  - /u/${user}`,
                 tabs: [
                     {

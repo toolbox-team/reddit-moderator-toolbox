@@ -428,6 +428,11 @@ function modbutton () {
 
             // reset button name.
             $benbutton.text(self.buttonName);
+
+            // 'cancel' button clicked
+            $popup.on('click', '.close', () => {
+                $popup.remove();
+            });
         }
 
         // Mod button clicked
@@ -627,11 +632,6 @@ function modbutton () {
                     }
                 );
             }
-        });
-
-        // 'cancel' button clicked
-        $body.on('click', '.mod-popup .close', function () {
-            $(this).parents('.mod-popup').remove();
         });
 
         // send a message to the user.

@@ -844,8 +844,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 const idRegex = new RegExp('.*mod.reddit.com/mail/.*?/(.*?)$', 'i');
 
                 subreddit = $body.find('.ThreadTitle__community').text();
-                permalink = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${browserUrl.match(idRegex)[1]}`;
-                id = browserUrl.match(idRegex)[1];
+                const idMatch = browserUrl.match(idRegex);
+                // `idMatch` can be null when quickly navigating away (in which case `id` is inconsequential)
+                id = idMatch && idMatch[1] || 'racey';
+                permalink = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
 
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.
                 // Macros look at the sidebar and other modules don't need the body.

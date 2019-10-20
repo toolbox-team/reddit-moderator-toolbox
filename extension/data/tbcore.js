@@ -100,7 +100,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'I need to tell you something critically important! I am sure I will remember in a moment...',
                   "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK",
                   'Yeeting your feedback to the trashcan.',
-                  'Here listen to some music while you wait, https://youtu.be/dQw4w9WgXcQ',
+                  'Here listen to some music while you wait, https:\/\/youtu.be\/dQw4w9WgXcQ',
                   'Me? No. I\'m no docter but it looks like you have a broken toe.',
                   'Boo! Scared yeh didn\'t I?',
                   'If it looks like a goat, sounds like a goat, acts like a goat. Then its probably not a duck.',

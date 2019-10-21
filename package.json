@@ -33,6 +33,7 @@
         "ext": "js,css"
     },
     "jest": {
+        "testURL": "https://www.reddit.com",
         "setupFiles": [
             "jest-webextension-mock"
         ],

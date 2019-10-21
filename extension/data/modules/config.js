@@ -8,14 +8,14 @@ function tbconfig () {
     self.settings['enabled']['default'] = true;
 
     self.init = function () {
-        // if (!(TBUtils.post_site && TBUtils.isMod) && !TBUtils.isModpage) {
+        // if (!(TBCore.post_site && TBCore.isMod) && !TBCore.isModpage) {
         //    return;
         // }
 
         // Set up some base variables
         const $body = $('body'),
               unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
-        let config = TBUtils.config,
+        let config = TBCore.config,
             sortReasons = [],
             subreddit;
 
@@ -33,8 +33,8 @@ function tbconfig () {
                 Through this window you can edit the settings for /r/${subredditConfig}. </br>
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
                 </br>
-                </br><a href="${TBUtils.link(`/r/${subredditConfig}/w/pages/`)}" class="tb-general-button">All Wiki Pages</a>
-                </br><a ${(unManager ? 'style="display:none;"' : '')} href="${TBUtils.link(`/r/${subredditConfig}/about/usernotes/`)}" class="tb-general-button">Manage Usernotes</a>
+                </br><a href="${TBCore.link(`/r/${subredditConfig}/w/pages/`)}" class="tb-general-button">All Wiki Pages</a>
+                </br><a ${(unManager ? 'style="display:none;"' : '')} href="${TBCore.link(`/r/${subredditConfig}/about/usernotes/`)}" class="tb-general-button">Manage Usernotes</a>
 
                 </span>
                 `,
@@ -82,7 +82,7 @@ function tbconfig () {
                         tooltip: 'Edit the automoderator config.',
                         content: `
                 <p>
-                    <a href="${TBUtils.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
+                    <a href="${TBCore.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
                 </p>
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
@@ -96,12 +96,12 @@ function tbconfig () {
                         content: `
                 <table>
                     <td>Header:</td>
-                    <td><textarea class="tb-input edit-header" >${TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
+                    <td><textarea class="tb-input edit-header" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
                     </tr><tr>
                     <td>Footer:</td>
-                    <td><textarea class="tb-input edit-footer" >${TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
+                    <td><textarea class="tb-input edit-footer" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
                     </tr>
-                    <tr class="advanced-enable" ${(TB.utils.advancedMode ? '' : 'style="display:none;"')}>
+                    <tr class="advanced-enable" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>
                     <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>
                     </tr>
                     <tr class="rr-advanced">
@@ -272,8 +272,8 @@ function tbconfig () {
             if (event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
 
-                TBUtils.getModSubs(() => {
-                    if (TBUtils.modsSub(subreddit)) {
+                TBCore.getModSubs(() => {
+                    if (TBCore.modsSub(subreddit)) {
                         TBui.contextTrigger('tb-config-link', {
                             addTrigger: true,
                             triggerText: `/r/${subreddit} config`,
@@ -296,16 +296,16 @@ function tbconfig () {
         $body.on('click', '#tb-config-link, .tb-config-link', function () {
             subreddit = $(this).data('subreddit');
 
-            TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+            TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                     self.log('Failed: wiki config');
 
-                    config = TBUtils.config;
+                    config = TBCore.config;
                     showConfig(subreddit, config);
                 } else {
                     config = resp;
                     TBStorage.purifyObject(config);
-                    if (TBUtils.isConfigValidVersion(subreddit, config)) {
+                    if (TBCore.isConfigValidVersion(subreddit, config)) {
                         showConfig(subreddit, config);
                     }
                 }
@@ -327,7 +327,7 @@ function tbconfig () {
         function postToWiki (page, data, reason, isJSON, updateAM) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, (succ, err) => {
+            TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM, (succ, err) => {
                 self.log(`save succ = ${succ}`);
                 if (!succ) {
                     self.log(err);
@@ -347,7 +347,7 @@ function tbconfig () {
                         $body.find('.edit_automoderator_config .error').hide();
                     }
                     self.log('clearing cache');
-                    TBUtils.clearCache();
+                    TBCore.clearCache();
 
                     TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
                 }
@@ -453,14 +453,14 @@ function tbconfig () {
                     configEditor.save();
                 });
 
-                TBUtils.readFromWiki(subreddit, actualPage, false, resp => {
-                    if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                TBApi.readFromWiki(subreddit, actualPage, false, resp => {
+                    if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         $textArea.val('error getting wiki data.');
                         configEditor.setValue('error getting wiki data.');
                         return;
                     }
 
-                    if (resp === TBUtils.NO_WIKI_PAGE) {
+                    if (resp === TBCore.NO_WIKI_PAGE) {
                         $textArea.val('');
                         configEditor.setValue('');
                         $saveButton.show();
@@ -468,7 +468,7 @@ function tbconfig () {
                         return;
                     }
 
-                    resp = TBUtils.unescapeJSON(resp);
+                    resp = TBHelpers.unescapeJSON(resp);
 
                     if (page !== 'automoderator') {
                         resp = JSON.parse(resp);
@@ -486,13 +486,13 @@ function tbconfig () {
             // load the text area, but not the save button.
                 $textArea.val('getting wiki data...');
 
-                TBUtils.readFromWiki(subreddit, actualPage, false, resp => {
-                    if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                TBApi.readFromWiki(subreddit, actualPage, false, resp => {
+                    if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         $textArea.val('error getting wiki data.');
                         return;
                     }
 
-                    if (resp === TBUtils.NO_WIKI_PAGE) {
+                    if (resp === TBCore.NO_WIKI_PAGE) {
                         $textArea.val('');
                         $saveButton.show();
                         $saveButton.attr('page', page);
@@ -500,7 +500,7 @@ function tbconfig () {
                     }
 
                     resp = humanizeUsernotes(resp);
-                    resp = TBUtils.unescapeJSON(resp);
+                    resp = TBHelpers.unescapeJSON(resp);
 
                     // Found it, show it.
                     $textArea.val(resp);
@@ -517,7 +517,7 @@ function tbconfig () {
                 }
 
                 function decompressBlob (notes) {
-                    const decompressed = TBUtils.zlibInflate(notes.blob);
+                    const decompressed = TBHelpers.zlibInflate(notes.blob);
 
                     // Update notes with actual notes
                     delete notes.blob;
@@ -533,7 +533,7 @@ function tbconfig () {
                 colors = config.usernoteColors;
             } else {
             // Default types
-                colors = TBUtils.defaultUsernoteTypes;
+                colors = TBCore.defaultUsernoteTypes;
             }
 
             let $list;
@@ -543,7 +543,7 @@ function tbconfig () {
         }
 
         function appendUsernoteType (key, text, color, $list) {
-            const safeColor = TBUtils.colorNameToHex(color);
+            const safeColor = TBHelpers.colorNameToHex(color);
             if (!$list) {
                 $list = $('#tb-config-usernote-type-list');
             }
@@ -576,7 +576,7 @@ function tbconfig () {
                         if (label.length > 200) {
                             label = `${label.substring(0, 197)}...`;
                         }
-                        label = TBUtils.htmlEncode(label);
+                        label = TBHelpers.htmlEncode(label);
                     }
 
                     const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
@@ -603,12 +603,12 @@ function tbconfig () {
                     </td>
                 </tr>`;
 
-                    const removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
+                    const removalReasonTemplateHTML = TBHelpers.template(removalReasonTemplate, {
                         i,
                         subreddit,
                         'i++': i++,
                         label,
-                        'removalReasonText': TBUtils.escapeHTML(removalReasonText),
+                        'removalReasonText': TBHelpers.escapeHTML(removalReasonText),
                         removalReasonTitle,
                         removalReasonFlairText,
                         removalReasonFlairCSS,
@@ -635,7 +635,7 @@ function tbconfig () {
                         if (label.length > 200) {
                             label = `${label.substring(0, 197)}...`;
                         }
-                        label = TBUtils.htmlEncode(label);
+                        label = TBHelpers.htmlEncode(label);
                     }
 
                     const removalReasonTitle = reason.title || '';
@@ -669,7 +669,7 @@ function tbconfig () {
                         if (label.length > 200) {
                             label = `${label.substring(0, 197)}...`;
                         }
-                        label = TBUtils.htmlEncode(label);
+                        label = TBHelpers.htmlEncode(label);
                     }
                     const macro = config.modMacros[i];
                     const modMacroText = unescape(macro.text) || '';
@@ -713,7 +713,7 @@ function tbconfig () {
                     </td>
                 </tr>`;
 
-                    const modMacroTemplateHTML = TBUtils.template(modMacroTemplate, {
+                    const modMacroTemplateHTML = TBHelpers.template(modMacroTemplate, {
                         i,
                         subreddit,
                         label,
@@ -840,8 +840,8 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
-                        if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                        if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
                         }
@@ -992,8 +992,8 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
-                        if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                        if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
                         }
@@ -1067,11 +1067,11 @@ function tbconfig () {
                 if (label.length > 200) {
                     label = `${label.substring(0, 197)}...`;
                 }
-                label = TBUtils.htmlEncode(label);
+                label = TBHelpers.htmlEncode(label);
             }
 
             const $removalReasonLabel = $removalContent.find('.removal-reason-label');
-            $removalReasonLabel.html(TBStorage.purify(`<span><h3 class="removal-title">${TBUtils.htmlEncode(reasonTitle)}</h3>${label}</span>`));
+            $removalReasonLabel.html(TBStorage.purify(`<span><h3 class="removal-title">${TBHelpers.htmlEncode(reasonTitle)}</h3>${label}</span>`));
 
             $removalReasonLabel.show();
             $removalContent.find('.removal-reason-edit').hide();
@@ -1178,8 +1178,8 @@ function tbconfig () {
             $body.find('#tb-removal-sort-list').empty();
             // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
             if ($body.hasClass('toolbox-wiki-edited')) {
-                TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
-                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                         self.log('Failed: wiki config');
                         return;
                     }
@@ -1205,7 +1205,7 @@ function tbconfig () {
                 const downReasonKey = $prev.attr('data-reason');
 
                 // Move them in the array.
-                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(upReasonKey), parseInt(downReasonKey));
+                sortReasons = TBHelpers.moveArrayItem(sortReasons, parseInt(upReasonKey), parseInt(downReasonKey));
 
                 // Now move the elements on page.
                 $row.attr('data-reason', downReasonKey);
@@ -1228,7 +1228,7 @@ function tbconfig () {
                 const downReasonKey = $row.attr('data-reason');
 
                 // Move them in the array.
-                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(downReasonKey), parseInt(upReasonKey));
+                sortReasons = TBHelpers.moveArrayItem(sortReasons, parseInt(downReasonKey), parseInt(upReasonKey));
 
                 // Now move the elements on page.
                 $row.attr('data-reason', upReasonKey);
@@ -1261,8 +1261,8 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
-                        if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                        if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
                         }
@@ -1369,7 +1369,7 @@ function tbconfig () {
                 if (label.length > 200) {
                     label = `${label.substring(0, 197)}...`;
                 }
-                label = TBUtils.htmlEncode(label);
+                label = TBHelpers.htmlEncode(label);
             }
 
             const $modMacroLabel = $macroContent.find('.mod-macro-label');
@@ -1510,7 +1510,7 @@ function tbconfig () {
 
         // When the import button is clicked on the domain tags thing.
         $body.on('click', '.domain_tags .import', async () => {
-            const json = await TBUtils.getJSON(`/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`);
+            const json = await TBApi.getJSON(`/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`);
             TBStorage.purifyObject(json);
             if (json.data.content_md) {
                 const tags = JSON.parse(json.data.content_md).domainTags;

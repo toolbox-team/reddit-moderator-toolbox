@@ -33,7 +33,7 @@ function oldReddit () {
             // Element is visible, we only want to handle it once. Stop observing.
             observer.unobserve(entry.target);
             const $thing = $(entry.target);
-            const info = TBUtils.getThingInfo($thing);
+            const info = TBCore.getThingInfo($thing);
 
             requestAnimationFrame(() => {
                 const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
@@ -55,7 +55,7 @@ function oldReddit () {
                             data: {
                                 author: info.author,
                                 id: info.id,
-                                isRemoved: info.ham,
+                                isRemoved: info.ham || info.spam,
                                 permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
                                 subreddit: {
                                     name: info.subreddit,
@@ -96,7 +96,7 @@ function oldReddit () {
                                 post: {
                                     id: info.postID,
                                 },
-                                isRemoved: info.ham,
+                                isRemoved: info.ham || info.spam,
                                 id: info.id,
                                 subreddit: {
                                     name: info.subreddit,
@@ -149,7 +149,7 @@ function oldReddit () {
 
     self.init = function () {
         // Looks like we are on old reddit. Activate!
-        if (TBUtils.isOldReddit) {
+        if (TBCore.isOldReddit) {
             setTimeout(() => {
                 thingCrawler();
 

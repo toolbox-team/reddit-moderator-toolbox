@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build.js",
     "build-watch": "nodemon --exec npm run build",
-    "docs": "node build.js --docs"
+    "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "homepage": "http://www.reddit.com/r/toolbox",
   "repository": {
@@ -17,12 +18,10 @@
   "devDependencies": {
     "archiver": "^3.1.1",
     "docdash": "^1.1.1",
-    "jsdoc-to-markdown": "^5.0.0",
+    "eslint": "^5.16.0",
+    "jsdoc": "^3.6.3",
     "nodemon": "^1.19.1",
     "yargs": "^13.3.0"
-  },
-  "dependencies": {
-    "eslint": "^5.16.0"
   },
   "nodemonConfig": {
     "watch": "extension",

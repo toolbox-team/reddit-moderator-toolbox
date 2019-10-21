@@ -1,11 +1,49 @@
 .mod-toolbox-rd .tb-queue-overlay .tb-window-wrapper {
     max-width: 1750px;
+    margin-bottom: auto;
+    top: 0;
 }
 
-.mod-toolbox-rd iframe.tb-queue-iframe {
+.mod-toolbox-rd .tb-queue-overlay .tb-queue-options {
+    margin-bottom: 3px;
+}
+
+.mod-toolbox-rd .tb-queue-overlay input.tb-input.tb-queue-url {
+    width: calc(100% - 40px);
+}
+
+.mod-toolbox-rd .tb-queue-overlay .tb-icons.tb-queue-reload {
+    cursor: pointer;
+    background: rgb(199, 214, 230);
+    border-radius: 10px;
+    vertical-align: middle;
+}
+
+.mod-toolbox-rd .tb-queue-overlay .tb-queue-reload:hover {
+    color:rgb(199, 214, 230);
+    background-color: rgb(51, 102, 153);
+}
+
+.mod-toolbox-rd .tb-queue-overlay .tb-queue-reload.loading {
+  animation-name: reload-spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes reload-spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+.mod-toolbox-rd .tb-queue-overlay iframe.tb-queue-iframe {
     box-sizing: border-box;
     width: 100%;
-    height: calc(100vh - 275px);
+    height: calc(100vh - 203px);
     border: 0;
 }
 
@@ -29,6 +67,11 @@
 
 .embedded-page.moderator .side {
     display: none;
+}
+
+/* Make sure RES floater isn't floating in the way of queuetools bar */
+.embedded-page.moderator .res-floater-visibleAfterScroll {
+    top: 50px !important;
 }
 
 /* spam spam delicious spam */

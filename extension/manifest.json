@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "5.1.0",
-    "version_name": "5.1.0: \"Harmonizing Hare\"",
+    "version": "5.2.1",
+    "version_name": "5.2.1: \"Spying Squirrel\"",
     "incognito": "split",
     "applications": {
         "gecko": {
@@ -32,7 +32,7 @@
     "background": {
         "scripts": [
             "data/libs/browser-polyfill-0.5.0.js",
-            "data/libs/jquery-3.4.1.min.js",
+            "data/libs/jquery-3.4.1.js",
             "data/background/background.js",
             "data/background/handlers/webrequest.js",
             "data/background/handlers/reload.js",
@@ -60,7 +60,7 @@
             ],
             "js": [
                 "data/tbmigrate.js",
-                "data/libs/jquery-3.4.1.min.js",
+                "data/libs/jquery-3.4.1.js",
                 "data/libs/snuownd.js",
                 "data/libs/purify.js",
                 "data/libs/codemirror/codemirror.js",
@@ -132,7 +132,9 @@
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
                 "data/tbui.js",
-                "data/tbutils.js",
+                "data/tbhelpers.js",
+                "data/tbapi.js",
+                "data/tbcore.js",
                 "data/tblistener.js",
                 "data/tbmodule.js",
                 "data/modules/devtools.js",

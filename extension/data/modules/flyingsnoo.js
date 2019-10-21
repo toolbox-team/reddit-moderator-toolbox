@@ -11,7 +11,7 @@ function flyingsnoo () {
     self.settings['enabled']['hidden'] = true; // it's an easter egg.
 
     self.init = function () {
-        if (TBUtils.isNewModmail) {
+        if (TBCore.isNewModmail) {
             return;
         }
         const $footerblock = $('body').find('#tb-footer-block');
@@ -27,7 +27,7 @@ function flyingsnoo () {
                   height = 145;
 
             // unlock achievement
-            TB.utils.sendEvent(TB.utils.events.TB_FLY_SNOO);
+            TBCore.sendEvent(TBCore.events.TB_FLY_SNOO);
 
             const floater = $('<div></div>').css({
                 height: `${height}px`,
@@ -83,7 +83,7 @@ function flyingsnoo () {
                     floater.css('background', `url(${chrome.runtime.getURL('data/images/snoo_splat.png')})`);
 
                     // unlock achievement
-                    TB.utils.sendEvent(TB.utils.events.TB_KILL_SNOO);
+                    TBCore.sendEvent(TBCore.events.TB_KILL_SNOO);
                 } else {
                     requestAnimationFrame(killSnoo);
                 }

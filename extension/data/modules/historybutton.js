@@ -80,7 +80,7 @@ function historybutton () {
             // - the onlyShowInHover preference is set,
             // - we're not on old reddit (since the preference doesn't work there), and
             // - we didn't make the thing the author is on (since the hovercard doesn't show up on constructed things).
-            if (onlyshowInhover && !TBUtils.isOldReddit && !$target.closest('.tb-thing').length) {
+            if (onlyshowInhover && !TBCore.isOldReddit && !$target.closest('.tb-thing').length) {
                 return;
             }
             const author = e.detail.data.author,
@@ -119,12 +119,12 @@ function historybutton () {
     self.init = function () {
         self.log('init');
         const $body = $('body');
-        TBUtils.modSubCheck(modSubCheck => {
+        TBCore.modSubCheck(modSubCheck => {
             self.log(`mscheck: ${modSubCheck}`);
             if (modSubCheck) {
                 self.log('passed');
 
-                if (TBUtils.isNewModmail) {
+                if (TBCore.isNewModmail) {
                     setTimeout(() => {
                         self.attachToModmail();
                     }, 750);
@@ -173,7 +173,7 @@ function historybutton () {
 
                           popupContent = `
                             <div>
-                                <a href="${TBUtils.link(`/user/${author}`)}" target="_blank">${author}</a>
+                                <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
                                 <span class="karma" />
                                 <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
                                 <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
@@ -332,10 +332,10 @@ function historybutton () {
     self.showAuthorInformation = async function (author) {
         const $contentBox = self.fetched[author].popup;
 
-        const d = await TBUtils.getJSON(`/user/${author}/about.json`);
+        const d = await TBApi.getJSON(`/user/${author}/about.json`);
         TBStorage.purifyObject(d);
         const joinedDate = new Date(d.data.created_utc * 1000),
-              redditorTime = TBUtils.niceDateDiff(joinedDate);
+              redditorTime = TBHelpers.niceDateDiff(joinedDate);
 
         requestAnimationFrame(() => {
             $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
@@ -421,7 +421,7 @@ function historybutton () {
 
         TB.ui.longLoadNonPersistent(true);
 
-        TBUtils.getJSON(`/user/${author}/submitted.json`, {
+        TBApi.getJSON(`/user/${author}/submitted.json`, {
             after,
             sort: 'new',
             limit: 100,
@@ -545,10 +545,10 @@ function historybutton () {
                     cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
 
-                let url = TBUtils.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off&sort=new&feature=legacy_search`);
+                let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off&sort=new&feature=legacy_search`);
                 // If the domain is a self post, change the URL
                 if (match) {
-                    url = TBUtils.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on&sort=new&feature=legacy_search`);
+                    url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on&sort=new&feature=legacy_search`);
                 }
 
                 // Append domain to the table
@@ -592,7 +592,7 @@ function historybutton () {
             user.subredditList.forEach((subreddit, index) => {
                 const subredditCount = user.subreddits.submissions[subreddit].count,
                       subredditKarma = user.subreddits.submissions[subreddit].karma,
-                      url = TBUtils.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`),
+                      url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`),
                       percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 let cssClass = '';
@@ -734,7 +734,7 @@ function historybutton () {
         $contentBox.find('.tb-history-comment-stats').show();
         $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
-        TBUtils.getJSON(`/user/${author}/comments.json`, {
+        TBApi.getJSON(`/user/${author}/comments.json`, {
             after,
             sort: 'new',
             limit: 100,
@@ -814,7 +814,7 @@ function historybutton () {
         const link = `https://www.reddit.com/user/${author}`,
               title = `Overview for ${author}`;
 
-        TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, (successful, submission) => {
+        TBApi.postLink(link, title, self.SPAM_REPORT_SUB, (successful, submission) => {
             if (!successful) {
                 $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${submission[0][1]}</span>`);
             // $rtsLink.hide();
@@ -823,7 +823,7 @@ function historybutton () {
                     $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
                     // $rtsLink.hide();
                     if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                        rtsNativeLink.href = TBUtils.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
+                        rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
                     }
                     return;
                 }
@@ -836,7 +836,7 @@ function historybutton () {
                     return;
                 }
 
-                TBUtils.postComment(submission.json.data.name, commentBody, (successful, comment) => {
+                TBApi.postComment(submission.json.data.name, commentBody, (successful, comment) => {
                     if (!successful) {
                         $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${comment[0][1]}</span>`);
                     // $rtsLink.hide();

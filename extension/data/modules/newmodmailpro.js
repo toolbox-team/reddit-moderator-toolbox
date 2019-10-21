@@ -1,3 +1,4 @@
+'use strict';
 function newmodmailpro () {
     const self = new TB.Module('New Mod Mail Pro');
     self.shortname = 'NewModMail';
@@ -37,17 +38,42 @@ function newmodmailpro () {
         title: 'Add button next to search that opens a help popup explaining all search options.',
     });
 
+    self.register_setting('noReplyAsSelf', {
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
+    });
+
     const $body = $('body');
 
+    function switchAwayFromReplyAsSelf () {
+        const current = $('.ThreadViewerReplyForm__replyOptions .FancySelect__valueText').text();
+        if (current === 'Reply as myself') {
+            $body.find('.FancySelect__value').click();
+            $body.find('.FancySelect__option:contains("Reply as the subreddit")').click();
+        }
+    }
     // All stuff we want to do when we are on new modmail
-    if (TBUtils.isNewModmail) {
+    if (TBCore.isNewModmail) {
         // Add a class to body
         $body.addClass('tb-new-modmail');
 
         // ready some variables.
         const modMailNightmode = self.setting('modmailnightmode'),
               lastReplyTypeCheck = self.setting('lastreplytypecheck'),
-              searchhelp = self.setting('searchhelp');
+              searchhelp = self.setting('searchhelp'),
+              noReplyAsSelf = self.setting('noReplyAsSelf');
+
+        if (noReplyAsSelf) {
+            switchAwayFromReplyAsSelf();
+            window.addEventListener('TBNewThings', () => {
+                switchAwayFromReplyAsSelf();
+                setTimeout(() => {
+                    switchAwayFromReplyAsSelf();
+                }, 1000);
+            });
+        }
 
         if (searchhelp) {
             const $header = $body.find('.Header');
@@ -74,7 +100,7 @@ function newmodmailpro () {
             });
         }
 
-        if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
+        if (lastReplyTypeCheck && TBCore.isNewMMThread) {
             $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {
                 // Get all mod replies and see if they are something we need to warn the user about.
                 const $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
@@ -112,7 +138,7 @@ function newmodmailpro () {
     }
 
     // Below all stuff we do when we are NOT on new modmail.
-    if (!TBUtils.isNewModmail) {
+    if (!TBCore.isNewModmail) {
         // ready some variables.
         const modmailLink = self.setting('modmaillink'),
               openMailTab = self.setting('openmailtab');

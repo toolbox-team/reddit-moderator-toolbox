@@ -699,7 +699,7 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
 .mod-toolbox-rd .tb-debug-console {
     width: 100%;
     height: 220px;
-    font: normal small CONSOLAS, COURIER,"COURIER NEW";
+    font: normal small CONSOLAS, COURIER,"COURIER NEW", Monospace;
     -webkit-appearance: textarea;
     background-color: white;
     border: 1px solid;
@@ -777,7 +777,6 @@ body.mod-toolbox-rd .tb-bracket-button {
     text-transform: none;
     font-stretch: normal;
     font-style: normal;
-    font-weight: normal;
     letter-spacing: normal;
     text-decoration: none;
     outline: none;
@@ -1046,7 +1045,6 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
 .mod-toolbox-rd .tb-comment .tb-comment-body .md p {
     border: none;
     padding: 0;
-    line-height: inherit;
     margin-bottom: 5px;
     font-size: 13px;
     line-height: 1.32;
@@ -1352,7 +1350,7 @@ body.mod-toolbox-rd .tb-action-button {
     padding: 2px 6px 3px 6px !important;
     font-family: verdana,arial,helvetica,sans-serif !important;
     font-size: 12px !important;
-    line-height: 12px !important;;
+    line-height: 12px !important;
     text-shadow: none !important;
     text-decoration: none !important;
     text-align: left !important;
@@ -1462,7 +1460,7 @@ body.mod-toolbox-rd .tb-action-button:hover {
 
 /* link colors (for those themes that change all the link colors */
 body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
-body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter),
+body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
 body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons) {
     color: #369;
 }

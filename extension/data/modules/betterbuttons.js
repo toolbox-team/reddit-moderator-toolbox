@@ -62,7 +62,7 @@ function betterbuttons () {
     let newThingRunning = false;
 
     self.initModSave = function initModSave () {
-        if (TB.utils.isModmail) {
+        if (TBCore.isModmail) {
             return;
         }
         self.log('Adding mod save buttons');
@@ -144,7 +144,7 @@ function betterbuttons () {
 
                 if (!$this.closest('.comment').hasClass('tb-sticky-processed') && !distinguished) {
                     $this.after(stickyHtml);
-                    !$this.closest('.comment').addClass('tb-sticky-processed');
+                    $this.closest('.comment').addClass('tb-sticky-processed');
                 }
             });
         }
@@ -322,11 +322,11 @@ function betterbuttons () {
     self.initAddRemoveButtons = function initRemoveButtons () {
     // only need to iterate if at least one of the options is enabled
         const $things = $('.thing.link:not(.tb-removebuttons-checked)');
-        TBUtils.forEachChunkedDynamic($things, item => {
+        TBCore.forEachChunkedDynamic($things, item => {
             const $thing = $(item);
             $thing.addClass('tb-removebuttons-checked');
 
-            const thing = TBUtils.getThingInfo(item, true);
+            const thing = TBCore.getThingInfo(item, true);
 
             if (self.setting('spamRemoved')) {
             // only for subreddits we mod
@@ -357,7 +357,7 @@ function betterbuttons () {
     };
 
     self.initStickyButtons = function initStickyButtons () {
-        if (!TBUtils.isMod) {
+        if (!TBCore.isMod) {
             return;
         }
         const $things = $('.listing-page .content .thing.link');
@@ -390,7 +390,7 @@ function betterbuttons () {
                   attr = $button.attr('data-tb-stickied');
             if (typeof attr !== typeof undefined && attr !== false) {
                 const id = $button.parents('.thing').attr('data-fullname');
-                TBUtils.unstickyThread(id).then(() => {
+                TBApi.unstickyThread(id).then(() => {
                     $button.siblings('.success').show();
                 }).catch(() => {
                     $button.siblings('.error').show();
@@ -408,7 +408,7 @@ function betterbuttons () {
                   $thing = $button.parents('.thing'),
                   id = $thing.attr('data-fullname');
             const position = $button.attr('data-sticky-spot');
-            TBUtils.stickyThread(id, true, position).then(() => {
+            TBApi.stickyThread(id, true, position).then(() => {
                 $button.parent().siblings('.success').show();
             }).catch(() => {
                 $button.parent().siblings('.error').show();
@@ -419,16 +419,16 @@ function betterbuttons () {
     };
 
     self.initCommentLock = function () {
-        if (TBUtils.isModmail) {
+        if (TBCore.isModmail) {
             return;
         }
-        if (!TB.utils.isMod) {
+        if (!TBCore.isMod) {
             return;
         }
 
         function commentLockRun () {
             const $comments = $('div.comment:not(.tb-lock-button)');
-            TBUtils.forEachChunkedDynamic($comments, processComment);
+            TBCore.forEachChunkedDynamic($comments, processComment);
         }
 
         function processComment (comment) {
@@ -450,13 +450,13 @@ function betterbuttons () {
             const $lockButton = $(event.target);
 
             const action = $lockButton.attr('tb-action');
-            const info = TB.utils.getThingInfo(this, true);
+            const info = TBCore.getThingInfo(this, true);
             const data = {
                 id: info.id,
             };
 
             try {
-                await TBUtils.apiOauthPOST(`/api/${action}`, data);
+                await TBApi.apiOauthPOST(`/api/${action}`, data);
                 let newAction;
                 if (action === 'lock') {
                     newAction = 'unlock';

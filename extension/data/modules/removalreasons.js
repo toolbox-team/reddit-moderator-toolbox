@@ -56,7 +56,7 @@ function removalreasons () {
 
     self.init = function () {
     // Check if removal reasons are runnable
-        if (TBUtils.isModmail) {
+        if (TBCore.isModmail) {
             self.log('Disabled because modmail');
             return;
         }
@@ -94,7 +94,7 @@ function removalreasons () {
         // Remote stuff retrieval
         function getRemovalReasons (subreddit, callback) {
             // Nothing to do if no toolbox config
-            if (TBUtils.noConfig.indexOf(subreddit) !== -1) {
+            if (TBCore.noConfig.indexOf(subreddit) !== -1) {
                 callback(false);
                 return;
             }
@@ -103,8 +103,8 @@ function removalreasons () {
             let reasons = '';
 
             // See if we have the reasons in the cache.
-            if (TBUtils.configCache[subreddit] !== undefined) {
-                reasons = TBUtils.configCache[subreddit].removalReasons;
+            if (TBCore.configCache[subreddit] !== undefined) {
+                reasons = TBCore.configCache[subreddit].removalReasons;
 
                 // If we need to get them from another sub, recurse.
                 if (reasons && reasons.getfrom) {
@@ -125,8 +125,8 @@ function removalreasons () {
             }
 
             // OK, they are not cached.  Try the wiki.
-            TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
+            TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || !resp.removalReasons) {
                     self.log('failed: wiki config');
                     callback(false);
                     return;
@@ -135,7 +135,7 @@ function removalreasons () {
                 TBStorage.purifyObject(resp);
 
                 // We have a valid config, cache it.
-                TBUtils.updateCache('configCache', resp, subreddit);
+                TBCore.updateCache('configCache', resp, subreddit);
 
                 reasons = resp.removalReasons;
 
@@ -154,7 +154,7 @@ function removalreasons () {
                 }
 
                 self.log('failed: all');
-                TBUtils.updateCache('noConfig', subreddit, false);
+                TBCore.updateCache('noConfig', subreddit, false);
                 callback(false);
             });
         }
@@ -162,14 +162,14 @@ function removalreasons () {
         // UI components
         // UI event handling
         TB.listener.on('post', e => {
-            if (e.detail.data.isRemoved && TBUtils.pageDetails.pageType !== 'queueListing') {
+            if (e.detail.data.isRemoved && TBCore.pageDetails.pageType !== 'queueListing') {
                 const $target = $(e.target);
                 $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
             }
         });
         if (commentReasons) {
             TB.listener.on('comment', e => {
-                if (e.detail.data.isRemoved && TBUtils.pageDetails.pageType !== 'queueListing') {
+                if (e.detail.data.isRemoved && TBCore.pageDetails.pageType !== 'queueListing') {
                     const $target = $(e.target);
                     $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
                 }
@@ -182,7 +182,7 @@ function removalreasons () {
             let thingID,
                 thingSubreddit;
 
-            if (TBUtils.isOldReddit) {
+            if (TBCore.isOldReddit) {
                 const $yes = $button.find('.yes')[0],
                       $thing = $button.closest('.thing');
 
@@ -208,7 +208,7 @@ function removalreasons () {
                 }
             }
 
-            TBUtils.getApiThingInfo(thingID, thingSubreddit, false, info => {
+            TBCore.getApiThingInfo(thingID, thingSubreddit, false, info => {
                 // Get link/comment attributes
                 const data = {
                     subreddit: info.subreddit,
@@ -279,25 +279,25 @@ function removalreasons () {
                         }
 
                         // Get PM subject line
-                        data.subject = TBUtils.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
+                        data.subject = TBHelpers.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
 
                         // Add additional data that is found in the wiki JSON.
                         // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-                        data.logReason = TBUtils.htmlEncode(response.logreason) || '';
-                        data.header = response.header ? TBUtils.htmlEncode(unescape(response.header)) : '';
-                        data.footer = response.footer ? TBUtils.htmlEncode(unescape(response.footer)) : '';
-                        data.logSub = TBUtils.htmlEncode(response.logsub) || '';
-                        data.logTitle = TBUtils.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
-                        data.banTitle = TBUtils.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
+                        data.logReason = TBHelpers.htmlEncode(response.logreason) || '';
+                        data.header = response.header ? TBHelpers.htmlEncode(unescape(response.header)) : '';
+                        data.footer = response.footer ? TBHelpers.htmlEncode(unescape(response.footer)) : '';
+                        data.logSub = TBHelpers.htmlEncode(response.logsub) || '';
+                        data.logTitle = TBHelpers.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
+                        data.banTitle = TBHelpers.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
 
                         // Loop through the reasons... unescaping each.
                         data.reasons = [];
                         $(response.reasons).each(function () {
                             data.reasons.push({
                                 text: unescape(this.text),
-                                title: TBUtils.htmlEncode(this.title),
-                                flairText: TBUtils.htmlEncode(this.flairText),
-                                flairCSS: TBUtils.htmlEncode(this.flairCSS),
+                                title: TBHelpers.htmlEncode(this.title),
+                                flairText: TBHelpers.htmlEncode(this.flairText),
+                                flairCSS: TBHelpers.htmlEncode(this.flairCSS),
                             });
                         });
 
@@ -356,7 +356,7 @@ function removalreasons () {
                     <div class="reason-popup-content">
                     <div class="reason-popup-header">Removal reasons for /r/${data.subreddit}:</div>
                     <div class="reason-popup-innercontent">
-                    <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBUtils.htmlEncode(data.title)}</a></p>
+                    <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBHelpers.htmlEncode(data.title)}</a></p>
                     <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
                         <p>
                             <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
@@ -550,7 +550,7 @@ function removalreasons () {
                   status = popup.find('.status'),
                   attrs = popup.find('attrs');
 
-            TBUtils.approveThing(attrs.attr('fullname'), successful => {
+            TBApi.approveThing(attrs.attr('fullname'), successful => {
                 if (successful) {
                     removePopup(popup);
                 } else {
@@ -570,8 +570,8 @@ function removalreasons () {
                   checked = popup.find('.reason-check:checked'),
                   status = popup.find('.status'),
                   attrs = popup.find('attrs'),
-                  header = TBUtils.htmlDecode(attrs.attr('header')),
-                  footer = TBUtils.htmlDecode(attrs.attr('footer')),
+                  header = TBHelpers.htmlDecode(attrs.attr('header')),
+                  footer = TBHelpers.htmlDecode(attrs.attr('footer')),
                   logReason = popup.find('#log-reason-input').val(),
                   data = {
                       subreddit: '',
@@ -677,12 +677,12 @@ function removalreasons () {
                 data[i] = attrs.attr(i);
             }
 
-            reason = TBUtils.replaceTokens(data, reason);
-            subject = TBUtils.replaceTokens(data, subject);
-            logTitle = TBUtils.replaceTokens(data, logTitle);
+            reason = TBHelpers.replaceTokens(data, reason);
+            subject = TBHelpers.replaceTokens(data, subject);
+            logTitle = TBHelpers.replaceTokens(data, logTitle);
 
             // At this point make extra sure the item actually does get removed
-            TBUtils.removeThing(data.fullname, false);
+            TBApi.removeThing(data.fullname, false);
 
             // // Clean up reason
             reason = reason.trim();
@@ -691,7 +691,7 @@ function removalreasons () {
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
             if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
-                TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, successful => {
+                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS, successful => {
                     if (!successful) {
                         status.text(FLAIR_ERROR);
                     }
@@ -713,11 +713,11 @@ function removalreasons () {
                 }
 
                 // Submit log post
-                TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logTitle), data.logSub, (successful, response) => {
+                TBApi.postLink(data.url || data.link, TBHelpers.removeQuotes(logTitle), data.logSub, (successful, response) => {
                     if (successful) {
                         const logThingId = response.json.data.name,
                               loglinkToken = response.json.data.url;
-                        TBUtils.approveThing(logThingId);
+                        TBApi.approveThing(logThingId);
 
                         if (noneSelected === 'none') {
                             removePopup(popup);
@@ -762,14 +762,14 @@ function removalreasons () {
                 // Reply to submission/comment
                 if (notifyByReply) {
                     self.log('Sending removal message by comment reply.');
-                    TBUtils.postComment(data.fullname, reason, (successful, response) => {
+                    TBApi.postComment(data.fullname, reason, (successful, response) => {
                         if (successful) {
                         // Check if reddit actually returned an error
                             if (response.json.errors.length > 0) {
                                 status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                             } else {
                             // Distinguish the new reply, stickying if necessary
-                                TBUtils.distinguishThing(response.json.data.things[0].data.id, notifySticky, successful => {
+                                TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky, successful => {
                                     if (successful) {
                                         if (notifyByPM) {
                                             sendPM();
@@ -784,7 +784,7 @@ function removalreasons () {
                                 // Also lock the thread if requested
                                 if (actionLockThread) {
                                     self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBUtils.lockThread(data.fullname, successful => {
+                                    TBApi.lock(data.fullname, successful => {
                                         if (successful) {
                                             removePopup(popup);
                                         } else {
@@ -795,7 +795,7 @@ function removalreasons () {
                                 if (actionLockComment) {
                                     const commentId = response.json.data.things[0].data.id;
                                     self.log(`Fullname of reply: ${commentId}`);
-                                    TBUtils.lockThread(commentId, successful => {
+                                    TBApi.lock(commentId, successful => {
                                         if (successful) {
                                             removePopup(popup);
                                         } else {
@@ -818,7 +818,7 @@ function removalreasons () {
 
                     if (notifyAsSub) {
                         self.log(`Sending removal message by PM as ${data.subreddit}`);
-                        TBUtils.sendMessage(data.author, subject, text, data.subreddit, successful => {
+                        TBApi.sendMessage(data.author, subject, text, data.subreddit, successful => {
                             if (successful) {
                                 removePopup(popup);
                             } else {
@@ -827,7 +827,7 @@ function removalreasons () {
                         });
                     } else {
                         self.log('Sending removal message by PM as current user');
-                        TBUtils.sendPM(data.author, subject, text, successful => {
+                        TBApi.sendPM(data.author, subject, text, successful => {
                             if (successful) {
                                 removePopup(popup);
                             } else {

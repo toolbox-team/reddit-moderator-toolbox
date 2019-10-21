@@ -16,5 +16,5 @@ messageHandlers.set('tb-global', async (request, sender) => {
     }
 
     // Also send to the background page
-    handleMessage(request, sender);
+    handleMessage(message, sender);
 });

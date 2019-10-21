@@ -135,10 +135,6 @@ function storagewrapper () {
             purifyObject(input);
         };
 
-        TBStorage.setSetting = function (module, setting, value, syncSetting = true) {
-            return setSetting(module, setting, value, syncSetting);
-        };
-
         TBStorage.getAnonymizedSettingsObject = function (callback) {
             if (!callback) {
                 return;

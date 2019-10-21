@@ -31,8 +31,14 @@
     },
     "background": {
         "scripts": [
+            "data/libs/browser-polyfill-0.5.0.js",
             "data/libs/jquery-3.4.1.js",
-            "data/background/background.js"
+            "data/background/background.js",
+            "data/background/handlers/webrequest.js",
+            "data/background/handlers/reload.js",
+            "data/background/handlers/cache.js",
+            "data/background/handlers/globalmessage.js",
+            "data/background/handlers/notifications.js"
         ],
         "persistent": true
     },

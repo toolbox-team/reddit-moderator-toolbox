@@ -19,6 +19,7 @@
         "CodeMirror": true,
         "redditapi": true,
         "chrome": true,
+        "browser": true,
         "safari": true,
         "SnuOwnd": true,
         "pako": true,
@@ -251,6 +252,7 @@
                 "conditionalAssign": false
             }
         ],
+        "no-return-await": "error",
         "prefer-arrow-callback": "error",
         "prefer-rest-params": "error",
         "prefer-numeric-literals": "error",

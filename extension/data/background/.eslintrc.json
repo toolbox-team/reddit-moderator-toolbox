@@ -1,0 +1,6 @@
+{
+	"globals": {
+		"messageHandlers": true,
+		"handleMessage": true
+	}
+}

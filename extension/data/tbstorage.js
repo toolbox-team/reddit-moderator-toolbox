@@ -101,39 +101,19 @@ function storagewrapper () {
             });
         });
 
-        // methods.
+        // public methods.
+        TBStorage.setSetting = setSetting;
+        TBStorage.getSetting = getSetting;
 
-        // SyncSetting is responsible for saving the setting from the local object to extension storage.
-        // As such it should ALMOST ALWAYS be left default. You only use false if you are 100% sure all settings will be stored later.
-        TBStorage.setSetting = function (module, setting, value, syncSetting = true) {
-            return setSetting(module, setting, value, syncSetting);
-        };
+        TBStorage.setCache = setCache;
 
-        TBStorage.getSetting = function (module, setting, defaultVal) {
-            return getSetting(module, setting, defaultVal);
-        };
+        TBStorage.getCache = getCache;
 
-        // methods.
-        TBStorage.setCache = async function (module, setting, value) {
-            return await setCache(module, setting, value);
-        };
+        TBStorage.unloading = saveSettingsToBrowser;
 
-        TBStorage.getCache = async function (module, setting, defaultVal) {
-            const cacheValue = await getCache(module, setting, defaultVal);
-            return cacheValue;
-        };
+        TBStorage.purify = purify;
 
-        TBStorage.unloading = function () {
-            saveSettingsToBrowser();
-        };
-
-        TBStorage.purify = function (input) {
-            return purify(input);
-        };
-
-        TBStorage.purifyObject = function (input) {
-            purifyObject(input);
-        };
+        TBStorage.purifyObject = purifyObject;
 
         TBStorage.getAnonymizedSettingsObject = function (callback) {
             if (!callback) {
@@ -249,6 +229,7 @@ function storagewrapper () {
             });
         };
 
+        // private methods.
         function SendInit () {
             // Check if we are logged in and if we want to activate on old reddit as well.
             let loggedinRedesign = false,

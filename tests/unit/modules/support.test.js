@@ -1,5 +1,5 @@
 'use strict';
-require('../support');
+require('../../../extension/data/modules/support');
 
 describe('support.js', () => {
     it('calls TB.Module', () => {

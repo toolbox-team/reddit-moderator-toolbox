@@ -80,15 +80,6 @@ function makeRequest (options) {
 }
 
 messageHandlers.set('tb-request', async request => {
-    // TODO: this is a misuse of JSDoc but at least it highlights in VS Code
-    /**
-	 * For this action, `request` should have the following properties:
-	 * @param {string} method The HTTP method to use for the request
-	 * @param {string} url The full URL to request
-	 * @param {any} data Arbitrary data passed to the AJAX `data` option
-	 * @param {boolean?} sendOAuthToken If true, the `Authorization` header
-	 * will be set with the OAuth access token for the logged-in user
-	 */
     const {method, endpoint, data, oauth} = request;
     if (!endpoint.startsWith('/')) {
         // Old code used to send a full URL to these methods, so this check

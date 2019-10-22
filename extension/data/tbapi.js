@@ -110,7 +110,7 @@
             '/r/toolbox/wiki/ratelimit.json',
             (status, jqxhr) => {
                 const ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
-                        ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
+                      ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
                 logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
                 if (typeof callback !== 'undefined') {
@@ -480,7 +480,7 @@
             api_type: 'json',
         })
             .then(response => {
-                if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
                     logger.log(`Failed to post comment to on ${parent}`);
                     logger.log(response.json.fails);
                     if (typeof callback !== 'undefined') {
@@ -515,7 +515,7 @@
             api_type: 'json',
         })
             .then(response => {
-                if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
                     logger.log(`Failed to post link to /r/${subreddit}`);
                     logger.log(response.json.errors);
                     if (typeof callback !== 'undefined') {
@@ -548,7 +548,7 @@
             api_type: 'json',
         })
             .then(response => {
-                if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
                     logger.log(`Failed to send link to /u/${user}`);
                     logger.log(response.json.errors);
                     if (typeof callback !== 'undefined') {

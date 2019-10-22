@@ -174,7 +174,7 @@ function betterbuttons () {
 
             // User initiated click, this is the distinguish toggle on a top level comment
 
-            if (e.hasOwnProperty('originalEvent')) {
+            if (Object.prototype.hasOwnProperty.call(e, 'originalEvent')) {
                 self.log('Top level comment distinguish has been clicked and it is the real deal!');
 
                 // Comment is already distinguished or stickied. So we'll simply undistinguish

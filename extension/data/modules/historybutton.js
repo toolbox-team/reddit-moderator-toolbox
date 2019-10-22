@@ -526,7 +526,7 @@ function historybutton () {
             let totalDomainCount = 0;
 
             for (const domain in user.domains) {
-                if (user.domains.hasOwnProperty(domain)) {
+                if (Object.prototype.hasOwnProperty.call(user.domains, domain)) {
                     totalDomainCount += user.domains[domain].count;
                 }
             }

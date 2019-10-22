@@ -1007,7 +1007,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     found = object;
                 }
 
-                if (object.data.hasOwnProperty('replies') && object.data.replies && typeof object.data.replies === 'object') {
+                if (Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies && typeof object.data.replies === 'object') {
                     const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
                     if (childFound) {
                         found = childFound;

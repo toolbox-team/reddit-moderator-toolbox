@@ -108,6 +108,7 @@ function modbar () {
               enableModSubs = self.setting('enableModSubs'),
               enableOldNewToggle = self.setting('enableOldNewToggle'),
               customCSS = self.setting('customCSS'),
+              consoleShowing = self.setting('consoleShowing'),
 
               debugMode = TBCore.debugMode,
 
@@ -124,8 +125,7 @@ function modbar () {
               modSubredditsFMod = TB.storage.getSetting('Notifier', 'modSubredditsFMod', false),
               unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
 
-        let modbarHidden = self.setting('modbarHidden'),
-            consoleShowing = self.setting('consoleShowing');
+        let modbarHidden = self.setting('modbarHidden');
 
         // Ready some details for new modmail linking
         const modmailLink = TB.storage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),

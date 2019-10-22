@@ -590,7 +590,7 @@
             'YELLOWGREEN': '#9ACD32',
         };
 
-        if (htmlColors.hasOwnProperty(colorUPPERCASE)) {
+        if (Object.prototype.hasOwnProperty.call(htmlColors, colorUPPERCASE)) {
             returnValue = htmlColors[colorUPPERCASE];
         } else {
             returnValue = color;
@@ -642,7 +642,7 @@
         const params = hash.split('&');
         for (let i = 0; i < params.length; i++) {
             const keyval = params[i].split('='),
-                    key = keyval[0].replace('?', '');
+                  key = keyval[0].replace('?', '');
             if (key === ParameterKey) {
                 return keyval[1];
             }

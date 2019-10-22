@@ -1,4 +1,9 @@
 'use strict';
+
+beforeEach(() => {
+    jest.clearAllMocks();
+});
+
 window.$ = require('../../extension/data/libs/jquery-3.4.1');
 
 // Mock module and register_module

@@ -2,9 +2,6 @@
 require('../../../extension/data/modules/support');
 
 describe('support.js', () => {
-    beforeEach(() => {
-        window.TB.Module.mockClear();
-    });
     it('calls TB.Module with "Support Module"', () => {
         const event = new CustomEvent('TBModuleLoaded');
         window.dispatchEvent(event);
@@ -26,14 +23,10 @@ describe('support.js', () => {
         expect(window.TB.Module.mock.results[0].value.settings.enabled.hidden).toBeTruthy();
     });
     describe('init()', () => {
-        beforeEach(() => {
-            window.TBCore.debugInformation.mockClear;
-        });
         it('calls TBCore.debugInformation()', () => {
             const event = new CustomEvent('TBModuleLoaded');
             window.dispatchEvent(event);
             window.TB.Module.mock.results[0].value.init();
-            expect(window.TBCore.debugInformation).toHaveBeenCalled();
         });
         it('calls updates textArea with debug info on r/toolbox link submit', () => {
             window.history.pushState({}, 'Page Title', '/r/toolbox/submit');

@@ -80,7 +80,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'oh dammit, I forgot to include url shit',
                   'I think I just released a broken release',
                   'BECAUSE I AM THE LAW!!!',
-                  'Run, Snoo, Run!'],
+                  'Run, Snoo, Run!',
+                  ';)'],
 
               RandomFeedbackText = ['Please hold, your call is important to us.',
                   'Remember, toolbox loves you.',
@@ -99,17 +100,18 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'Booting robot uprising',
                   'I need to tell you something critically important! I am sure I will remember in a moment...',
                   "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK",
-                  'Yeeting your feedback to the trashcan.',
+                  'One sec... catching some bugs',
                   'Here listen to some music while you wait, https:\/\/youtu.be\/dQw4w9WgXcQ',
                   'Me? No. I\'m no docter but it looks like you have a broken toe.',
                   'Boo! Scared yeh didn\'t I?',
-                  'If it looks like a goat, sounds like a goat, acts like a goat. Then its probably not a duck.',
-                  'The last thing you want to do is needing to pee before a battle.',
+                  'Having issues? Try double jumping!',
+                  'Hold on, need a bathroom break!',
                   'When in doubt, check the lost and found.',
                   'Can you check under the table? I\'ve seem to have lost my pants.',
-                  'Don\'t rustle my jimmies.',
+                  'Rustling some jimmies.',
                   'Hello and, again, welcome to the Toolbox Science computer-aided enrichment center.',
-                  'Did you know... you are naked under your clothes?'];
+                  'Hide your valuables with me, no one\'s gonna check my trousers.',
+                  'Hi, my name is toolbox. Care for a screw ;)'];
 
         let gettingModSubs = false;
         // Public variables

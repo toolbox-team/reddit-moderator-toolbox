@@ -79,8 +79,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'I go two and hope for the best.',
                   'oh dammit, I forgot to include url shit',
                   'I think I just released a broken release',
-                  'BECAUSE I AM THE LAW!!!',
-                  'Run, Snoo, Run!'],
+                  'BECAUSE I AM THE LAW!!!'],
 
               RandomFeedbackText = ['Please hold, your call is important to us.',
                   'Remember, toolbox loves you.',
@@ -98,7 +97,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'Releasing raptors',
                   'Booting robot uprising',
                   'I need to tell you something critically important! I am sure I will remember in a moment...',
-                  "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
+                  "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK",
+                  'One sec... catching some bugs',
+                  'Here listen to some music while you wait, https:\/\/youtu.be\/dQw4w9WgXcQ',
+                  'Me? No. I\'m no docter but it looks like you have a broken toe.',
+                  'Boo! Scared yeh didn\'t I?',
+                  'Having issues? Try double jumping!',
+                  'Hold on, need a bathroom break!',
+                  'When in doubt, check the lost and found.',
+                  'Rustling some jimmies.',
+                  'Hello and, again, welcome to the Toolbox Science computer-aided enrichment center.',
+                  'Run, Snoo, Run!'];
 
         let gettingModSubs = false;
         // Public variables

@@ -846,7 +846,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 subreddit = $body.find('.ThreadTitle__community').text();
                 const idMatch = browserUrl.match(idRegex);
                 // `idMatch` can be null when quickly navigating away (in which case `id` is inconsequential)
-                id = idMatch && idMatch[1] || 'racey';
+                id = idMatch ? idMatch[1] : 'racey';
                 permalink = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
 
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.

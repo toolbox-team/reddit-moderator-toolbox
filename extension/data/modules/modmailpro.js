@@ -249,6 +249,7 @@ function modmailpro () {
         $menuList.after($mmpMenu);
         self.endProfile('menu-gen');
 
+        let profileStart = performance.now();
         initialize();
 
         // Processing functions
@@ -560,7 +561,6 @@ function modmailpro () {
             $subArea.after(infoArea);
         }
 
-        let profileStart;
         function addNewThreadSupport () {
             if (newThreadSupport) {
                 return;

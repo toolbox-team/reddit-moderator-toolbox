@@ -1,10 +1,11 @@
 'use strict';
+window.$ = require('../../extension/data/libs/jquery-3.4.1');
 
 beforeEach(() => {
     jest.clearAllMocks();
+    document.body.innerHTML = undefined;
+    $('body').off();
 });
-
-window.$ = require('../../extension/data/libs/jquery-3.4.1');
 
 // Mock module and register_module
 window.TB = {
@@ -17,9 +18,11 @@ window.TB = {
                 hidden: null,
             },
         },
+        log: jest.fn(),
     })),
     register_module: jest.fn(),
 };
+
 const debugInformationField = jest.fn().mockReturnValue('debugInfoField');
 window.TBCore = {
     debugInformation: jest.fn().mockReturnValue(debugInformationField),

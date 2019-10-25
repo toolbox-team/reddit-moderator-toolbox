@@ -28,8 +28,8 @@ describe('support.js', () => {
             window.dispatchEvent(event);
             window.TB.Module.mock.results[0].value.init();
         });
-        it('calls updates textArea with debug info on r/toolbox link submit', () => {
-            window.history.pushState({}, 'Page Title', '/r/toolbox/submit');
+        it('updates textArea with debug info on r/toolbox link submit', () => {
+            window.history.replaceState({}, 'Page Title', '/r/toolbox/submit');
 
             const textArea = 'test value';
             document.body.innerHTML =
@@ -46,6 +46,46 @@ describe('support.js', () => {
 
             const textAreaResult = textArea + window.TBHelpers.template.mock.results[0].value;
             expect($('.usertext-edit.md-container textarea').val()).toEqual(textAreaResult);
+        });
+        it('updates comment textArea with debug info when clicking debug button on r/toolbox when tb-usertext-buttons exists', () => {
+            window.history.replaceState({}, 'Page Title', '/r/toolbox/comments');
+
+            const textArea = 'test value';
+            document.body.innerHTML =
+                `<div class="submit content usertext-edit usertext-edit md-container">
+                    <div class="usertext-buttons md">  
+                        <textarea>${textArea}</textarea>
+                        <button class="save" name="submit" />
+                        <div class="tb-usertext-buttons"></div>
+                    </div>
+                </div>`;
+
+            const event = new CustomEvent('TBModuleLoaded');
+            window.dispatchEvent(event);
+            window.TB.Module.mock.results[0].value.init();
+
+            $('div.tb-insert-debug').click();
+            const textAreaResult = textArea + window.TBHelpers.template.mock.results[0].value;
+            expect($('textarea').val()).toEqual(textAreaResult);
+        });
+        it('updates comment textArea with debug info when clicking debug button on r/toolbox when tb-usertext-buttons does not exists', () => {
+            window.history.replaceState({}, 'Page Title', '/r/toolbox/comments');
+            const textArea = 'test value';
+            document.body.innerHTML =
+                `<div class="submit content usertext-edit usertext-edit md-container">
+                    <div class="usertext-buttons md">  
+                        <textarea>${textArea}</textarea>
+                        <button class="save" name="submit" />
+                        <div class="status"></div>
+                    </div>
+                </div>`;
+
+            const event = new CustomEvent('TBModuleLoaded');
+            window.dispatchEvent(event);
+            window.TB.Module.mock.results[0].value.init();
+            $('div.tb-insert-debug').click();
+            const textAreaResult = textArea + window.TBHelpers.template.mock.results[0].value;
+            expect($('textarea').val()).toEqual(textAreaResult);
         });
     });
 });

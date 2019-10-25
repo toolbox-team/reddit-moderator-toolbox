@@ -72,8 +72,8 @@ Info| &nbsp;
             $('body').on('click', 'div.tb-insert-debug', function () {
                 self.log('Insert debug clicked!');
                 const $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
-                console.log($('body').html(), $commentTextArea.html());
                 const currentComment = $commentTextArea.val();
+
                 $commentTextArea.val(currentComment + submissionAddition);
             });
         }

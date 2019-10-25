@@ -1,3 +1,5 @@
+'use strict';
+
 function oldReddit () {
     const self = new TB.Module('Old reddit');
     self.shortname = 'oldreddit';

@@ -1,3 +1,5 @@
+'use strict';
+
 function historybutton () {
     const self = new TB.Module('History Button');
 

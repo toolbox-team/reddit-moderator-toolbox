@@ -1,3 +1,5 @@
+'use strict';
+
 function notifiermod () {
     const self = new TB.Module('Notifier');
     self.shortname = 'Notifier';

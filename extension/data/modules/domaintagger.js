@@ -1,3 +1,5 @@
+'use strict';
+
 function domaintagger () {
     const self = new TB.Module('Domain Tagger');
     self.shortname = 'DTagger';

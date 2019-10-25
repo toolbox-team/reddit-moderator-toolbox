@@ -7,7 +7,9 @@
     "build": "node build.js",
     "build-watch": "nodemon --exec npm run build",
     "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json",
+    "test": "jest --coverage",
+    "test:coverage": "jest --coverage"
   },
   "homepage": "http://www.reddit.com/r/toolbox",
   "repository": {
@@ -19,6 +21,9 @@
     "archiver": "^3.1.1",
     "docdash": "^1.1.1",
     "eslint": "^5.16.0",
+    "eslint-plugin-jest": "^22.19.0",
+    "jest": "^24.9.0",
+    "jest-webextension-mock": "^3.5.0",
     "jsdoc": "^3.6.3",
     "nodemon": "^1.19.1",
     "yargs": "^13.3.0"
@@ -26,5 +31,10 @@
   "nodemonConfig": {
     "watch": "extension",
     "ext": "js,css"
-  }
+  },
+    "jest": {
+        "setupFiles": [
+            "jest-webextension-mock"
+        ]
+    }
 }

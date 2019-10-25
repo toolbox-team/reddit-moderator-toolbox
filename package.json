@@ -8,7 +8,7 @@
         "build-watch": "nodemon --exec npm run build",
         "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
         "docs": "jsdoc -c jsdoc.json",
-        "test": "jest --coverage",
+        "test": "jest",
         "test:coverage": "npm run test -- --coverage"
     },
     "homepage": "http://www.reddit.com/r/toolbox",

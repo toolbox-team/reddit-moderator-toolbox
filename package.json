@@ -1,30 +1,44 @@
 {
-  "name": "moderator-toolbox-for-reddit",
-  "version": "3.5.0",
-  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "private": true,
-  "scripts": {
-    "build": "node build.js",
-    "build-watch": "nodemon --exec npm run build",
-    "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
-    "docs": "jsdoc -c jsdoc.json"
-  },
-  "homepage": "http://www.reddit.com/r/toolbox",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/toolbox-team/reddit-moderator-toolbox.git"
-  },
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "archiver": "^3.1.1",
-    "docdash": "^1.1.1",
-    "eslint": "^5.16.0",
-    "jsdoc": "^3.6.3",
-    "nodemon": "^1.19.1",
-    "yargs": "^13.3.0"
-  },
-  "nodemonConfig": {
-    "watch": "extension",
-    "ext": "js,css"
-  }
+    "name": "moderator-toolbox-for-reddit",
+    "version": "3.5.0",
+    "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+    "private": true,
+    "scripts": {
+        "build": "node build.js",
+        "build-watch": "nodemon --exec npm run build",
+        "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
+        "docs": "jsdoc -c jsdoc.json",
+        "test": "jest",
+        "test:coverage": "npm run test -- --coverage"
+    },
+    "homepage": "http://www.reddit.com/r/toolbox",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/toolbox-team/reddit-moderator-toolbox.git"
+    },
+    "license": "Apache-2.0",
+    "devDependencies": {
+        "archiver": "^3.1.1",
+        "docdash": "^1.1.1",
+        "eslint": "^5.16.0",
+        "eslint-plugin-jest": "^22.19.0",
+        "jest": "^24.9.0",
+        "jest-webextension-mock": "^3.5.0",
+        "jsdoc": "^3.6.3",
+        "nodemon": "^1.19.1",
+        "yargs": "^13.3.0"
+    },
+    "nodemonConfig": {
+        "watch": "extension",
+        "ext": "js,css"
+    },
+    "jest": {
+        "testURL": "https://www.reddit.com",
+        "setupFiles": [
+            "jest-webextension-mock"
+        ],
+        "setupFilesAfterEnv": [
+            "./tests/unit/jest.setup.js"
+        ]
+    }
 }

@@ -1,8 +1,10 @@
 {
+    "plugins": ["jest"],
     "parserOptions": {
         "ecmaVersion": 2017
     },
     "env": {
+        "jest/globals": true,
         "browser": true,
         "jquery": true,
         "es6": true

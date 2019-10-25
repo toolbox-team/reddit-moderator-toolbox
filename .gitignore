@@ -12,3 +12,4 @@
 /scratch.js
 /ftpconfig.json
 .DS_Store
+/coverage

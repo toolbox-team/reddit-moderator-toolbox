@@ -1,3 +1,5 @@
+'use strict';
+
 function syntax () {
     const self = new TB.Module('Syntax Highlighter');
     self.shortname = 'Syntax';

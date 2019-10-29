@@ -1,3 +1,5 @@
+'use strict';
+
 function modbutton () {
     const self = new TB.Module('Mod Button');
     self.shortname = 'ModButton';

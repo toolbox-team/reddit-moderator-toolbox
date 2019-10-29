@@ -1,3 +1,5 @@
+'use strict';
+
 function metricstab () {
     const self = new TB.Module('Metrics Tab');
     self.shortname = 'Metrics';

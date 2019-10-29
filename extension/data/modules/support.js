@@ -1,4 +1,5 @@
 'use strict';
+
 function support () {
     const self = new TB.Module('Support Module');
     self.shortname = 'support';

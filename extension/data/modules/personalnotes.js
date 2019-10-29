@@ -1,3 +1,5 @@
+'use strict';
+
 function personalnotes () {
     const self = new TB.Module('Personal Notes');
     self.shortname = 'PNotes';

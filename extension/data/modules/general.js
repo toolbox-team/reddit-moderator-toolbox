@@ -1,3 +1,5 @@
+'use strict';
+
 function generalSettings () {
     const self = new TB.Module('General Settings');
 

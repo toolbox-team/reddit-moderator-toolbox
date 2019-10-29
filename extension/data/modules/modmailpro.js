@@ -1,3 +1,5 @@
+'use strict';
+
 function modmailpro () {
     const self = new TB.Module('Mod Mail Pro');
     self.shortname = 'ModMail';

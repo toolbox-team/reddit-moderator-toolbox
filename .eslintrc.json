@@ -32,7 +32,7 @@
     "extends": "eslint:recommended",
     "rules": {
         "strict": [
-            "warn",
+            "error",
             "global"
         ],
         "no-prototype-builtins": "warn",

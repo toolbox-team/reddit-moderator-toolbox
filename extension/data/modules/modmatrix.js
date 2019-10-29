@@ -1,3 +1,5 @@
+'use strict';
+
 function modmatrix () {
     const self = new TB.Module('Mod Log Matrix');
     self.shortname = 'ModMatrix'; // backwards compatibility

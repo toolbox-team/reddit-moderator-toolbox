@@ -1,3 +1,5 @@
+'use strict';
+
 function trouble () {
     const self = new TB.Module('Trouble Shooter');
     self.shortname = 'Trouble';

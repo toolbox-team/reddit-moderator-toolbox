@@ -1,3 +1,5 @@
+'use strict';
+
 function modmacros () {
     const self = new TB.Module('Mod Macros');
     self.shortname = 'ModMacros';

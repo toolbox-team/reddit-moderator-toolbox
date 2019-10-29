@@ -1,3 +1,5 @@
+'use strict';
+
 function achievements () {
     const self = new TB.Module('Achievements');
     self.shortname = 'Achievements';

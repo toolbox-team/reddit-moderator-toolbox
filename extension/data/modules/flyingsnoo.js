@@ -1,3 +1,5 @@
+'use strict';
+
 function flyingsnoo () {
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety

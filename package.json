@@ -45,6 +45,9 @@
         "coveragePathIgnorePatterns" : [
             "/node_modules/",
             "./extension/data/libs/"
-        ]
+        ],
+        "moduleNameMapper": {
+          "^@data(.*)$": "<rootDir>/extension/data$1"
+        }
     }
 }

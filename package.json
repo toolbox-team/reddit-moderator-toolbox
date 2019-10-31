@@ -41,6 +41,10 @@
         ],
         "setupFilesAfterEnv": [
             "./tests/unit/jest.setup.js"
+        ],
+        "coveragePathIgnorePatterns" : [
+            "/node_modules/",
+            "./extension/data/libs/"
         ]
     }
 }

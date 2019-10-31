@@ -11,6 +11,7 @@ matrix:
       script:
         - npm run test:coverage
         - npm run codecov
+        - npm run coveralls
     - env: TB_JOB=eslint_test
       script:
         - npm run eslint

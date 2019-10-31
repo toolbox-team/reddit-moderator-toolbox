@@ -46,6 +46,7 @@
             "/node_modules/",
             "./extension/data/libs/"
         ],
+        "collectCoverageFrom" : ["./extension/data/**/*.js"],
         "moduleNameMapper": {
           "^@data(.*)$": "<rootDir>/extension/data$1"
         }

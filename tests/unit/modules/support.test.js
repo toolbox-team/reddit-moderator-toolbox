@@ -1,7 +1,12 @@
 'use strict';
 require('../../../extension/data/modules/support');
+const {mockWindow} = require('../mocksTBCore');
 
 describe('support.js', () => {
+    beforeAll(() => {
+        Object.assign(window, mockWindow);
+    });
+
     it('calls TB.Module with "Support Module"', () => {
         const event = new CustomEvent('TBModuleLoaded');
         window.dispatchEvent(event);
@@ -27,6 +32,7 @@ describe('support.js', () => {
             const event = new CustomEvent('TBModuleLoaded');
             window.dispatchEvent(event);
             window.TB.Module.mock.results[0].value.init();
+            expect(window.TBCore.debugInformation).toHaveBeenCalledTimes(1);
         });
         it('updates textArea with debug info on r/toolbox link submit', () => {
             window.history.replaceState({}, 'Page Title', '/r/toolbox/submit');

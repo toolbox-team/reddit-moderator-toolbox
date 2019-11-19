@@ -1047,7 +1047,7 @@ Action reason: ${value.data.details}
         if (TBCore.isModpage && highlightAutomodMatches) {
             highlightedMatches();
             // highlight matches if text posts expand
-            $body.on('click', '.expando-button.expanded', function () {
+            $body.on('click', '.thing.self .expando-button.expanded', function () {
                 const $thing = $(this).parents('.thing');
                 const checkExist = setInterval(() => {
                     if ($thing.find('.usertext-body').is(':visible')) {

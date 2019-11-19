@@ -1025,7 +1025,7 @@ Action reason: ${value.data.details}
                 if (!$this.hasClass('hl-processed')) {
                     $this.addClass('hl-processed');
                     const reportText = $this.text();
-                    if (reportText.indexOf('SpyTec13:') >= 0) {
+                    if (reportText.indexOf('AutoModerator:') >= 0) {
                         let matches;
                         const matchesArray = [];
                         while ((matches = regexMatchFinder.exec(reportText))) {

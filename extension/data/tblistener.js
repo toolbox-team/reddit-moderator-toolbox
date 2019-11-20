@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+    const logger = TBLog('TBListener');
     /**
      * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,
      * for example.
@@ -239,7 +240,7 @@
             }
 
             if (error) {
-                console.error('task errored', error.message);
+                logger.error('task errored', error.message);
                 if (this.catch) {
                     this.catch(error);
                 } else {

@@ -552,9 +552,7 @@ function notifiermod () {
                     }
                     self.setting('unreadPushed', pushedunread);
                 }
-            }).catch(response => {
-                console.error(response);
-            });
+            }).catch(self.error);
 
             //
             // Modqueue

@@ -1,6 +1,7 @@
 'use strict';
 /** @namespace  TBui */
 (function (TBui) {
+    const logger = TBLog('TBui');
     const $body = $('body');
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
@@ -164,10 +165,10 @@
     // Handle notification updates from the background page
     chrome.runtime.onMessage.addListener(message => {
         if (message.action === 'tb-show-page-notification') {
-            console.log('Notifier message get:', message);
+            logger.log('Notifier message get:', message);
             TBui.showNotification(message.details);
         } else if (message.action === 'tb-clear-page-notification') {
-            console.log('Notifier message clear:', message);
+            logger.log('Notifier message clear:', message);
             TBui.clearNotification(message.id);
         }
     });

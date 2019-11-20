@@ -1047,17 +1047,11 @@ Action reason: ${value.data.details}
         if (TBCore.isModpage && highlightAutomodMatches) {
             highlightedMatches();
             // highlight matches if text posts expand
-            $body.on('click', '.thing.self .expando-button.expanded', function () {
-                const $thing = $(this).parents('.thing');
-                const checkExist = setInterval(() => {
-                    if ($thing.find('.usertext-body').is(':visible')) {
-                        $thing.find('.hl-processed').removeClass('hl-processed');
-                        highlightedMatches();
-                        clearInterval(checkExist);
-                    }
-                }, 100);
-                setTimeout(() => clearInterval(checkExist), 5000);
-            });
+            document.addEventListener('tbNewExpando', e => {
+                const $target = $(e.target);
+                $target.parent().find('.hl-processed').removeClass('hl-processed');
+                highlightedMatches();
+            }, true);
         }
 
         if (TBCore.isModpage && showAutomodActionReason) {

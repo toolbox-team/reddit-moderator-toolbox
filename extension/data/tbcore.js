@@ -1799,6 +1799,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             const observer = new MutationObserver(mutations => {
                 mutations.forEach(mutation => {
                     const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+
+                    if ($target.hasClass('expando')) {
+                        const expandoEvent = new CustomEvent('tbNewExpando');
+                        mutation.target.dispatchEvent(expandoEvent);
+                    }
+
                     if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
                     $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) {
                         return;

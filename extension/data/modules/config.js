@@ -155,8 +155,8 @@ function tbconfig () {
                 <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new removal reason</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form">
-                    <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
+                    <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
                     <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
@@ -593,8 +593,8 @@ function tbconfig () {
                     <td class="removal-reasons-content" data-reason="{{i}}">
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
                         <span class="removal-reason-edit">
-                            <textarea class="tb-input edit-area">{{removalReasonText}}</textarea><br/>
                             <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
+                            <textarea class="tb-input edit-area">{{removalReasonText}}</textarea><br/>
                             <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
                             <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>

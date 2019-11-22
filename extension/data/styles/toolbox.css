@@ -1863,16 +1863,12 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     border-bottom: solid 5px #F0F0F0;
 }
 
-.mod-toolbox-rd .edit_removal_reasons input[type="text"],
-.mod-toolbox-rd .edit_mod_macros input[type="text"]{
-    max-width: 600px;
-}
-
 .mod-toolbox-rd .edit_removal_reasons .edit-area,
 .mod-toolbox-rd .edit_mod_macros .edit-area {
     width: 600px;
     height: 150px;
     margin: 2px;
+    resize: vertical;
 }
 
 .mod-toolbox-rd .removal_reasons_settings .tb-window-content .edit-header,
@@ -1880,6 +1876,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     width: 600px;
     height: 100px;
     margin: 2px;
+    resize: vertical;
 }
 
 .mod-toolbox-rd h3.macro-title,

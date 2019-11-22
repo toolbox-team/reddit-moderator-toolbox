@@ -1868,7 +1868,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     width: 600px;
     height: 150px;
     margin: 2px;
-    resize: vertical;
 }
 
 .mod-toolbox-rd .removal_reasons_settings .tb-window-content .edit-header,
@@ -1876,7 +1875,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     width: 600px;
     height: 100px;
     margin: 2px;
-    resize: vertical;
 }
 
 .mod-toolbox-rd h3.macro-title,

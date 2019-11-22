@@ -31,7 +31,7 @@ function devtools () {
 
         // Function that handles
         function modifyDiv (e) {
-            console.log(e);
+            self.log(e);
             const $target = $(e.target);
             $target.append(`
             <span class="tb-bracket-button tb-show-api-info">

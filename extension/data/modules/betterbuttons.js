@@ -470,9 +470,7 @@ function betterbuttons () {
                 $lockButton.attr('tb-action', newAction);
                 $lockButton.text(newAction);
             } catch (error) {
-                self.log('Error toggling lock on comment:');
-                self.log(error);
-                console.error('Error toggling lock on comment', error);
+                self.error('Error toggling lock on comment:\n', error);
             }
         });
 

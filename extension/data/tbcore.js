@@ -443,7 +443,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * @returns {TBCore.debugObject} Object with debug information
          */
         TBCore.debugInformation = function debugInformation () {
-        // Using console log so we are more likely to get this information if toolbox is failing.
             const debugObject = {
                 toolboxVersion: TBCore.toolboxVersion,
                 browser: '',
@@ -534,7 +533,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 debugObject.platformInformation = browserUserAgent;
             }
             }
-
+            // info level is always displayed unless disabled in devmode
             logger.info('Version/browser information:', debugObject);
             return debugObject;
         };
@@ -1004,7 +1003,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
                 break;
             case 't4':
-                console.log('t4:', object.data.id);
+                logger.log('t4:', object.data.id);
                 if (object.data.id === searchID) {
                     found = object;
                 }
@@ -1904,6 +1903,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 }
 
 (function () {
+    const logger = TBLog('TBCore init');
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
@@ -1917,10 +1917,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }, response => {
             const {errorThrown, data, jqXHR, textStatus} = response;
             if (errorThrown) {
-                console.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                console.log(jqXHR);
+                logger.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
+                logger.log(jqXHR);
                 if (jqXHR.status === 504) {
-                    console.log('504 Timeout retrying request');
+                    logger.log('504 Timeout retrying request');
                     getModSubs(after, subs => callback(modSubs.concat(subs)));
                 } else {
                     modSubs = [];
@@ -1947,18 +1947,18 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }, response => {
                 const {errorThrown, data, jqXHR, textStatus} = response;
                 if (errorThrown) {
-                    console.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                    console.log(jqXHR);
+                    logger.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
+                    logger.log(jqXHR);
                     if (jqXHR.status === 504 && tries < 4) {
                         tries++;
-                        console.log('504 Timeout retrying request');
+                        logger.log('504 Timeout retrying request');
                         resolve(getUserDetails(tries));
                     } else {
                         return reject(errorThrown);
                     }
                 } else {
                     TBStorage.purifyObject(data);
-                    console.log(data);
+                    logger.log(data);
                     resolve(data);
                 }
             });
@@ -1967,7 +1967,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
     function modsubInit (cacheDetails, userDetails) {
         if (cacheDetails.moderatedSubs.length === 0) {
-            console.log('No modsubs in cache, getting mod subs before initalizing');
+            logger.log('No modsubs in cache, getting mod subs before initalizing');
             getModSubs(null, subs => {
                 initwrapper({
                     userDetails,
@@ -2013,16 +2013,16 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 throw new Error('User details are empty');
             }
         } catch (error) {
-            console.warn('Could not get user details through API.', error);
+            logger.warn('Could not get user details through API.', error);
 
-            console.log('Attempting to use user detail cache.');
+            logger.log('Attempting to use user detail cache.');
             userDetails = await TBStorage.getCache(SETTINGS_NAME, 'userDetails', {});
         }
 
         if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
             modsubInit(cacheDetails, userDetails);
         } else {
-            console.error('Toolbox does not have user details and cannot not start.');
+            logger.error('Toolbox does not have user details and cannot not start.');
         }
     });
 })();

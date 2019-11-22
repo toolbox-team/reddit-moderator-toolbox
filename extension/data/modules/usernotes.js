@@ -626,7 +626,7 @@ function usernotes () {
                 link = $unote.attr('data-link');
             }
 
-            console.log('deleteNote', deleteNote);
+            self.log('deleteNote', deleteNote);
             // Check new note data states
             if (!deleteNote) {
                 if (!noteText) {

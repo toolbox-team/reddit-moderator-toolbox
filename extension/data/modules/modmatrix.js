@@ -545,7 +545,7 @@ function modmatrix () {
                 let moderator = self.subredditModerators[mod];
 
                 if (self.minDate != null && self.minDate > item.created_utc * 1000) {
-                // console.log("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
+                // self.log("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
                     finished = true;
                     break;
                 } else if (
@@ -553,7 +553,7 @@ function modmatrix () {
                 // (hasModFilter && $.inArray(mod, modLogMatrix.modFilter) == -1) ||
                 // (hasActionFilter && $.inArray(action, modLogMatrix.actionFilter)  == -1)
                 ) {
-                // console.log("Item newer than toDate", item.created_utc, modLogMatrix.maxDate);
+                // self.log("Item newer than toDate", item.created_utc, modLogMatrix.maxDate);
                     continue;
                 }
 

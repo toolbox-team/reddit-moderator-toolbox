@@ -95,11 +95,9 @@ function tbconfig () {
                         tooltip: 'Configure the basic behavior for removal reasons here.',
                         content: `
                 <table>
-                    <td>Header:</td>
-                    <td><textarea class="tb-input edit-header" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
+                    <td><textarea placeholder="Header" class="tb-input edit-header" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
                     </tr><tr>
-                    <td>Footer:</td>
-                    <td><textarea class="tb-input edit-footer" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
+                    <td><textarea placeholder="Footer" class="tb-input edit-footer" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
                     </tr>
                     <tr class="advanced-enable" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>
                     <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>

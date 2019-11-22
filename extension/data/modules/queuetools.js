@@ -1033,10 +1033,15 @@ Action reason: ${value.data.details}
                         }
 
                         if (highlightEnabled.length > 0) {
+                            $this.closest('.thing').find('a.title').removeHighlight();
+                            $this.closest('.thing').find('a.title').highlight(matchesArray, '', true);
+                            $this.closest('.thing').find('a.title').highlight(highlightEnabled);
+
                             $this.closest('.thing').find('.md p').removeHighlight();
                             $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
                             $this.closest('.thing').find('.md p').highlight(highlightEnabled);
                         } else {
+                            $this.closest('.thing').find('a.title').highlight(matchesArray, '', true);
                             $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
                         }
                     }

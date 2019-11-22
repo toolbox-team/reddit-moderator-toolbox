@@ -1046,6 +1046,12 @@ Action reason: ${value.data.details}
 
         if (TBCore.isModpage && highlightAutomodMatches) {
             highlightedMatches();
+            // highlight matches if text posts expand
+            document.addEventListener('tbNewExpando', e => {
+                const $target = $(e.target);
+                $target.parent().find('.hl-processed').removeClass('hl-processed');
+                highlightedMatches();
+            }, true);
         }
 
         if (TBCore.isModpage && showAutomodActionReason) {

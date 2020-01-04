@@ -1863,11 +1863,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     border-bottom: solid 5px #F0F0F0;
 }
 
-.mod-toolbox-rd .edit_removal_reasons input[type="text"],
-.mod-toolbox-rd .edit_mod_macros input[type="text"]{
-    max-width: 600px;
-}
-
 .mod-toolbox-rd .edit_removal_reasons .edit-area,
 .mod-toolbox-rd .edit_mod_macros .edit-area {
     width: 600px;

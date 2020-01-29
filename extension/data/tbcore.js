@@ -1197,7 +1197,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (length < chunkSize) {
                     chunkSize = length;
                 }
-                getRatelimit();
+                updateRateLimit();
             }
 
             function doChunk () {
@@ -1212,7 +1212,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     }
                 }
                 if (counter < array.length) {
-                    window.setTimeout(getRatelimit, delay);
+                    window.setTimeout(updateRateLimit, delay);
                 } else {
                     window.setTimeout(finish, delay);
                 }
@@ -1237,37 +1237,30 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 return count;
             }
 
-            function getRatelimit () {
-            // return doChunk();
-                TBApi.getHead(
-                    '/r/toolbox/wiki/ratelimit.json',
-                    (status, jqxhr) => {
-                        const $body = $('body'),
-                              ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
-                              ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
-                        logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
+            function updateRateLimit () {
+                TBApi.getRatelimit(({ratelimitReset, ratelimitRemaining}) => {
+                    const $body = $('body');
 
-                        if (!$body.find('#ratelimit-counter').length) {
-                            $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
-                        }
-
-                        if (chunkSize + limit > parseInt(ratelimitRemaining)) {
-                            $body.find('#ratelimit-counter').show();
-                            let count = parseInt(ratelimitReset),
-                                counter = 0;
-
-                            counter = setInterval(() => {
-                                count = timer(count, $body, ratelimitRemaining);
-                                if (count <= 0) {
-                                    clearInterval(counter);
-                                    doChunk();
-                                }
-                            }, 1000);
-                        } else {
-                            doChunk();
-                        }
+                    if (!$body.find('#ratelimit-counter').length) {
+                        $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
                     }
-                );
+
+                    if (chunkSize + limit > parseInt(ratelimitRemaining)) {
+                        $body.find('#ratelimit-counter').show();
+                        let count = parseInt(ratelimitReset),
+                            counter = 0;
+
+                        counter = setInterval(() => {
+                            count = timer(count, $body, ratelimitRemaining);
+                            if (count <= 0) {
+                                clearInterval(counter);
+                                doChunk();
+                            }
+                        }, 1000);
+                    } else {
+                        doChunk();
+                    }
+                });
             }
 
             function finish () {
@@ -1892,13 +1885,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 });
             }
         })();
-
-        // get rate limit
-        if (TBCore.debugMode) {
-            (function getRateLimit () {
-                TBApi.getRatelimit();
-            })();
-        }
     })(window.TBCore = window.TBCore || {});
 }
 

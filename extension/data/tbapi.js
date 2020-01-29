@@ -89,12 +89,14 @@
         data,
         oauth: true,
     });
+
     /**
      * Sends an authenticated POST request against the OAuth API.
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
     TBApi.apiOauthPOST = TBApi.apiOauthRequest.bind(null, 'POST');
+
     /**
      * Sends an authenticated GET request against the OAuth API.
      * @param {string} endpoint The endpoint to request
@@ -105,6 +107,11 @@
     //
     // Reddit 'legacy' API stuff. Still very much in use.
     //
+
+    /**
+     * Gets ratelimit information from the API.
+     * @param {TBApi~getRateLimitCallback} callback Executed with ratelimit info
+     */
     TBApi.getRatelimit = function getRatelimit (callback) {
         TBApi.getHead(
             '/r/toolbox/wiki/ratelimit.json',
@@ -123,10 +130,23 @@
         );
     };
 
-    TBApi.setWikiPrivate = function setWikiPrivate (page, subreddit, failAlert) {
-        setWikiPrivate(subreddit, page, failAlert);
-    };
+    /**
+     * @callback TBApi~getRateLimitCallback
+     * @param {object} rateLimits An object containing the rate limit info
+     * @param {number} rateLimits.rateLimitRemaining
+     * @param {number} rateLimits.rateLimitReset
+     */
 
+    /**
+      * Updates the content of a wiki page.
+      * @param {string} page The name of the wiki page
+      * @param {string} subreddit The name of the subreddit the page is in
+      * @param {string | object} data The new content of the page
+      * @param {string} reason A note for the revision history of the page
+      * @param {boolean} isJSON If true, `data` is stringified as JSON first
+      * @param {boolean} updateAM If true, all tabs are replaced with 4 spaces
+      * @param {TBApi~postToWikiCallback} callback Executed on completion
+      */
     TBApi.postToWiki = function postToWiki (page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {
             reason = `"${reason}" via toolbox`;
@@ -181,6 +201,19 @@
         });
     };
 
+    /**
+     * @callback TBApi~postToWikiCallback
+     * @param {boolean} success Whether or not the update was successful
+     * @param {jqXHR} error AjqXHR object with error info if the request failed
+     */
+
+    /**
+     * Reads data from a wiki page
+     * @param {string} subreddit The name of the subreddit the page is in
+     * @param {string} page The name of the page
+     * @param {boolean} isJSON If true, data is parsed as JSON before being passed to the callback
+     * @param {TBApi~readFromWikiCallback} callback Executed with the page data
+     */
     TBApi.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
         TBApi.sendRequest({
@@ -232,6 +265,23 @@
         });
     };
 
+    /**
+     * @callback TBApi~readFromWikiCallback
+     * @param {string | object} data The data of the wiki page. If there is an
+     * error reading from the page, one of the following error values may be
+     * returned:
+     * - TBCore.WIKI_PAGE_UNKNOWN
+     * - TBCore.NO_WIKI_PAGE
+     * If the isJSON `param` was true, then this will be an object. Otherwise,
+     * it will be the raw contents of the wiki as a string.
+     */
+
+    /**
+     * Gets the ban state of a user.
+     * @param {string} subreddit The name of the subreddit to check in
+     * @param {string} user The name of the user to check
+     * @param {TBApi~getBanStateCallback} callback Executed with the ban state
+    */
     TBApi.getBanState = function (subreddit, user, callback) {
         TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user}).then(data => {
             TBStorage.purifyObject(data);
@@ -245,6 +295,14 @@
             callback(true, banned[0].note, banned[0].date, banned[0].name);
         });
     };
+
+    /**
+     * @callback TBApi~getBanStateCallback
+     * @param {boolean} banned Whether or not the user is banned
+     * @param {string} note The ban note, if any
+     * @param {string} number The date the ban was issued, if any
+     * @param {string} name The ban name, if any
+     */
 
     TBApi.flairPost = function (postLink, subreddit, text, cssClass, callback) {
         TBApi.post('/api/flair', {

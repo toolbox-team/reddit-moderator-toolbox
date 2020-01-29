@@ -682,7 +682,11 @@ function removalreasons () {
             logTitle = TBHelpers.replaceTokens(data, logTitle);
 
             // At this point make extra sure the item actually does get removed
-            TBApi.removeThing(data.fullname, false);
+            TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
+                if (!ham) {
+                    TBApi.removeThing(data.fullname, false);
+                }
+            });
 
             // // Clean up reason
             reason = reason.trim();

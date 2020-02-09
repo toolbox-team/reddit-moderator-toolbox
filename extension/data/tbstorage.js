@@ -30,7 +30,7 @@ function startReset () {
     if (r === true) {
         // Chrome, Edge en firefox webextensions.
         if (typeof chrome !== 'undefined') {
-            chrome.storage.local.remove('tbsettings', () => {
+            browser.storage.local.remove('tbsettings').then(() => {
                 // Wait a sec for stuff to clear.
                 setTimeout(() => {
                     clearLocal();
@@ -62,7 +62,7 @@ function storagewrapper () {
 
         TBStorage.isLoaded = false;
 
-        chrome.storage.local.get('tbsettings', sObject => {
+        browser.storage.local.get('tbsettings').then(sObject => {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 TBsettingsObject = sObject.tbsettings;
 
@@ -207,11 +207,11 @@ function storagewrapper () {
                 const settingsObject = sObject;
 
                 // save settings
-                chrome.storage.local.set({
+                browser.storage.local.set({
                     tbsettings: sObject,
-                }, () => {
+                }).then(() => {
                     // now verify them
-                    chrome.storage.local.get('tbsettings', returnObject => {
+                    browser.storage.local.get('tbsettings').then(returnObject => {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                         && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             // Succes, tell other browser tabs with toolbox that there are new settings.
@@ -378,7 +378,7 @@ function storagewrapper () {
 
         function saveSettingsToBrowser () {
             settingsToObject(sObject => {
-                chrome.storage.local.set({
+                browser.storage.local.set({
                     tbsettings: sObject,
                 });
             });

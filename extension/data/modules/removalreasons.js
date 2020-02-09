@@ -550,12 +550,10 @@ function removalreasons () {
                   status = popup.find('.status'),
                   attrs = popup.find('attrs');
 
-            TBApi.approveThing(attrs.attr('fullname'), successful => {
-                if (successful) {
-                    removePopup(popup);
-                } else {
-                    status.text(APPROVE_ERROR);
-                }
+            TBApi.approveThing(attrs.attr('fullname')).then(() => {
+                removePopup(popup);
+            }).catch(() => {
+                status.text(APPROVE_ERROR);
             });
         });
 

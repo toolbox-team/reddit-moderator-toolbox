@@ -594,10 +594,8 @@ function queuetools () {
                     const id = $(this).attr('data-fullname');
 
                     if (approve) {
-                        TBApi.approveThing(id, success => {
-                            if (success) {
-                                TBCore.sendEvent(TBCore.events.TB_APPROVE_THING);
-                            }
+                        TBApi.approveThing(id).then(() => {
+                            TBCore.sendEvent(TBCore.events.TB_APPROVE_THING);
                         });
                     } else {
                         TBApi.removeThing(id, spam, success => {

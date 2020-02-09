@@ -436,22 +436,15 @@
         uh: TBCore.modhash,
     });
 
-    TBApi.approveThing = function (id, callback) {
-        TBApi.post('/api/approve', {
-            id,
-            uh: TBCore.modhash,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Approves a post or comment.
+     * @param {string} id Fullname of the post or comment
+     * @returns {Promise}
+     */
+    TBApi.approveThing = id => TBApi.post('/api/approve', {
+        id,
+        uh: TBCore.modhash,
+    });
 
     TBApi.removeThing = function (id, spam, callback) {
         TBApi.post('/api/remove', {

@@ -1602,14 +1602,10 @@
     $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.approveThing(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">approved</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.approveThing(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">approved</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 

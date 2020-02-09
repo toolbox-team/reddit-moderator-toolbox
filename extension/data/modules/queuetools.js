@@ -557,7 +557,6 @@ function queuetools () {
                     selector = ':has(.linkflairlabel)';
                     break;
                 }
-                debugger;
                 things.filter(selector).find('input[type=checkbox]').prop('checked', true);
             });
 

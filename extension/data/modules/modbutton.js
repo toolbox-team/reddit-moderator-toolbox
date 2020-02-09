@@ -121,11 +121,9 @@ function modbutton () {
             $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
 
             $.each(self.savedSubs, function (i, subreddit) {
-            // only subs we moderate
-            // and not the current sub
-                if ($.inArray(subreddit, TBCore.mySubs) !== -1
-                && subreddit !== currentSub
-                ) {
+                // only subs we moderate
+                // and not the current sub
+                if (TBCore.modsSub(subreddit) && subreddit !== currentSub) {
                     $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${this
                     }" id="action-${this}"><label for="action-${this}">&nbsp;&nbsp;/r/${this}</label></div>`);
                 }

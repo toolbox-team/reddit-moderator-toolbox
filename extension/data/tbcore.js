@@ -132,12 +132,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
         TBCore.isMod = $('body.moderator').length;
 
+        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
+
         if (newModSubs && newModSubs.length > 0) {
             TBCore.mySubs = [];
             TBCore.mySubsData = [];
             $(newModSubs).each(function () {
                 const sub = this.data.display_name.trim();
-                if ($.inArray(sub, TBCore.mySubs) === -1) {
+                if (!TBCore.modsSub(sub)) {
                     TBCore.mySubs.push(sub);
                 }
 
@@ -745,7 +747,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             function getSubsResult (subs, after) {
                 $(subs).each(function () {
                     const sub = this.data.display_name.trim();
-                    if ($.inArray(sub, TBCore.mySubs) === -1) {
+                    if (!TBCore.modsSub(sub)) {
                         TBCore.mySubs.push(sub);
                     }
 
@@ -809,10 +811,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     return callback(false);
                 }
             });
-        };
-
-        TBCore.modsSub = function (subreddit) {
-            return $.inArray(subreddit, TBCore.mySubs) > -1;
         };
 
         TBCore.getThingInfo = function (sender, modCheck) {
@@ -940,7 +938,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             subreddit = TBHelpers.cleanSubredditName(subreddit);
 
             // Not a mod, reset current sub.
-            if (modCheck && $.inArray(subreddit, TBCore.mySubs) === -1) {
+            if (modCheck && !TBCore.modsSub(subreddit)) {
                 subreddit = '';
             }
 
@@ -1034,7 +1032,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
                     let subreddit = message.data.subreddit || '';
 
-                    if (modCheck && $.inArray(subreddit, TBCore.mySubs) === -1) {
+                    if (modCheck && !TBCore.modsSub(subreddit)) {
                         subreddit = '';
                     }
 
@@ -1083,7 +1081,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     subreddit = TBHelpers.cleanSubredditName(subreddit);
 
                     // Not a mod, reset current sub.
-                    if (modCheck && $.inArray(subreddit, TBCore.mySubs) === -1) {
+                    if (modCheck && !TBCore.modsSub(subreddit)) {
                         subreddit = '';
                     }
 
@@ -1101,7 +1099,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
                     }
 
-                    if (modCheck && $.inArray(subreddit, TBCore.mySubs) === -1) {
+                    if (modCheck && !TBCore.modsSub(subreddit)) {
                         subreddit = '';
                     }
 

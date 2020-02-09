@@ -14,10 +14,10 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
 // After that direct users to a page confirming settings have been reset.
 function clearLocal () {
     // Cache.
-    chrome.runtime.sendMessage({
+    browser.runtime.sendMessage({
         action: 'tb-cache',
         method: 'clear',
-    }, () => {
+    }).then(() => {
         // Wait a sec for stuff to clear.
         setTimeout(() => {
             window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
@@ -258,7 +258,7 @@ function storagewrapper () {
 
             // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
             // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
-            if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && chrome.extension.inIncognitoContext) {
+            if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
                 logger.error('firefox is in incognito mode, toolbox will not work.');
                 return;
             }
@@ -443,12 +443,12 @@ function storagewrapper () {
             return new Promise(resolve => {
                 const storageKey = `TBCache.${module}.${setting}`;
                 const inputValue = defaultVal !== undefined ? defaultVal : null;
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'get',
                     storageKey,
                     inputValue,
-                }, response => {
+                }).then(response => {
                     if (response.errorThrown !== undefined) {
                         $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
                         resolve(defaultVal);
@@ -462,12 +462,12 @@ function storagewrapper () {
         function setCache (module, setting, inputValue) {
             const storageKey = `TBCache.${module}.${setting}`;
             return new Promise(resolve => {
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'set',
                     storageKey,
                     inputValue,
-                }, async () => {
+                }).then(async () => {
                     const value = await getCache(module, setting);
                     resolve(value);
                 });
@@ -476,10 +476,10 @@ function storagewrapper () {
 
         function clearCache () {
             return new Promise(resolve => {
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'clear',
-                }, () => {
+                }).then(() => {
                     resolve();
                 });
             });

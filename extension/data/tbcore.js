@@ -1891,14 +1891,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             action: 'tb-request',
             endpoint: '/subreddits/mine/moderator.json',
             data: {
                 after,
                 limit: 100,
             },
-        }, response => {
+        }).then(response => {
             const {errorThrown, data, jqXHR, textStatus} = response;
             if (errorThrown) {
                 logger.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
@@ -1925,10 +1925,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
     function getUserDetails (tries = 0) {
         return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-request',
                 endpoint: '/api/me.json',
-            }, response => {
+            }).then(response => {
                 const {errorThrown, data, jqXHR, textStatus} = response;
                 if (errorThrown) {
                     logger.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);

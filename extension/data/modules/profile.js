@@ -337,6 +337,15 @@ function profilepro () {
                 $sidebar.find('time.timeago').timeago();
 
                 addModSubsToSidebar(user, $sidebar);
+            }).catch(error => {
+                self.error('Error fetching user information:', inputURL, error);
+                // This CSS uses inline-block and having whitespace screws it
+                // up, so this HTML has to start immediately after the quote :|
+                $tabWrapper.after(`<div class="tb-profile-sidebar">
+                    <ul class="tb-user-detail-ul">
+                        <li>No user information found - shadowbanned or deleted?</li>
+                    </ul>
+                </div>`);
             });
         }
 
@@ -697,6 +706,13 @@ function profilepro () {
                     TB.ui.longLoadSpinner(false);
                     $options.show();
                 });
+            }).catch(error => {
+                self.error('Error fetching profile activity:', inputURL, error);
+                $('.tb-profile-overlay .tb-window-content').html(`
+                    <h1>No activity found</h1>
+                    <p>Reddit doesn't seem to have anything for this account. Try checking your subreddit's moderation log to find posts and comments from them.</p>
+                `);
+                TB.ui.longLoadSpinner(false);
             });
         }
 

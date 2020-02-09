@@ -598,10 +598,7 @@ function queuetools () {
                             TBCore.sendEvent(TBCore.events.TB_APPROVE_THING);
                         });
                     } else {
-                        TBApi.removeThing(id, spam, success => {
-                            self.log(success);
-                        // Insert useful error handling here (or not)
-                        });
+                        TBApi.removeThing(id, spam);
                     }
                 });
                 $actioned.css('opacity', '1');

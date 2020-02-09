@@ -1612,28 +1612,20 @@
     $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove, .tb-thing-button-remove', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.removeThing(fullname, false, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">removed</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.removeThing(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">removed</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 
     $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam, .tb-thing-button-spam', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.removeThing(fullname, true, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">spammed</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.removeThing(fullname, true).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">spammed</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 

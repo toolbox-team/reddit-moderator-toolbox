@@ -148,10 +148,8 @@ function nukecomments () {
                     removalCount++;
                     TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
                     if (executionType === 'remove') {
-                        TBApi.removeThing(`t1_${comment}`, false, result => {
-                            if (!result) {
-                                missedComments.push(comment);
-                            }
+                        TBApi.removeThing(`t1_${comment}`).catch(() => {
+                            missedComments.push(comment);
                         });
                     } else if (executionType === 'lock') {
                         TBApi.lock(`t1_${comment}`, result => {

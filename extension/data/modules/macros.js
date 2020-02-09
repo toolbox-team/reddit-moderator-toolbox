@@ -447,7 +447,7 @@ function modmacros () {
                             self.log('Performing non-modmail actions');
 
                             if (remove) {
-                                TBApi.removeThing(info.id, false);
+                                TBApi.removeThing(info.id);
                             }
 
                             if (approve) {

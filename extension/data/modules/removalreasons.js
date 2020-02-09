@@ -682,7 +682,7 @@ function removalreasons () {
             // At this point make extra sure the item actually does get removed
             TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
                 if (!ham) {
-                    TBApi.removeThing(data.fullname, false);
+                    TBApi.removeThing(data.fullname);
                 }
             });
 

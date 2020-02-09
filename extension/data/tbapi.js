@@ -446,23 +446,17 @@
         uh: TBCore.modhash,
     });
 
-    TBApi.removeThing = function (id, spam, callback) {
-        TBApi.post('/api/remove', {
-            uh: TBCore.modhash,
-            id,
-            spam,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Removes a post or comment.
+     * @param {string} id Fullname of the post or comment
+     * @param {boolean?} spam If true, removes as spam
+     * @returns {Promise}
+     */
+    TBApi.removeThing = (id, spam) => TBApi.post('/api/remove', {
+        uh: TBCore.modhash,
+        id,
+        spam,
+    });
 
     TBApi.markOver18 = function (id, callback) {
         TBApi.post('/api/marknsfw', {

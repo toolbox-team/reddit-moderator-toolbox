@@ -15,6 +15,8 @@ messageHandlers.set('tb-global', async (request, sender) => {
         }
     }
 
-    // Also send to the background page
-    handleMessage(message, sender);
+    // Also send to the background page, unless it only applies to tabs
+    if (!request.excludeBackground) {
+        handleMessage(message, sender);
+    }
 });

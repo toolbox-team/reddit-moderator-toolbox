@@ -321,6 +321,7 @@ function notifiermod () {
             chrome.runtime.sendMessage({
                 action: 'tb-global',
                 globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
+                excludeBackground: true,
                 payload: {
                     unreadMessageCount: self.setting('unreadMessageCount'),
                     modqueueCount: self.setting('modqueueCount'),

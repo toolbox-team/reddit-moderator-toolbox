@@ -428,6 +428,7 @@ function storagewrapper () {
                 chrome.runtime.sendMessage({
                     action: 'tb-global',
                     globalEvent: 'tb-single-setting-update',
+                    excludeBackground: true,
                     payload: {
                         key: storageKey,
                         value: sanitzedValue,

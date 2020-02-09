@@ -174,7 +174,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBCore.mySubsData = cacheDetails.moderatedSubsData;
         }
 
-        const manifest = chrome.runtime.getManifest();
+        const manifest = browser.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
         const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
@@ -250,9 +250,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
             src: local('Material Icons'),
                 local('MaterialIcons-Regular'),
-                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
-                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
-                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
+                url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
+                url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
+                url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
         }
         </style>`);
 

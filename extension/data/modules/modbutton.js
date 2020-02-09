@@ -499,6 +499,7 @@ function modbutton () {
                   $status = $popup.find('.status'),
                   banReason = $popup.find('.ban-note').val(),
                   banDuration = $popup.find('.ban-duration').val(),
+                  banContext = $popup.find('.thing_id').text(),
                   subreddits = [],
                   user = $popup.find('.user').text();
 
@@ -603,6 +604,7 @@ function modbutton () {
                                 banReason,
                                 banMessage,
                                 banDuration,
+                                banContext,
                             }).then(response => {
                                 if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
                                     // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
@@ -616,6 +618,7 @@ function modbutton () {
                                         banReason,
                                         banMessage,
                                         banDuration,
+                                        banContext,
                                     }).then(success => {
                                         if (!success) {
                                             self.log('missed one');

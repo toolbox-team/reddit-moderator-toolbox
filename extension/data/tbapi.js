@@ -25,6 +25,7 @@
         if (response.errorThrown !== undefined) {
             throw response;
         }
+        return response;
     });
 
     /**

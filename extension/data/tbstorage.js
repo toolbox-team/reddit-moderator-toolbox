@@ -215,7 +215,7 @@ function storagewrapper () {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                         && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             // Succes, tell other browser tabs with toolbox that there are new settings.
-                            chrome.runtime.sendMessage({
+                            browser.runtime.sendMessage({
                                 action: 'tb-global',
                                 globalEvent: 'tb-settings-update',
                                 payload: returnObject,
@@ -425,7 +425,7 @@ function storagewrapper () {
                 saveSettingsToBrowser();
 
                 // Communicate the new setting to other open tabs.
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-global',
                     globalEvent: 'tb-single-setting-update',
                     excludeBackground: true,

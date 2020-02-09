@@ -176,13 +176,13 @@
     // Notification click handlers
     $body.on('click', '.tb-notification .close', function (event) {
         event.stopPropagation(); // don't open the linked page
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             action: 'tb-page-notification-close',
             id: $(this).closest('.tb-notification').attr('data-id'),
         });
     });
     $body.on('click', '.tb-notification', function () {
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             action: 'tb-page-notification-click',
             id: $(this).attr('data-id'),
         });

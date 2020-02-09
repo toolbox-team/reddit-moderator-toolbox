@@ -297,7 +297,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBCore.logged);
 
             // Force refresh of timed cache
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-cache-force-timeout',
             });
         }
@@ -696,7 +696,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * when the notification is clicked
          */
         TBCore.notification = function (title, body, path, markreadid = false) {
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-notification',
                 native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
                 details: {
@@ -1323,7 +1323,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.reloadToolbox = function () {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-            chrome.runtime.sendMessage({action: 'tb-reload'}, () => {
+            browser.runtime.sendMessage({action: 'tb-reload'}, () => {
                 window.location.reload();
             });
         };
@@ -1423,7 +1423,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.clearCache();
 
             if (!calledFromBackground) {
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-global',
                     globalEvent: 'clearCache',
                 });

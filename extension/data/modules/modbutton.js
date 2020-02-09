@@ -603,31 +603,29 @@ function modbutton () {
                                 banReason,
                                 banMessage,
                                 banDuration,
-                            }, (success, response) => {
-                                if (success) {
-                                    if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
-                                        // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
+                            }).then(response => {
+                                if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
+                                    // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
 
-                                        self.log('no ban message allowed, falling back to no message.');
-                                        banMessage = '';
-                                        TBApi.friendUser({
-                                            user,
-                                            action,
-                                            subreddit,
-                                            banReason,
-                                            banMessage,
-                                            banDuration,
-                                        }, success => {
-                                            if (!success) {
-                                                self.log('missed one');
-                                                failedSubs.push(subreddit);
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    self.log('missed one');
-                                    failedSubs.push(subreddit);
+                                    self.log('no ban message allowed, falling back to no message.');
+                                    banMessage = '';
+                                    TBApi.friendUser({
+                                        user,
+                                        action,
+                                        subreddit,
+                                        banReason,
+                                        banMessage,
+                                        banDuration,
+                                    }).then(success => {
+                                        if (!success) {
+                                            self.log('missed one');
+                                            failedSubs.push(subreddit);
+                                        }
+                                    });
                                 }
+                            }).catch(() => {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
                             });
                         } else {
                             TBApi.unfriendUser(user, action, subreddit, success => {

@@ -366,6 +366,8 @@
      * @param {string} options.banContext If banning, a fullname pointing to the
      * link or comment the user is being banned for
      * @param {TBApi~friendUserCallback} callback Called when the API returns
+     * @returns {Promise} Resolves to the JSON response body or rejects with a
+     * jqXHR object
      */
     TBApi.friendUser = function ({
         user,
@@ -375,7 +377,7 @@
         banMessage,
         banDuration,
         banContext,
-    }, callback) {
+    }) {
         const trimmedBanMessage = banMessage.length > 999 ? banMessage.substring(0, 999) : banMessage;
         const trimmedBanReason = banReason.length > 99 ? banReason.substring(0, 99) : banReason;
         if (banDuration) {
@@ -387,7 +389,7 @@
             }
         }
 
-        TBApi.post('/api/friend', {
+        return TBApi.post('/api/friend', {
             api_type: 'json',
             uh: TBCore.modhash,
             type: action,
@@ -397,17 +399,7 @@
             ban_message: trimmedBanMessage,
             duration: banDuration,
             ban_context: banContext,
-        })
-            .then(response => {
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
+        });
     };
 
     /**

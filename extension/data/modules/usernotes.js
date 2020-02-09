@@ -1125,9 +1125,7 @@ function usernotes () {
         if (!forceSkipCache) {
             if (TBCore.noteCache[subreddit] !== undefined) {
                 self.log('notes found in cache');
-                if (callback) {
-                    callback(true, TBCore.noteCache[subreddit], subreddit);
-                }
+                callback(true, TBCore.noteCache[subreddit], subreddit);
                 return;
             }
 
@@ -1174,9 +1172,7 @@ function usernotes () {
         });
 
         function returnFalse (pageError) {
-            if (callback) {
-                callback(false, null, pageError);
-            }
+            callback(false, null, pageError);
         }
 
         // Inflate notes from the database, converting between versions if necessary.

@@ -626,16 +626,6 @@ function tbconfig () {
                 sortReasons = JSON.parse(JSON.stringify(config.removalReasons.reasons));
 
                 config.removalReasons.reasons.forEach((reason, index) => {
-                    let label = unescape(reason.text);
-                    if (label === '') {
-                        label = '<span style="color: #cecece">(no reason)</span>';
-                    } else {
-                        if (label.length > 200) {
-                            label = `${label.substring(0, 197)}...`;
-                        }
-                        label = TBHelpers.htmlEncode(label);
-                    }
-
                     const removalReasonTitle = reason.title || '';
 
                     const removalReasonTemplateHTML = `

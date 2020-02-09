@@ -163,7 +163,7 @@
     };
 
     // Handle notification updates from the background page
-    chrome.runtime.onMessage.addListener(message => {
+    browser.runtime.onMessage.addListener(message => {
         if (message.action === 'tb-show-page-notification') {
             logger.log('Notifier message get:', message);
             TBui.showNotification(message.details);

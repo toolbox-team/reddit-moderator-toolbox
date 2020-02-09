@@ -76,7 +76,7 @@ function storagewrapper () {
             }
 
             // Listen for updated settings and update the settings object.
-            chrome.runtime.onMessage.addListener(message => {
+            browser.runtime.onMessage.addListener(message => {
                 // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
                 if (message.action === 'tb-settings-update') {
                     TBsettingsObject = message.payload.tbsettings;

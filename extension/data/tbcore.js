@@ -1463,7 +1463,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         // Listen to background page communication and act based on that.
-        chrome.runtime.onMessage.addListener(message => {
+        browser.runtime.onMessage.addListener(message => {
             switch (message.action) {
             case 'clearCache': {
                 TBCore.clearCache(true);

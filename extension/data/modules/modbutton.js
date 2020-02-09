@@ -325,16 +325,17 @@ function modbutton () {
             if (subreddit) {
                 self.log('getting ban macros');
                 TBCore.getConfig(subreddit, config => {
+                    if (!config || !config.banMacros) {
+                        return;
+                    }
                     const macros = config.banMacros;
-                    if (config && macros) {
-                        if (macros.banNote) {
-                            self.log(macros.banNote);
-                            $popup.find('.ban-note').val(TBHelpers.replaceTokens(info, macros.banNote));
-                        }
-                        if (macros.banMessage) {
-                            self.log(macros.banMessage);
-                            $popup.find('.ban-message').val(TBHelpers.replaceTokens(info, macros.banMessage));
-                        }
+                    if (macros.banNote) {
+                        self.log(macros.banNote);
+                        $popup.find('.ban-note').val(TBHelpers.replaceTokens(info, macros.banNote));
+                    }
+                    if (macros.banMessage) {
+                        self.log(macros.banMessage);
+                        $popup.find('.ban-message').val(TBHelpers.replaceTokens(info, macros.banMessage));
                     }
                 });
             }

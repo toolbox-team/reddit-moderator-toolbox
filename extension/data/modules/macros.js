@@ -384,6 +384,7 @@ function modmacros () {
                                 subreddit: info.subreddit,
                                 banReason: `Banned from: ${info.permalink}`,
                                 banMessage: `For the following ${kind}: ${info.permalink}`,
+                                banContext: info.id,
                             });
                         }
 
@@ -469,6 +470,7 @@ function modmacros () {
                                 subreddit: info.subreddit,
                                 banReason: `Banned from: ${info.permalink}`,
                                 banMessage: `For the following ${kind}: ${info.permalink}`,
+                                banContext: info.id,
                             });
                         }
 

@@ -125,6 +125,7 @@ function syntax () {
                     extraKeys: {
                         'Ctrl-Space': 'autocomplete',
                         'Ctrl-Alt-F': 'findPersistent',
+                        'Ctrl-/': 'toggleComment',
                         'F11' (cm) {
                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
@@ -206,6 +207,7 @@ function syntax () {
                     indentUnit: 4,
                     extraKeys: {
                         'Ctrl-Alt-F': 'findPersistent',
+                        'Ctrl-/': 'toggleComment',
                         'F11' (cm) {
                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },

@@ -10,7 +10,18 @@ function getOAuthTokens (tries = 1) {
     return new Promise(async (resolve, reject) => {
         // This function will fetch the cookie and if there is no cookie attempt to create one by visiting modmail.
         // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
-        const rawCookie = await browser.cookies.get({url: 'https://mod.reddit.com', name: 'token'});
+
+        const cookieInfo = {url: 'https://mod.reddit.com', name: 'token'};
+        let rawCookie;
+        try {
+            rawCookie = await browser.cookies.get(cookieInfo);
+        } catch (error) {
+            // If first-party isolation is enabled in Firefox, `cookies.get`
+            // throws when not provided a `firstPartyDomain`, so we try again
+            // passing the first-party domain for the cookie we're looking for.
+            cookieInfo.firstPartyDomain = 'reddit.com';
+            rawCookie = await browser.cookies.get(cookieInfo);
+        }
         // If we do get a rawcookie we first want to make sure it is still valid.
         let expired = false;
         if (rawCookie) {

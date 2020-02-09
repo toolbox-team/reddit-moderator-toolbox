@@ -346,7 +346,36 @@
             });
     };
 
-    TBApi.friendUser = function (user, action, subreddit, banReason, banMessage, banDuration, callback) {
+    /**
+     * Creates a relationship between a user and a subreddit. This is used for:
+     * - Banning users
+     * - Wikibanning users
+     * - Muting users
+     * - Adding moderators
+     * - Adding wiki contributors
+     * - Accepting moderator invitations
+     * @param {object} options
+     * @param {string} options.user The user to apply the relationship to
+     * @param {string} options.action The string for the desired action (see
+     * https://www.reddit.com/dev/api#POST_api_friend for a list)
+     * @param {string} options.subreddit The sub to apply the relationship in
+     * @param {string} options.banReason If banning, the private mod note
+     * @param {string} options.banMessage If banning, the note sent to the user
+     * @param {number} options.banDuration If banning, the length of the ban (0
+     * or undefined for a permanent ban)
+     * @param {string} options.banContext If banning, a fullname pointing to the
+     * link or comment the user is being banned for
+     * @param {TBApi~friendUserCallback} callback Called when the API returns
+     */
+    TBApi.friendUser = function ({
+        user,
+        action,
+        subreddit,
+        banReason,
+        banMessage,
+        banDuration,
+        banContext,
+    }, callback) {
         const trimmedBanMessage = banMessage.length > 999 ? banMessage.substring(0, 999) : banMessage;
         const trimmedBanReason = banReason.length > 99 ? banReason.substring(0, 99) : banReason;
         if (banDuration) {
@@ -367,6 +396,7 @@
             note: trimmedBanReason,
             ban_message: trimmedBanMessage,
             duration: banDuration,
+            ban_context: banContext,
         })
             .then(response => {
                 if (typeof callback !== 'undefined') {
@@ -379,6 +409,13 @@
                 }
             });
     };
+
+    /**
+     * @callback TBApi~friendUserCallback
+     * @param {boolean} success If true, relationship was updated successfully
+     * @param {object} response The raw JSON response, contains errors if
+     * success is false
+     */
 
     TBApi.unfriendUser = function (user, action, subreddit, callback) {
         TBApi.post('/api/unfriend', {

@@ -378,11 +378,13 @@ function modmacros () {
                         self.log('Performing user actions');
 
                         if (ban) {
-                            TBApi.friendUser(
-                                info.author, 'banned', info.subreddit,
-                                `Banned from: ${info.permalink}`,
-                                `For the following ${kind}: ${info.permalink}`
-                            );
+                            TBApi.friendUser({
+                                user: info.author,
+                                action: 'banned',
+                                subreddit: info.subreddit,
+                                banReason: `Banned from: ${info.permalink}`,
+                                banMessage: `For the following ${kind}: ${info.permalink}`,
+                            });
                         }
 
                         if (mute) {
@@ -461,19 +463,23 @@ function modmacros () {
                         self.log('Performing user actions');
 
                         if (ban) {
-                            TBApi.friendUser(
-                                info.author, 'banned', info.subreddit,
-                                `Banned from: ${info.permalink}`,
-                                `For the following ${kind}: ${info.permalink}`
-                            );
+                            TBApi.friendUser({
+                                user: info.author,
+                                action: 'banned',
+                                subreddit: info.subreddit,
+                                banReason: `Banned from: ${info.permalink}`,
+                                banMessage: `For the following ${kind}: ${info.permalink}`,
+                            });
                         }
 
                         if (mute) {
                             self.log(`  Muting "${info.author}" from /r/${info.subreddit} @ ${info.permalink}`);
-                            TBApi.friendUser(
-                                info.author, 'muted', info.subreddit,
-                                `Muted from: ${info.permalink}`
-                            );
+                            TBApi.friendUser({
+                                user: info.author,
+                                action: 'muted',
+                                subreddit: info.subreddit,
+                                banReason: `Muted from: ${info.permalink}`,
+                            });
                         }
                     }
                 }

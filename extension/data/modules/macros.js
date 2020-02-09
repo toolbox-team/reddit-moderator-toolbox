@@ -436,10 +436,8 @@ function modmacros () {
                                 }
                                 if (distinguish && !TBCore.isModmail) {
                                     // Distinguish the new reply
-                                    TBApi.distinguishThing(commentId, sticky && topLevel, successful => {
-                                        if (!successful) {
-                                            TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
-                                        }
+                                    TBApi.distinguishThing(commentId, sticky && topLevel).then(() => {
+                                        TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
                                     });
                                 }
                             }

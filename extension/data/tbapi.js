@@ -423,23 +423,18 @@
             });
     };
 
-    TBApi.distinguishThing = function (id, sticky, callback) {
-        TBApi.post('/api/distinguish/yes', {
-            id,
-            sticky,
-            uh: TBCore.modhash,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Mod-distinguishes a post or comment.
+     * @param {string} id The fullname of the post or comment
+     * @param {boolean} sticky If distinguishing a top-level comment, whether to
+     * also sticky the comment
+     * @returns {Promise}
+     */
+    TBApi.distinguishThing = (id, sticky) => TBApi.post('/api/distinguish/yes', {
+        id,
+        sticky,
+        uh: TBCore.modhash,
+    });
 
     TBApi.approveThing = function (id, callback) {
         TBApi.post('/api/approve', {

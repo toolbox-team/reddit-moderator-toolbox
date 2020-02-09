@@ -771,16 +771,14 @@ function removalreasons () {
                                 status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                             } else {
                             // Distinguish the new reply, stickying if necessary
-                                TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky, successful => {
-                                    if (successful) {
-                                        if (notifyByPM) {
-                                            sendPM();
-                                        } else {
-                                            removePopup(popup);
-                                        }
+                                TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
+                                    if (notifyByPM) {
+                                        sendPM();
                                     } else {
-                                        status.text(DISTINGUISH_ERROR);
+                                        removePopup(popup);
                                     }
+                                }).catch(() => {
+                                    status.text(DISTINGUISH_ERROR);
                                 });
 
                                 // Also lock the thread if requested

@@ -695,10 +695,8 @@ function removalreasons () {
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
             if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
-                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS, successful => {
-                    if (!successful) {
-                        status.text(FLAIR_ERROR);
-                    }
+                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS).catch(() => {
+                    status.text(FLAIR_ERROR);
                 });
             }
 

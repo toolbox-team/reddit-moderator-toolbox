@@ -91,6 +91,7 @@
     });
 
     /**
+     * @function
      * Sends an authenticated POST request against the OAuth API.
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
@@ -98,6 +99,7 @@
     TBApi.apiOauthPOST = TBApi.apiOauthRequest.bind(null, 'POST');
 
     /**
+     * @function
      * Sends an authenticated GET request against the OAuth API.
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
@@ -304,47 +306,39 @@
      * @param {string} name The ban name, if any
      */
 
-    TBApi.flairPost = function (postLink, subreddit, text, cssClass, callback) {
-        TBApi.post('/api/flair', {
-            api_type: 'json',
-            link: postLink,
-            text,
-            css_class: cssClass,
-            r: subreddit,
-            uh: TBCore.modhash,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Sets a flair on a post.
+     * @param {string} postLink The post's fullname
+     * @param {string} subreddit The name of the subreddit the post is in
+     * @param {string} text The flair's text
+     * @param {string} cssClass The flair's CSS class
+     * @returns {Promise}
+     */
+    TBApi.flairPost = (postLink, subreddit, text, cssClass) => TBApi.post('/api/flair', {
+        api_type: 'json',
+        link: postLink,
+        text,
+        css_class: cssClass,
+        r: subreddit,
+        uh: TBCore.modhash,
+    });
 
-    TBApi.flairUser = function (user, subreddit, text, cssClass, callback) {
-        TBApi.post('/api/flair', {
-            api_type: 'json',
-            name: user,
-            r: subreddit,
-            text,
-            css_class: cssClass,
-            uh: TBCore.modhash,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Sets a flair on a user in a subreddit.
+     * @param {string} user The name of the user
+     * @param {string} subreddit The name of the subreddit
+     * @param {string} text The flair's text
+     * @param {string} cssClass The flair's CSS class
+     * @returns {Promise}
+     */
+    TBApi.flairUser = (user, subreddit, text, cssClass) => TBApi.post('/api/flair', {
+        api_type: 'json',
+        name: user,
+        r: subreddit,
+        text,
+        css_class: cssClass,
+        uh: TBCore.modhash,
+    });
 
     /**
      * Creates a relationship between a user and a subreddit. This is used for:

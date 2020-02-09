@@ -724,14 +724,12 @@ function modbutton () {
 
             TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 
-            TBApi.flairUser(user, subreddit, text, css_class, (success, error) => {
-                if (success) {
-                    TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
-                } else {
-                    self.log(error.responseText);
-                    TBui.textFeedback(error.responseText, TBui.FEEDBACK_NEGATIVE);
-                    $status.text(error.responseText);
-                }
+            TBApi.flairUser(user, subreddit, text, css_class).then(() => {
+                TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
+            }).catch(error => {
+                self.log(error.responseText);
+                TBui.textFeedback(error.responseText, TBui.FEEDBACK_NEGATIVE);
+                $status.text(error.responseText);
             });
         });
     };

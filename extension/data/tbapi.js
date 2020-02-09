@@ -458,39 +458,25 @@
         spam,
     });
 
-    TBApi.markOver18 = function (id, callback) {
-        TBApi.post('/api/marknsfw', {
-            id,
-            uh: TBCore.modhash,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Marks a post as NSFW.
+     * @param {string} id Fullname of the post
+     * @returns {Promise}
+     */
+    TBApi.markOver18 = id => TBApi.post('/api/marknsfw', {
+        id,
+        uh: TBCore.modhash,
+    });
 
-    TBApi.unMarkOver18 = function (id, callback) {
-        TBApi.post('/api/unmarknsfw', {
-            uh: TBCore.modhash,
-            id,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Un-marks a post NSFW.
+     * @param {string} id Fullname of the post
+     * @returns {Promise}
+     */
+    TBApi.unMarkOver18 = id => TBApi.post('/api/unmarknsfw', {
+        uh: TBCore.modhash,
+        id,
+    });
 
     TBApi.lock = function (id, callback) {
         TBApi.post('/api/lock', {

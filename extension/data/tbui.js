@@ -1660,28 +1660,20 @@
     $body.on('click', '.tb-submission-button-nsfw', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.markOver18(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">marked nsfw</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.markOver18(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">marked nsfw</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 
     $body.on('click', '.tb-submission-button-unsfw', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.unMarkOver18(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">unmarked nsfw</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.unMarkOver18(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">unmarked nsfw</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 

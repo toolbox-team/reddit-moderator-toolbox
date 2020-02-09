@@ -13,21 +13,18 @@
      * @param {boolean?} options.oauth If true, the request will be sent on
      * oauth.reddit.com, and the `Authorization` header will be set with the
      * OAuth access token for the logged-in user
+     * @returns {Promise}
      */
-    TBApi.sendRequest = ({method, endpoint, data, oauth}) => new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage({
-            action: 'tb-request',
-            method,
-            endpoint,
-            data,
-            oauth,
-        }, response => {
-            if (response.errorThrown !== undefined) {
-                reject(response);
-            } else {
-                resolve(response);
-            }
-        });
+    TBApi.sendRequest = ({method, endpoint, data, oauth}) => browser.runtime.sendMessage({
+        action: 'tb-request',
+        method,
+        endpoint,
+        data,
+        oauth,
+    }).then(response => {
+        if (response.errorThrown !== undefined) {
+            throw response;
+        }
     });
 
     /**

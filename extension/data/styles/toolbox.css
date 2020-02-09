@@ -43,6 +43,7 @@ body.mod-toolbox[toolbox-warning]::before {
     margin-bottom: 3px;
 }
 
+.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBpostAuthor"],
 .mod-toolbox-rd .tb-frontend-container[data-tb-type="TBcommentAuthor"] {
     /* Spacing fix for user buttons on old Reddit (why is whitespace significant in HTML reeeee) */
     display: inline-flex;

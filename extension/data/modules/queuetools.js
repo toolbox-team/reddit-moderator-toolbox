@@ -343,6 +343,7 @@ function queuetools () {
                 <a class="choice dashed" href="javascript:;" type="spammed">[ spammed ]</a>
                 <a class="choice" href="javascript:;" type="removed">[ removed ]</a>
                 <a class="choice" href="javascript:;" type="approved">[ approved ]</a>
+                <a class="choice" href="javascript:;" type="ignored">[ reports ignored ]</a>
                 <a class="choice" href="javascript:;" type="actioned">[ actioned ]</a>
                 <a class="choice dashed" href="javascript:;" type="domain">domain...</a>
                 <a class="choice" href="javascript:;" type="user">user...</a>
@@ -524,6 +525,9 @@ function queuetools () {
                 case 'approved':
                     selector = '.approved,:has(.approval-checkmark,.pretty-button.positive.pressed),:has(.approve-button:contains(approved))';
                     break;
+                case 'ignored':
+                    selector = ':has(.pretty-button.pressed[data-event-action*="ignorereports"])'; // could be "ignorereports" or "unignorereports", hence the *=
+                    break;
                 case 'actioned':
                     selector = `.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),
                             :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))`;
@@ -553,6 +557,7 @@ function queuetools () {
                     selector = ':has(.linkflairlabel)';
                     break;
                 }
+                debugger;
                 things.filter(selector).find('input[type=checkbox]').prop('checked', true);
             });
 

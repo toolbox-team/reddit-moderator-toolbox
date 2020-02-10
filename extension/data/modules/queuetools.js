@@ -560,7 +560,7 @@ function queuetools () {
                     break;
                 case 'pointsgt': {
                     const min = parseInt(prompt('points greater than:', ''));
-                    selector = t => things[t].querySelector('.score.unvoted').innerHTML.split(' ')[0] > min;
+                    selector = (_, el) => $(el).find('.score.unvoted').attr('title') > min;
                     break;
                 }
                 case 'pointslt': {

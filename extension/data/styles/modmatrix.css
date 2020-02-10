@@ -139,9 +139,14 @@
     transform: rotate(-90.0deg);
 }
 
+.sitetable.modactionlisting td {
+    vertical-align: top;
+    padding-bottom: 10px;
+}
+
 /* Comment text */
 
-.modactionlisting .removed_comment_text {
+.modactionlisting .modlog_comment_text {
     padding: 6px;
     margin: 2px 0;
     background-color: rgba(250, 250, 250, 0.8);
@@ -149,10 +154,16 @@
     border-radius: 5px;
 }
 
-.modactionlisting .removed_comment_text p:first-child {
+.modactionlisting .modlog_comment_text.spamcomment,
+.modactionlisting .modlog_comment_text.removecomment {
+    border-color: #fa8072;
+}
+
+
+.modactionlisting .modlog_comment_text p:first-child {
     margin-top: 0;
 }
 
-.modactionlisting .removed_comment_text p:last-child {
+.modactionlisting .modlog_comment_text p:last-child {
     margin-bottom: 0;
 }

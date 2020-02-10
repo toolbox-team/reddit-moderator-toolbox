@@ -735,7 +735,7 @@ function modmatrix () {
         const nerActive = $nerNext.length;
         let loadComments = false;
         const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
-        $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of comments.</a></div>');
+        $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of comments</a></div>');
 
         function getComments (modlogUrl) {
             TB.ui.longLoadSpinner(true);

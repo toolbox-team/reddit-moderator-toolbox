@@ -794,9 +794,9 @@ function queuetools () {
                     oldBoxes[0].remove();
                 };
 
-                const sortButton = document.querySelector('.tb-sort-subs');
-                sortButton.innerHTML = 'sorting...';
-                sortButton.style.cssText = 'padding-left: 17px; padding-right: 16px;';
+                const $sortButton = $('.tb-sort-subs');
+                $sortButton.innerHTML = 'sorting...';
+                $sortButton.style.cssText = 'padding-left: 17px; padding-right: 16px;';
 
                 const now = TBHelpers.getTime(),
                     // delay = 0,
@@ -835,8 +835,8 @@ function queuetools () {
                     () => {
                         window.setTimeout(sortSubreddits, 2000); // wait for final callbacks
                         TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
-                        sortButton.innerHTML = 'sort by items';
-                        sortButton.style.cssText = '';
+                        $sortButton.innerHTML = 'sort by items';
+                        $sortButton.style.cssText = '';
                     }
                 );
 

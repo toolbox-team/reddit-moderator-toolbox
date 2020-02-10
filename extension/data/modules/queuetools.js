@@ -788,11 +788,7 @@ function queuetools () {
 
                 self.log('sorting queue sidebar');
 
-                var oldBoxes = document.querySelectorAll('.tb-subreddit-item-count');
-                var oldBoxesLen = oldBoxes.length
-                for (var x = 0; x < oldBoxesLen; x++) {
-                    oldBoxes[0].remove();
-                };
+                $('.tb-subreddit-item-count').remove();
 
                 const $sortButton = $('.tb-sort-subs');
                 $sortButton.html('sorting...');

@@ -558,14 +558,16 @@ function queuetools () {
                 case 'flair':
                     selector = ':has(.linkflairlabel)';
                     break;
-                case 'pointsgt':
-                    min = parseInt(prompt('points greater than:', ''));
+                case 'pointsgt': {
+                    const min = parseInt(prompt('points greater than:', ''));
                     selector = t => things[t].querySelector('.score.unvoted').innerHTML.split(' ')[0] > min;
                     break;
-                case 'pointslt':
-                    max = parseInt(prompt('points less than:', ''));
+                }
+                case 'pointslt': {
+                    const max = parseInt(prompt('points less than:', ''));
                     selector = t => things[t].querySelector('.score.unvoted').innerHTML.split(' ')[0] < max;
                     break;
+                }
                 }
                 things.filter(selector).find('input[type=checkbox]').prop('checked', true);
             });

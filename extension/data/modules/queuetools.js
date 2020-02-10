@@ -353,6 +353,8 @@ function queuetools () {
                 <a class="choice" href="javascript:;" type="links">all submissions</a>
                 <a class="choice dashed" href="javascript:;" type="self">self posts</a>
                 <a class="choice" href="javascript:;" type="flair">posts with flair</a>
+                <a class="choice" href="javascript:;" type="pointsgt">points >...</a>
+                <a class="choice" href="javascript:;" type="pointslt">points <...</a>
             </div>
             &nbsp;
             <a href="javascript:;" class="tb-general-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a>
@@ -555,6 +557,14 @@ function queuetools () {
                     break;
                 case 'flair':
                     selector = ':has(.linkflairlabel)';
+                    break;
+                case 'pointsgt':
+                    min = parseInt(prompt('points greater than:', ''));
+                    selector = t => things[t].querySelector('.score.unvoted').innerHTML.split(' ')[0] > min;
+                    break;
+                case 'pointslt':
+                    max = parseInt(prompt('points less than:', ''));
+                    selector = t => things[t].querySelector('.score.unvoted').innerHTML.split(' ')[0] < max;
                     break;
                 }
                 things.filter(selector).find('input[type=checkbox]').prop('checked', true);

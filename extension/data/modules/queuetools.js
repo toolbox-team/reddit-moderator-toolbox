@@ -565,7 +565,7 @@ function queuetools () {
                 }
                 case 'pointslt': {
                     const max = parseInt(prompt('points less than:', ''));
-                    selector = t => things[t].querySelector('.score.unvoted').innerHTML.split(' ')[0] < max;
+                    selector = (_, el) => $(el).find('.score.unvoted').attr('title') < max;
                     break;
                 }
                 }

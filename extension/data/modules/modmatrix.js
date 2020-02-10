@@ -746,6 +746,7 @@ function modmatrix () {
                 TBStorage.purifyObject(result);
                 lastAfter = result.data.after;
                 const $modActions = $('.modactionlisting');
+                $modActions.addClass('tb-comments-loaded');
                 result.data.children.forEach(child => {
                     if (child.data.target_body && child.data.target_fullname.startsWith('t1_')) {
                         const $listingItem = $modActions.find(`tr.modactions[data-fullname="${child.data.id}"] .description`);

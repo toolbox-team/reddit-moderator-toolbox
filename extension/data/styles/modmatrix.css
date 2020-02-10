@@ -139,12 +139,11 @@
     transform: rotate(-90.0deg);
 }
 
-.sitetable.modactionlisting td {
+/* Comment text */
+.sitetable.modactionlisting.tb-comments-loaded td {
     vertical-align: top;
     padding-bottom: 10px;
 }
-
-/* Comment text */
 
 .modactionlisting .modlog_comment_text {
     padding: 6px;

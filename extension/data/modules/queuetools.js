@@ -796,7 +796,7 @@ function queuetools () {
 
                 const $sortButton = $('.tb-sort-subs');
                 $sortButton.html('sorting...');
-                $sortButton.css({'padding-left': '17px', 'padding-right': '16px'})
+                $sortButton.css({'padding-left': '17px', 'padding-right': '16px'});
 
                 const now = TBHelpers.getTime(),
                     // delay = 0,
@@ -836,7 +836,7 @@ function queuetools () {
                         window.setTimeout(sortSubreddits, 2000); // wait for final callbacks
                         TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
                         $sortButton.html('sort by items');
-                        $sortButton.css({'padding-left': '', 'padding-right': ''})
+                        $sortButton.css({'padding-left': '', 'padding-right': ''});
                     }
                 );
 

@@ -851,11 +851,14 @@ function usernotes () {
                     const start = page * usersPerPage;
                     const end = start + usersPerPage;
 
+                    const $pageContent = $('<div class="tb-usernotes-content"/>');
+
                     // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
                     for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
-                        if (!fetchActive) {
-                            return;
-                        }
+                        // TODO: I have no idea why this is false here but it is and we can't have that
+                        // if (!fetchActive) {
+                        //     return;
+                        // }
                         self.startProfile('manager-render-user');
                         const $userContent = $userContentTemplate.clone();
                         $userContent.attr('data-user', user);
@@ -899,11 +902,14 @@ function usernotes () {
                         // $userNotes.append(notes);
                         self.endProfile('manager-render-notes');
 
-                        $siteTable.append($userContent);
+                        $pageContent.append($userContent);
                     }
+                    return $pageContent;
                 }
 
-                renderUsernotesPage(0);
+                const pageCount = Math.ceil(Object.keys(notes.users).length / usersPerPage);
+                const $pager = TBui.pager({pageCount}, renderUsernotesPage);
+                $('#tb-usernotes-loading-placeholder-pls-refactor-away').replaceWith($pager);
 
                 // Process done
                 self.endProfile('manager-render');
@@ -1100,7 +1106,12 @@ function usernotes () {
                     {
                         title: `usernotes - /r/${sub}`,
                         tooltip: `edit usernotes for /r/${sub}`,
-                        content: `<div id="tb-un-note-content-wrap" data-subreddit="${sub}"></div>`,
+                        // TODO: just don't make the overlay until we've fetched the notes
+                        content: `
+                            <div id="tb-un-note-content-wrap">
+                                <div id="tb-usernotes-loading-placeholder-pls-refactor-away">Loading notes...</div>
+                            </div>
+                        `,
                         footer: '',
                     },
                 ],

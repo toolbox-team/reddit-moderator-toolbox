@@ -159,7 +159,7 @@ function tbconfig () {
                         <b>Use for:</b>
                         <input type="checkbox" id="remove-posts" name="remove-posts" checked>
                         <label for="remove-posts">Posts</label>
-                        <input type="checkbox" id="remove-comments" name="remove-comments" checked>
+                        <input type="checkbox" id="remove-comments" name="remove-comments">
                         <label for="remove-comments">Comments</label>
                     </div>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>

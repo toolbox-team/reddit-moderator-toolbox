@@ -1183,7 +1183,7 @@ function tbconfig () {
             $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
             $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
             $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
-        }
+        };
 
         // cancel
         $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', resetForm);

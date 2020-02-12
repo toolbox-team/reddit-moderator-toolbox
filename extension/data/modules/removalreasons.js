@@ -186,8 +186,7 @@ function removalreasons () {
             if (TBCore.isOldReddit) {
                 const $yes = $button.find('.yes')[0],
                       $thing = $button.closest('.thing');
-                isComment = ($thing.hasClass('comment') || $thing.hasClass('was-comment'));
-
+                isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment');
 
                 if ($yes) {
                     $yes.click();
@@ -224,12 +223,12 @@ function removalreasons () {
                     uri_body: info.uri_body,
                     uri_title: info.uri_title,
                     reasons: [],
-                    get reasons_posts() {
-                        return this.reasons.filter(r => r.removePosts || r.removePosts === undefined)
+                    get reasons_posts () {
+                        return this.reasons.filter(r => r.removePosts || r.removePosts === undefined);
                     },
-                    get reasons_comments() {
-                        return this.reasons.filter(r => r.removeComments || r.removeComments === undefined)
-                    }
+                    get reasons_comments () {
+                        return this.reasons.filter(r => r.removeComments || r.removeComments === undefined);
+                    },
                 };
 
                 // TODO: Dis ain't finished
@@ -317,12 +316,14 @@ function removalreasons () {
                             // If user does not have commentReasons enabled, only show removal reasons that is explicitly true and not undefined
                             if (!commentReasons) {
                                 removalReasonLength = removalReasonLength.filter(r => r.removeComments).length;
-                            } 
+                            }
                         } else {
                             removalReasonLength = data.reasons_posts.length;
                         }
 
-                        if (!removalReasonLength) return;
+                        if (!removalReasonLength) {
+                            return;
+                        }
 
                         // Open popup
                         createPopup();
@@ -456,9 +457,9 @@ function removalreasons () {
 
                     let reasons = [];
                     if (isComment) {
-                        reasons = data.reasons_comments
+                        reasons = data.reasons_comments;
                     } else {
-                        reasons = data.reasons_posts
+                        reasons = data.reasons_posts;
                     }
 
                     // Render reasons and add to popup

@@ -318,7 +318,7 @@ function notifiermod () {
 
         function updateAllTabs () {
             self.log('updating all counters accross tabs');
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-global',
                 globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
                 excludeBackground: true,

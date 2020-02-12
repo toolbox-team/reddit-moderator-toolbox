@@ -773,6 +773,7 @@ function usernotes () {
               showLink = self.setting('unManagerLink');
         let subUsenotes;
 
+        // Register context hook for opening the manager
         if (showLink) {
             window.addEventListener('TBNewPage', event => {
                 if (event.detail.pageDetails.subreddit) {
@@ -799,9 +800,9 @@ function usernotes () {
             });
         }
 
-        function showSubNotes (status, notes) {
+        // Handle actually opening the manager
+        function showSubNotes (sub, status, notes) {
             const $siteTable = $body.find('#tb-un-note-content-wrap');
-            const sub = $siteTable.attr('data-subreddit');
 
             if (!status || !notes) {
                 const error = `
@@ -902,9 +903,28 @@ function usernotes () {
                     return $pageContent;
                 }
 
+                // Create our pager and present the overlay
                 const pageCount = Math.ceil(Object.keys(notes.users).length / usersPerPage);
                 const $pager = TBui.pager({pageCount}, renderUsernotesPage);
-                $('#tb-usernotes-loading-placeholder-pls-refactor-away').replaceWith($pager);
+
+                // TODO just ditch this name this is legacy
+                const $overlayContent = $('<div id="tb-un-note-content-wrap"/>').append($pager);
+
+                TB.ui.overlay(
+                    `usernotes - /r/${sub}`,
+                    [
+                        {
+                            title: `usernotes - /r/${sub}`,
+                            tooltip: `edit usernotes for /r/${sub}`,
+                            content: $overlayContent,
+                            footer: '',
+                        },
+                    ],
+                    [], // extra header buttons
+                    'tb-un-editor', // class
+                    false // single overriding footer
+                ).appendTo('body');
+                $body.css('overflow', 'hidden');
 
                 // Process done
                 self.endProfile('manager-render');
@@ -933,7 +953,7 @@ function usernotes () {
                     notecount: noteCount,
                 });
 
-                $siteTable.prepend(infocontent);
+                $overlayContent.prepend(infocontent);
 
                 // Set events after all items are loaded.
                 noteManagerRun();
@@ -1094,28 +1114,7 @@ function usernotes () {
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
 
-            TB.ui.overlay(
-                `usernotes - /r/${sub}`,
-                [
-                    {
-                        title: `usernotes - /r/${sub}`,
-                        tooltip: `edit usernotes for /r/${sub}`,
-                        // TODO: just don't make the overlay until we've fetched the notes
-                        content: `
-                            <div id="tb-un-note-content-wrap">
-                                <div id="tb-usernotes-loading-placeholder-pls-refactor-away">Loading notes...</div>
-                            </div>
-                        `,
-                        footer: '',
-                    },
-                ],
-                [], // extra header buttons
-                'tb-un-editor', // class
-                false // single overriding footer
-            ).appendTo('body');
-            $body.css('overflow', 'hidden');
-
-            self.getUserNotes(sub, showSubNotes);
+            self.getUserNotes(sub, showSubNotes.bind(null, sub));
         });
 
         $body.on('click', '.tb-un-editor .close', () => {

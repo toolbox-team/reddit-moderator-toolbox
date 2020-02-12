@@ -1,8 +1,10 @@
 'use strict';
+
 /** @namespace  TBui */
 (function (TBui) {
     const logger = TBLog('TBui');
     const $body = $('body');
+
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
@@ -1562,6 +1564,7 @@
 
         return $buildComment;
     };
+
     /**
      * Will build a comment given a reddit API comment object.
      * @function makeCommentThread
@@ -1592,6 +1595,62 @@
         });
 
         return $commentContainer;
+    };
+
+    /**
+     * Creates a jQuery element that dynamically displays paginated content.
+     * @param {object} options Options for the pager
+     * @param {number} options.pageCount The number of pages to present
+     * @param {string} options.controlPosition Where to display the pager's
+     * controls, either 'top' or 'bottom'
+     * @param {TBui~pagerCallback} contentFunction A function which generates
+     * content for a specific tab
+     * @returns {jQuery}
+     */
+    // TODO: optionally support caching calls to the content function to avoid wasting time regenerating identical pages
+    TBui.pager = function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
+        // Create elements for the content view and the pagination controls
+        const $pagerContent = $('<div class="tb-pager-content"/>');
+        const $pagerControls = $('<div class="tb-pager-controls"/>');
+
+        // Create a button for every page
+        for (let page = 0; page < pageCount; page += 1) {
+            // Create the button, translating 0-indexed to 1-indexed pages fur human eyes
+            const $button = $(TBui.button(page + 1, 'tb-pager-control'));
+            // When the button is clicked, go to the correct page
+            $button.on('click', function () {
+                // Update the indicated active page
+                const $pagerButtons = $pagerControls.children();
+                $pagerButtons.toggleClass('tb-pager-control-active', false);
+                $(this).toggleClass('tb-pager-control-active', true);
+
+                // Generate and display content for the new page
+                /**
+                 * @callback TBui~pagerCallback
+                 * @param {number} page The zero-indexed number of the page to generate
+                 * @returns {string | jQuery} The content of the page
+                 */
+                $pagerContent.empty().append(contentFunction(page));
+            });
+
+            $pagerControls.append($button);
+        }
+
+        // Construct the pager itself
+        const $pager = $('<div class="tb-pager"/>');
+        $pager.append($pagerContent);
+        if (controlPosition === 'top') {
+            $pager.prepend($pagerControls);
+        } else if (controlPosition === 'bottom') {
+            $pager.append($pagerControls);
+        } else {
+            throw new TypeError('Invalid controlPosition');
+        }
+
+        // Preload the content for the first page
+        $pagerControls.children().eq(0).click();
+
+        return $pager;
     };
 
     // handling of comment & submisstion actions.

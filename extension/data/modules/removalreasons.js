@@ -314,6 +314,10 @@ function removalreasons () {
                         let removalReasonLength;
                         if (isComment) {
                             removalReasonLength = data.reasons_comments.length;
+                            // If user does not have commentReasons enabled, only show removal reasons that is explicitly true and not undefined
+                            if (!commentReasons) {
+                                removalReasonLength = removalReasonLength.filter(r => r.removeComments).length;
+                            } 
                         } else {
                             removalReasonLength = data.reasons_posts.length;
                         }

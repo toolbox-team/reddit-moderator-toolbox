@@ -976,9 +976,6 @@ function usernotes () {
             subUsenotes = notes;
             self.log('showing notes');
 
-            const userCount = Object.keys(notes.users).length;
-            const noteCount = 0;
-
             const $userContentTemplate = $(`
                 <div class="tb-un-user" data-user="NONE">
                     <div class="tb-un-user-header">
@@ -1000,6 +997,7 @@ function usernotes () {
             self.startProfile('manager-render');
 
             // The number of users to display on one page
+            // TODO: make this user-customizeable (probably persist this in a setting)
             const usersPerPage = 50;
 
             /**
@@ -1063,11 +1061,19 @@ function usernotes () {
                 return $pageContent;
             }
 
+            // Calculate the total number of users and notes
+            let userCount = 0;
+            let noteCount = 0;
+            for (const user of Object.values(notes.users)) {
+                userCount += 1;
+                noteCount += user.notes.length;
+            }
+
             // Create the base of the overlay content
             const $overlayContent = $(`
                 <div id="tb-un-note-content-wrap">
                     <div class="tb-un-info">
-                        <span class="tb-info">There are ${userCount}} users with ${noteCount} notes.</span>
+                        <span class="tb-info">There are ${userCount} users with ${noteCount} notes.</span>
                         <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
                         <br><br>
                         <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>

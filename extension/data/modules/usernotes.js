@@ -800,7 +800,8 @@ function usernotes () {
             });
         }
 
-        function noteManagerRun () {
+        // Sets up the note manager's even listeners and runs timeago for relative dates
+        function registerManagerEventListeners () {
             self.startProfile('manager-run');
             const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
 
@@ -948,10 +949,10 @@ function usernotes () {
             self.endProfile('manager-run');
         }
 
+        // Open the usernotes manager when the context item is clicked
         $body.on('click', '#tb-un-config-link', async function () {
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
-            debugger;
 
             // Grab the usernotes data
             let notes;
@@ -1114,7 +1115,7 @@ function usernotes () {
             TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
 
             // Set events after all items are loaded.
-            noteManagerRun();
+            registerManagerEventListeners();
 
             self.printProfiles();
         });

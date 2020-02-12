@@ -820,7 +820,7 @@ function usernotes () {
             self.log('showing notes');
 
             const userCount = Object.keys(notes.users).length;
-            let noteCount = 0;
+            const noteCount = 0;
 
             const $userContentTemplate = $(`<div class="tb-un-user" data-user="NONE">
                 <div class="tb-un-user-header">
@@ -838,10 +838,21 @@ function usernotes () {
 
             self.getSubredditColors(sub, colors => {
                 self.startProfile('manager-render');
-                TBCore.forEachChunked(
-                    Object.keys(notes.users), 50, 50,
-                    // Process a user
-                    (user, counter) => {
+
+                // The number of users to display on one page
+                const usersPerPage = 50;
+
+                /**
+                 * Renders a single page of users.
+                 * @param {number} page The page number, starting at 0
+                 * @param {number} [perPage = 50] The amount of entries per page
+                 */
+                function renderUsernotesPage (page) {
+                    const start = page * usersPerPage;
+                    const end = start + usersPerPage;
+
+                    // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
+                    for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
                         if (!fetchActive) {
                             return;
                         }
@@ -854,13 +865,12 @@ function usernotes () {
                         $userContent.append($userNotes);
                         self.endProfile('manager-render-user');
 
-                        TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
+                        // TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
 
                         self.startProfile('manager-render-notes');
                         // var notes = [];
-                        $.each(notes.users[user].notes, (key, val) => {
-                            noteCount++;
-
+                        // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
+                        $.each(userData.notes, (key, val) => {
                             const color = self._findSubredditColor(colors, val.type);
 
                             const timeUTC = Math.round(val.time / 1000),
@@ -890,44 +900,45 @@ function usernotes () {
                         self.endProfile('manager-render-notes');
 
                         $siteTable.append($userContent);
-                    },
-                    // Process done
-                    () => {
-                        self.endProfile('manager-render');
-                        fetchActive = false;
-                        TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
-
-                        const infoHTML = `
-            <div class="tb-un-info">
-                <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>
-                <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
-                <br><br>
-                <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>
-                <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>
-                <select class="tb-prune-length">
-                    <option value="180">six-months</option>
-                    <option value="365">one-year</option>
-                    <option value="730">two-years</option>
-                    <option value="1095">three-years</option>
-                    <option value="1460">four-years</option>
-                    <option value="1825">five-years</option>
-                    <option value="2190">six-years</option>
-                </select>
-            </div></br></br>`;
-
-                        const infocontent = TBHelpers.template(infoHTML, {
-                            usercount: userCount,
-                            notecount: noteCount,
-                        });
-
-                        $siteTable.prepend(infocontent);
-
-                        // Set events after all items are loaded.
-                        noteManagerRun();
-
-                        self.printProfiles();
                     }
-                );
+                }
+
+                renderUsernotesPage(0);
+
+                // Process done
+                self.endProfile('manager-render');
+                fetchActive = false;
+                TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
+
+                const infoHTML = `
+    <div class="tb-un-info">
+        <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>
+        <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
+        <br><br>
+        <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>
+        <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>
+        <select class="tb-prune-length">
+            <option value="180">six-months</option>
+            <option value="365">one-year</option>
+            <option value="730">two-years</option>
+            <option value="1095">three-years</option>
+            <option value="1460">four-years</option>
+            <option value="1825">five-years</option>
+            <option value="2190">six-years</option>
+        </select>
+    </div></br></br>`;
+
+                const infocontent = TBHelpers.template(infoHTML, {
+                    usercount: userCount,
+                    notecount: noteCount,
+                });
+
+                $siteTable.prepend(infocontent);
+
+                // Set events after all items are loaded.
+                noteManagerRun();
+
+                self.printProfiles();
             });
         }
 

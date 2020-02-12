@@ -353,6 +353,8 @@ function queuetools () {
                 <a class="choice" href="javascript:;" type="links">all submissions</a>
                 <a class="choice dashed" href="javascript:;" type="self">self posts</a>
                 <a class="choice" href="javascript:;" type="flair">posts with flair</a>
+                <a class="choice" href="javascript:;" type="pointsgt">points >...</a>
+                <a class="choice" href="javascript:;" type="pointslt">points <...</a>
             </div>
             &nbsp;
             <a href="javascript:;" class="tb-general-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a>
@@ -556,6 +558,16 @@ function queuetools () {
                 case 'flair':
                     selector = ':has(.linkflairlabel)';
                     break;
+                case 'pointsgt': {
+                    const min = parseInt(prompt('points greater than:', ''));
+                    selector = (_, el) => $(el).find('.score.unvoted').attr('title') > min;
+                    break;
+                }
+                case 'pointslt': {
+                    const max = parseInt(prompt('points less than:', ''));
+                    selector = (_, el) => $(el).find('.score.unvoted').attr('title') < max;
+                    break;
+                }
                 }
                 things.filter(selector).find('input[type=checkbox]').prop('checked', true);
             });
@@ -775,7 +787,12 @@ function queuetools () {
                 }
 
                 self.log('sorting queue sidebar');
-                $('.tb-sort-subs').remove(); // don't allow sorting twice.
+
+                $('.tb-subreddit-item-count').remove();
+
+                const $sortButton = $('.tb-sort-subs');
+                $sortButton.html('sorting...');
+                $sortButton.css({'padding-left': '17px', 'padding-right': '16px'});
 
                 const now = TBHelpers.getTime(),
                     // delay = 0,
@@ -814,6 +831,8 @@ function queuetools () {
                     () => {
                         window.setTimeout(sortSubreddits, 2000); // wait for final callbacks
                         TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
+                        $sortButton.html('sort by items');
+                        $sortButton.css({'padding-left': '', 'padding-right': ''});
                     }
                 );
 

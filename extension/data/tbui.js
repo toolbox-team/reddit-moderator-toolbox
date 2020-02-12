@@ -787,10 +787,7 @@
                 triggerIcon = options.triggerIcon;
             }
 
-            let title = options.triggerText;
-            if (options.title) {
-                title = options.triggerText;
-            }
+            const title = options.triggerText;
 
             // Check if there are currently items in the menu.
             const lengthBeforeAdd = $tbContextMenuList.find('li').length;

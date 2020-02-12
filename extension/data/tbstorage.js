@@ -63,7 +63,7 @@ function storagewrapper () {
         TBStorage.isLoaded = false;
 
         browser.storage.local.get('tbsettings').then(sObject => {
-            if (sObject.tbsettings && sObject.tbsettings !== undefined) {
+            if (sObject.tbsettings) {
                 TBsettingsObject = sObject.tbsettings;
 
                 // Paranoid, malicious settings might be stored.

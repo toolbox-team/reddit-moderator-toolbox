@@ -735,7 +735,7 @@ function modmatrix () {
         const nerActive = $nerNext.length;
         let loadComments = false;
         const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
-        $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of removed comments.</a></div>');
+        $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of comments</a></div>');
 
         function getComments (modlogUrl) {
             TB.ui.longLoadSpinner(true);
@@ -746,8 +746,9 @@ function modmatrix () {
                 TBStorage.purifyObject(result);
                 lastAfter = result.data.after;
                 const $modActions = $('.modactionlisting');
+                $modActions.addClass('tb-comments-loaded');
                 result.data.children.forEach(child => {
-                    if (child.data.target_body && child.data.action === 'removecomment') {
+                    if (child.data.target_body && child.data.target_fullname.startsWith('t1_')) {
                         const $listingItem = $modActions.find(`tr.modactions[data-fullname="${child.data.id}"] .description`);
 
                         // Render string markdown to HTML first.
@@ -755,7 +756,7 @@ function modmatrix () {
 
                         // Put it in a template.
                         const comment = `
-                            <div class="removed_comment_text">
+                            <div class="modlog_comment_text ${child.data.action}">
                                 <div class="md">
 
 ${renderedMarkdown}

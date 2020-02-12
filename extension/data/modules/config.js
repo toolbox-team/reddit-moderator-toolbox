@@ -394,6 +394,7 @@ function tbconfig () {
                                                   <ul>
                                                     <li><i>F11:</i> Fullscreen</li>
                                                     <li><i>Esc:</i> Close Fullscreen</li>
+                                                    <li><i>Ctrl-/ / Cmd-/:</i> Toggle comment</li>
                                                     <li><i>Ctrl-F / Cmd-F:</i> Start searching</li>
                                                     <li><i>Ctrl-Alt-F / Cmd-Alt-F:</i> Persistent search (dialog doesn't autoclose) </li>
                                                     <li><i>Ctrl-G / Cmd-G:</i> Find next</li>
@@ -425,6 +426,7 @@ function tbconfig () {
                         indentUnit: 4,
                         extraKeys: {
                             'Ctrl-Alt-F': 'findPersistent',
+                            'Ctrl-/': 'toggleComment',
                             'F11' (cm) {
                                 cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                             },
@@ -626,16 +628,6 @@ function tbconfig () {
                 sortReasons = JSON.parse(JSON.stringify(config.removalReasons.reasons));
 
                 config.removalReasons.reasons.forEach((reason, index) => {
-                    let label = unescape(reason.text);
-                    if (label === '') {
-                        label = '<span style="color: #cecece">(no reason)</span>';
-                    } else {
-                        if (label.length > 200) {
-                            label = `${label.substring(0, 197)}...`;
-                        }
-                        label = TBHelpers.htmlEncode(label);
-                    }
-
                     const removalReasonTitle = reason.title || '';
 
                     const removalReasonTemplateHTML = `

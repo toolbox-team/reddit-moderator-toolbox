@@ -771,8 +771,7 @@ function usernotes () {
     self.usernotesManager = function () {
         const $body = $('body'),
               showLink = self.setting('unManagerLink');
-        let subUsenotes,
-            fetchActive = false;
+        let subUsenotes;
 
         if (showLink) {
             window.addEventListener('TBNewPage', event => {
@@ -855,10 +854,6 @@ function usernotes () {
 
                     // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
                     for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
-                        // TODO: I have no idea why this is false here but it is and we can't have that
-                        // if (!fetchActive) {
-                        //     return;
-                        // }
                         self.startProfile('manager-render-user');
                         const $userContent = $userContentTemplate.clone();
                         $userContent.attr('data-user', user);
@@ -913,7 +908,6 @@ function usernotes () {
 
                 // Process done
                 self.endProfile('manager-render');
-                fetchActive = false;
                 TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
 
                 const infoHTML = `
@@ -1120,13 +1114,11 @@ function usernotes () {
                 false // single overriding footer
             ).appendTo('body');
             $body.css('overflow', 'hidden');
-            fetchActive = true;
 
             self.getUserNotes(sub, showSubNotes);
         });
 
         $body.on('click', '.tb-un-editor .close', () => {
-            fetchActive = false;
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
         });

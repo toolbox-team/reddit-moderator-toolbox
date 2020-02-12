@@ -155,6 +155,13 @@ function tbconfig () {
                 <span id="tb-add-removal-reason-form">
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
                     <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
+                    <div>
+                        <b>Use for:</b>
+                        <input type="checkbox" id="remove-posts" name="remove-posts" checked>
+                        <label for="remove-posts">Posts</label>
+                        <input type="checkbox" id="remove-comments" name="remove-comments" checked>
+                        <label for="remove-comments">Comments</label>
+                    </div>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
                     <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
@@ -581,6 +588,8 @@ function tbconfig () {
 
                     const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
                           removalReasonTitle = config.removalReasons.reasons[i].title || '',
+                          removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts ? 'checked' : '',
+                          removalReasonRemoveComments = config.removalReasons.reasons[i].removeComments ? 'checked' : '',
                           removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                           removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
 
@@ -595,6 +604,13 @@ function tbconfig () {
                         <span class="removal-reason-edit">
                             <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
                             <textarea class="tb-input edit-area">{{removalReasonText}}</textarea><br/>
+                            <div>
+                                <b>Use for:</b>
+                                <input type="checkbox" class="tb-input" id="remove-posts{{i}}" name="remove-posts" {{removalReasonRemovePosts}}>
+                                <label for="remove-posts{{i}}">Posts</label>
+                                <input type="checkbox" class="tb-input" id="remove-comments{{i}}" name="remove-comments" {{removalReasonRemoveComments}}>
+                                <label for="remove-comments{{i}}">Comments</label>
+                            </div>
                             <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
                             <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
@@ -610,6 +626,8 @@ function tbconfig () {
                         label,
                         'removalReasonText': TBHelpers.escapeHTML(removalReasonText),
                         removalReasonTitle,
+                        removalReasonRemovePosts,
+                        removalReasonRemoveComments,
                         removalReasonFlairText,
                         removalReasonFlairCSS,
                     });
@@ -1018,6 +1036,8 @@ function tbconfig () {
 
             $removalContent.find('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
             $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[reasonsNum].title || '');
+            $removalContent.find('input[name=remove-posts]').val(config.removalReasons.reasons[reasonsNum].removePosts || undefined);
+            $removalContent.find('input[name=remove-comments]').val(config.removalReasons.reasons[reasonsNum].removeComments || undefined);
             $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
             $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
             $removalContent.find('input[name=edit-note]').val('');
@@ -1033,6 +1053,8 @@ function tbconfig () {
                   reasonsNum = $removalContent.attr('data-reason'),
                   reasonText = $removalContent.find('.edit-area').val(),
                   reasonTitle = $removalContent.find('input[name=removal-title]').val(),
+                  reasonRemovePosts = $removalContent.find('input[name=remove-posts]').is(':checked'),
+                  reasonRemoveComments = $removalContent.find('input[name=remove-comments]').is(':checked'),
                   reasonFlairText = $removalContent.find('input[name=flair-text]').val(),
                   reasonFlairCSS = $removalContent.find('input[name=flair-css]').val();
             let editNote = $removalContent.find('input[name=edit-note]').val();
@@ -1046,6 +1068,8 @@ function tbconfig () {
             config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
             config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
             config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
+            config.removalReasons.reasons[reasonsNum].removePosts = reasonRemovePosts;
+            config.removalReasons.reasons[reasonsNum].removeComments = reasonRemoveComments;
             config.removalReasons.reasons[reasonsNum].title = reasonTitle;
 
             postToWiki('toolbox', config, editNote, true);
@@ -1113,6 +1137,8 @@ function tbconfig () {
         $body.on('click', '#tb-add-removal-reason-form .save-new-reason', () => {
             const reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
                   reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val(),
+                  reasonRemovePosts = $body.find('#tb-add-removal-reason-form input[name=remove-posts]').is(':checked'),
+                  reasonRemoveComments = $body.find('#tb-add-removal-reason-form input[name=remove-comments]').is(':checked'),
                   reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
                   reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val();
             let editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
@@ -1125,6 +1151,8 @@ function tbconfig () {
 
             reason.flairText = reasonFlairText;
             reason.flairCSS = reasonFlairCSS;
+            reason.removePosts = reasonRemovePosts;
+            reason.removeComments = reasonRemoveComments;
             reason.title = reasonTitle;
 
             if (!config.removalReasons) {
@@ -1142,25 +1170,23 @@ function tbconfig () {
             // And finally we repopulate the reasons list and hide the current form.
             $body.find('#tb-removal-reasons-list').html('');
             removalReasonsContent();
-            $body.find('#tb-add-removal-reason').show();
-            $body.find('#tb-add-removal-reason-form').hide();
-            $body.find('#tb-add-removal-reason-form .edit-area').val('');
-            $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
-            $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
-            $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
-            $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
+            resetForm();
         });
 
-        // cancel
-        $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', () => {
+        const resetForm = () => {
             $body.find('#tb-add-removal-reason').show();
             $body.find('#tb-add-removal-reason-form').hide();
             $body.find('#tb-add-removal-reason-form .edit-area').val('');
             $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
+            $body.find('#tb-add-removal-reason-form input[name=remove-posts]').prop('checked', true);
+            $body.find('#tb-add-removal-reason-form input[name=remove-comments]').prop('checked', true);
             $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
             $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
             $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
-        });
+        }
+
+        // cancel
+        $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', resetForm);
 
         // Removal reasons sorting tab
         $body.on('click', '.tb-window-tabs .sort_removal_reasons', function () {

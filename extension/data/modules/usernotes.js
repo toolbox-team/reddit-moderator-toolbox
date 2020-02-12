@@ -295,7 +295,7 @@ function usernotes () {
                     });
                 }
 
-                self.getSubredditColors(subreddit, colors => {
+                self.getSubredditColors(subreddit).then(colors => {
                     setNotes(notes, subreddit, colors, customThings);
                 });
             });
@@ -460,7 +460,7 @@ function usernotes () {
             $appendTo.append($popup);
 
             // Generate dynamic parts of dialog and show
-            self.getSubredditColors(subreddit, colors => {
+            self.getSubredditColors(subreddit).then(colors => {
                 self.log('Adding colors to dialog');
 
                 // Create type/color selections
@@ -996,10 +996,7 @@ function usernotes () {
             // );
 
             // Grab the note types
-            // TODO: convert original function to promise
-            const colors = await new Promise(resolve => {
-                self.getSubredditColors(sub, resolve);
-            });
+            const colors = await self.getSubredditColors(sub);
             self.startProfile('manager-render');
 
             // The number of users to display on one page
@@ -1468,24 +1465,29 @@ function usernotes () {
         }
     };
 
-    // Per-subreddit coloring
-    self.getSubredditColors = function (subreddit, callback) {
+    /**
+     * Gets the usernote types to use for the given subreddit.
+     * @param {string} subreddit The subreddit to fetch colors for
+     * @returns {Promise} Resolves with the usernote types as an object
+     */
+    self.getSubredditColors = async function (subreddit) {
         self.log(`Getting subreddit colors for /r/${subreddit}`);
-        TBCore.getConfig(subreddit, config => {
-            self.log(`  Config retrieved for /r/${subreddit}`);
-            if (config && config.usernoteColors && config.usernoteColors.length > 0) {
-                callback(config.usernoteColors);
-            } else {
-                self.log(`  Config not retrieved for ${subreddit}, using default colors`);
-
-                // Use default colors
-                callback(TBCore.defaultUsernoteTypes);
-            }
+        // TODO: convert original function to promise
+        const config = await new Promise(resolve => {
+            TBCore.getConfig(subreddit, resolve);
         });
+
+        if (config && config.usernoteColors && config.usernoteColors.length > 0) {
+            self.log(`  Config retrieved for /r/${subreddit}`);
+            return config.usernoteColors;
+        } else {
+            self.log(`  Config not retrieved for ${subreddit}, using default colors`);
+            return TBCore.defaultUsernoteTypes;
+        }
     };
 
     self._findSubredditColor = function (colors, key) {
-    // TODO: make more efficient for repeated operations, like using an object
+        // TODO: make more efficient for repeated operations, like using an object
         for (let i = 0; i < colors.length; i++) {
             if (colors[i].key === key) {
                 return colors[i];

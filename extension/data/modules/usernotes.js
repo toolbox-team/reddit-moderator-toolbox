@@ -800,168 +800,6 @@ function usernotes () {
             });
         }
 
-        // Handle actually opening the manager
-        function showSubNotes (sub, status, notes) {
-            const $siteTable = $body.find('#tb-un-note-content-wrap');
-
-            if (!status || !notes) {
-                const error = `
-            <div class="tb-un-info">
-                <span class="tb-info" style="color:red">No user notes were found for this subreddit.</span>
-            </div>`;
-
-                self.log(`un status: ${status}\nnotes: ${notes}`);
-
-                $siteTable.prepend(error);
-                TB.ui.longLoadSpinner(false, 'No notes found', TB.ui.FEEDBACK_NEGATIVE);
-                return;
-            }
-            subUsenotes = notes;
-            self.log('showing notes');
-
-            const userCount = Object.keys(notes.users).length;
-            const noteCount = 0;
-
-            const $userContentTemplate = $(`<div class="tb-un-user" data-user="NONE">
-                <div class="tb-un-user-header">
-                    <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">${TBui.icons.refresh}</a>
-                    <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">${TBui.icons.delete}</a>
-                    <span class="user">
-                        <a href="${TBCore.link('/u/NONE')}">/u/NONE</a>
-                    </span>
-                </div>
-            </div>`);
-
-            // .append(
-            //    $('<div>').addClass('tb-usernotes')
-            // );
-
-            self.getSubredditColors(sub, colors => {
-                self.startProfile('manager-render');
-
-                // The number of users to display on one page
-                const usersPerPage = 50;
-
-                /**
-                 * Renders a single page of users.
-                 * @param {number} page The page number, starting at 0
-                 * @param {number} [perPage = 50] The amount of entries per page
-                 */
-                function renderUsernotesPage (page) {
-                    const start = page * usersPerPage;
-                    const end = start + usersPerPage;
-
-                    const $pageContent = $('<div class="tb-usernotes-content"/>');
-
-                    // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
-                    for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
-                        self.startProfile('manager-render-user');
-                        const $userContent = $userContentTemplate.clone();
-                        $userContent.attr('data-user', user);
-                        $userContent.find('.tb-un-refresh, .tb-un-delete').attr('data-user', user);
-                        $userContent.find('.user a').attr('href', `/u/${user}`).text(`/u/${user}`);
-                        const $userNotes = $('<div>').addClass('tb-usernotes');// $userContent.find(".tb-usernotes");
-                        $userContent.append($userNotes);
-                        self.endProfile('manager-render-user');
-
-                        // TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
-
-                        self.startProfile('manager-render-notes');
-                        // var notes = [];
-                        // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
-                        $.each(userData.notes, (key, val) => {
-                            const color = self._findSubredditColor(colors, val.type);
-
-                            const timeUTC = Math.round(val.time / 1000),
-                                  timeISO = TBHelpers.timeConverterISO(timeUTC),
-                                  timeHuman = TBHelpers.timeConverterRead(timeUTC);
-
-                            const $note = $(`<div class="tb-un-note-details">
-                                <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user}" href="javascript:;">${TBui.icons.delete}</a>
-                                <span class="note">
-                                    <span class="note-type">[${color.text}]</span>
-                                    <a class="note-content" href="${val.link}">${val.note}</a>
-                                </span>
-                                <span>-</span>
-                                <span class="mod">by /u/${val.mod}</span>
-                                <span>-</span>
-                                <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
-                            </div>`);
-
-                            // notes.append($note);
-                            if (color.key === 'none') {
-                                $note.find('.note-type').hide();
-                            }
-                            $userNotes.append($note);
-                            // });
-                        });
-                        // $userNotes.append(notes);
-                        self.endProfile('manager-render-notes');
-
-                        $pageContent.append($userContent);
-                    }
-                    return $pageContent;
-                }
-
-                // Create our pager and present the overlay
-                const pageCount = Math.ceil(Object.keys(notes.users).length / usersPerPage);
-                const $pager = TBui.pager({pageCount}, renderUsernotesPage);
-
-                // TODO just ditch this name this is legacy
-                const $overlayContent = $('<div id="tb-un-note-content-wrap"/>').append($pager);
-
-                TB.ui.overlay(
-                    `usernotes - /r/${sub}`,
-                    [
-                        {
-                            title: `usernotes - /r/${sub}`,
-                            tooltip: `edit usernotes for /r/${sub}`,
-                            content: $overlayContent,
-                            footer: '',
-                        },
-                    ],
-                    [], // extra header buttons
-                    'tb-un-editor', // class
-                    false // single overriding footer
-                ).appendTo('body');
-                $body.css('overflow', 'hidden');
-
-                // Process done
-                self.endProfile('manager-render');
-                TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
-
-                const infoHTML = `
-    <div class="tb-un-info">
-        <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>
-        <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
-        <br><br>
-        <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>
-        <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>
-        <select class="tb-prune-length">
-            <option value="180">six-months</option>
-            <option value="365">one-year</option>
-            <option value="730">two-years</option>
-            <option value="1095">three-years</option>
-            <option value="1460">four-years</option>
-            <option value="1825">five-years</option>
-            <option value="2190">six-years</option>
-        </select>
-    </div></br></br>`;
-
-                const infocontent = TBHelpers.template(infoHTML, {
-                    usercount: userCount,
-                    notecount: noteCount,
-                });
-
-                $overlayContent.prepend(infocontent);
-
-                // Set events after all items are loaded.
-                noteManagerRun();
-
-                self.printProfiles();
-            });
-        }
-
         function noteManagerRun () {
             self.startProfile('manager-run');
             const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
@@ -1110,11 +948,175 @@ function usernotes () {
             self.endProfile('manager-run');
         }
 
-        $body.on('click', '#tb-un-config-link', function () {
+        $body.on('click', '#tb-un-config-link', async function () {
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
+            debugger;
 
-            self.getUserNotes(sub, showSubNotes.bind(null, sub));
+            // Grab the usernotes data
+            let notes;
+            try {
+                // TODO: convert original function to promise
+                notes = await new Promise((resolve, reject) => {
+                    self.getUserNotes(sub, (success, notes) => {
+                        if (!success) {
+                            reject();
+                        } else {
+                            resolve(notes);
+                        }
+                    });
+                });
+            } catch (_) {
+                self.error(`un status: ${status}\nnotes: ${notes}`);
+                TB.ui.longLoadSpinner(false, 'No notes found', TB.ui.FEEDBACK_NEGATIVE);
+                return;
+            }
+
+            subUsenotes = notes;
+            self.log('showing notes');
+
+            const userCount = Object.keys(notes.users).length;
+            const noteCount = 0;
+
+            const $userContentTemplate = $(`
+                <div class="tb-un-user" data-user="NONE">
+                    <div class="tb-un-user-header">
+                        <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">${TBui.icons.refresh}</a>
+                        <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">${TBui.icons.delete}</a>
+                        <span class="user">
+                            <a href="${TBCore.link('/u/NONE')}">/u/NONE</a>
+                        </span>
+                    </div>
+                </div>
+            `);
+
+            // .append(
+            //    $('<div>').addClass('tb-usernotes')
+            // );
+
+            // Grab the note types
+            // TODO: convert original function to promise
+            const colors = await new Promise(resolve => {
+                self.getSubredditColors(sub, resolve);
+            });
+            self.startProfile('manager-render');
+
+            // The number of users to display on one page
+            const usersPerPage = 50;
+
+            /**
+             * Renders a single page of users.
+             * @param {number} page The page number, starting at 0
+             * @param {number} [perPage = 50] The amount of entries per page
+             */
+            function renderUsernotesPage (page) {
+                const start = page * usersPerPage;
+                const end = start + usersPerPage;
+
+                const $pageContent = $('<div class="tb-usernotes-content"/>');
+
+                // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
+                for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
+                    self.startProfile('manager-render-user');
+                    const $userContent = $userContentTemplate.clone();
+                    $userContent.attr('data-user', user);
+                    $userContent.find('.tb-un-refresh, .tb-un-delete').attr('data-user', user);
+                    $userContent.find('.user a').attr('href', `/u/${user}`).text(`/u/${user}`);
+                    const $userNotes = $('<div>').addClass('tb-usernotes');// $userContent.find(".tb-usernotes");
+                    $userContent.append($userNotes);
+                    self.endProfile('manager-render-user');
+
+                    // TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
+
+                    self.startProfile('manager-render-notes');
+                    // var notes = [];
+                    // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
+                    $.each(userData.notes, (key, val) => {
+                        const color = self._findSubredditColor(colors, val.type);
+
+                        const timeUTC = Math.round(val.time / 1000),
+                              timeISO = TBHelpers.timeConverterISO(timeUTC),
+                              timeHuman = TBHelpers.timeConverterRead(timeUTC);
+
+                        const $note = $(`<div class="tb-un-note-details">
+                            <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user}" href="javascript:;">${TBui.icons.delete}</a>
+                            <span class="note">
+                                <span class="note-type">[${color.text}]</span>
+                                <a class="note-content" href="${val.link}">${val.note}</a>
+                            </span>
+                            <span>-</span>
+                            <span class="mod">by /u/${val.mod}</span>
+                            <span>-</span>
+                            <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
+                        </div>`);
+
+                        // notes.append($note);
+                        if (color.key === 'none') {
+                            $note.find('.note-type').hide();
+                        }
+                        $userNotes.append($note);
+                        // });
+                    });
+                    // $userNotes.append(notes);
+                    self.endProfile('manager-render-notes');
+
+                    $pageContent.append($userContent);
+                }
+                return $pageContent;
+            }
+
+            // Create the base of the overlay content
+            const $overlayContent = $(`
+                <div id="tb-un-note-content-wrap">
+                    <div class="tb-un-info">
+                        <span class="tb-info">There are ${userCount}} users with ${noteCount} notes.</span>
+                        <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
+                        <br><br>
+                        <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>
+                        <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>
+                        <select class="tb-prune-length">
+                            <option value="180">six-months</option>
+                            <option value="365">one-year</option>
+                            <option value="730">two-years</option>
+                            <option value="1095">three-years</option>
+                            <option value="1460">four-years</option>
+                            <option value="1825">five-years</option>
+                            <option value="2190">six-years</option>
+                        </select>
+                    </div></br></br>
+                </div>
+            `);
+
+            // Create and add the pager for usernotes display
+            const pageCount = Math.ceil(Object.keys(notes.users).length / usersPerPage);
+            const $pager = TBui.pager({pageCount}, renderUsernotesPage);
+            $overlayContent.append($pager);
+
+            // Gang's all here, present the overlay
+            TB.ui.overlay(
+                `usernotes - /r/${sub}`,
+                [
+                    {
+                        title: `usernotes - /r/${sub}`,
+                        tooltip: `edit usernotes for /r/${sub}`,
+                        content: $overlayContent,
+                        footer: '',
+                    },
+                ],
+                [], // extra header buttons
+                'tb-un-editor', // class
+                false // single overriding footer
+            ).appendTo('body');
+            $body.css('overflow', 'hidden');
+
+            // Process done
+            self.endProfile('manager-render');
+            TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
+
+            // Set events after all items are loaded.
+            noteManagerRun();
+
+            self.printProfiles();
         });
 
         $body.on('click', '.tb-un-editor .close', () => {

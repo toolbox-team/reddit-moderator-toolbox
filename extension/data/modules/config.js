@@ -1179,7 +1179,7 @@ function tbconfig () {
             $body.find('#tb-add-removal-reason-form .edit-area').val('');
             $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
             $body.find('#tb-add-removal-reason-form input[name=remove-posts]').prop('checked', true);
-            $body.find('#tb-add-removal-reason-form input[name=remove-comments]').prop('checked', true);
+            $body.find('#tb-add-removal-reason-form input[name=remove-comments]').prop('checked', false);
             $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
             $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
             $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');

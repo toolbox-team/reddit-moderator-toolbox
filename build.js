@@ -37,12 +37,7 @@ function updateManifest ({version, versionName, browser}) {
 
     if (versionName) {
         console.log(` - Version name: ${versionName}`);
-        manifestContent = manifestContent.replace(/("version_name": "\d\d?\.\d\d?\.\d\d?: \\")New Narwhal(\\"",)/, `$1${versionName}$2`);
-    }
-
-    if (versionName) {
-        console.log(` - Version name: ${versionName}`);
-        manifestContent = manifestContent.replace(/("version_name": "\d\d?\.\d\d?\.\d\d?: \\")New Narwhal(\\"",)/, `$1${versionName}$2`);
+        manifestContent = manifestContent.replace(/("version_name": "\d\d?\.\d\d?\.\d\d?: \\").+?(\\"",)/, `$1${versionName}$2`);
     }
 
     if (browser === 'chrome') {

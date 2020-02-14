@@ -542,6 +542,8 @@ function historybutton () {
             // Are there more domains than are shown?
             let moreDomains = 0;
 
+            const maybeNsfwParam = self.setting('includeNsfwSearches') ? `&include_over_18=on` : ``;
+
             // Append all domains to the table and to the report comment
             user.domainList.forEach((domain, index) => {
                 const domainCount = user.domains[domain].count,
@@ -552,8 +554,6 @@ function historybutton () {
                 if (percentage >= 10 && domainCount > 4) {
                     cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
-
-                const maybeNsfwParam = self.setting('includeNsfwSearches') ? `&include_over_18=on` : ``;
 
                 let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
                 // If the domain is a self post, change the URL

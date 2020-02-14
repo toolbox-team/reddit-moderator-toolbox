@@ -19,7 +19,7 @@ function flyingsnoo () {
         const $footerblock = $('body').find('#tb-footer-block');
         const $snooFooter = $('<div id="tb-snoo-footer"></div>').appendTo($footerblock);
         $snooFooter.css({
-            'background-image': `url(${chrome.runtime.getURL('data/images/balloon.png')})`,
+            'background-image': `url(${browser.runtime.getURL('data/images/balloon.png')})`,
             'background-repeat': 'no-repeat',
 
         });
@@ -34,7 +34,7 @@ function flyingsnoo () {
             const floater = $('<div></div>').css({
                 height: `${height}px`,
                 width: `${width}px`,
-                background: `url(${chrome.runtime.getURL('data/images/snoo_up.png')})`,
+                background: `url(${browser.runtime.getURL('data/images/snoo_up.png')})`,
                 position: 'absolute',
                 top: `${$(this).offset().top}px`,
                 left: `${$(window).width() * 0.49 - width / 2}px`,
@@ -82,7 +82,7 @@ function flyingsnoo () {
                     floater.css({
                         top: `${documentHeight - height - 40}px`,
                     });
-                    floater.css('background', `url(${chrome.runtime.getURL('data/images/snoo_splat.png')})`);
+                    floater.css('background', `url(${browser.runtime.getURL('data/images/snoo_splat.png')})`);
 
                     // unlock achievement
                     TBCore.sendEvent(TBCore.events.TB_KILL_SNOO);
@@ -124,7 +124,7 @@ function flyingsnoo () {
                     keepFlying = false;
                 }
                 $(this).unbind('mousedown');
-                $(this).css('background', `url(${chrome.runtime.getURL('data/images/snoo_uh_oh.png')})`);
+                $(this).css('background', `url(${browser.runtime.getURL('data/images/snoo_uh_oh.png')})`);
                 killSnoo();
             });
 

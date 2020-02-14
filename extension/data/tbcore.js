@@ -174,7 +174,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBCore.mySubsData = cacheDetails.moderatedSubsData;
         }
 
-        const manifest = chrome.runtime.getManifest();
+        const manifest = browser.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
         const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
@@ -250,9 +250,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
             src: local('Material Icons'),
                 local('MaterialIcons-Regular'),
-                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
-                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
-                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
+                url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
+                url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
+                url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
         }
         </style>`);
 
@@ -297,7 +297,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBCore.logged);
 
             // Force refresh of timed cache
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-cache-force-timeout',
             });
         }
@@ -696,7 +696,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * when the notification is clicked
          */
         TBCore.notification = function (title, body, path, markreadid = false) {
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-notification',
                 native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
                 details: {
@@ -1323,7 +1323,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.reloadToolbox = function () {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-            chrome.runtime.sendMessage({action: 'tb-reload'}, () => {
+            browser.runtime.sendMessage({action: 'tb-reload'}, () => {
                 window.location.reload();
             });
         };
@@ -1423,7 +1423,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.clearCache();
 
             if (!calledFromBackground) {
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-global',
                     globalEvent: 'clearCache',
                 });
@@ -1463,7 +1463,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         // Listen to background page communication and act based on that.
-        chrome.runtime.onMessage.addListener(message => {
+        browser.runtime.onMessage.addListener(message => {
             switch (message.action) {
             case 'clearCache': {
                 TBCore.clearCache(true);
@@ -1891,14 +1891,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             action: 'tb-request',
             endpoint: '/subreddits/mine/moderator.json',
             data: {
                 after,
                 limit: 100,
             },
-        }, response => {
+        }).then(response => {
             const {errorThrown, data, jqXHR, textStatus} = response;
             if (errorThrown) {
                 logger.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
@@ -1925,10 +1925,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
     function getUserDetails (tries = 0) {
         return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage({
+            browser.runtime.sendMessage({
                 action: 'tb-request',
                 endpoint: '/api/me.json',
-            }, response => {
+            }).then(response => {
                 const {errorThrown, data, jqXHR, textStatus} = response;
                 if (errorThrown) {
                     logger.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);

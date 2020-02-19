@@ -45,6 +45,12 @@ function newmodmailpro () {
         title: 'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
     });
 
+    self.register_setting('showModmailPreview', {
+        type: 'boolean',
+        default: true,
+        title: 'Show a preview of modmail messages while typing.',
+    });
+
     const $body = $('body');
 
     function switchAwayFromReplyAsSelf () {
@@ -58,12 +64,14 @@ function newmodmailpro () {
     if (TBCore.isNewModmail) {
         // Add a class to body
         $body.addClass('tb-new-modmail');
+        const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
 
         // ready some variables.
         const modMailNightmode = self.setting('modmailnightmode'),
               lastReplyTypeCheck = self.setting('lastreplytypecheck'),
               searchhelp = self.setting('searchhelp'),
-              noReplyAsSelf = self.setting('noReplyAsSelf');
+              noReplyAsSelf = self.setting('noReplyAsSelf'),
+              showModmailPreview = self.setting('showModmailPreview');
 
         if (noReplyAsSelf) {
             switchAwayFromReplyAsSelf();
@@ -73,6 +81,25 @@ function newmodmailpro () {
                     switchAwayFromReplyAsSelf();
                 }, 1000);
             });
+        }
+
+        if (showModmailPreview) {
+            $body.on('input', '.ThreadViewerReplyForm__replyText, .NewThread__message', TBHelpers.debounce(e => {
+                let $previewArea;
+                if ($('#tb-modmail-preview').length) {
+                    $previewArea = $('#tb-modmail-preview');
+                } else {
+                    $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
+                    $('form.ThreadViewerReplyForm, form.NewThread__form').after($previewArea);
+                }
+                const renderedHTML = parser.render(TBStorage.purify(e.target.value));
+                $previewArea.html(`
+                <h3 class="tb-preview-heading">Preview</h3>
+                <div class="md">
+                    ${renderedHTML}
+                </div>
+                `);
+            }, 500));
         }
 
         if (searchhelp) {

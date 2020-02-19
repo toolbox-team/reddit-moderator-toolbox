@@ -99,6 +99,9 @@ function newmodmailpro () {
                     ${renderedHTML}
                 </div>
                 `);
+                $body.one('click', '.ThreadViewerReplyForm__replyButton, .NewThread__submitButton', () => {
+                    $previewArea.remove();
+                });
             }, 500));
         }
 

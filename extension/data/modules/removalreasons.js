@@ -180,15 +180,13 @@ function removalreasons () {
         $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
             const $button = $(this);
             let thingID,
-                thingSubreddit;
+                thingSubreddit,
+                isComment = false; // default to false for new Reddit
 
             if (TBCore.isOldReddit) {
                 const $yes = $button.find('.yes')[0],
                       $thing = $button.closest('.thing');
-
-                if (!commentReasons && ($thing.hasClass('comment') || $thing.hasClass('was-comment'))) {
-                    return;
-                }
+                isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment');
 
                 if ($yes) {
                     $yes.click();
@@ -224,6 +222,13 @@ function removalreasons () {
                     raw_body: info.raw_body,
                     uri_body: info.uri_body,
                     uri_title: info.uri_title,
+                    reasons: [],
+                    get reasons_posts () {
+                        return this.reasons.filter(r => r.removePosts || r.removePosts === undefined);
+                    },
+                    get reasons_comments () {
+                        return this.reasons.filter(r => r.removeComments || r.removeComments === undefined);
+                    },
                 };
 
                 // TODO: Dis ain't finished
@@ -296,10 +301,29 @@ function removalreasons () {
                             data.reasons.push({
                                 text: unescape(this.text),
                                 title: TBHelpers.htmlEncode(this.title),
+                                // If it's undefined, it's an old RR - show for both comments and posts
+                                removePosts: this.removePosts === undefined ? undefined : !!this.removePosts,
+                                removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
                                 flairText: TBHelpers.htmlEncode(this.flairText),
                                 flairCSS: TBHelpers.htmlEncode(this.flairCSS),
                             });
                         });
+
+                        // Only show popup if there's removal reasons
+                        let removalReasonLength;
+                        if (isComment) {
+                            removalReasonLength = data.reasons_comments.length;
+                            // If user does not have commentReasons enabled, only show removal reasons that is explicitly true and not undefined
+                            if (!commentReasons) {
+                                removalReasonLength = removalReasonLength.filter(r => r.removeComments).length;
+                            }
+                        } else {
+                            removalReasonLength = data.reasons_posts.length;
+                        }
+
+                        if (!removalReasonLength) {
+                            return;
+                        }
 
                         // Open popup
                         createPopup();
@@ -431,8 +455,15 @@ function removalreasons () {
 
                     popup = $(popup).appendTo('body').find('attrs').attr(data).end();
 
+                    let reasons = [];
+                    if (isComment) {
+                        reasons = data.reasons_comments;
+                    } else {
+                        reasons = data.reasons_posts;
+                    }
+
                     // Render reasons and add to popup
-                    $(data.reasons).each(function (index) {
+                    $(reasons).each(function (index) {
                         const reasonMarkdown = `${this.text}\n\n`;
                         const reasonHtml = parser.render(reasonMarkdown);
 

@@ -8,7 +8,7 @@
      * @function debounce
      * @memberof TBHelpers
      * @param {function} func input function
-     * @param {integer} debounceTime the amount of time used to wait in ms.
+     * @param {number} debounceTime the amount of time used to wait in ms.
      * @returns {function} the executed function
      */
     TBHelpers.debounce = function (func, debounceTime = 100) {

@@ -19,6 +19,24 @@
     position: absolute;
 }
 
+/* preview
+*/
+.NewThread #tb-modmail-preview {
+    margin: 5px 15px 0 15px;
+}
+  
+#tb-modmail-preview {
+    background: #ffffffd1;
+    padding: 10px;
+    box-shadow: 0 1px 4px #efefed;
+}
+
+#tb-modmail-preview h3.tb-preview-heading {
+    border-bottom: solid 1px #c8c7c7;
+    margin-bottom: 15px;
+}
+
+
 /* nightmode
 */
 html.tb-nightmode,

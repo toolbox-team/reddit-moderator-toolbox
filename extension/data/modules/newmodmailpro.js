@@ -102,7 +102,7 @@ function newmodmailpro () {
                 $body.one('click', '.ThreadViewerReplyForm__replyButton, .NewThread__submitButton', () => {
                     $previewArea.remove();
                 });
-            }, 500));
+            }, 100));
         }
 
         if (searchhelp) {

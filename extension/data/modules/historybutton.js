@@ -39,6 +39,12 @@ function historybutton () {
         hidden: true,
     });
 
+    self.register_setting('includeNsfwSearches', {
+        type: 'boolean',
+        default: false,
+        title: 'Include NSFW submissions in searches',
+    });
+
     /**
      * Attach an [H] button to all users
      */
@@ -536,6 +542,8 @@ function historybutton () {
             // Are there more domains than are shown?
             let moreDomains = 0;
 
+            const maybeNsfwParam = self.setting('includeNsfwSearches') ? `&include_over_18=on` : ``;
+
             // Append all domains to the table and to the report comment
             user.domainList.forEach((domain, index) => {
                 const domainCount = user.domains[domain].count,
@@ -547,10 +555,10 @@ function historybutton () {
                     cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
 
-                let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off&sort=new&feature=legacy_search`);
+                let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
                 // If the domain is a self post, change the URL
                 if (match) {
-                    url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on&sort=new&feature=legacy_search`);
+                    url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
                 }
 
                 // Append domain to the table
@@ -594,7 +602,7 @@ function historybutton () {
             user.subredditList.forEach((subreddit, index) => {
                 const subredditCount = user.subreddits.submissions[subreddit].count,
                       subredditKarma = user.subreddits.submissions[subreddit].karma,
-                      url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`),
+                      url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`),
                       percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 let cssClass = '';

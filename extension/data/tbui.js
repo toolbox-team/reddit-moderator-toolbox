@@ -1653,6 +1653,37 @@
         return $pager;
     };
 
+    /**
+     * Creates a pager over a dataset.
+     * @param {object} options
+     * @param {any[]} items The items to display in the pager
+     * @param {number} perPage The number of items to display on each page
+     * @param {TBui~pagerForItemsCallback} displayItem A function that generates
+     * content for each individual item in the dataset
+     * @param {string} controlPosition Where to display the pager's controls,
+     * either 'top' or 'bottom'
+     * @returns {jQuery}
+     */
+    TBui.pagerForItems = function pagerForItems ({
+        items,
+        perPage,
+        displayItem,
+        controlPosition,
+    }) {
+        return TBui.pager({
+            controlPosition,
+            pageCount: Math.ceil(items.length / perPage),
+        }, page => {
+            const $wrapper = $('<div>');
+            const start = page * perPage;
+            const end = (page + 1) * perPage;
+            for (let i = start; i < end && i < items.length; i += 1) {
+                $wrapper.append(displayItem(items[i], i));
+            }
+            return $wrapper;
+        });
+    };
+
     // handling of comment & submisstion actions.
     // TODO make this into command pattern
     $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function () {

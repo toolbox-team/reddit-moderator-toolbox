@@ -996,10 +996,6 @@ function usernotes () {
             const colors = await self.getSubredditColors(sub);
             self.startProfile('manager-render');
 
-            // The number of users to display on one page
-            // TODO: make this user-customizeable (probably persist this in a setting)
-            const usersPerPage = 50;
-
             /**
              * Renders all of a single user's notes
              * @param {object} user The user's data object

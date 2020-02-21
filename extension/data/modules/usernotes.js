@@ -1051,25 +1051,6 @@ function usernotes () {
                 return $userContent;
             }
 
-            /**
-             * Renders a single page of users.
-             * @param {number} page The page number, starting at 0
-             * @param {number} [perPage = 50] The amount of entries per page
-             */
-            function renderUsernotesPage (page) {
-                const start = page * usersPerPage;
-                const end = start + usersPerPage;
-
-                const $pageContent = $('<div class="tb-usernotes-content"/>');
-
-                // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
-                for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
-                    const $userContent = renderUsernotesUser(userData);
-                    $pageContent.append($userContent);
-                }
-                return $pageContent;
-            }
-
             // Calculate the total number of users and notes
             let userCount = 0;
             let noteCount = 0;
@@ -1101,8 +1082,11 @@ function usernotes () {
             `);
 
             // Create and add the pager for usernotes display
-            const pageCount = Math.ceil(Object.keys(notes.users).length / usersPerPage);
-            const $pager = TBui.pager({pageCount}, renderUsernotesPage);
+            const $pager = TBui.pagerForItems({
+                items: Object.values(notes.users),
+                perPage: 100,
+                displayItem: renderUsernotesUser,
+            });
             $overlayContent.append($pager);
 
             // Gang's all here, present the overlay

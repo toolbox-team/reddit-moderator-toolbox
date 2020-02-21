@@ -1001,6 +1001,56 @@ function usernotes () {
             const usersPerPage = 50;
 
             /**
+             * Renders all of a single user's notes
+             * @param {object} user The user's data object
+             */
+            function renderUsernotesUser (user) {
+                self.startProfile('manager-render-user');
+                const $userContent = $userContentTemplate.clone();
+                $userContent.attr('data-user', user.name);
+                $userContent.find('.tb-un-refresh, .tb-un-delete').attr('data-user', user.name);
+                $userContent.find('.user a').attr('href', `/u/${user.name}`).text(`/u/${user.name}`);
+                const $userNotes = $('<div>').addClass('tb-usernotes');// $userContent.find(".tb-usernotes");
+                $userContent.append($userNotes);
+                self.endProfile('manager-render-user');
+
+                // TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
+
+                self.startProfile('manager-render-notes');
+                // var notes = [];
+                // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
+                $.each(user.notes, (key, val) => {
+                    const color = self._findSubredditColor(colors, val.type);
+
+                    const timeUTC = Math.round(val.time / 1000),
+                          timeISO = TBHelpers.timeConverterISO(timeUTC),
+                          timeHuman = TBHelpers.timeConverterRead(timeUTC);
+
+                    const $note = $(`<div class="tb-un-note-details">
+                        <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
+                        <span class="note">
+                            <span class="note-type">[${color.text}]</span>
+                            <a class="note-content" href="${val.link}">${val.note}</a>
+                        </span>
+                        <span>-</span>
+                        <span class="mod">by /u/${val.mod}</span>
+                        <span>-</span>
+                        <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
+                    </div>`);
+
+                    // notes.append($note);
+                    if (color.key === 'none') {
+                        $note.find('.note-type').hide();
+                    }
+                    $userNotes.append($note);
+                    // });
+                });
+                // $userNotes.append(notes);
+                self.endProfile('manager-render-notes');
+                return $userContent;
+            }
+
+            /**
              * Renders a single page of users.
              * @param {number} page The page number, starting at 0
              * @param {number} [perPage = 50] The amount of entries per page
@@ -1013,49 +1063,7 @@ function usernotes () {
 
                 // TODO: for some reason, this object is keyed by username but also has the username as a property of the value...
                 for (const [user, userData] of Object.entries(notes.users).slice(start, end)) {
-                    self.startProfile('manager-render-user');
-                    const $userContent = $userContentTemplate.clone();
-                    $userContent.attr('data-user', user);
-                    $userContent.find('.tb-un-refresh, .tb-un-delete').attr('data-user', user);
-                    $userContent.find('.user a').attr('href', `/u/${user}`).text(`/u/${user}`);
-                    const $userNotes = $('<div>').addClass('tb-usernotes');// $userContent.find(".tb-usernotes");
-                    $userContent.append($userNotes);
-                    self.endProfile('manager-render-user');
-
-                    // TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
-
-                    self.startProfile('manager-render-notes');
-                    // var notes = [];
-                    // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
-                    $.each(userData.notes, (key, val) => {
-                        const color = self._findSubredditColor(colors, val.type);
-
-                        const timeUTC = Math.round(val.time / 1000),
-                              timeISO = TBHelpers.timeConverterISO(timeUTC),
-                              timeHuman = TBHelpers.timeConverterRead(timeUTC);
-
-                        const $note = $(`<div class="tb-un-note-details">
-                            <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user}" href="javascript:;">${TBui.icons.delete}</a>
-                            <span class="note">
-                                <span class="note-type">[${color.text}]</span>
-                                <a class="note-content" href="${val.link}">${val.note}</a>
-                            </span>
-                            <span>-</span>
-                            <span class="mod">by /u/${val.mod}</span>
-                            <span>-</span>
-                            <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
-                        </div>`);
-
-                        // notes.append($note);
-                        if (color.key === 'none') {
-                            $note.find('.note-type').hide();
-                        }
-                        $userNotes.append($note);
-                        // });
-                    });
-                    // $userNotes.append(notes);
-                    self.endProfile('manager-render-notes');
-
+                    const $userContent = renderUsernotesUser(userData);
                     $pageContent.append($userContent);
                 }
                 return $pageContent;

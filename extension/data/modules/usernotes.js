@@ -1038,14 +1038,15 @@ function usernotes () {
                         <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
                     </div>`);
 
-                    // notes.append($note);
                     if (color.key === 'none') {
                         $note.find('.note-type').hide();
                     }
                     $userNotes.append($note);
-                    // });
                 });
-                // $userNotes.append(notes);
+
+                // Set relative times on the notes
+                $userContent.find('time.timeago').timeago();
+
                 self.endProfile('manager-render-notes');
                 return $userContent;
             }

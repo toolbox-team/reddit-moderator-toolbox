@@ -14,10 +14,10 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
 // After that direct users to a page confirming settings have been reset.
 function clearLocal () {
     // Cache.
-    chrome.runtime.sendMessage({
+    browser.runtime.sendMessage({
         action: 'tb-cache',
         method: 'clear',
-    }, () => {
+    }).then(() => {
         // Wait a sec for stuff to clear.
         setTimeout(() => {
             window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
@@ -30,7 +30,7 @@ function startReset () {
     if (r === true) {
         // Chrome, Edge en firefox webextensions.
         if (typeof chrome !== 'undefined') {
-            chrome.storage.local.remove('tbsettings', () => {
+            browser.storage.local.remove('tbsettings').then(() => {
                 // Wait a sec for stuff to clear.
                 setTimeout(() => {
                     clearLocal();
@@ -62,7 +62,7 @@ function storagewrapper () {
 
         TBStorage.isLoaded = false;
 
-        chrome.storage.local.get('tbsettings', sObject => {
+        browser.storage.local.get('tbsettings').then(sObject => {
             if (sObject.tbsettings) {
                 TBsettingsObject = sObject.tbsettings;
 
@@ -76,7 +76,7 @@ function storagewrapper () {
             }
 
             // Listen for updated settings and update the settings object.
-            chrome.runtime.onMessage.addListener(message => {
+            browser.runtime.onMessage.addListener(message => {
                 // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
                 if (message.action === 'tb-settings-update') {
                     TBsettingsObject = message.payload.tbsettings;
@@ -207,15 +207,15 @@ function storagewrapper () {
                 const settingsObject = sObject;
 
                 // save settings
-                chrome.storage.local.set({
+                browser.storage.local.set({
                     tbsettings: sObject,
-                }, () => {
+                }).then(() => {
                     // now verify them
-                    chrome.storage.local.get('tbsettings', returnObject => {
+                    browser.storage.local.get('tbsettings').then(returnObject => {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                         && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             // Succes, tell other browser tabs with toolbox that there are new settings.
-                            chrome.runtime.sendMessage({
+                            browser.runtime.sendMessage({
                                 action: 'tb-global',
                                 globalEvent: 'tb-settings-update',
                                 payload: returnObject,
@@ -258,7 +258,7 @@ function storagewrapper () {
 
             // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
             // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
-            if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && chrome.extension.inIncognitoContext) {
+            if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
                 logger.error('firefox is in incognito mode, toolbox will not work.');
                 return;
             }
@@ -378,7 +378,7 @@ function storagewrapper () {
 
         function saveSettingsToBrowser () {
             settingsToObject(sObject => {
-                chrome.storage.local.set({
+                browser.storage.local.set({
                     tbsettings: sObject,
                 });
             });
@@ -425,7 +425,7 @@ function storagewrapper () {
                 saveSettingsToBrowser();
 
                 // Communicate the new setting to other open tabs.
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-global',
                     globalEvent: 'tb-single-setting-update',
                     excludeBackground: true,
@@ -443,12 +443,12 @@ function storagewrapper () {
             return new Promise(resolve => {
                 const storageKey = `TBCache.${module}.${setting}`;
                 const inputValue = defaultVal !== undefined ? defaultVal : null;
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'get',
                     storageKey,
                     inputValue,
-                }, response => {
+                }).then(response => {
                     if (response.errorThrown !== undefined) {
                         $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
                         resolve(defaultVal);
@@ -462,12 +462,12 @@ function storagewrapper () {
         function setCache (module, setting, inputValue) {
             const storageKey = `TBCache.${module}.${setting}`;
             return new Promise(resolve => {
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'set',
                     storageKey,
                     inputValue,
-                }, async () => {
+                }).then(async () => {
                     const value = await getCache(module, setting);
                     resolve(value);
                 });
@@ -476,10 +476,10 @@ function storagewrapper () {
 
         function clearCache () {
             return new Promise(resolve => {
-                chrome.runtime.sendMessage({
+                browser.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'clear',
-                }, () => {
+                }).then(() => {
                     resolve();
                 });
             });

@@ -165,7 +165,7 @@
     };
 
     // Handle notification updates from the background page
-    chrome.runtime.onMessage.addListener(message => {
+    browser.runtime.onMessage.addListener(message => {
         if (message.action === 'tb-show-page-notification') {
             logger.log('Notifier message get:', message);
             TBui.showNotification(message.details);
@@ -178,13 +178,13 @@
     // Notification click handlers
     $body.on('click', '.tb-notification .close', function (event) {
         event.stopPropagation(); // don't open the linked page
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             action: 'tb-page-notification-close',
             id: $(this).closest('.tb-notification').attr('data-id'),
         });
     });
     $body.on('click', '.tb-notification', function () {
-        chrome.runtime.sendMessage({
+        browser.runtime.sendMessage({
             action: 'tb-page-notification-click',
             id: $(this).attr('data-id'),
         });
@@ -652,7 +652,7 @@
                 }
                 </style>`);
 
-                $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${chrome.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${TBCore.RandomFeedback}</span></span></div>`);
+                $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${browser.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${TBCore.RandomFeedback}</span></span></div>`);
                 $body.append('<div id="tb-loading"></div>');
 
                 const $randomFeedbackWindow = $('body').find('#tb-loading-stuff'),

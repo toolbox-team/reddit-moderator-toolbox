@@ -2,6 +2,25 @@
 /** @namespace  TBHelpers */
 (function (TBHelpers) {
     const logger = TBLog('TBHelpers');
+
+    /**
+     * Debounces a given function based on a given timeout.
+     * @function debounce
+     * @memberof TBHelpers
+     * @param {function} func input function
+     * @param {number} debounceTime the amount of time used to wait in ms.
+     * @returns {function} the executed function
+     */
+    TBHelpers.debounce = function (func, debounceTime = 100) {
+        let timeout;
+
+        return function (...args) {
+            const functionCall = () => func.apply(this, args);
+            clearTimeout(timeout);
+            timeout = setTimeout(functionCall, debounceTime);
+        };
+    };
+
     /**
      * Moves an item in an array from one index to another
      * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js

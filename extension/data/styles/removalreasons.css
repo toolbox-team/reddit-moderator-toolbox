@@ -142,16 +142,16 @@
     font-family: "Lucida Console", Monaco, monospace;
 }
 
-.mod-toolbox-rd .reason-popup #buttons ul {
+.mod-toolbox-rd #tb-removal-reason-settings #buttons ul, .mod-toolbox-rd .reason-popup #buttons ul {
     list-style-type: none;
     margin: 5px;
 }
 
-.mod-toolbox-rd .reason-popup #buttons ul li {
+.mod-toolbox-rd #tb-removal-reason-settings #buttons ul li, .mod-toolbox-rd .reason-popup #buttons ul li {
      margin-top: 5px;
  }
 
-.mod-toolbox-rd .reason-popup #buttons ul li ul {
+.mod-toolbox-rd #tb-removal-reason-settings #buttons ul li ul, .mod-toolbox-rd .reason-popup #buttons ul li ul {
     margin-left: 15px;
     margin-bottom: 5px;
 }

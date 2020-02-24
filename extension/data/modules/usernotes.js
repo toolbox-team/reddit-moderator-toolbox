@@ -1082,21 +1082,29 @@ function usernotes () {
             // Creates a new pager with the correct filtered items and replace
             // the current one with the new one, debounced because typing delay
             const refreshPager = TBHelpers.debounce(() => {
-                // Filter the users
-                // TODO: Also filter individual notes based on the `contentText`
-                const filteredUsers = allUsers.filter(user => {
+                // Create a new array of cloned user objects, and filter the
+                // notes based on `userText` and `contentText`
+                const filteredData = allUsers.map(user => ({
+                    name: user.name,
+                    // Filter out notes not matching `contentText`
+                    notes: user.notes.filter(note => note.note.toLowerCase().includes(contentText.toLowerCase())),
+                })).filter(user => {
+                    // Filter out users not matching `userText`
                     if (userText && !user.name.toLowerCase().includes(userText.toLowerCase())) {
                         return false;
                     }
-                    if (contentText && !user.notes.some(note => note.note.toLowerCase().includes(contentText.toLowerCase()))) {
+
+                    // Filter out users with no notes left
+                    if (!user.notes.length) {
                         return false;
                     }
+
                     return true;
                 });
 
                 // Create the new pager
                 const $newPager = TBui.pagerForItems({
-                    items: filteredUsers,
+                    items: filteredData,
                     perPage: USERS_PER_PAGE,
                     displayItem: renderUsernotesUser,
                 });

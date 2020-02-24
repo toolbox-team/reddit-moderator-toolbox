@@ -805,33 +805,6 @@ function usernotes () {
             self.startProfile('manager-run');
             const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
 
-            $('time.timeago').timeago(); // what does this do?
-
-            // Live search - users
-            $body.find('#tb-unote-user-search').keyup(function () {
-                const userSearchValue = new RegExp($(this).val().toUpperCase());
-
-                $body.find('.tb-un-user').each(function (key, thing) {
-                    userSearchValue.test($(thing).attr('data-user').toUpperCase()) ? $(this).show() : $(this).hide();
-                });
-            });
-
-            // Live search - contents
-            $body.find('#tb-unote-contents-search').keyup(function () {
-                const contentsSearchValue = new RegExp($(this).val().toUpperCase());
-
-                $body.find('.note').each(function (key, thing) {
-                    const wrapper = $(this).closest('.tb-un-note-details').show();
-                    if (contentsSearchValue.test($(thing).text().toUpperCase())) {
-                        wrapper.show();
-                        wrapper.closest('.tb-un-user').show();
-                    } else {
-                        wrapper.hide();
-                        wrapper.closest('.tb-un-user').hide();
-                    }
-                });
-            });
-
             // Get the account status for all users.
             $body.find('#tb-un-prune-sb').on('click', () => {
                 const emptyProfiles = [],
@@ -866,7 +839,8 @@ function usernotes () {
                     },
 
                     () => {
-                    // The previous calls have been async, let's wait a little while before we continue. A better fix might be needed but this might be enough.
+                        // The previous calls have been async, let's wait a little while before we continue. A better fix might be needed but this might be enough.
+                        // TODO
                         setTimeout(() => {
                             self.log(emptyProfiles);
                             if (emptyProfiles.length > 0) {
@@ -988,10 +962,6 @@ function usernotes () {
                 </div>
             `);
 
-            // .append(
-            //    $('<div>').addClass('tb-usernotes')
-            // );
-
             // Grab the note types
             const colors = await self.getSubredditColors(sub);
             self.startProfile('manager-render');
@@ -1010,10 +980,8 @@ function usernotes () {
                 $userContent.append($userNotes);
                 self.endProfile('manager-render-user');
 
-                // TB.ui.textFeedback(`Loading user ${counter} of ${userCount}`, TB.ui.FEEDBACK_POSITIVE);
-
                 self.startProfile('manager-render-notes');
-                // var notes = [];
+
                 // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
                 $.each(user.notes, (key, val) => {
                     const color = self._findSubredditColor(colors, val.type);
@@ -1022,17 +990,19 @@ function usernotes () {
                           timeISO = TBHelpers.timeConverterISO(timeUTC),
                           timeHuman = TBHelpers.timeConverterRead(timeUTC);
 
-                    const $note = $(`<div class="tb-un-note-details">
-                        <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
-                        <span class="note">
-                            <span class="note-type">[${color.text}]</span>
-                            <a class="note-content" href="${val.link}">${val.note}</a>
-                        </span>
-                        <span>-</span>
-                        <span class="mod">by /u/${val.mod}</span>
-                        <span>-</span>
-                        <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
-                    </div>`);
+                    const $note = $(`
+                        <div class="tb-un-note-details">
+                            <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
+                            <span class="note">
+                                <span class="note-type">[${color.text}]</span>
+                                <a class="note-content" href="${val.link}">${val.note}</a>
+                            </span>
+                            <span>-</span>
+                            <span class="mod">by /u/${val.mod}</span>
+                            <span>-</span>
+                            <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
+                        </div>
+                    `);
 
                     if (color.key === 'none') {
                         $note.find('.note-type').hide();
@@ -1077,10 +1047,13 @@ function usernotes () {
                 </div>
             `);
 
+            const USERS_PER_PAGE = 50;
+
             // Create and add the pager for usernotes display
-            const $pager = TBui.pagerForItems({
-                items: Object.values(notes.users),
-                perPage: 100,
+            const allUsers = Object.values(notes.users);
+            let $pager = TBui.pagerForItems({
+                items: allUsers,
+                perPage: USERS_PER_PAGE,
                 displayItem: renderUsernotesUser,
             });
             $overlayContent.append($pager);
@@ -1102,11 +1075,53 @@ function usernotes () {
             ).appendTo('body');
             $body.css('overflow', 'hidden');
 
+            // Variables to store the filter text
+            let userText = '';
+            let contentText = '';
+
+            // Creates a new pager with the correct filtered items and replace
+            // the current one with the new one, debounced because typing delay
+            const refreshPager = TBHelpers.debounce(() => {
+                // Filter the users
+                // TODO: Also filter individual notes based on the `contentText`
+                const filteredUsers = allUsers.filter(user => {
+                    if (userText && !user.name.toLowerCase().includes(userText.toLowerCase())) {
+                        return false;
+                    }
+                    if (contentText && !user.notes.some(note => note.note.toLowerCase().includes(contentText.toLowerCase()))) {
+                        return false;
+                    }
+                    return true;
+                });
+
+                // Create the new pager
+                const $newPager = TBui.pagerForItems({
+                    items: filteredUsers,
+                    perPage: USERS_PER_PAGE,
+                    displayItem: renderUsernotesUser,
+                });
+
+                // Replace the old pager with the new one, then update the
+                // $pager variable so other references point to the new one
+                $pager.replaceWith($newPager);
+                $pager = $newPager;
+            });
+
+            // Listeners to update the filter text
+            $body.find('#tb-unote-user-search').keyup(function () {
+                userText = $(this).val();
+                refreshPager();
+            });
+            $body.find('#tb-unote-contents-search').keyup(function () {
+                contentText = $(this).val();
+                refreshPager();
+            });
+
             // Process done
             self.endProfile('manager-render');
             TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
 
-            // Set events after all items are loaded.
+            // Set other events after all items are loaded.
             registerManagerEventListeners();
 
             self.printProfiles();

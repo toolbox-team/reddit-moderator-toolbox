@@ -95,40 +95,53 @@ function tbconfig () {
                         tooltip: 'Configure the basic behavior for removal reasons here.',
                         content: `
                 <div id="tb-removal-reason-settings">
+                    <h2></h2>
                     <span>Header</span>
                     <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea>
                     <span>Footer</span>
                     <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
-                    
+                    <select name="removal-option" id="removal-option">
+                        <option value="suggest" ${configData.removalReasons.removalOption === 'undefined' || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
+                        <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>
+                        <option value="leave" ${configData.removalReasons.removalOption === 'leave' ? 'selected' : ''}>Leave up to moderator settings</option>
+                    </select>
                     <div id="buttons">
                         <ul>
                             <li>
-                                <input class="reason-type" type="radio" value="reply" /><label>Reply with a comment to the item that is removed.</label>
+                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${configData.removalReasons.typeReply === 'reply' ? 'checked' : ''}/>
+                                <label for="type-reply-comment">Reply with a comment to the item that is removed.</label>
                                 <ul>
                                     <li>
-                                        <input class="reason-sticky" type="checkbox"/><label for="type-stickied">Sticky the removal comment.</label>
+                                        <input class="reason-sticky" type="checkbox" id="type-stickied" ${configData.removalReasons.typeStickied ? 'checked' : ''}/>
+                                        <label for="type-stickied">Sticky the removal comment.</label>
                                     </li>
                                     <li>
-                                        <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment"/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                                        <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment" ${configData.removalReasons.typeLockComment ? 'checked' : ''}/>
+                                        <label for="type-action-lock-comment">Lock the removal comment.</label>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <input class="reason-type" type="radio" value="pm"/><label >Send as PM (personal message)</label>
+                                <input name="type-reply" class="reason-type" type="radio" value="pm" id="type-reply-pm" ${configData.removalReasons.typeReply === 'pm' ? 'checked' : ''}/>
+                                <label for="type-reply-pm">Send as PM (personal message)</label>
                                 <ul>
                                     <li>
-                                        <input class="reason-as-sub" type="checkbox" /><label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
+                                        <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
+                                        <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <input class="reason-type" type="radio" value="both"  /><label>Send as both PM and reply.</label>
+                                <input name="type-reply" class="reason-type" type="radio" value="both" id="type-reply-both" ${configData.removalReasons.typeReply === 'both' ? 'checked' : ''}/>
+                                <label for="type-reply-both">Send as both PM and reply.</label>
+                            </li>
+                            <li class="rr-advanced">
+                                <input name="type-reply" class="reason-type" type="radio" value="none" id="type-reply-none" ${configData.removalReasons.typeReply === 'none' ? 'checked' : ''}/>
+                                <label for="type-reply-none">Send nothing and log the removal.</label>
                             </li>
                             <li>
-                                <input class="reason-type" type="radio" value="none" /><label >none, will only log the removal.</label>
-                            </li>
-                            <li>
-                                <input class="action-lock-thread" type="checkbox" id="type-action-lock-thread"/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                                <input class="action-lock-thread" type="checkbox" id="type-action-lock-thread" ${configData.removalReasons.typeLockThread ? 'checked' : ''}/>
+                                <label for="type-action-lock-thread">Lock the removed thread.</label>
                             </li>
                         </ul>
                     </div>
@@ -844,6 +857,12 @@ function tbconfig () {
                 logreason: $('.logreason').val(),
                 header: escape($('.edit-header').val()),
                 footer: escape($('.edit-footer').val()),
+                removalOption: $('#removal-option').val(),
+                typeReply: $('input[name="type-reply"]:checked').val(),
+                typeStickied: $('#type-stickied').prop('checked'),
+                typeLockComment: $('#type-action-lock-comment').prop('checked'),
+                typeAsSub: $('#type-as-sub').prop('checked'),
+                typeLockThread: $('#type-action-lock-thread').prop('checked'),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),
                 bantitle: $('.bantitle').val(),

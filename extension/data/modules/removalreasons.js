@@ -294,6 +294,12 @@ function removalreasons () {
                         data.logSub = TBHelpers.htmlEncode(response.logsub) || '';
                         data.logTitle = TBHelpers.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
                         data.banTitle = TBHelpers.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
+                        data.removalOption = response.removalOption;
+                        data.typeReply = response.typeReply;
+                        data.typeStickied = response.typeStickied;
+                        data.typeLockComment = response.typeLockComment;
+                        data.typeAsSub = response.typeAsSub;
+                        data.typeLockThread = response.typeLockThread;
 
                         // Loop through the reasons... unescaping each.
                         data.reasons = [];
@@ -338,31 +344,41 @@ function removalreasons () {
                     const selectNoneDisplay = data.logSub ? '' : 'none', // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
                           logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none', // if {reason}  is present we want to fill it.
                           headerDisplay = data.header ? '' : 'none',
-                          footerDisplay = data.footer ? '' : 'none';
+                          footerDisplay = data.footer ? '' : 'none',
+                          removalOption = data.removalOption,
+                          typeReply = data.typeReply,
+                          typeStickied = data.typeStickied,
+                          typeLockComment = data.typeLockComment,
+                          typeAsSub = data.typeAsSub,
+                          typeLockThread = data.typeLockThread,
+                          leaveUpToMods = removalOption === undefined || removalOption === 'leave',
+                          forced = removalOption === 'force';
 
-                    let reasonType;
-                    switch (self.setting('reasonType')) {
-                    case 'reply_with_a_comment_to_the_item_that_is_removed':
-                        reasonType = 'reply';
-                        break;
-                    case 'send_as_pm_(personal_message)':
-                        reasonType = 'pm';
-                        break;
-                    case 'send_as_both_pm_and_reply':
-                        reasonType = 'both';
-                        break;
-                    case 'none_(this_only_works_when_a_logsub_has_been_set)':
-                        reasonType = 'none';
-                        break;
-                    default:
-                        reasonType = 'reply';
-                        break;
+                    let reasonType = typeReply;
+                    if (leaveUpToMods) {
+                        switch (self.setting('reasonType')) {
+                        case 'reply_with_a_comment_to_the_item_that_is_removed':
+                            reasonType = 'reply';
+                            break;
+                        case 'send_as_pm_(personal_message)':
+                            reasonType = 'pm';
+                            break;
+                        case 'send_as_both_pm_and_reply':
+                            reasonType = 'both';
+                            break;
+                        case 'none_(this_only_works_when_a_logsub_has_been_set)':
+                            reasonType = 'none';
+                            break;
+                        default:
+                            reasonType = 'reply';
+                            break;
+                        }
                     }
 
-                    const reasonAsSub = self.setting('reasonAsSub');
-                    const reasonSticky = self.setting('reasonSticky');
-                    const actionLockThread = self.setting('actionLock');
-                    const actionLockComment = self.setting('actionLockComment');
+                    const reasonAsSub = leaveUpToMods ? self.setting('reasonAsSub') : typeAsSub;
+                    const reasonSticky = leaveUpToMods ? self.setting('reasonSticky') : typeStickied;
+                    const actionLockThread = leaveUpToMods ? self.setting('actionLock') : typeLockThread;
+                    const actionLockComment = leaveUpToMods ? self.setting('actionLockComment') : typeLockComment;
 
                     // Set up markdown renderer
                     SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -405,32 +421,32 @@ function removalreasons () {
                     <div id="buttons">
                     <ul>
                         <li>
-                            <input class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
+                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
                             <ul>
                                 <li>
-                                    <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
+                                    <input ${forced ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
                                 <li>
-                                    <input class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                                    <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
+                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
                             <ul>
                                 <li>
-                                    <input class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? 'checked ' : ''} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                                    <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? 'checked ' : ''} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
+                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
                         </li>
                         <li style="display:${selectNoneDisplay}"> /
-                            <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
+                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
                         </li>
                         <li>
-                            <input class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                            <input ${forced ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-thread">Lock the removed thread.</label>
                         </li>
                     </ul>
                     </div>

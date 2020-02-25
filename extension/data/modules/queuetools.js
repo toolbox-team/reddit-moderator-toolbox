@@ -505,7 +505,7 @@ function queuetools () {
                 allSelected = !checks.not(':checked').length;
                 $('#select-all').prop({
                     indeterminate: !!selected && !allSelected,
-                    checked: allSelected
+                    checked: allSelected,
                 });
             });
 

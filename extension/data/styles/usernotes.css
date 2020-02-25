@@ -93,11 +93,16 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     padding-top: 4px;
 }
 
+.mod-toolbox-rd .utagger-popup .utagger-types .utagger-type-list{
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .mod-toolbox-rd .utagger-popup .utagger-type input {
     display: none;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-type span {
+.mod-toolbox-rd .utagger-popup .utagger-type > * {
     padding: 3px;
     border: 1px solid rgb(114, 134, 154);
     transition: backgroun-color 0.15s ease-out;
@@ -107,7 +112,7 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     border-right: none;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-type span:hover {
+.mod-toolbox-rd .utagger-popup .utagger-type > *:hover {
     background-color: #e2eefa;
     cursor: pointer;
 }
@@ -115,12 +120,12 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     background-color: #e2eefa;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-type span:before {
+.mod-toolbox-rd .utagger-popup .utagger-type > *:before {
     content: '\2713';
     margin-right: 2px;
     opacity: 0.5;}
 
-.mod-toolbox-rd .utagger-popup .utagger-type span:hover:before {
+.mod-toolbox-rd .utagger-popup .utagger-type > *:hover:before {
     opacity: 1;
 }
 

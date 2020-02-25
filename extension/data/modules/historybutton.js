@@ -542,7 +542,7 @@ function historybutton () {
             // Are there more domains than are shown?
             let moreDomains = 0;
 
-            const maybeNsfwParam = self.setting('includeNsfwSearches') ? `&include_over_18=on` : ``;
+            const maybeNsfwParam = self.setting('includeNsfwSearches') ? '&include_over_18=on' : '';
 
             // Append all domains to the table and to the report comment
             user.domainList.forEach((domain, index) => {

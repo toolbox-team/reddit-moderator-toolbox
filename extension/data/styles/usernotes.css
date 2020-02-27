@@ -104,30 +104,30 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     display: none;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-type > * {
+.mod-toolbox-rd .utagger-popup .utagger-type > div {
     padding: 3px;
     border: 1px solid rgb(114, 134, 154);
-    transition: backgroun-color 0.15s ease-out;
+    transition: background-color 100ms ease-out;
 }
 
-.mod-toolbox-rd .utagger-popup td:not(:last-child) .utagger-type span {
+.mod-toolbox-rd .utagger-popup td:not(:last-child) .utagger-type div {
     border-right: none;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-type > *:hover {
+.mod-toolbox-rd .utagger-popup .utagger-type > div:hover {
     background-color: #e2eefa;
     cursor: pointer;
 }
-.mod-toolbox-rd .utagger-popup .utagger-type input:checked ~ span {
+.mod-toolbox-rd .utagger-popup .utagger-type input:checked ~ div {
     background-color: #e2eefa;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-type > *:before {
+.mod-toolbox-rd .utagger-popup .utagger-type > div:before {
     content: '\2713';
     margin-right: 2px;
     opacity: 0.5;}
 
-.mod-toolbox-rd .utagger-popup .utagger-type > *:hover:before {
+.mod-toolbox-rd .utagger-popup .utagger-type > div:hover:before {
     opacity: 1;
 }
 

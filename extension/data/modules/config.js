@@ -99,7 +99,7 @@ function tbconfig () {
                     <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea>
                     <h3>Removal reason footer text</h3>
                     <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
-                    <h3>Removal reason actions<h3>
+                    <h3>Removal reason actions</h3>
                     <select name="removal-option" id="removal-option">
                         <option value="suggest" ${configData.removalReasons.removalOption === 'undefined' || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
                         <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>

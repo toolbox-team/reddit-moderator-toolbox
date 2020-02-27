@@ -142,6 +142,11 @@
     font-family: "Lucida Console", Monaco, monospace;
 }
 
+.mod-toolbox-rd #tb-removal-reason-settings h3 {
+    margin-top: 8px;
+    margin-bottom: 3px;
+}
+
 .mod-toolbox-rd #tb-removal-reason-settings #buttons ul, .mod-toolbox-rd .reason-popup #buttons ul {
     list-style-type: none;
     margin: 5px;

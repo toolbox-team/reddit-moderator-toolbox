@@ -97,7 +97,9 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     display: flex;
     flex-wrap: wrap;
 }
-
+.utagger-type-list > div {
+  margin: 2px 2px 0 0;
+}
 .mod-toolbox-rd .utagger-popup .utagger-type input {
     display: none;
 }

@@ -421,11 +421,9 @@ function usernotes () {
                                         <td class="utagger-notes-td3"></td></tr>
                                 </tbody>
                             </table>
-                            <table class="utagger-types">
-                                <tbody>
-                                    <tr class="utagger-type-list"></tr>
-                                </tbody>
-                            </table>
+                            <div class="utagger-types">
+                                <div class="utagger-type-list"></div>
+                            </div>
                             <div class="utagger-input-wrapper">
                                 <input type="text" class="utagger-user-note tb-input" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
                                 <label class="utagger-include-link">
@@ -448,7 +446,7 @@ function usernotes () {
 
             // defined so we can easily add things to these specific areas after loading the notes.
             const $noteList = $popup.find('.utagger-content .utagger-notes tbody'),
-                  $typeList = $popup.find('.utagger-types tbody .utagger-type-list');
+                  $typeList = $popup.find('.utagger-types .utagger-type-list');
 
             // We want to make sure windows fit on the screen.
             const positions = TBui.drawPosition(e);
@@ -471,12 +469,12 @@ function usernotes () {
                     self.log(`    ${info.text}`);
                     self.log(`    ${info.color}`);
                     $typeList.append(`
-                    <td>
+                    <div>
                         <label class="utagger-type type-${info.key}">
                             <input type="checkbox" name="type-group-${group}" value="${info.key}" class="type-input type-input-${info.key}">
-                            <span style="color: ${info.color}">${info.text}</span>
+                            <div style="color: ${info.color}">${info.text}</div>
                         </label>
-                    </td>
+                    </div>
                     `);
                 });
 

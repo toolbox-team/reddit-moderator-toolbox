@@ -500,7 +500,13 @@ function queuetools () {
             });
 
             $body.on('click', '.thing input[type=checkbox]', () => {
-                $('#select-all').prop('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
+                const checks = $('.thing:visible input[type=checkbox]');
+                const selected = checks.filter(':checked').length;
+                allSelected = !checks.not(':checked').length;
+                $('#select-all').prop({
+                    indeterminate: !!selected && !allSelected,
+                    checked: allSelected,
+                });
             });
 
             // Select/deselect certain things

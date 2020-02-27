@@ -94,56 +94,84 @@ function tbconfig () {
                         title: 'removal reasons settings',
                         tooltip: 'Configure the basic behavior for removal reasons here.',
                         content: `
-                <table>
-                    <td><textarea placeholder="Header" class="tb-input edit-header" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
-                    </tr><tr>
-                    <td><textarea placeholder="Footer" class="tb-input edit-footer" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
-                    </tr>
-                    <tr class="advanced-enable" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>
-                    <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                <div id="tb-removal-reason-settings">
+                    <h3>Removal reason header text</h3>
+                    <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea>
+                    <h3>Removal reason footer text</h3>
+                    <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
+                    <h3>Removal reason actions</h3>
+                    <select name="removal-option" id="removal-option">
+                        <option value="suggest" ${!configData.removalReasons.removalOption || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
+                        <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>
+                        <option value="leave" ${configData.removalReasons.removalOption === 'leave' ? 'selected' : ''}>Leave up to moderator settings</option>
+                    </select>
+                    <div id="buttons">
+                        <ul>
+                            <li>
+                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${!configData.removalReasons.typeReply || configData.removalReasons.typeReply === 'reply' ? 'checked' : ''}/>
+                                <label for="type-reply-comment">Reply with a comment to the item that is removed.</label>
+                                <ul>
+                                    <li>
+                                        <input class="reason-sticky" type="checkbox" id="type-stickied" ${configData.removalReasons.typeStickied ? 'checked' : ''}/>
+                                        <label for="type-stickied">Sticky the removal comment.</label>
+                                    </li>
+                                    <li>
+                                        <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment" ${configData.removalReasons.typeLockComment ? 'checked' : ''}/>
+                                        <label for="type-action-lock-comment">Lock the removal comment.</label>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <input name="type-reply" class="reason-type" type="radio" value="pm" id="type-reply-pm" ${configData.removalReasons.typeReply === 'pm' ? 'checked' : ''}/>
+                                <label for="type-reply-pm">Send as PM (personal message)</label>
+                                <ul>
+                                    <li>
+                                        <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
+                                        <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <input name="type-reply" class="reason-type" type="radio" value="both" id="type-reply-both" ${configData.removalReasons.typeReply === 'both' ? 'checked' : ''}/>
+                                <label for="type-reply-both">Send as both PM and reply.</label>
+                            </li>
+                            <li class="rr-advanced">
+                                <input name="type-reply" class="reason-type" type="radio" value="none" id="type-reply-none" ${configData.removalReasons.typeReply === 'none' ? 'checked' : ''}/>
+                                <label for="type-reply-none">Send nothing and log the removal.</label>
+                            </li>
+                            <li>
+                                <input class="action-lock-thread" type="checkbox" id="type-action-lock-thread" ${configData.removalReasons.typeLockThread ? 'checked' : ''}/>
+                                <label for="type-action-lock-thread">Lock the removed thread.</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>show advanced settings</a>
+                    <h3 class="rr-advanced">Advanced settings</h3>
+                    <div class="rr-advanced">
                         get reason from /r/:
-                    </td><td>
                         <input class="getfrom tb-input" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '')}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
                         logsub /r/:
-                    </td><td>
                         <input class="logsub tb-input" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
-                       pmsubject:
-                    </td><td>
-                       <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
+                        pmsubject:
+                        <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '')}"/>
+                    </div>
+                    <div class="rr-advanced">
                         logtitle:
-                    </td><td>
                         <input class="logtitle tb-input" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
                         bantitle:
-                    </td><td>
                         <input class="bantitle tb-input" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
                         logreason:
-                    </td><td>
                         <input class="logreason tb-input" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : '')}"/>
-                    </td>
-                    </tr><tr>
-                </table>`,
+                    </div>
+                </div>`,
                         footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">',
                     },
                     {
@@ -830,6 +858,12 @@ function tbconfig () {
                 logreason: $('.logreason').val(),
                 header: escape($('.edit-header').val()),
                 footer: escape($('.edit-footer').val()),
+                removalOption: $('#removal-option').val(),
+                typeReply: $('input[name="type-reply"]:checked').val(),
+                typeStickied: $('#type-stickied').prop('checked'),
+                typeLockComment: $('#type-action-lock-comment').prop('checked'),
+                typeAsSub: $('#type-as-sub').prop('checked'),
+                typeLockThread: $('#type-action-lock-thread').prop('checked'),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),
                 bantitle: $('.bantitle').val(),

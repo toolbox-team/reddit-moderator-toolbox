@@ -95,11 +95,11 @@ function tbconfig () {
                         tooltip: 'Configure the basic behavior for removal reasons here.',
                         content: `
                 <div id="tb-removal-reason-settings">
-                    <h2></h2>
-                    <span>Header</span>
+                    <h3>Removal reason header text</h3>
                     <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea>
-                    <span>Footer</span>
+                    <h3>Removal reason footer text</h3>
                     <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
+                    <h3>Removal reason actions<h3>
                     <select name="removal-option" id="removal-option">
                         <option value="suggest" ${configData.removalReasons.removalOption === 'undefined' || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
                         <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>
@@ -146,6 +146,7 @@ function tbconfig () {
                         </ul>
                     </div>
                     <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>show advanced settings</a>
+                    <h3 class="rr-advanced">Advanced settings</h3>
                     <div class="rr-advanced">
                         get reason from /r/:
                         <input class="getfrom tb-input" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '')}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;

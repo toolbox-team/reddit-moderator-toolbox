@@ -101,14 +101,14 @@ function tbconfig () {
                     <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
                     <h3>Removal reason actions</h3>
                     <select name="removal-option" id="removal-option">
-                        <option value="suggest" ${configData.removalReasons.removalOption === 'undefined' || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
+                        <option value="suggest" ${!configData.removalReasons.removalOption || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
                         <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>
                         <option value="leave" ${configData.removalReasons.removalOption === 'leave' ? 'selected' : ''}>Leave up to moderator settings</option>
                     </select>
                     <div id="buttons">
                         <ul>
                             <li>
-                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${configData.removalReasons.typeReply === 'reply' ? 'checked' : ''}/>
+                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${!configData.removalReasons.typeReply || configData.removalReasons.typeReply === 'reply' ? 'checked' : ''}/>
                                 <label for="type-reply-comment">Reply with a comment to the item that is removed.</label>
                                 <ul>
                                     <li>

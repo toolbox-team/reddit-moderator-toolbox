@@ -55,7 +55,7 @@ You can find the documentation for all this on the following locations:
 
 Building is only needed if you want to test in Firefox as the build process makes some changes to `extension/manifest.json` for firefox. For Chrome and other chromium based browsers the building steps below are not needed.
 
-Building the extension is relatively easy through [Node.js][nodejs].
+Building the extension is relatively easy through [Node.js](https://nodejs.org/en/).
 
 ```sh
 $ npm install          # Install dependencies

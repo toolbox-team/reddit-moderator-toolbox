@@ -60,8 +60,6 @@ function personalnotes () {
                 ],
                 cssClass: 'personal-notes-popup',
             }).appendTo('body');
-
-            $body.find('.personal-notes-popup').drag('.personal-notes-popup .tb-popup-title');
         }
 
         // Let's load a note!

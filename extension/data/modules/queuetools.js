@@ -417,7 +417,7 @@ function queuetools () {
             const $modtoolsMenu = $body.find('.menuarea.modtools'),
                   offset = $modtoolsMenu.offset(),
                   offsetTop = offset.top,
-                  offsetLeft = offset.left,
+                  offsetSticky = offset.left,
                   rightPosition = $('.side').outerWidth() + 10;
 
             $modtoolsMenu.css({
@@ -435,15 +435,16 @@ function queuetools () {
                 if (frame) {
                     cancelAnimationFrame(frame);
                 }
-                if (window.scrollY > offsetTop) {
+                if (window.scrollY + offsetSticky > offsetTop) {
                     position = 'fixed';
                 } else {
                     position = 'relative';
                 }
                 frame = requestAnimationFrame(() => {
                     $modtoolsMenu.css({
-                        left: position === 'fixed' ? offsetLeft : 0,
-                        right: position === 'fixed' ? offsetLeft : 0,
+                        left: position === 'fixed' ? offsetSticky : 0,
+                        right: position === 'fixed' ? offsetSticky : 0,
+                        top: position === 'fixed' ? offsetSticky : 0,
                         position,
                     });
                     $('#siteTable').css({marginTop: position === 'fixed' ? $modtoolsMenu.outerHeight(true) + 6 : 0});

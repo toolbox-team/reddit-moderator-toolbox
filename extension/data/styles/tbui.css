@@ -20,32 +20,39 @@
     display: flex;
     background-color: #CEE3F8;
     line-height: 26px;
+    white-space: nowrap;
 }
 .mod-toolbox-rd .tb-window-header {
     /* Windows get bigger headers */
     line-height: 36px;
     font-size: 14px;
-    /* They also have the title in the absolute center */
-    /* TODO: not all windows have two buttons */
-    padding-left: 74px; /* size of the two buttons */
+}
+
+/* Pseudo-element added to the beginning of the window to help center titles */
+.mod-toolbox-rd .tb-window-header::before,
+.mod-toolbox-rd .tb-popup-header::before,
+.mod-toolbox-rd .tb-notification-header::before {
+    content: "";
+    flex: 1;
 }
 
 .mod-toolbox-rd .tb-window-title,
 .mod-toolbox-rd .tb-popup-title,
 .mod-toolbox-rd .tb-notification-title {
-    text-align: center;
+    flex: 1;
+    display: flex;
+    justify-content: center;
     font-weight: bold;
-    flex-grow: 1;
     padding: 0;
-}
-.mod-toolbox-rd .tb-popup-title {
-    margin: 0 5px; /* TODO: is this the right amount of margin? */
+    margin: 0 10px;
 }
 
 .mod-toolbox-rd .tb-window-header .buttons,
 .mod-toolbox-rd .tb-popup-header .buttons,
 .mod-toolbox-rd .tb-notification-header .buttons {
+    flex: 1;
     display: flex;
+    justify-content: flex-end;
 }
 
 .mod-toolbox-rd .tb-window-header .buttons a,

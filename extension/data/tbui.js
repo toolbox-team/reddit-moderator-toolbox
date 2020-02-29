@@ -280,7 +280,9 @@
         }
 
         if (draggable) {
-            $popup.drag($popup.find('.tb-popup-title'));
+            $popup.drag($popup.find('.tb-popup-header'));
+            // Don't let people drag by the buttons, that gets confusing
+            $popup.find('.buttons a').on('mousedown', e => e.stopPropagation());
         }
 
         return $popup;

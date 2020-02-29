@@ -443,9 +443,10 @@ function queuetools () {
                 frame = requestAnimationFrame(() => {
                     $modtoolsMenu.css({
                         left: position === 'fixed' ? offsetLeft : 0,
+                        right: position === 'fixed' ? offsetLeft : 0,
                         position,
                     });
-                    $('#siteTable').css({marginTop: position === 'fixed' ? $modtoolsMenu.outerHeight() : 0})
+                    $('#siteTable').css({marginTop: position === 'fixed' ? $modtoolsMenu.outerHeight(true) + 6 : 0});
                 });
             });
 

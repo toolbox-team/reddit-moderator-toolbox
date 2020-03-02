@@ -273,7 +273,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * @function
          * @param {string} cacheNAme the cache to be written.
          * @param {} value the cache value to be updated
-         * @param {string} subreddit when present cache is threated as an object and the value will be written to subreddit property. If missing the value is pushed.
+         * @param {string} subreddit when present cache is threated as an object and the
+         * value will be written to subreddit property. If missing the value is pushed.
          */
         TBCore.updateCache = function updateCache (cacheName, value, subreddit) {
             logger.debug('update cache', cacheName, subreddit, value);
@@ -440,7 +441,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.link = link => TBCore.isNewModmail ? `https://www.reddit.com${link}` : link;
 
         /**
-         * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
+         * Puts important debug information in a object so we can easily include
+         * it in /r/toolbox posts and comments when people need support.
          * @function
          * @returns {TBCore.debugObject} Object with debug information
          */
@@ -585,8 +587,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         /**
-         * Opens the toolbox "nag" alert everyone loves so much.
-         * USE SPARINGLY
+         * Opens the toolbox "nag" alert everyone loves so much. USE SPARINGLY.
          * @function
          * @param {object} options The options for the alert
          * @param {string} options.message The text of the alert

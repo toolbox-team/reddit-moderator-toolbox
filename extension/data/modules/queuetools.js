@@ -1112,33 +1112,19 @@ Action reason: ${value.data.details}
         }
 
         // Let's make bot approved posts stand out!
-        let checkmarkLength = self.setting('botCheckmark').length;
-        if (TBCore.isMod && checkmarkLength > 0) {
-            let baseCss;
-            checkmarkLength -= 1;
-            $.each(self.setting('botCheckmark'), (i, val) => {
-                switch (i) {
-                case 0:
-                    baseCss = `img.approval-checkmark[title*="approved by ${val}"], \n`;
-                    break;
-                case checkmarkLength:
-                    baseCss += `img.approval-checkmark[title*="approved by ${val}"] \n`;
-                    break;
-                default:
-                    baseCss += `img.approval-checkmark[title*="approved by ${val}"], \n`;
-                }
-            });
-
-            baseCss += `
-        { \n
-            display: inline-block; \n
-            padding-left: 16px; \n
-            padding-top: 5px; \n
-            background-image: url("data:image/png;base64,${TBui.iconBot}"); \n
-            background-repeat: no-repeat; \n
-        } \n`;
-
-            $('head').append(`<style>${baseCss}</style>`);
+        const selectors = self.setting('botCheckmark').map(bot => `img.approval-checkmark[title*="approved by ${bot}"]`);
+        if (selectors.length && TBCore.isMod) {
+            $('head').append(`
+                <style>
+                    ${selectors.join(',')} {
+                        display: inline-block;
+                        padding-left: 16px;
+                        padding-top: 5px;
+                        background-image: url("data:image/png;base64,${TBui.iconBot}");
+                        background-repeat: no-repeat;
+                    }
+                </style>
+            `);
         }
     };
 

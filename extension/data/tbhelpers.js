@@ -643,13 +643,18 @@
         return dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
     };
 
-    TBHelpers.getHashParameter = function (ParameterKey) {
+    /**
+     * Parses the URL hash as a query string and gets the value of a given key
+     * @param {string} key The key to get
+     * @returns {string} The value for that key
+     */
+    TBHelpers.getHashParameter = function (parameterKey) {
         const hash = window.location.hash.substring(1);
         const params = hash.split('&');
         for (let i = 0; i < params.length; i++) {
             const keyval = params[i].split('='),
                   key = keyval[0].replace('?', '');
-            if (key === ParameterKey) {
+            if (key === parameterKey) {
                 return keyval[1];
             }
         }
@@ -691,10 +696,20 @@
     };
 
     // Utility methods
-    TBHelpers.removeQuotes = function (string) {
-        return string.replace(/['"]/g, '');
-    };
 
+    /**
+     * Removes ASCII single and double quotes from a string.
+     * @param {string} string
+     * @returns {string}
+     */
+    TBHelpers.removeQuotes = string => string.replace(/['"]/g, '');
+
+    /**
+     * Generates a color corresponding to a given string (used to assign colors
+     * to subreddits for post borders in shared queues)
+     * @param {string} str The string to generate a color for
+     */
+    // TODO: cache results?
     TBHelpers.stringToColor = function stringToColor (str) {
         // str to hash
         let hash = 0;
@@ -711,24 +726,34 @@
         return color;
     };
 
-    // Added back for MMP's live mod mail.
-    TBHelpers.compressHTML = function (src) {
-        return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" > {2}False/, 'child">');
-    };
-
-    // easy way to simulate the php html encode and decode functions
+    /**
+     * Escapes text for HTML.
+     * @param {string} value The text to escape
+     * @returns {string}
+     */
+    // TODO: How is this different than escapeHTML() above?
     TBHelpers.htmlEncode = function (value) {
     // create a in-memory div, set it's inner text(which jQuery automatically encodes)
     // then grab the encoded contents back out.  The div never exists on the page.
         return $('<div/>').text(value).html();
     };
 
+    /**
+     * Gets the text content of an HTML string.
+     * @param {string} value The HTML to read
+     * @returns {string}
+     */
     TBHelpers.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
     };
 
+    /**
+     * Inflates a base64-encoded zlib-compressed data string into data.
+     * @param {string} string The compressed string
+     * @returns {any}
+     */
     TBHelpers.zlibInflate = function (stringThing) {
-    // Expand base64
+        // Expand base64
         stringThing = atob(stringThing);
         // zlib time!
         const inflate = new pako.Inflate({to: 'string'});
@@ -736,6 +761,11 @@
         return inflate.result;
     };
 
+    /**
+     * Deflates some data into a base64-encoded zlib-compressed data string.
+     * @param {any} object The data to compress
+     * @returns {string}
+     */
     TBHelpers.zlibDeflate = function (objThing) {
     // zlib time!
         const deflate = new pako.Deflate({to: 'string'});

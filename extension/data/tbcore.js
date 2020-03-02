@@ -463,9 +463,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             case CHROME: {
                 // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
                 // This way we can also cut some support requests short.
-                const vivaldiRegex = new RegExp(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
-                const yandexRegex = new RegExp(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
-                const chromeRegex = new RegExp(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
+                const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
+                const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
+                const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
                 if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
                     browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
                     debugObject.browser = 'Vivaldi';
@@ -489,8 +489,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 break;
             }
             case FIREFOX: {
-                const firefoxRegex = new RegExp(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
-                const firefoxDerivativeRegex = new RegExp(/\((.*?)\).*(Firefox\/[0-9.].*?)$/);
+                const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
+                const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
                 if (firefoxRegex.test(browserUserAgent)) {
                     browserMatchedInfo = browserUserAgent.match(firefoxRegex);
                     debugObject.browser = 'Firefox';

@@ -92,7 +92,7 @@
     };
 
     /**
-     * Give the nummeric value in milliseconds  of the current date and time.
+     * Give the nummeric value in milliseconds of the current date and time.
      * @function getTime
      * @memberof TBHelpers
      * @returns {integer} time value in milliseconds
@@ -639,7 +639,6 @@
      * @param {integer} num reddit API comment object.
      * @returns {boolean} true if number is odd false if even.
      */
-
     TBHelpers.isOdd = function (num) {
         return num % 2;
     };
@@ -652,8 +651,7 @@
      * @returns {string} shiny sub!
      */
     TBHelpers.cleanSubredditName = function (dirtySub) {
-        dirtySub = dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
-        return dirtySub;
+        return dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
     };
 
     TBHelpers.getHashParameter = function (ParameterKey) {
@@ -669,7 +667,7 @@
     };
 
     /**
-     * Replaces {tokes} for the respective value in given content
+     * Replaces {tokens} for the respective value in given content
      * @function replaceTokens
      * @memberof TBHelpers
      * @param {object} info object with token name keys and token content values.

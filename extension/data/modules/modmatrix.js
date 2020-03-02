@@ -35,7 +35,7 @@ function modmatrix () {
         }
         this.subredditUrl = subredditUrl;
 
-        const regex = new RegExp(/reddit\.com\/r\/([^/]+)\//g);
+        const regex = /reddit\.com\/r\/([^/]+)\//g;
         const matches = regex.exec(subredditUrl);
 
         if (matches != null) {

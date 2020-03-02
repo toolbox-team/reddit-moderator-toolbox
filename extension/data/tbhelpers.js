@@ -429,6 +429,14 @@
     };
 
     /**
+     * Generates a regular expression that will match only a given string.
+     * @param {string} text The text to match
+     * @param {string} flags The flags passed to the RegExp constructor
+     * @returns {RegExp}
+     */
+    TBHelpers.literalRegExp = (text, flags) => new RegExp(text.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1'), flags);
+
+    /**
      * Replace all instances of a certaing thing for another thing.
      * @function replaceAll
      * @memberof TBHelpers
@@ -437,10 +445,7 @@
      * @param {string} str where to do it all with
      * @returns {string} shiny new string with replaced stuff
      */
-    TBHelpers.replaceAll = function (find, replace, str) {
-        find = find.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
-        return str.replace(new RegExp(find, 'g'), replace);
-    };
+    TBHelpers.replaceAll = (find, replace, str) => str.replace(TBHelpers.literalRegExp(find, 'g'), replace);
 
     /**
      * Will compare the input color to a list of known color names and return the HEX value

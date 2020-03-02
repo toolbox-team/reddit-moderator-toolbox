@@ -937,7 +937,7 @@ function usernotes () {
 
             // Live search - users
             $body.find('#tb-unote-user-search').keyup(function () {
-                const userSearchValue = new RegExp($(this).val().toUpperCase());
+                const userSearchValue = TBHelpers.literalRegExp($(this).val().toUpperCase());
 
                 $body.find('.tb-un-user').each(function (key, thing) {
                     userSearchValue.test($(thing).attr('data-user').toUpperCase()) ? $(this).show() : $(this).hide();
@@ -946,7 +946,7 @@ function usernotes () {
 
             // Live search - contents
             $body.find('#tb-unote-contents-search').keyup(function () {
-                const contentsSearchValue = new RegExp($(this).val().toUpperCase());
+                const contentsSearchValue = TBHelpers.literalRegExp($(this).val().toUpperCase());
 
                 $body.find('.note').each(function (key, thing) {
                     const wrapper = $(this).closest('.tb-un-note-details').show();

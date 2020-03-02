@@ -184,16 +184,22 @@
      * @param {string} subreddit The name of the subreddit the page is in
      * @param {string} page The name of the page
      * @param {boolean} isJSON If true, data is parsed as JSON before being passed to the callback
-     * @param {TBApi~readFromWikiCallback} callback Executed with the page data
+     * @returns {Promise} Promises he data of the wiki page. If there is an
+     * error reading from the page, one of the following error values may be
+     * returned:
+     * - TBCore.WIKI_PAGE_UNKNOWN
+     * - TBCore.NO_WIKI_PAGE
+     * If the isJSON `param` was true, then this will be an object. Otherwise,
+     * it will be the raw contents of the wiki as a string.
      */
-    TBApi.readFromWiki = function (subreddit, page, isJSON, callback) {
+    TBApi.readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
         TBApi.sendRequest({
             endpoint: `/r/${subreddit}/wiki/${page}.json`,
         }).then(({data}) => {
             const wikiData = data.data.content_md;
             if (!wikiData) {
-                callback(TBCore.NO_WIKI_PAGE);
+                resolve(TBCore.NO_WIKI_PAGE);
                 return;
             }
             if (isJSON) {
@@ -203,22 +209,22 @@
                 } catch (err) {
                 // we should really have a INVAILD_DATA error for this.
                     logger.log(err);
-                    callback(TBCore.NO_WIKI_PAGE);
+                    resolve(TBCore.NO_WIKI_PAGE);
                 }
                 // Moved out of the try so random exceptions don't erase the entire wiki page
                 if (parsedWikiData) {
-                    callback(parsedWikiData);
+                    resolve(parsedWikiData);
                 } else {
-                    callback(TBCore.NO_WIKI_PAGE);
+                    resolve(TBCore.NO_WIKI_PAGE);
                 }
                 return;
             }
             // We have valid data, but it's not JSON.
-            callback(wikiData);
+            resolve(wikiData);
         }).catch(({jqXHR, errorThrown}) => {
             logger.log(`Wiki error (${subreddit}/${page}): ${errorThrown}`);
             if (jqXHR.responseText === undefined) {
-                callback(TBCore.WIKI_PAGE_UNKNOWN);
+                resolve(TBCore.WIKI_PAGE_UNKNOWN);
                 return;
             }
             let reason;
@@ -229,24 +235,13 @@
             }
 
             if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
-                callback(TBCore.NO_WIKI_PAGE);
+                resolve(TBCore.NO_WIKI_PAGE);
             } else {
             // we don't know why it failed, we should not try to write to it.
-                callback(TBCore.WIKI_PAGE_UNKNOWN);
+                resolve(TBCore.WIKI_PAGE_UNKNOWN);
             }
         });
-    };
-
-    /**
-     * @callback TBApi~readFromWikiCallback
-     * @param {string | object} data The data of the wiki page. If there is an
-     * error reading from the page, one of the following error values may be
-     * returned:
-     * - TBCore.WIKI_PAGE_UNKNOWN
-     * - TBCore.NO_WIKI_PAGE
-     * If the isJSON `param` was true, then this will be an object. Otherwise,
-     * it will be the raw contents of the wiki as a string.
-     */
+    });
 
     /**
      * Gets the ban state of a user.

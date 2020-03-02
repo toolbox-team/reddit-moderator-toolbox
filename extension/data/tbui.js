@@ -27,7 +27,7 @@
      * Material design icons mapped to toolbox names through their hexcode.
      *
      * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
-     * @type {object}
+     * @constant {object}
      */
     TBui.icons = {
         add: '&#xe145;', // add
@@ -118,6 +118,7 @@
 
     /**
      * Show an in-page notification on the current tab.
+     * @function
      * @param {object} options The options for the notification
      * @param {string} options.id The notification's ID
      * @param {string} options.title The notification's title
@@ -156,6 +157,7 @@
 
     /**
      * Clears an in-page notification on the current tab.
+     * @function
      * @param {string} id The ID of the notification to clear
      */
     TBui.clearNotification = id => {
@@ -190,14 +192,13 @@
 
     /**
      * Generate a popup.
-     *
+     * @function
      * @param {object} options Options for the popup
      * @param {string} options.title The popup's title (raw HTML)
      * @param {object[]} options.tabs The tabs for the popup
      * @param {string?} options.cssClass Extra CSS class to add to the popup
      * @param {string?} options.meta Raw HTML to add to a "meta" container
      * @param {boolean?} [draggable=true] Whether the user can move the popup
-     *
      * @returns {jQuery}
      */
     TBui.popup = function popup ({
@@ -732,18 +733,25 @@
         }
     };
 
+    let contextTimeout;
+
     /**
-     * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
+     * Add or remove a menu element to the context aware menu. Makes the menu
+     * shows if it was empty before adding, hides menu if it is empty after removing.
      * @function
      * @param {string} triggerId This will be part of the id given to the element.
      * @param {object} options
-     * @param {boolean} options.addTrigger Indicates of the menu item needs to be added or removed.
-     * @param {string} options.triggerText Text displayed in menu. Not needed when addTrigger is false.
-     * @param {string} options.triggerIcon The material icon that needs to be displayed before the menu item. Defaults to 'label'
-     * @param {string} options.title Title to be used in title attribute. If no title is given the triggerText will be used.
-     * @param {object} options.dataAttributes Any data attribute that might be needed. Object keys will be used as the attribute name and value as value.
+     * @param {boolean} options.addTrigger Indicates of the menu item needs to
+     * be added or removed.
+     * @param {string} options.triggerText Text displayed in menu. Not needed
+     * when addTrigger is false.
+     * @param {string} options.triggerIcon The material icon that needs to be
+     * displayed before the menu item. Defaults to 'label'
+     * @param {string} options.title Title to be used in title attribute. If no
+     * title is given the triggerText will be used.
+     * @param {object} options.dataAttributes Any data attribute that might be
+     * needed. Object keys will be used as the attribute name and value as value.
      */
-    let contextTimeout;
     TBui.contextTrigger = function contextTrigger (triggerId, options) {
         // We really don't need two context menus side by side.
         if (TBCore.isEmbedded) {
@@ -973,7 +981,6 @@
      * @param {object} submissionOptions object denoting what needs to be included.
      * @returns {object} jquery object with the build submission.
      */
-
     TBui.makeSubmissionEntry = function makeSubmissionEntry (submission, submissionOptions) {
         TBStorage.purifyObject(submission);
         // Misc
@@ -1243,10 +1250,10 @@
      * Will build a comment given a reddit API comment object.
      * @function
      * @param {object} comment reddit API comment object.
-     * @param {object} commentOptions object denoting what needs to be included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @param {object} commentOptions object denoting what needs to be included.
+     * Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
      * @returns {object} jquery object with the build comment.
      */
-
     TBui.makeSingleComment = function makeSingleComment (comment, commentOptions = {}) {
         TBStorage.purifyObject(comment);
         // Misc
@@ -1560,11 +1567,14 @@
 
         return $buildComment;
     };
+
     /**
      * Will build a comment given a reddit API comment object.
      * @function
      * @param {object} jsonInput reddit API comments object.
-     * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @param {object} commentOptions object denoting what needs to included.
+     * Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as
+     * boolean.
      * @returns {object} jquery object with the build comment thread.
      */
     TBui.makeCommentThread = function makeCommentThread (jsonInput, commentOptions) {

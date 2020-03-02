@@ -147,7 +147,7 @@ function personalnotes () {
                         createPersonalNotesPopup(notesPopupContent);
 
                     // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
-                    } else if ($.inArray(notewiki, mySubsLowerCase) === -1) {
+                    } else if (!mySubsLowerCase.includes(notewiki)) {
                         notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
@@ -266,7 +266,7 @@ function personalnotes () {
 
             if (newNotename === '') {
                 TB.ui.textFeedback('You should try filling in an actual name...', TB.ui.FEEDBACK_NEGATIVE);
-            } else if ($.inArray(newNotename, notesArray) !== -1) {
+            } else if (notesArray.includes(newNotename)) {
                 TB.ui.textFeedback('That already is a note.', TB.ui.FEEDBACK_NEGATIVE);
             } else {
                 notesArray.push(newNotename);

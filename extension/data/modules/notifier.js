@@ -467,7 +467,7 @@ function notifiermod () {
                             let subreddit,
                                 subject,
                                 author;
-                            if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
+                            if (!pushedunread.includes(value.data.name) && value.kind === 't1') {
                                 subreddit = value.data.subreddit;
                                 author = value.data.author;
 
@@ -479,7 +479,7 @@ function notifiermod () {
                                 messagecount++;
                                 pushedunread.push(value.data.name);
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
-                            } else if ($.inArray(value.data.name, pushedunread) === -1) {
+                            } else if (!pushedunread.includes(value.data.name)) {
                                 subject = value.data.subject;
                                 author = value.data.author;
 
@@ -519,7 +519,7 @@ function notifiermod () {
                                 subject,
                                 id;
 
-                            if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
+                            if (!pushedunread.includes(value.data.name) && value.kind === 't1') {
                                 context = value.data.context;
                                 body_html = TBHelpers.htmlDecode(value.data.body_html);
                                 author = value.data.author;
@@ -531,7 +531,7 @@ function notifiermod () {
                                 pushedunread.push(value.data.name);
 
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
-                            } else if ($.inArray(value.data.name, pushedunread) === -1) {
+                            } else if (!pushedunread.includes(value.data.name)) {
                                 author = value.data.author;
                                 body_html = TBHelpers.htmlDecode(value.data.body_html);
                                 subject = value.data.subject;
@@ -603,7 +603,7 @@ function notifiermod () {
                             let subreddit,
                                 author;
 
-                            if ($.inArray(value.data.name, pusheditems) === -1 && value.kind === 't3') {
+                            if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
                                 subreddit = value.data.subreddit;
                                 author = value.data.author;
 
@@ -617,7 +617,7 @@ function notifiermod () {
 
                                 queuecount++;
                                 pusheditems.push(value.data.name);
-                            } else if ($.inArray(value.data.name, pusheditems) === -1) {
+                            } else if (!pusheditems.includes(value.data.name)) {
                                 subreddit = value.data.subreddit;
                                 author = value.data.author;
 
@@ -645,7 +645,7 @@ function notifiermod () {
                         }
                     } else {
                         $.each(json.data.children, (i, value) => {
-                            if ($.inArray(value.data.name, pusheditems) === -1 && value.kind === 't3') {
+                            if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
                                 const mqpermalink = value.data.permalink,
                                       mqtitle = value.data.title,
                                       mqauthor = value.data.author,
@@ -653,7 +653,7 @@ function notifiermod () {
 
                                 TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                                 pusheditems.push(value.data.name);
-                            } else if ($.inArray(value.data.name, pusheditems) === -1) {
+                            } else if (!pusheditems.includes(value.data.name)) {
                                 const reportauthor = value.data.author,
                                       idname = value.data.name,
                                       linkid = `/api/info.json?id=${value.data.link_id}`;

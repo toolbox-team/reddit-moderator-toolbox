@@ -1096,7 +1096,7 @@ Action reason: ${value.data.details}
                 self.log(`  subreddit: ${subreddit}`);
                 self.log(`  removedby: ${removedBy}`);
 
-                if ($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
+                if (!queueSubs.includes(subreddit) && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
                     queueSubs.push(subreddit);
                 }
             });

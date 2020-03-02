@@ -262,7 +262,7 @@ function usernotes () {
         }
 
         function foundSubreddit (subreddit) {
-            if ($.inArray(subreddit, subs) === -1) {
+            if (!subs.includes(subreddit)) {
                 subs.push(subreddit);
             }
         }

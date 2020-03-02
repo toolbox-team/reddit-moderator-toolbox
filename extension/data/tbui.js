@@ -1416,7 +1416,7 @@
         if (commentOptions.noOddEven) {
             commentDepthClass = commentDepth;
         } else {
-            commentDepthClass = TBHelpers.isOdd(commentDepth) ? 'odd' : 'even';
+            commentDepthClass = commentDepth % 2 ? 'odd' : 'even';
         }
 
         const commentOptionsJSON = TBHelpers.escapeHTML(JSON.stringify(commentOptions));

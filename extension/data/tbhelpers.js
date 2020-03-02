@@ -633,17 +633,6 @@
     };
 
     /**
-     * Will tell if a number is odd
-     * @function isOdd
-     * @memberof TBHelpers
-     * @param {integer} num reddit API comment object.
-     * @returns {boolean} true if number is odd false if even.
-     */
-    TBHelpers.isOdd = function (num) {
-        return num % 2;
-    };
-
-    /**
      * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
      * @function cleanSubredditName
      * @memberof TBHelpers

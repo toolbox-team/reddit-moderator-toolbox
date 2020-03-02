@@ -59,20 +59,13 @@
     /**
      * Perform a HEAD request.
      * @param {string} endpoint The endpoint to request
-     * @param {callback} doneCallback
-     * @returns {callback}
-     * @TODO Implement with promises (consumers need to be updated)
+     * @returns {Promise} The response object
      * @TODO "get head" is a confusing name
      */
-    TBApi.getHead = (endpoint, doneCallback) => {
-        TBApi.sendRequest({
-            method: 'HEAD',
-            endpoint,
-        }).then(response => {
-            // data isn't needed; just the tip
-            doneCallback(response.status, response.jqXHR);
-        });
-    };
+    TBApi.getHead = endpoint => TBApi.sendRequest({
+        method: 'HEAD',
+        endpoint,
+    });
 
     /**
      * Sends an authenticated request against the OAuth API from the
@@ -113,21 +106,18 @@
      * @param {TBApi~getRateLimitCallback} callback Executed with ratelimit info
      */
     TBApi.getRatelimit = function getRatelimit (callback) {
-        TBApi.getHead(
-            '/r/toolbox/wiki/ratelimit.json',
-            (status, jqxhr) => {
-                const ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
-                      ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
-                logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
+        TBApi.getHead('/r/toolbox/wiki/ratelimit.json').then(({jqXHR}) => {
+            const ratelimitRemaining = jqXHR.allResponseHeaders['x-ratelimit-remaining'],
+                  ratelimitReset = jqXHR.allResponseHeaders['x-ratelimit-reset'];
+            logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
-                if (typeof callback !== 'undefined') {
-                    callback({
-                        ratelimitRemaining,
-                        ratelimitReset,
-                    });
-                }
+            if (typeof callback !== 'undefined') {
+                callback({
+                    ratelimitRemaining,
+                    ratelimitReset,
+                });
             }
-        );
+        });
     };
 
     /**

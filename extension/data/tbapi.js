@@ -103,29 +103,20 @@
 
     /**
      * Gets ratelimit information from the API.
-     * @param {TBApi~getRateLimitCallback} callback Executed with ratelimit info
+     * @returns {Promise} Promises an object with `ratelimitRemaining` and
+     *  ratelimitReset` properties
      */
-    TBApi.getRatelimit = function getRatelimit (callback) {
-        TBApi.getHead('/r/toolbox/wiki/ratelimit.json').then(({jqXHR}) => {
-            const ratelimitRemaining = jqXHR.allResponseHeaders['x-ratelimit-remaining'],
-                  ratelimitReset = jqXHR.allResponseHeaders['x-ratelimit-reset'];
-            logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
+    TBApi.getRatelimit = () => TBApi.getHead('/r/toolbox/wiki/ratelimit.json').then(({jqXHR}) => {
+        const ratelimitRemaining = jqXHR.allResponseHeaders['x-ratelimit-remaining'],
+              ratelimitReset = jqXHR.allResponseHeaders['x-ratelimit-reset'];
 
-            if (typeof callback !== 'undefined') {
-                callback({
-                    ratelimitRemaining,
-                    ratelimitReset,
-                });
-            }
-        });
-    };
+        logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
-    /**
-     * @callback TBApi~getRateLimitCallback
-     * @param {object} rateLimits An object containing the rate limit info
-     * @param {number} rateLimits.rateLimitRemaining
-     * @param {number} rateLimits.rateLimitReset
-     */
+        return {
+            ratelimitRemaining,
+            ratelimitReset,
+        };
+    });
 
     /**
       * Updates the content of a wiki page.

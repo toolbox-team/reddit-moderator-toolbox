@@ -360,7 +360,7 @@
 </div>`);
 
         if (details) {
-            $.each(details, (key, value) => {
+            Object.entries(details).forEach(([key, value]) => {
                 $overlay.attr(`data-${key}`, value);
             });
         }
@@ -469,7 +469,7 @@
 
         // Add values to select
 
-        $.each(choices, (i, keyValue) => {
+        choices.forEach(keyValue => {
             const value = keyValue.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(keyValue));
         });
@@ -517,11 +517,11 @@
             }
         });
 
-        $.each(available, (i, value) => {
+        available.forEach(value => {
             $available_list.append($('<option>').attr('value', value).text(value));
         });
 
-        $.each(selected, (i, value) => {
+        selected.forEach(value => {
             $selected_list.append($('<option>').attr('value', value).text(value));
         });
 
@@ -566,7 +566,7 @@
         if ($.isEmptyObject(items)) {
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         } else {
-            $.each(items, (key, value) => {
+            Object.entries(items).forEach(([key, value]) => {
                 const $item = $(`
                 <tr class="tb-map-input-tr">
                     <td><input type="text" class="tb-input" value="${TBHelpers.htmlEncode(unescape(key))}" name="key"></td>
@@ -804,7 +804,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                $.each(options.dataAttributes, (name, value) => {
+                Object.keys(options.dataAttributes).forEach(([name, value]) => {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }

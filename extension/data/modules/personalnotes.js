@@ -189,7 +189,7 @@ function personalnotes () {
                                     let notecount = 0,
                                         noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
 
-                                    $.each(json.data, (i, value) => {
+                                    json.data.forEach(value => {
                                         if (/notes\//.test(value)) {
                                             value = value.replace('notes/', '');
                                             notecount++;

@@ -216,7 +216,7 @@ function notifiermod () {
 
             TBApi.getJSON(`/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
                 TBStorage.purifyObject(json);
-                $.each(json.data.children, (i, value) => {
+                json.data.children.forEach(value => {
                     const unreadmessageid = value.data.name;
 
                     TBApi.markMessageRead(unreadmessageid, () => {
@@ -463,7 +463,7 @@ function notifiermod () {
                     if (consolidatedMessages) {
                         let notificationbody,
                             messagecount = 0;
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             let subreddit,
                                 subject,
                                 author;
@@ -509,7 +509,7 @@ function notifiermod () {
                             youveGotMail();
                         }
                     } else {
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             let context,
                                 body_html,
                                 author,
@@ -599,7 +599,7 @@ function notifiermod () {
                     if (consolidatedMessages) {
                         // $.log('here we go!');
                         let notificationbody, queuecount = 0, xmoreModqueue = 0;
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             let subreddit,
                                 author;
 
@@ -644,7 +644,7 @@ function notifiermod () {
                             TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                         }
                     } else {
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
                                 const mqpermalink = value.data.permalink,
                                       mqtitle = value.data.title,
@@ -694,7 +694,7 @@ function notifiermod () {
                         if (consolidatedMessages) {
                             let notificationbody, queuecount = 0, xmoreUnmod = 0;
 
-                            $.each(json.data.children, (i, value) => {
+                            json.data.children.forEach(value => {
                                 if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                     const subreddit = value.data.subreddit,
                                           author = value.data.author;
@@ -721,7 +721,7 @@ function notifiermod () {
                                 TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                             }
                         } else {
-                            $.each(json.data.children, (i, value) => {
+                            json.data.children.forEach(value => {
                                 if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                     const uqpermalink = value.data.permalink,
                                           uqtitle = value.data.title,

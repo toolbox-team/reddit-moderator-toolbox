@@ -373,11 +373,6 @@
         return str.slice(0, -1);
     };
 
-    /** @todo properly describe what this does */
-    TBHelpers.stringFormat = function (format, ...args) {
-        return format.replace(/{(\d+)}/g, (match, number) => typeof args[number] !== 'undefined' ? args[number] : match);
-    };
-
     /**
      * Sorts an array of objects by property value of specific properties.
      * @function sortBy

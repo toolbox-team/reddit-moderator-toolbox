@@ -1278,27 +1278,25 @@ function usernotes () {
 
         // Write to wiki page
         self.log('Saving usernotes to wiki...');
-        TBApi.postToWiki('usernotes', sub, notes, reason, true, false, (succ, jqXHR) => {
-            if (succ) {
-                self.log('Success!');
-                TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
-                if (callback) {
-                    callback(true);
-                }
+        TBApi.postToWiki('usernotes', sub, notes, reason, true, false).then(() => {
+            self.log('Success!');
+            TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
+            if (callback) {
+                callback(true);
+            }
+        }).catch(jqXHR => {
+            self.log(`Failure: ${jqXHR.status}`);
+            let reason;
+            if (jqXHR.status === 413) {
+                reason = 'usernotes full';
             } else {
-                self.log(`Failure: ${jqXHR.status}`);
-                let reason;
-                if (jqXHR.status === 413) {
-                    reason = 'usernotes full';
-                } else {
-                    reason = jqXHR.responseText;
-                }
-                self.log(`  ${reason}`);
+                reason = jqXHR.responseText;
+            }
+            self.log(`  ${reason}`);
 
-                TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
-                if (callback) {
-                    callback(false);
-                }
+            TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
+            if (callback) {
+                callback(false);
             }
         });
 

@@ -126,9 +126,9 @@
       * @param {string} reason A note for the revision history of the page
       * @param {boolean} isJSON If true, `data` is stringified as JSON first
       * @param {boolean} updateAM If true, all tabs are replaced with 4 spaces
-      * @param {TBApi~postToWikiCallback} callback Executed on completion
+      * @returns {Promise} Resolves with no value or rejects with the jqXHR object
       */
-    TBApi.postToWiki = function postToWiki (page, subreddit, data, reason, isJSON, updateAM, callback) {
+    TBApi.postToWiki = async function postToWiki (page, subreddit, data, reason, isJSON, updateAM) {
         if (reason) {
             reason = `"${reason}" via toolbox`;
         } else {
@@ -148,45 +148,36 @@
             data = data.replace(/\t/g, '    ');
         }
 
-        TBApi.post(`/r/${subreddit}/api/wiki/edit`, {
-            content: data,
-            page,
-            reason,
-            uh: TBCore.modhash,
-        }).then(() => {
-            setTimeout(() => {
-            // Callback regardless of what happens next.  We wrote to the page.
-            // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
+        try {
+            await TBApi.post(`/r/${subreddit}/api/wiki/edit`, {
+                content: data,
+                page,
+                reason,
+                uh: TBCore.modhash,
+            });
+        } catch (jqXHR) {
+            logger.log(jqXHR.responseText);
+            throw jqXHR;
+        }
 
-                callback(true);
-            }, 750);
-
-            setTimeout(() => {
-                // Set page access to 'mod only'.
-                TBApi.post(`/r/${subreddit}/wiki/settings/`, {
-                    page,
-                    listed: true, // hrm, may need to make this a config setting.
-                    permlevel: 2,
-                    uh: TBCore.modhash,
-                })
+        setTimeout(() => {
+            // Set page access to 'mod only'.
+            TBApi.post(`/r/${subreddit}/wiki/settings/`, {
+                page,
+                listed: true, // hrm, may need to make this a config setting.
+                permlevel: 2,
+                uh: TBCore.modhash,
+            })
 
                 // Super extra double-secret secure, just to be safe.
-                    .catch(() => {
-                        alert('error setting wiki page to mod only access');
-                        window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
-                    });
-            }, 500);
-        }).catch(jqXHR => {
-            logger.log(jqXHR.responseText);
-            callback(false, jqXHR);
-        });
-    };
+                .catch(() => {
+                    alert('error setting wiki page to mod only access');
+                    window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
+                });
+        }, 500);
 
-    /**
-     * @callback TBApi~postToWikiCallback
-     * @param {boolean} success Whether or not the update was successful
-     * @param {jqXHR} error AjqXHR object with error info if the request failed
-     */
+        await new Promise(resolve => setTimeout(resolve, 750));
+    };
 
     /**
      * Reads data from a wiki page

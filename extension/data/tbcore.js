@@ -24,9 +24,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         });
 
         /**
-         * If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain. Used because some browsers do not like relative urls in extensions
-         * @var {string} baseDomain
-         * @memberof TBCore
+         * If we are on new modmail we use www.reddit.com for all other
+         * instances we use whatever is the current domain. Used because some
+         * browsers do not like relative urls in extensions
+         * @constant {string}
          */
         TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
@@ -269,8 +270,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Updates in page cache and background page.
-         * @function updateCache
-         * @memberof TBCore
+         * @function
          * @param {string} cacheNAme the cache to be written.
          * @param {} value the cache value to be updated
          * @param {string} subreddit when present cache is threated as an object and the value will be written to subreddit property. If missing the value is pushed.
@@ -433,6 +433,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
           * Takes an absolute path for a link and prepends the www.reddit.com
           * domain if we're in new modmail (mod.reddit.com). Makes absolute path
           * links work everywhere.
+          * @function
           * @param {string} link The link path, starting with "/"
           * @returns {string}
           */
@@ -440,8 +441,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
-         * @function debugInformation
-         * @memberof TBCore
+         * @function
          * @returns {TBCore.debugObject} Object with debug information
          */
         TBCore.debugInformation = function debugInformation () {
@@ -542,8 +542,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Checks if a given subreddit config version is valid with this version of toolbox
-         * @function isConfigValidVersion
-         * @memberof TBCore
+         * @function
          * @param {object} config
          * @param {string} subreddit
          * @returns {booleean} valid
@@ -565,8 +564,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Fetches the toolbox dev from /r/toolbox or falls back to a predefined list.
-         * @function getToolboxDevs
-         * @memberof TBCore
+         * @function
          * @returns {array} List of toolbox devs
          */
         TBCore.getToolboxDevs = function getToolboxDevs () {
@@ -589,8 +587,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         /**
          * Opens the toolbox "nag" alert everyone loves so much.
          * USE SPARINGLY
-         * @function alert
-         * @memberof TBCore
+         * @function
          * @param {object} options The options for the alert
          * @param {string} options.message The text of the alert
          * @param {number} options.noteID The ID of the note we're displaying
@@ -686,8 +683,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         /**
          * Shows a notification, uses native browser notifications if the user
          * allows it or falls back on html notifications.
-         * @function notification
-         * @memberof TBCore
+         * @function
          * @param {string} title Notification title
          * @param {string} body Body text
          * @param {string} path Absolute path to be opend when clicking the

@@ -734,8 +734,7 @@
 
     /**
      * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
-     * @function contextTrigger
-     * @memberof TBui
+     * @function
      * @param {string} triggerId This will be part of the id given to the element.
      * @param {object} options
      * @param {boolean} options.addTrigger Indicates of the menu item needs to be added or removed.
@@ -846,8 +845,7 @@
     /**
      * Will send out events similar to the reddit jsAPI events for the elements given.
      * Only support 'comment' for now and will only send the commentAuthor event.
-     * @function tbRedditEvent
-     * @memberof TBui
+     * @function
      * @param {object} $elements jquery object containing the e
      * @param {string} types comma seperated list of type of elements the events need to be send for.
      */
@@ -970,8 +968,7 @@
 
     /**
      * Will build a submission entry given a reddit API submission object.
-     * @function makeSubmissionEntry
-     * @memberof TBui
+     * @function
      * @param {object} submission reddit API submission object.
      * @param {object} submissionOptions object denoting what needs to be included.
      * @returns {object} jquery object with the build submission.
@@ -982,7 +979,7 @@
         // Misc
         const canModsubmission = submission.data.can_mod_post,
 
-              // submission basis (author, body, time)
+            // submission basis (author, body, time)
               submissionAuthor = submission.data.author,
               submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
               submissionCreatedUTC = submission.data.created_utc, // unix epoch
@@ -995,7 +992,7 @@
               submissionThumbnail = submission.data.thumbnail,
               submissionDomain = submission.data.domain,
 
-              // submission details
+            // submission details
               submissionScore = submission.data.score, // integer
               submissionLikes = submission.data.likes, // boolean or null
               submissionIsSelf = submission.data.is_self,
@@ -1007,14 +1004,14 @@
               submissionNumComments = submission.data.num_comments,
               submissionUserReports = submission.data.user_reports, // array with reports by users
 
-              // submission details - mod related
+            // submission details - mod related
               submissionDistinguished = submission.data.distinguished, // string containing "moderator" or "admin"
               submissionModReports = submission.data.mod_reports, // array with reports by mods
 
-              // Author details
+            // Author details
               submissionIsSubmitter = submission.data.is_submitter, // boolean - is OP
 
-              // submission status - mod action
+            // submission status - mod action
               submissionApproved = submission.data.approved, // boolean
               submissionApprovedAtUTC = submission.data.approved_at_utc, // unix epoch
               submissionApprovedBy = submission.data.approved_by, // unix epoch
@@ -1244,8 +1241,7 @@
 
     /**
      * Will build a comment given a reddit API comment object.
-     * @function makeSingleComment
-     * @memberof TBui
+     * @function
      * @param {object} comment reddit API comment object.
      * @param {object} commentOptions object denoting what needs to be included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
      * @returns {object} jquery object with the build comment.
@@ -1256,43 +1252,43 @@
         // Misc
         const canModComment = comment.data.can_mod_post,
 
-              // Comment basis (author, body, time)
+            // Comment basis (author, body, time)
               commentAuthor = comment.data.author,
               commentBodyHTML = TBStorage.purify(comment.data.body_html), // html string
-              // commentMarkdownBody = comment.data.body, // markdown string
-              // commentCreated = comment.data.created, // unix epoch
+            // commentMarkdownBody = comment.data.body, // markdown string
+            // commentCreated = comment.data.created, // unix epoch
               commentCreatedUTC = comment.data.created_utc, // unix epoch
               commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
               commentLinkId = comment.data.link_id, // parent submission ID
-              // commentId = comment.data.id, // comment ID
+            // commentId = comment.data.id, // comment ID
               commentName = comment.data.name, // fullname t1_<comment ID>
               commentParentId = comment.data.parent_id,
               commentPermalink = comment.data.permalink,
               commentSubreddit = comment.data.subreddit,
-              // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
+            // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
               commentSubredditType = comment.data.subreddit_type,
             // commentReplies = comment.data.replies, // object with replies
 
-              // Comment details
-              // commentScoreHidden = comment.data.score_hidden, // boolean
+            // Comment details
+            // commentScoreHidden = comment.data.score_hidden, // boolean
               commentScore = comment.data.score, // integer
               commentControversiality = comment.data.controversiality, // integer
               commentEdited = comment.data.edited,
               commentGildings = comment.data.gildings,
-              // commentNumReports = comment.data.num_reports,
+            // commentNumReports = comment.data.num_reports,
               commentUserReports = comment.data.user_reports, // array with reports by users
 
-              // Comment details - mod related
+            // Comment details - mod related
               commentStickied = comment.data.stickied, // boolean
               commentDistinguished = comment.data.distinguished, // string containing "moderator" or "admin"
               commentModReports = comment.data.mod_reports, // array with reports by mods
 
-              // Author details
+            // Author details
               commentAuthorFlairCssClass = comment.data.author_flair_css_class,
               commentAuthorFlairText = comment.data.author_flair_text,
               commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
 
-              // Comment status - mod action
+            // Comment status - mod action
               commentApproved = comment.data.approved, // boolean
               commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
               commentApprovedBy = comment.data.approved_by, // unix epoch
@@ -1302,10 +1298,10 @@
               commentBannedBy = comment.data.banned_by, // Mod that removed the comment
               commentIgnoreReports = comment.data.ignore_reports, // boolean
 
-              // Comment status - other
-              // commentArchived = comment.data.archived,
-              // commentCollapsed = comment.data.collapsed,
-              // commentCollapsedReason = comment.data.collapsed_reason,
+            // Comment status - other
+            // commentArchived = comment.data.archived,
+            // commentCollapsed = comment.data.collapsed,
+            // commentCollapsedReason = comment.data.collapsed_reason,
               commentBanNote = comment.data.ban_note;
 
         // Do we have overview data?
@@ -1566,8 +1562,7 @@
     };
     /**
      * Will build a comment given a reddit API comment object.
-     * @function makeCommentThread
-     * @memberof TBui
+     * @function
      * @param {object} jsonInput reddit API comments object.
      * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
      * @returns {object} jquery object with the build comment thread.

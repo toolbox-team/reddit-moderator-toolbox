@@ -452,18 +452,31 @@
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
     TBApi.unlock = id => TBApi.post('/api/unlock', {
-            uh: TBCore.modhash,
-            id,
-            });
-
-    TBApi.stickyThread = (id, state = true, num = undefined) => TBApi.post('/api/set_subreddit_sticky', {
+        uh: TBCore.modhash,
         id,
-        state,
+    });
+
+    /**
+     * Stickies a submission in a subreddit.
+     * @param {string} id The fullname of the submission to sticky
+     * @param {number} [num] The desired position of the sticky, either 1 or 2
+     * @param {boolean} [state=true] Set to false to unsticky the thread (for
+     * internal use only; use {@link TBApi~unstickyThread} instead)
+     * @returns {Promise} Resolves with response data or rejects a jqXHR
+     */
+    TBApi.stickyThread = (id, num, state = true) => TBApi.post('/api/set_subreddit_sticky', {
+        id,
         num,
+        state,
         uh: TBCore.modhash,
     });
 
-    TBApi.unstickyThread = id => TBApi.stickyThread(id, false);
+    /**
+     * Unstickies a submission.
+     * @param {string} id The fullname of the submission to sticky
+     * @returns {Promise} Resolves with response data or rejects a jqXHR
+     */
+    TBApi.unstickyThread = id => TBApi.stickyThread(id, undefined, false);
 
     TBApi.postComment = function (parent, text, callback) {
         TBApi.post('/api/comment', {

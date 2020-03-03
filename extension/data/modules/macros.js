@@ -428,10 +428,8 @@ function modmacros () {
                                 const commentId = response.json.data.things[0].data.id;
 
                                 if (lockreply) {
-                                    TBApi.lock(commentId, successful => {
-                                        if (!successful) {
-                                            TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
-                                        }
+                                    TBApi.lock(commentId).catch(() => {
+                                        TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
                                     });
                                 }
                                 if (distinguish && !TBCore.isModmail) {

@@ -436,22 +436,15 @@
         id,
     });
 
-    TBApi.lock = function (id, callback) {
-        TBApi.post('/api/lock', {
-            id,
-            uh: TBCore.modhash,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Locks a post or comment.
+     * @param {string} id The fullname of the submission or comment
+     * @returns {Promise} Resolves to response data or rejects with a jqXHR
+     */
+    TBApi.lock = id => TBApi.post('/api/lock', {
+        id,
+        uh: TBCore.modhash,
+    });
 
     TBApi.unlock = function (id, callback) {
         TBApi.post('/api/unlock', {

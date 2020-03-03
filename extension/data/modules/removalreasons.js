@@ -829,23 +829,19 @@ function removalreasons () {
                                 // Also lock the thread if requested
                                 if (actionLockThread) {
                                     self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBApi.lock(data.fullname, successful => {
-                                        if (successful) {
-                                            removePopup(popup);
-                                        } else {
-                                            status.text(LOCK_POST_ERROR);
-                                        }
+                                    TBApi.lock(data.fullname).then(() => {
+                                        removePopup(popup);
+                                    }).catch(() => {
+                                        status.text(LOCK_POST_ERROR);
                                     });
                                 }
                                 if (actionLockComment) {
                                     const commentId = response.json.data.things[0].data.id;
                                     self.log(`Fullname of reply: ${commentId}`);
-                                    TBApi.lock(commentId, successful => {
-                                        if (successful) {
-                                            removePopup(popup);
-                                        } else {
-                                            status.text(LOCK_COMMENT_ERROR);
-                                        }
+                                    TBApi.lock(commentId).then(() => {
+                                        removePopup(popup);
+                                    }).catch(() => {
+                                        status.text(LOCK_COMMENT_ERROR);
                                     });
                                 }
                             }

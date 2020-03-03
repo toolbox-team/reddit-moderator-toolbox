@@ -5,8 +5,7 @@
 
     /**
      * Debounces a given function based on a given timeout.
-     * @function debounce
-     * @memberof TBHelpers
+     * @function
      * @param {function} func input function
      * @param {number} debounceTime the amount of time used to wait in ms.
      * @returns {function} the executed function
@@ -24,8 +23,7 @@
     /**
      * Moves an item in an array from one index to another
      * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
-     * @function moveArrayItem
-     * @memberof TBHelpers
+     * @function
      * @param {array} array input array
      * @param {integer} old_index
      * @param {integer} new_index
@@ -53,8 +51,7 @@
 
     /**
      * Escape html entities
-     * @function escapeHTML
-     * @memberof TBHelpers
+     * @function
      * @param {string} html input html
      * @returns {string} HTML string with escaped entities
      */
@@ -73,8 +70,7 @@
 
     /**
      * Unescape html entities
-     * @function unescapeHTML
-     * @memberof TBHelpers
+     * @function
      * @param {string} html input html
      * @returns {string} HTML string with unescaped entities
      */
@@ -92,9 +88,8 @@
     };
 
     /**
-     * Give the nummeric value in milliseconds  of the current date and time.
-     * @function getTime
-     * @memberof TBHelpers
+     * Give the nummeric value in milliseconds of the current date and time.
+     * @function
      * @returns {integer} time value in milliseconds
      */
     TBHelpers.getTime = function () {
@@ -103,8 +98,7 @@
 
     /**
      * Give a random number
-     * @function getRandomNumber
-     * @memberof TBHelpers
+     * @function
      * @param {integer} maxInt Max integer
      * @returns {integer} random number
      */
@@ -114,8 +108,7 @@
 
     /**
      * Convert minutes to milliseconds
-     * @function minutesToMilliseconds
-     * @memberof TBHelpers
+     * @function
      * @param {integer} mins Minutes
      * @returns {integer} Milliseconds
      */
@@ -133,8 +126,7 @@
 
     /**
      * Convert days to milliseconds
-     * @function daysToMilliseconds
-     * @memberof TBHelpers
+     * @function
      * @param {integer} days days
      * @returns {integer} Milliseconds
      */
@@ -144,8 +136,7 @@
 
     /**
      * Convert milliseconds to days
-     * @function millisecondsToDays
-     * @memberof TBHelpers
+     * @function
      * @param {integer} milliseconds milliseconds
      * @returns {integer} Days
      */
@@ -155,8 +146,7 @@
 
     /**
      * convert unix epoch timestamps to ISO format
-     * @function timeConverterISO
-     * @memberof TBHelpers
+     * @function
      * @param {integer} UNIX_timestamp Unix timestamp
      * @returns {string} ISO formatted time
      */
@@ -173,8 +163,7 @@
 
     /**
      * Returns the difference between days in nice format like "1 year"
-     * @function niceDateDiff
-     * @memberof TBHelpers
+     * @function
      * @param {Date} origdate
      * @param {Date} newdate
      * @returns {string} Formatted date difference
@@ -295,8 +284,7 @@
 
     /**
      * convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
-     * @function timeConverterRead
-     * @memberof TBHelpers
+     * @function
      * @param {integer} UNIX_timestamp
      * @returns {string} Formatted date in dd-mm-yyyy hh:mm:ss UTC
      */
@@ -314,8 +302,7 @@
     /**
      * convert titles to a format usable in urls
      * from r2.lib.utils import title_to_url
-     * @function title_to_url
-     * @memberof TBHelpers
+     * @function
      * @param {string} title
      * @returns {string} Formatted title
      */
@@ -348,8 +335,7 @@
 
     /**
      * Converts a given amount of days in a "humanized version" of weeks, months and years.
-     * @function humaniseDays
-     * @memberof TBHelpers
+     * @function
      * @param {integer} days
      * @returns {string} x year x months x weeks x day
      */
@@ -380,8 +366,7 @@
 
     /**
      * Sorts an array of objects by property value of specific properties.
-     * @function sortBy
-     * @memberof TBHelpers
+     * @function
      * @param {array} arr input array
      * @param {string} prop property name
      */
@@ -399,8 +384,7 @@
 
     /**
      * Because normal .sort() is case sensitive.
-     * @function saneSort
-     * @memberof TBHelpers
+     * @function
      * @param {array} arr input array
      */
     TBHelpers.saneSort = function saneSort (arr) {
@@ -417,8 +401,7 @@
 
     /**
      * Because normal .sort() is case sensitive and we also want to sort ascending from time to time.
-     * @function saneSortAs
-     * @memberof TBHelpers
+     * @function
      * @param {array} arr input array
      */
     TBHelpers.saneSortAs = function saneSortAs (arr) {
@@ -435,8 +418,7 @@
 
     /**
      * Replace all instances of a certaing thing for another thing.
-     * @function replaceAll
-     * @memberof TBHelpers
+     * @function
      * @param {string} find what to find
      * @param {string} replace what to replace
      * @param {string} str where to do it all with
@@ -449,8 +431,7 @@
 
     /**
      * Will compare the input color to a list of known color names and return the HEX value
-     * @function colorNameToHex
-     * @memberof TBHelpers
+     * @function
      * @param {string} color input color
      * @returns {string} if a match is found the HEX color, otherwise the input string.
      */
@@ -618,9 +599,8 @@
     };
 
     /**
-     * strips the last directory part of an url. Example:  /this/is/url/with/part/ becomes /this/is/url/with/
-     * @function removeLastDirectoryPartOf
-     * @memberof TBHelpers
+     * Strips the last directory part of an url. Example:  /this/is/url/with/part/ becomes /this/is/url/with/
+     * @function
      * @param {string} url reddit API comment object.
      * @returns {string} url without the last directory part
      */
@@ -646,8 +626,7 @@
 
     /**
      * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
-     * @function cleanSubredditName
-     * @memberof TBHelpers
+     * @function
      * @param {string} dirtySub dirty dirty sub.
      * @returns {string} shiny sub!
      */
@@ -656,22 +635,27 @@
         return dirtySub;
     };
 
-    TBHelpers.getHashParameter = function (ParameterKey) {
+    /**
+     * Parses the URL hash as a query string and gets the value of a given key
+     * @function
+     * @param {string} key The key to get
+     * @returns {string} The value for that key
+     */
+    TBHelpers.getHashParameter = function (parameterKey) {
         const hash = window.location.hash.substring(1);
         const params = hash.split('&');
         for (let i = 0; i < params.length; i++) {
             const keyval = params[i].split('='),
                   key = keyval[0].replace('?', '');
-            if (key === ParameterKey) {
+            if (key === parameterKey) {
                 return keyval[1];
             }
         }
     };
 
     /**
-     * Replaces {tokes} for the respective value in given content
-     * @function replaceTokens
-     * @memberof TBHelpers
+     * Replaces {tokens} for the respective value in given content
+     * @function
      * @param {object} info object with token name keys and token content values.
      * @param {string} content dirty dirty sub.
      * @returns {string} token replaced text!
@@ -688,8 +672,7 @@
 
     /**
      * reddit HTML encodes all of their JSON responses, we need to HTMLdecode them before parsing.
-     * @function unescapeJSON
-     * @memberof TBHelpers
+     * @function
      * @param {object} info object with token name keys and token content values.
      * @param {string} content dirty dirty sub.
      * @returns {string} token replaced text!

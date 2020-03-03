@@ -18,11 +18,11 @@ New contributions to toolbox are always welcome, there are some guidelines we as
 
 Since toolbox is a project that receives contributions from multiple people from various programming backgrounds it is important to be aware of style conventions. Our programming style guidelines aim is to make it easier for someone who starts work on toolbox to familiarize themselves with the style conventions agreed upon in toolbox.
 
-The document can be found [in this wiki article](../../wiki/Programming-style-guide).
+The document can be found [in this wiki article](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Programming-style-guide).
 
 ### Contributing completely new functionality 
 
-We welcome new functionality, however it is always possible that someone is already working on something you have thought up or that we have not implemented something deliberately. So if you are considering coding new functionality it is always a good idea to first check. Simply make an issue here on GitHub or [contact the team on Discord or IRC](../../wiki/Contacting-the-toolbox-team)
+We welcome new functionality, however it is always possible that someone is already working on something you have thought up or that we have not implemented something deliberately. So if you are considering coding new functionality it is always a good idea to first check. Simply make an issue here on GitHub or [contact the team on Discord or IRC](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Contacting-the-toolbox-team)
 
 ### Existing utility functions
 

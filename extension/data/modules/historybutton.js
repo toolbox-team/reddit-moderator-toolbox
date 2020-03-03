@@ -474,7 +474,7 @@ function historybutton () {
 
             TB.ui.longLoadNonPersistent(false);
             // For every submission, incremenet the count for the subreddit and domain by one.
-            $.each(d.data.children, (index, value) => {
+            d.data.children.forEach(value => {
                 const data = value.data;
 
                 if (!user.domains[data.domain]) {
@@ -753,7 +753,7 @@ function historybutton () {
             TB.ui.longLoadNonPersistent(false);
         }).then(d => {
             TBStorage.purifyObject(d);
-            $.each(d.data.children, (index, value) => {
+            d.data.children.forEach(value => {
                 const data = value.data;
 
                 if (!user.subreddits.comments[data.subreddit]) {

@@ -262,7 +262,7 @@ function usernotes () {
         }
 
         function foundSubreddit (subreddit) {
-            if ($.inArray(subreddit, subs) === -1) {
+            if (!subs.includes(subreddit)) {
                 subs.push(subreddit);
             }
         }
@@ -856,7 +856,7 @@ function usernotes () {
 
                         self.startProfile('manager-render-notes');
                         // var notes = [];
-                        $.each(notes.users[user].notes, (key, val) => {
+                        Object.entries(notes.users[user].notes).forEach(([key, val]) => {
                             noteCount++;
 
                             const color = self._findSubredditColor(colors, val.type);
@@ -1231,7 +1231,7 @@ function usernotes () {
             const mgr = new self._constManager(deflated.constants);
 
             self.log('Inflating all usernotes');
-            $.each(deflated.users, (name, user) => {
+            Object.entries(deflated.users).forEach(([name, user]) => {
                 inflated.users[name] = {
                     name,
                     notes: user.ns.map(note => inflateNote(deflated.ver, mgr, note, sub)),
@@ -1338,7 +1338,7 @@ function usernotes () {
 
             const mgr = new self._constManager(deflated.constants);
 
-            $.each(notes.users, (name, user) => {
+            Object.entries(notes.users).forEach(([name, user]) => {
                 deflated.users[name] = {
                     ns: user.notes.filter(note => {
                         if (note === undefined) {

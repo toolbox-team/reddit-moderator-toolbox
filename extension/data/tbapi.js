@@ -184,8 +184,8 @@
      * Reads data from a wiki page
      * @param {string} subreddit The name of the subreddit the page is in
      * @param {string} page The name of the page
-     * @param {boolean} isJSON If true, data is parsed as JSON before being passed to the callback
-     * @returns {Promise} Promises he data of the wiki page. If there is an
+     * @param {boolean} isJSON If true, data is parsed as JSON before being returned
+     * @returns {Promise} Promises the data of the wiki page. If there is an
      * error reading from the page, one of the following error values may be
      * returned:
      * - TBCore.WIKI_PAGE_UNKNOWN
@@ -272,7 +272,7 @@
      * @property {string} id The banned user's ID fullname
      * @property {string} note The mod-visible ban note
      * @property {string} date The date the ban was issued
-     * @property {?number} daysLeft If the ban is temporary, the number of days
+     * @property {?number} days_left If the ban is temporary, the number of days
      * until it expires, otherwise null
      */
 

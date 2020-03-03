@@ -47,6 +47,7 @@
      * full response object on error. Maintains an API similar to `$.post`.
      * @param {string} endpoint The endpoint to request
      * @param {object} data The body of the request.
+     * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
     TBApi.post = (endpoint, data) => TBApi.sendRequest({
         method: 'POST',
@@ -322,13 +323,12 @@
      * @param {string} options.action The string for the desired action (see
      * https://www.reddit.com/dev/api#POST_api_friend for a list)
      * @param {string} options.subreddit The sub to apply the relationship in
-     * @param {string} options.banReason If banning, the private mod note
-     * @param {string} options.banMessage If banning, the note sent to the user
-     * @param {number} options.banDuration If banning, the length of the ban (0
+     * @param {string} [options.banReason] If banning, the private mod note
+     * @param {string} [options.banMessage] If banning, the note sent to the user
+     * @param {number} [options.banDuration] If banning, the length of the ban (0
      * or undefined for a permanent ban)
-     * @param {string} options.banContext If banning, a fullname pointing to the
+     * @param {string} [options.banContext] If banning, a fullname pointing to the
      * link or comment the user is being banned for
-     * @param {TBApi~friendUserCallback} callback Called when the API returns
      * @returns {Promise} Resolves to the JSON response body or rejects with a
      * jqXHR object
      */
@@ -364,13 +364,6 @@
             ban_context: banContext,
         });
     };
-
-    /**
-     * @callback TBApi~friendUserCallback
-     * @param {boolean} success If true, relationship was updated successfully
-     * @param {object} response The raw JSON response, contains errors if
-     * success is false
-     */
 
     TBApi.unfriendUser = function (user, action, subreddit, callback) {
         TBApi.post('/api/unfriend', {

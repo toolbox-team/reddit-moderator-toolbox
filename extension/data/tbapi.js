@@ -58,17 +58,6 @@
     });
 
     /**
-     * Perform a HEAD request.
-     * @param {string} endpoint The endpoint to request
-     * @returns {Promise} The response object
-     * @TODO "get head" is a confusing name
-     */
-    TBApi.getHead = endpoint => TBApi.sendRequest({
-        method: 'HEAD',
-        endpoint,
-    });
-
-    /**
      * Sends an authenticated request against the OAuth API from the
      * background page.
      * @param {string} method An HTTP verb
@@ -107,7 +96,10 @@
      * @returns {Promise} Promises an object with `ratelimitRemaining` and
      *  ratelimitReset` properties
      */
-    TBApi.getRatelimit = () => TBApi.getHead('/r/toolbox/wiki/ratelimit.json').then(({jqXHR}) => {
+    TBApi.getRatelimit = () => TBApi.sendRequest({
+        method: 'HEAD',
+        endpoint: '/r/toolbox/wiki/ratelimit.json',
+    }).then(({jqXHR}) => {
         const ratelimitRemaining = jqXHR.allResponseHeaders['x-ratelimit-remaining'],
               ratelimitReset = jqXHR.allResponseHeaders['x-ratelimit-reset'];
 

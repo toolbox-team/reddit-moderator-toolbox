@@ -321,7 +321,7 @@
      * @param {object} options
      * @param {string} options.user The user to apply the relationship to
      * @param {string} options.action The string for the desired action (see
-     * https://www.reddit.com/dev/api#POST_api_friend for a list)
+     * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
      * @param {string} options.subreddit The sub to apply the relationship in
      * @param {string} [options.banReason] If banning, the private mod note
      * @param {string} [options.banMessage] If banning, the note sent to the user
@@ -365,25 +365,21 @@
         });
     };
 
-    TBApi.unfriendUser = function (user, action, subreddit, callback) {
-        TBApi.post('/api/unfriend', {
-            api_type: 'json',
-            uh: TBCore.modhash,
-            type: action,
-            name: user,
-            r: subreddit,
-        })
-            .then(response => {
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
-            });
-    };
+    /**
+     * Removes a relationship between a user and a subreddit.
+     * @param {string} user The name of the user
+     * @param {string} action The type of relationship to remove (see
+     * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
+     * @param {string} subreddit The name of the subreddit
+     * @returns {Promise} Resolves to response data or rejects with a jqXHR
+     */
+    TBApi.unfriendUser = (user, action, subreddit) => TBApi.post('/api/unfriend', {
+        api_type: 'json',
+        uh: TBCore.modhash,
+        type: action,
+        name: user,
+        r: subreddit,
+    });
 
     /**
      * Mod-distinguishes a post or comment.

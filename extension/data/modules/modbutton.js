@@ -631,11 +631,9 @@ function modbutton () {
                                 failedSubs.push(subreddit);
                             });
                         } else {
-                            TBApi.unfriendUser(user, action, subreddit, success => {
-                                if (!success) {
-                                    self.log('missed one');
-                                    failedSubs.push(subreddit);
-                                }
+                            TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
                             });
                         }
                     },

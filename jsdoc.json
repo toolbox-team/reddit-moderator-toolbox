@@ -6,10 +6,27 @@
             "extension/data/background"
         ]
     },
+    "plugins": ["plugins/markdown"],
     "opts": {
         "encoding": "utf8",
         "template": "node_modules/docdash",
         "destination": "docs/",
         "readme": "CONTRIBUTING.md"
+    },
+    "docdash": {
+        "static": true,
+        "search": true,
+        "menu": {
+            "Github": {
+                "href":"https://github.com/toolbox-team/reddit-moderator-toolbox",
+                "target":"_blank",
+                "class":"menu-item"
+            },
+            "Subreddit": {
+                "href":"https://www.reddit.com/r/toolbox",
+                "target":"_blank",
+                "class":"menu-item"
+            }
+        }
     }
 }

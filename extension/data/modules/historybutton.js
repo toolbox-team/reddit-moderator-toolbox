@@ -67,15 +67,10 @@ function historybutton () {
                 $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
             }
             const $tbAttrs = $this.find('.tb-attr');
-            const UserButtonHTMLnewMM = '<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
+            const author = $this.find('.Message__header').find('.Message__author').text().substring(2);
+            const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user\'s submission and comment history">H</a></span>`;
             $tbAttrs.append(UserButtonHTMLnewMM);
         });
-
-        const userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
-
-        const $sidebar = $body.find('.ThreadViewer__infobar');
-
-        $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
     };
 
     self.runJsAPI = function () {
@@ -133,6 +128,7 @@ function historybutton () {
                 self.log('passed');
 
                 if (TBCore.isNewModmail) {
+                    self.runJsAPI();
                     setTimeout(() => {
                         self.attachToModmail();
                     }, 750);
@@ -149,16 +145,7 @@ function historybutton () {
                 $body.on('click', '.user-history-button, #tb-user-history', function (event) {
                     const $this = $(this);
                     const $target = $(event.currentTarget);
-                    let author;
-                    if ($body.find('.ThreadViewer').length > 0) {
-                        if ($this.hasClass('modmail-sidebar')) {
-                            author = $('.InfoBar__username').text();
-                        } else {
-                            author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
-                        }
-                    } else {
-                        author = $target.attr('data-author');
-                    }
+                    const author = $target.attr('data-author');
                     const thisSubreddit = $target.attr('data-subreddit');
 
                     if ($target.attr('id') === 'tb-user-history') {

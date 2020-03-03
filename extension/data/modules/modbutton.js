@@ -47,17 +47,6 @@ function modbutton () {
     const $body = $('body'),
           titleText = 'Perform various mod actions on this user';
 
-    // need this for RES NER support
-    self.run = function () {
-        if ($body.find('.ThreadViewer').length > 0) {
-            const modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}</a></span></span>`;
-
-            const $sidebar = $body.find('.ThreadViewer__infobar');
-
-            $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
-        }
-    };
-
     self.runRedesign = function () {
         // Not a mod, don't bother.
         if (TBCore.mySubs.length < 1) {
@@ -159,20 +148,7 @@ function modbutton () {
 
         TBCore.getModSubs(() => {
         // it's Go Time™!
-
-            // Unless it is new modmail...
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    self.run();
-                }, 750);
-            } else {
-                self.runRedesign();
-            }
-        });
-
-        // NER support.
-        window.addEventListener('TBNewThings', () => {
-            self.run();
+            self.runRedesign();
         });
 
         async function openModPopup (event, info) {

@@ -15,6 +15,7 @@
         TBcomment: ['comment'],
         TBcommentOldReddit: ['comment'],
         TBpost: ['post'],
+        TBuserHovercard: ['userHovercard'],
     };
 
     /**

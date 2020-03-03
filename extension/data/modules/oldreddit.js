@@ -149,6 +149,41 @@ function oldReddit () {
         });
     }
 
+    function newModmailSidebar () {
+        setTimeout(() => {
+            const $body = $('body');
+            if ($body.find('.ThreadViewer').length) {
+                $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)').each(function () {
+                    const $infobar = $(this);
+                    $infobar.addClass('tb-seen');
+                    const info = TBCore.getThingInfo(this, true);
+                    const $jsApiThingPlaceholder = $(`
+                        <div class="tb-jsapi-container InfoBar__recents">
+                            <div class="InfoBar__recentsTitle">Toolbox functions:</div>
+                        </div>
+                    `).appendTo($infobar);
+                    $jsApiThingPlaceholder.append('<span data-name="toolbox">');
+                    const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
+
+                    const detailObject = {
+                        type: 'TBuserHovercard',
+                        data: {
+                            user: {
+                                username: info.user,
+                            },
+                            contextID: info.id,
+                            subreddit: {
+                                name: info.subreddit,
+                            },
+                        },
+                    };
+
+                    dispatchApiEvent(jsApiThingPlaceholder, detailObject);
+                });
+            }
+        }, 500);
+    }
+
     self.init = function () {
         // Looks like we are on old reddit. Activate!
         if (TBCore.isOldReddit) {
@@ -159,6 +194,20 @@ function oldReddit () {
                     thingCrawler();
                 });
             }, 500);
+        }
+
+        if (TBCore.isNewModmail) {
+            const $body = $('body');
+
+            $body.on('click', '.icon-user', () => {
+                newModmailSidebar();
+            });
+
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    newModmailSidebar();
+                }
+            });
         }
     };
 }

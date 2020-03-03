@@ -1603,7 +1603,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         };
                     } else if (newMMconversationReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(newMMconversationReg);
-                        contextObject.pageType = 'modmailListing';
+                        contextObject.pageType = 'modmailConversation';
                         contextObject.pageDetails = {
                             conversationType: matchDetails[1],
                             conversationID: matchDetails[2],

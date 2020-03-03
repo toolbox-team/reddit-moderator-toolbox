@@ -446,22 +446,15 @@
         uh: TBCore.modhash,
     });
 
-    TBApi.unlock = function (id, callback) {
-        TBApi.post('/api/unlock', {
+    /**
+     * Unlocks a post or comment.
+     * @param {string} id The fullname of the submission or comment
+     * @returns {Promise} Resolves to response data or rejects with a jqXHR
+     */
+    TBApi.unlock = id => TBApi.post('/api/unlock', {
             uh: TBCore.modhash,
             id,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
             });
-    };
 
     TBApi.stickyThread = (id, state = true, num = undefined) => TBApi.post('/api/set_subreddit_sticky', {
         id,

@@ -1641,14 +1641,10 @@
     $body.on('click', '.tb-submission-button-unlock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.unlock(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.unlock(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 

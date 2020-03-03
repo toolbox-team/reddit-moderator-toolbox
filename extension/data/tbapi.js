@@ -247,28 +247,32 @@
      * Gets the ban state of a user.
      * @param {string} subreddit The name of the subreddit to check in
      * @param {string} user The name of the user to check
-     * @param {TBApi~getBanStateCallback} callback Executed with the ban state
-    */
-    TBApi.getBanState = function (subreddit, user, callback) {
-        TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user}).then(data => {
-            TBStorage.purifyObject(data);
-            const banned = data.data.children;
+     * @returns {Promise<?TBApi~banState>} An object describing the ban, or null
+     * if the user is not banned
+     */
+    TBApi.getBanState = async (subreddit, user) => {
+        // Fetch ban info for just this one user
+        const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
+        TBStorage.purifyObject(data);
+        const banned = data.data.children;
 
-            // If it's over or under exactly one item they are not banned or that is not their full name.
-            if (banned.length !== 1) {
-                return callback(false);
-            }
+        // If it's over or under exactly one item they are not banned or that is not their full name.
+        if (banned.length !== 1) {
+            return null;
+        }
 
-            callback(true, banned[0].note, banned[0].date, banned[0].name);
-        });
+        return banned[0];
     };
 
     /**
-     * @callback TBApi~getBanStateCallback
-     * @param {boolean} banned Whether or not the user is banned
-     * @param {string} note The ban note, if any
-     * @param {string} number The date the ban was issued, if any
-     * @param {string} name The ban name, if any
+     * Describes a subreddit ban.
+     * @typedef TBApi~banState
+     * @property {string} name The banned user's name
+     * @property {string} id The banned user's ID fullname
+     * @property {string} note The mod-visible ban note
+     * @property {string} date The date the ban was issued
+     * @property {?number} daysLeft If the ban is temporary, the number of days
+     * until it expires, otherwise null
      */
 
     /**

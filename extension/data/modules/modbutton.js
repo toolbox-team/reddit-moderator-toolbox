@@ -346,6 +346,7 @@ function modbutton () {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
+                // TODO: Use TBApi.getBanState()
                 const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;

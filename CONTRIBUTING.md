@@ -30,9 +30,9 @@ We have a lot of utility functions in toolbox ready to be used for background op
 
 You can find the documentation for all this on the following locations:
 
-- [JSDoc code documentation](code_jsdocs.md) WIP
-- [Toolbox module documentation](../../wiki/Module-Structure) details how the general toolbox module structure works. 
-- Team members on Discord or IRC. We try to keep the documentation updated but it very much is a work in progress. So when things are unclear don't be afraid to simply ask. 
+- [JSDoc source code documentation](https://toolbox-team.github.io/source-docs/) Note: Not yet entirely complete, more documentation for code is an ongoing effort. 
+- [Toolbox module documentation](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Toolbox-Module-Structure) details how the general toolbox module structure works. 
+- Team members on Discord. We try to keep the documentation updated but it very much is a work in progress. So when things are unclear don't be afraid to simply ask. 
 
 ## Project structure
 
@@ -76,6 +76,7 @@ Once you've built a .zip for your platform, you're ready to test! Remember to re
 
 ## Testing on Firefox (Developer or Nightly Editions)
 
-- Go to `about:debugging`.
-- Click the "Load Temporary Add-on" button.
+- Go to `about:addons`.
+- Click the gear button.
+- Click "Install Add-On From File...".
 - Load the `/build/toolbox_v<version>_firefox.zip` file.

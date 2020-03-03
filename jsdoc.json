@@ -9,6 +9,7 @@
     "opts": {
         "encoding": "utf8",
         "template": "node_modules/docdash",
-        "destination": "docs/"
+        "destination": "docs/",
+        "readme": "CONTRIBUTING.md"
     }
 }

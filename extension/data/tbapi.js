@@ -1,8 +1,11 @@
 'use strict';
-/** @namespace  TBApi */
+
+/**
+ * Generic helpers for making requests against the Reddit API.
+ * @namespace TBApi
+ */
 (function (TBApi) {
     const logger = TBLog('TBApi');
-    // Generic helpers for making API and other requests
 
     /**
      * Sends a generic HTTP request through the background page.
@@ -93,8 +96,7 @@
 
     /**
      * Gets ratelimit information from the API.
-     * @returns {Promise} Promises an object with `ratelimitRemaining` and
-     *  ratelimitReset` properties
+     * @returns {Promise<TBApi~rateLimitDescriptor>}
      */
     TBApi.getRatelimit = () => TBApi.sendRequest({
         method: 'HEAD',
@@ -105,6 +107,14 @@
 
         logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
+        /**
+         * An object describing the current rate limit.
+         * @typedef TBApi~rateLimitDescriptor
+         * @property {string} rateLimitRemaining The number of API calls left
+         * during this ratelimit period
+         * @property {string} rateLimitReset The number of seconds until this
+         * ratelimit period ends
+         */
         return {
             ratelimitRemaining,
             ratelimitReset,

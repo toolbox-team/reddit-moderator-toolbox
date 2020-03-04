@@ -485,6 +485,7 @@
      * @function
      * @param {string} parent The fullname of the parent submission or comment
      * @param {string} text The text of the comment to post
+     * @returns {Promise} Resolves to a response or rejects with an error or array of errors
      */
     TBApi.postComment = async (parent, text) => {
         try {
@@ -508,39 +509,38 @@
         }
     };
 
-    TBApi.postLink = function (link, title, subreddit, callback) {
-        TBApi.post('/api/submit', {
-            kind: 'link',
-            resubmit: 'true',
-            url: link,
-            uh: TBCore.modhash,
-            title,
-            sr: subreddit,
-            sendreplies: 'true', // this is the default on reddit.com, so it should be our default.
-            api_type: 'json',
-        })
-            .then(response => {
-                if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-                    logger.log(`Failed to post link to /r/${subreddit}`);
-                    logger.log(response.json.errors);
-                    if (typeof callback !== 'undefined') {
-                        callback(false, response.json.errors);
-                    }
-                    return;
-                }
-
-                logger.log(`Successfully posted link to /r/${subreddit}`);
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                logger.log(`Failed to post link to /r/${subreddit}`);
-                logger.log(error);
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
+    /**
+     * Posts a link submission in a subreddit.
+     * @function
+     * @param {string} link The URL to submit
+     * @param {string} title The title of the submission
+     * @param {string} subreddit The subreddit to submit to
+     * @returns {Promise} Resolves to a response or rejects with an error or array of errors
+     */
+    TBApi.postLink = async (link, title, subreddit) => {
+        try {
+            const response = await TBApi.post('/api/submit', {
+                kind: 'link',
+                resubmit: 'true',
+                url: link,
+                uh: TBCore.modhash,
+                title,
+                sr: subreddit,
+                sendreplies: 'true', // this is the default on reddit.com, so it should be our default.
+                api_type: 'json',
             });
+            if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
+                logger.log(`Failed to post link to /r/${subreddit}`);
+                logger.log(response.json.errors);
+                throw response.json.errors;
+            }
+            logger.log(`Successfully posted link to /r/${subreddit}`);
+            return response;
+        } catch (error) {
+            logger.log(`Failed to post link to /r/${subreddit}`);
+            logger.log(error);
+            throw error;
+        }
     };
 
     TBApi.sendMessage = function (user, subject, message, subreddit, callback) {

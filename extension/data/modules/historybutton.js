@@ -824,42 +824,39 @@ function historybutton () {
         const link = `https://www.reddit.com/user/${author}`,
               title = `Overview for ${author}`;
 
-        TBApi.postLink(link, title, self.SPAM_REPORT_SUB, (successful, submission) => {
-            if (!successful) {
-                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${submission[0][1]}</span>`);
-            // $rtsLink.hide();
-            } else {
-                if (submission.json.errors.length) {
-                    $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
-                    // $rtsLink.hide();
-                    if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                        rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
-                    }
-                    return;
+        TBApi.postLink(link, title, self.SPAM_REPORT_SUB).then(submission => {
+            if (submission.json.errors.length) {
+                $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
+                // $rtsLink.hide();
+                if (submission.json.errors[0][0] === 'ALREADY_SUB') {
+                    rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
                 }
-
-                // Post stats as a comment.
-                if (!commentBody.length || !rtsComment) {
-                    rtsNativeLink.textContent = 'reported';
-                    rtsNativeLink.href = submission.json.data.url;
-                    rtsNativeLink.className = 'tb-general-button';
-                    return;
-                }
-
-                TBApi.postComment(submission.json.data.name, commentBody).then(comment => {
-                    // $rtsLink.hide();
-                    if (comment.json.errors.length) {
-                        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
-                        // $rtsLink.hide();
-                        return;
-                    }
-                    rtsNativeLink.textContent = 'reported';
-                    rtsNativeLink.href = submission.json.data.url;
-                    rtsNativeLink.className = 'tb-general-button';
-                }).catch(error => {
-                    $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${error[0][1]}</span>`);
-                });
+                return;
             }
+
+            // Post stats as a comment.
+            if (!commentBody.length || !rtsComment) {
+                rtsNativeLink.textContent = 'reported';
+                rtsNativeLink.href = submission.json.data.url;
+                rtsNativeLink.className = 'tb-general-button';
+                return;
+            }
+
+            TBApi.postComment(submission.json.data.name, commentBody).then(comment => {
+                // $rtsLink.hide();
+                if (comment.json.errors.length) {
+                    $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
+                    // $rtsLink.hide();
+                    return;
+                }
+                rtsNativeLink.textContent = 'reported';
+                rtsNativeLink.href = submission.json.data.url;
+                rtsNativeLink.className = 'tb-general-button';
+            }).catch(error => {
+                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${error[0][1]}</span>`);
+            });
+        }).catch(error => {
+            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${error[0][1]}</span>`);
         });
     };
 

@@ -760,20 +760,18 @@ function removalreasons () {
                 }
 
                 // Submit log post
-                TBApi.postLink(data.url || data.link, TBHelpers.removeQuotes(logTitle), data.logSub, (successful, response) => {
-                    if (successful) {
-                        const logThingId = response.json.data.name,
-                              loglinkToken = response.json.data.url;
-                        TBApi.approveThing(logThingId);
+                TBApi.postLink(data.url || data.link, TBHelpers.removeQuotes(logTitle), data.logSub).then(response => {
+                    const logThingId = response.json.data.name,
+                          loglinkToken = response.json.data.url;
+                    TBApi.approveThing(logThingId);
 
-                        if (noneSelected === 'none') {
-                            removePopup(popup);
-                        } else {
-                            sendRemovalMessage(loglinkToken);
-                        }
+                    if (noneSelected === 'none') {
+                        removePopup(popup);
                     } else {
-                        status.text(LOG_POST_ERROR);
+                        sendRemovalMessage(loglinkToken);
                     }
+                }).catch(() => {
+                    status.text(LOG_POST_ERROR);
                 });
             } else {
                 // Otherwise only send PM and/or comment

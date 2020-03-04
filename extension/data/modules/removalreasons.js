@@ -854,12 +854,10 @@ function removalreasons () {
 
                     if (notifyAsSub) {
                         self.log(`Sending removal message by PM as ${data.subreddit}`);
-                        TBApi.sendMessage(data.author, subject, text, data.subreddit, successful => {
-                            if (successful) {
-                                removePopup(popup);
-                            } else {
-                                status.text(PM_ERROR);
-                            }
+                        TBApi.sendMessage(data.author, subject, text, data.subreddit).then(() => {
+                            removePopup(popup);
+                        }).catch(() => {
+                            status.text(PM_ERROR);
                         });
                     } else {
                         self.log('Sending removal message by PM as current user');

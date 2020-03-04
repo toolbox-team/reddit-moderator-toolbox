@@ -667,22 +667,20 @@ function modbutton () {
                 message = $subredditMessage.val();
             }
 
-            TBApi.sendMessage(user, subject, message, subreddit, (successful, response) => {
-                if (!successful) {
-                    $callbackSpan.text(`an error occurred: ${response[0][1]}`);
+            TBApi.sendMessage(user, subject, message, subreddit).then(response => {
+                if (response.json.errors.length) {
+                    $callbackSpan.text(response.json.errors[1]);
+                    TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
                     TB.ui.longLoadSpinner(false);
                 } else {
-                    if (response.json.errors.length) {
-                        $callbackSpan.text(response.json.errors[1]);
-                        TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
-                        TB.ui.longLoadSpinner(false);
-                    } else {
-                        TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
-                        $callbackSpan.text('message sent');
-                        $callbackSpan.css('color', 'green');
-                        TB.ui.longLoadSpinner(false);
-                    }
+                    TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
+                    $callbackSpan.text('message sent');
+                    $callbackSpan.css('color', 'green');
+                    TB.ui.longLoadSpinner(false);
                 }
+            }).catch(error => {
+                $callbackSpan.text(`an error occurred: ${error[0][1]}`);
+                TB.ui.longLoadSpinner(false);
             });
         });
 

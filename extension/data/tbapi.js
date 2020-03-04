@@ -559,37 +559,38 @@
         }
     };
 
-    TBApi.sendMessage = function (user, subject, message, subreddit, callback) {
-        TBApi.post('/api/compose', {
-            from_sr: subreddit,
-            subject: subject.substr(0, 99),
-            text: message,
-            to: user,
-            uh: TBCore.modhash,
-            api_type: 'json',
-        })
-            .then(response => {
-                if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-                    logger.log(`Failed to send link to /u/${user}`);
-                    logger.log(response.json.errors);
-                    if (typeof callback !== 'undefined') {
-                        callback(false, response.json.errors);
-                    }
-                    return;
-                }
-
-                logger.log(`Successfully send link to /u/${user}`);
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                logger.log(`Failed to send link to /u/${user}`);
-                logger.log(error);
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
+    /**
+     * Sends a private message to a user.
+     * @function
+     * @param {string} user The name of the user to send the message to
+     * @param {string} subject The message's subject
+     * @param {string} message The message's content
+     * @param {?string} [subreddit] If provided, sends the message as a modmail
+     * from the specified subreddit
+     * @returns {Promise} Resolves to a response or rejects with an error or array of errors
+     */
+    TBApi.sendMessage = async (user, subject, message, subreddit) => {
+        try {
+            const response = await TBApi.post('/api/compose', {
+                from_sr: subreddit,
+                subject: subject.substr(0, 99),
+                text: message,
+                to: user,
+                uh: TBCore.modhash,
+                api_type: 'json',
             });
+            if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
+                logger.log(`Failed to send link to /u/${user}`);
+                logger.log(response.json.errors);
+                throw response.json.errors;
+            }
+            logger.log(`Successfully send link to /u/${user}`);
+            return response;
+        } catch (error) {
+            logger.log(`Failed to send link to /u/${user}`);
+            logger.log(error);
+            throw error;
+        }
     };
 
     TBApi.sendPM = function (to, subject, message, callback) {

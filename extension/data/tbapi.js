@@ -593,17 +593,16 @@
         }
     };
 
-    TBApi.markMessageRead = function (id, callback) {
-        TBApi.post('/api/read_message', {
-            api_type: 'json',
-            id,
-            uh: TBCore.modhash,
-        }).then(() => {
-            if (typeof callback !== 'undefined') {
-                callback(true);
-            }
-        });
-    };
+    /**
+     * Marks a message as read.
+     * @param {string} id The fullname of the thing to mark as read
+     * @returns {Promise}
+     */
+    TBApi.markMessageRead = id => TBApi.post('/api/read_message', {
+        api_type: 'json',
+        id,
+        uh: TBCore.modhash,
+    });
 
     TBApi.aboutUser = function (user, callback) {
         TBApi.getJSON(`/user/${user}/about.json`, {

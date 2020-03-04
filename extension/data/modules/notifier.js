@@ -219,9 +219,8 @@ function notifiermod () {
                 json.data.children.forEach(value => {
                     const unreadmessageid = value.data.name;
 
-                    TBApi.markMessageRead(unreadmessageid, () => {
-                        // TODO: Insert useful error handling here
-                    });
+                    // TODO: catch errors
+                    TBApi.markMessageRead(unreadmessageid);
                 });
             });
         }

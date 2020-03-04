@@ -846,20 +846,18 @@ function historybutton () {
                     return;
                 }
 
-                TBApi.postComment(submission.json.data.name, commentBody, (successful, comment) => {
-                    if (!successful) {
-                        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${comment[0][1]}</span>`);
+                TBApi.postComment(submission.json.data.name, commentBody).then(comment => {
                     // $rtsLink.hide();
-                    } else {
-                        if (comment.json.errors.length) {
-                            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
-                            // $rtsLink.hide();
-                            return;
-                        }
-                        rtsNativeLink.textContent = 'reported';
-                        rtsNativeLink.href = submission.json.data.url;
-                        rtsNativeLink.className = 'tb-general-button';
+                    if (comment.json.errors.length) {
+                        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
+                        // $rtsLink.hide();
+                        return;
                     }
+                    rtsNativeLink.textContent = 'reported';
+                    rtsNativeLink.href = submission.json.data.url;
+                    rtsNativeLink.className = 'tb-general-button';
+                }).catch(error => {
+                    $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${error[0][1]}</span>`);
                 });
             }
         });

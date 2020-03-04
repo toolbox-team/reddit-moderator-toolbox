@@ -809,45 +809,42 @@ function removalreasons () {
                 // Reply to submission/comment
                 if (notifyByReply) {
                     self.log('Sending removal message by comment reply.');
-                    TBApi.postComment(data.fullname, reason, (successful, response) => {
-                        if (successful) {
-                        // Check if reddit actually returned an error
-                            if (response.json.errors.length > 0) {
-                                status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
-                            } else {
-                            // Distinguish the new reply, stickying if necessary
-                                TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                                    if (notifyByPM) {
-                                        sendPM();
-                                    } else {
-                                        removePopup(popup);
-                                    }
-                                }).catch(() => {
-                                    status.text(DISTINGUISH_ERROR);
-                                });
-
-                                // Also lock the thread if requested
-                                if (actionLockThread) {
-                                    self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBApi.lock(data.fullname).then(() => {
-                                        removePopup(popup);
-                                    }).catch(() => {
-                                        status.text(LOCK_POST_ERROR);
-                                    });
-                                }
-                                if (actionLockComment) {
-                                    const commentId = response.json.data.things[0].data.id;
-                                    self.log(`Fullname of reply: ${commentId}`);
-                                    TBApi.lock(commentId).then(() => {
-                                        removePopup(popup);
-                                    }).catch(() => {
-                                        status.text(LOCK_COMMENT_ERROR);
-                                    });
-                                }
-                            }
+                    TBApi.postComment(data.fullname, reason).then(response => {
+                        if (response.json.errors.length > 0) {
+                            status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                         } else {
-                            status.text(REPLY_ERROR);
+                            // Distinguish the new reply, stickying if necessary
+                            TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
+                                if (notifyByPM) {
+                                    sendPM();
+                                } else {
+                                    removePopup(popup);
+                                }
+                            }).catch(() => {
+                                status.text(DISTINGUISH_ERROR);
+                            });
+
+                            // Also lock the thread if requested
+                            if (actionLockThread) {
+                                self.log(`Fullname of this link: ${data.fullname}`);
+                                TBApi.lock(data.fullname).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_POST_ERROR);
+                                });
+                            }
+                            if (actionLockComment) {
+                                const commentId = response.json.data.things[0].data.id;
+                                self.log(`Fullname of reply: ${commentId}`);
+                                TBApi.lock(commentId).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_COMMENT_ERROR);
+                                });
+                            }
                         }
+                    }).catch(() => {
+                        status.text(REPLY_ERROR);
                     });
                 } else if (notifyByPM) {
                     sendPM();

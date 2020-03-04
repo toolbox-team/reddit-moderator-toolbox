@@ -480,35 +480,32 @@
      */
     TBApi.unstickyThread = id => TBApi.stickyThread(id, undefined, false);
 
-    TBApi.postComment = function (parent, text, callback) {
-        TBApi.post('/api/comment', {
-            parent,
-            uh: TBCore.modhash,
-            text,
-            api_type: 'json',
-        })
-            .then(response => {
-                if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-                    logger.log(`Failed to post comment to on ${parent}`);
-                    logger.log(response.json.fails);
-                    if (typeof callback !== 'undefined') {
-                        callback(false, response.json.errors);
-                    }
-                    return;
-                }
-
-                logger.log(`Successfully posted comment on ${parent}`);
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                logger.log(`Failed to post link to on${parent}`);
-                logger.log(error);
-                if (typeof callback !== 'undefined') {
-                    callback(false, error);
-                }
+    /**
+     * Posts a comment.
+     * @function
+     * @param {string} parent The fullname of the parent submission or comment
+     * @param {string} text The text of the comment to post
+     */
+    TBApi.postComment = async (parent, text) => {
+        try {
+            const response = await TBApi.post('/api/comment', {
+                parent,
+                uh: TBCore.modhash,
+                text,
+                api_type: 'json',
             });
+            if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
+                logger.log(`Failed to post comment to on ${parent}`);
+                logger.log(response.json.fails);
+                throw response.json.errors;
+            }
+            logger.log(`Successfully posted comment on ${parent}`);
+            return response;
+        } catch (error) {
+            logger.log(`Failed to post link to on ${parent}`);
+            logger.log(error);
+            throw error;
+        }
     };
 
     TBApi.postLink = function (link, title, subreddit, callback) {

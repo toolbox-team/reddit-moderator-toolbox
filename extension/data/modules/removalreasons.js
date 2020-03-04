@@ -232,7 +232,7 @@ function removalreasons () {
                 };
 
                 // TODO: Dis ain't finished
-                // getRules(data.subreddit,function(rules){
+                // TBApi.getRules(data.subreddit).then(rules => {
                 //    self.log('getting rules');
                 //    self.log(rules);
                 // });

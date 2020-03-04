@@ -632,22 +632,19 @@
         throw error.responseText;
     });
 
-    TBApi.getRules = function (sub, callback) {
-        TBApi.getJSON(`/r/${sub}/about/rules.json`, {
-            uh: TBCore.modhash,
-        })
-            .then(response => {
-                TBStorage.purifyObject(response);
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error.responseText);
-                }
-            });
-    };
+    /**
+     * Gets the rules for a subreddit
+     * @param {string} subreddit The name of the subreddit
+     * @returns {Promise} Resolves to the rules as JSON or rejects with an error string
+     */
+    TBApi.getRules = sub => TBApi.getJSON(`/r/${sub}/about/rules.json`, {
+        uh: TBCore.modhash,
+    }).then(response => {
+        TBStorage.purifyObject(response);
+        return response;
+    }).catch(error => {
+        throw error.responseText;
+    });
 
     TBApi.getReportReasons = function (postURL, callback) {
         logger.log('getting reports');

@@ -1025,20 +1025,18 @@ function usernotes () {
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', function () {
+            $body.find('.tb-un-refresh').on('click', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent().find('.user');
                 if (!$this.hasClass('tb-un-refreshed')) {
                     $this.addClass('tb-un-refreshed');
                     self.log(`refreshing user: ${user}`);
-                    TBApi.aboutUser(user, succ => {
-                        const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
-                            status: succ ? 'active' : 'deleted',
-                        });
 
-                        $userSpan.after($status);
+                    const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
+                        status: await TBApi.aboutUser(user).then(() => 'active').catch(() => 'deleted'),
                     });
+                    $userSpan.after($status);
                 }
             });
 

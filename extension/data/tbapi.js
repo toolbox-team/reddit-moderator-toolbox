@@ -604,22 +604,19 @@
         uh: TBCore.modhash,
     });
 
-    TBApi.aboutUser = function (user, callback) {
-        TBApi.getJSON(`/user/${user}/about.json`, {
-            uh: TBCore.modhash,
-        })
-            .then(response => {
-                TBStorage.purifyObject(response);
-                if (typeof callback !== 'undefined') {
-                    callback(true, response);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error.responseText);
-                }
-            });
-    };
+    /**
+     * Gets information about a user.
+     * @param {string} user The name of the user
+     * @returns {Promise} Resolves to JSON user info or rejects with error text
+     */
+    TBApi.aboutUser = user => TBApi.getJSON(`/user/${user}/about.json`, {
+        uh: TBCore.modhash,
+    }).then(response => {
+        TBStorage.purifyObject(response);
+        return response;
+    }).catch(error => {
+        throw error.responseText;
+    });
 
     TBApi.getLastActive = function (user, callback) {
         TBApi.getJSON(`/user/${user}.json?limit=1&sort=new`, {

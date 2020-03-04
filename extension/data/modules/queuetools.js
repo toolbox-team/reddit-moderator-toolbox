@@ -259,17 +259,15 @@ function queuetools () {
                     }
                     showing = !showing;
 
-                    TBApi.getReportReasons(window.location.href, (success, reports) => {
-                        if (success) {
-                            self.log(reports.user_reports);
-                            self.log(reports.mod_reports);
-                            const $reportReasons = $('.report-reasons');
+                    TBApi.getReportReasons(window.location.href).then(reports => {
+                        self.log(reports.user_reports);
+                        self.log(reports.mod_reports);
+                        const $reportReasons = $('.report-reasons');
 
-                            reports.user_reports.forEach(report => {
-                                $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
-                            });
-                            $reportReasons.show();
-                        }
+                        reports.user_reports.forEach(report => {
+                            $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
+                        });
+                        $reportReasons.show();
                     });
                 });
             }

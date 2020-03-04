@@ -741,7 +741,7 @@ function queuetools () {
 
             // Process new things loaded by RES or flowwit.
             function processNewThings (things) {
-            // Expand reports on the new page, we leave the ones the user might already has collapsed alone.
+                // Expand reports on the new page, we leave the ones the user might already has collapsed alone.
                 if (expandReports) {
                     $(things).find('.reported-stamp').siblings('.report-reasons').show();
                 }
@@ -946,11 +946,11 @@ function queuetools () {
                     const $thing = $(this);
                     let threadID;
                     if ($thing.hasClass('comment')) {
-                    // Find ID of the parent submission from title URL
+                        // Find ID of the parent submission from title URL
                         threadID = $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
                     } else {
-                    // I am the parent submission, so get my own ID
-                    // TBCore.getThingInfo() is overkill here
+                        // I am the parent submission, so get my own ID
+                        // TBCore.getThingInfo() is overkill here
                         threadID = $thing.attr('data-fullname').replace('t3_', '');
                     }
                     // Only record thread IDs once each
@@ -968,15 +968,15 @@ function queuetools () {
                 // contain all the comments on a link, and maybe the link itself.
                 // TODO: Using wrappers is probably a bad call unless we want to
                 //       give groups custom CSS
-                $.each(threadIDs, (index, id) => {
+                threadIDs.forEach(id => {
                     // Each wrapper will contain all the things associated with
                     // a single submission, including the submission itself
                     const $wrapper = $('<div>').addClass('tb-comment-group').attr('data-id', id);
                     $('#siteTable').append($wrapper);
                     // Loop through each thing associated with the submission
-                    $.each(threadGroups[id], index => {
-                    // Add the thing to this wrapper
-                        threadGroups[id][index].appendTo($wrapper);
+                    threadGroups[id].forEach(item => {
+                        // Add the thing to this wrapper
+                        item.appendTo($wrapper);
                     });
                     // Visual separation
                     $wrapper.append($('<hr />'));
@@ -1003,7 +1003,7 @@ function queuetools () {
             self.log(sub);
             TBApi.getJSON(`/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).then(json => {
                 TBStorage.purifyObject(json);
-                $.each(json.data.children, (i, value) => {
+                json.data.children.forEach(value => {
                     const actionReasonText = value.data.details,
                           targetFullName = value.data.target_fullname;
 
@@ -1096,7 +1096,7 @@ Action reason: ${value.data.details}
                 self.log(`  subreddit: ${subreddit}`);
                 self.log(`  removedby: ${removedBy}`);
 
-                if ($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
+                if (!queueSubs.includes(subreddit) && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
                     queueSubs.push(subreddit);
                 }
             });
@@ -1112,33 +1112,19 @@ Action reason: ${value.data.details}
         }
 
         // Let's make bot approved posts stand out!
-        let checkmarkLength = self.setting('botCheckmark').length;
-        if (TBCore.isMod && checkmarkLength > 0) {
-            let baseCss;
-            checkmarkLength -= 1;
-            $.each(self.setting('botCheckmark'), (i, val) => {
-                switch (i) {
-                case 0:
-                    baseCss = `img.approval-checkmark[title*="approved by ${val}"], \n`;
-                    break;
-                case checkmarkLength:
-                    baseCss += `img.approval-checkmark[title*="approved by ${val}"] \n`;
-                    break;
-                default:
-                    baseCss += `img.approval-checkmark[title*="approved by ${val}"], \n`;
-                }
-            });
-
-            baseCss += `
-        { \n
-            display: inline-block; \n
-            padding-left: 16px; \n
-            padding-top: 5px; \n
-            background-image: url("data:image/png;base64,${TBui.iconBot}"); \n
-            background-repeat: no-repeat; \n
-        } \n`;
-
-            $('head').append(`<style>${baseCss}</style>`);
+        const selectors = self.setting('botCheckmark').map(bot => `img.approval-checkmark[title*="approved by ${bot}"]`);
+        if (selectors.length && TBCore.isMod) {
+            $('head').append(`
+                <style>
+                    ${selectors.join(',')} {
+                        display: inline-block;
+                        padding-left: 16px;
+                        padding-top: 5px;
+                        background-image: url("data:image/png;base64,${TBui.iconBot}");
+                        background-repeat: no-repeat;
+                    }
+                </style>
+            `);
         }
     };
 
@@ -1219,7 +1205,7 @@ Action reason: ${value.data.details}
         function getModlog (subreddit, callback) {
             TBApi.getJSON(`/r/${subreddit}/about/log/.json`, {limit: 500}).then(json => {
                 TBStorage.purifyObject(json);
-                $.each(json.data.children, (i, value) => {
+                json.data.children.forEach(value => {
                     const fullName = value.data.target_fullname;
                     const actionID = value.data.id;
                     if (!fullName) {
@@ -1282,7 +1268,7 @@ Action reason: ${value.data.details}
                     callback(checkForActions(subreddit, fullName));
                 });
 
-            // If we do have data but it is being refreshed we wait and try again.
+                // If we do have data but it is being refreshed we wait and try again.
             } else if (Object.prototype.hasOwnProperty.call(modlogCache, subreddit) && modlogCache[subreddit].activeFetch) {
                 setTimeout(() => {
                     getActions(subreddit, fullName, callback);
@@ -1316,7 +1302,7 @@ Action reason: ${value.data.details}
                             </div>
                             `);
 
-                            $.each(actions, (i, value) => {
+                            actions.forEach(value => {
                                 const mod = value.mod;
                                 const action = value.action;
                                 const details = value.details;

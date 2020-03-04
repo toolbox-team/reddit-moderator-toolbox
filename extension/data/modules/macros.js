@@ -78,7 +78,7 @@ function modmacros () {
 
         if (TBCore.isOldReddit) {
             TBCore.getModSubs(() => {
-                if (TBCore.post_site && $.inArray(TBCore.post_site, TBCore.mySubs) !== -1) {
+                if (TBCore.post_site && TBCore.mySubs.includes(TBCore.post_site)) {
                     self.log('getting config');
                     getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.

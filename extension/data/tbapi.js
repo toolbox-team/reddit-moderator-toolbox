@@ -9,6 +9,7 @@
 
     /**
      * Sends a generic HTTP request through the background page.
+     * @function
      * @param {object} options The options for the AJAX request
      * @param {string} options.method The HTTP method to use for the request
      * @param {string} options.endpoint The endpoint to request
@@ -36,6 +37,7 @@
      * full response object on error. Maintains an API similar to
      * `$.getJSON()` because that's what all these calls used before Chrome
      * forced us to make all requests in the background.
+     * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
@@ -48,6 +50,7 @@
     /**
      * Performs a POST request and promises the body of the response, or the
      * full response object on error. Maintains an API similar to `$.post`.
+     * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data The body of the request.
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
@@ -63,6 +66,7 @@
     /**
      * Sends an authenticated request against the OAuth API from the
      * background page.
+     * @function
      * @param {string} method An HTTP verb
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
@@ -75,16 +79,16 @@
     });
 
     /**
-     * @function
      * Sends an authenticated POST request against the OAuth API.
+     * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
     TBApi.apiOauthPOST = TBApi.apiOauthRequest.bind(null, 'POST');
 
     /**
-     * @function
      * Sends an authenticated GET request against the OAuth API.
+     * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
@@ -96,6 +100,7 @@
 
     /**
      * Gets ratelimit information from the API.
+     * @function
      * @returns {Promise<TBApi~rateLimitDescriptor>}
      */
     TBApi.getRatelimit = () => TBApi.sendRequest({
@@ -123,6 +128,7 @@
 
     /**
       * Updates the content of a wiki page.
+      * @function
       * @param {string} page The name of the wiki page
       * @param {string} subreddit The name of the subreddit the page is in
       * @param {string | object} data The new content of the page
@@ -184,6 +190,7 @@
 
     /**
      * Reads data from a wiki page
+     * @function
      * @param {string} subreddit The name of the subreddit the page is in
      * @param {string} page The name of the page
      * @param {boolean} isJSON If true, data is parsed as JSON before being returned
@@ -248,6 +255,7 @@
 
     /**
      * Gets the ban state of a user.
+     * @function
      * @param {string} subreddit The name of the subreddit to check in
      * @param {string} user The name of the user to check
      * @returns {Promise<?TBApi~banState>} An object describing the ban, or null
@@ -280,6 +288,7 @@
 
     /**
      * Sets a flair on a post.
+     * @function
      * @param {string} postLink The post's fullname
      * @param {string} subreddit The name of the subreddit the post is in
      * @param {string} text The flair's text
@@ -297,6 +306,7 @@
 
     /**
      * Sets a flair on a user in a subreddit.
+     * @function
      * @param {string} user The name of the user
      * @param {string} subreddit The name of the subreddit
      * @param {string} text The flair's text
@@ -320,6 +330,7 @@
      * - Adding moderators
      * - Adding wiki contributors
      * - Accepting moderator invitations
+     * @function
      * @param {object} options
      * @param {string} options.user The user to apply the relationship to
      * @param {string} options.action The string for the desired action (see
@@ -385,6 +396,7 @@
 
     /**
      * Mod-distinguishes a post or comment.
+     * @function
      * @param {string} id The fullname of the post or comment
      * @param {boolean} sticky If distinguishing a top-level comment, whether to
      * also sticky the comment
@@ -398,6 +410,7 @@
 
     /**
      * Approves a post or comment.
+     * @function
      * @param {string} id Fullname of the post or comment
      * @returns {Promise}
      */
@@ -408,6 +421,7 @@
 
     /**
      * Removes a post or comment.
+     * @function
      * @param {string} id Fullname of the post or comment
      * @param {boolean?} spam If true, removes as spam
      * @returns {Promise}
@@ -420,6 +434,7 @@
 
     /**
      * Marks a post as NSFW.
+     * @function
      * @param {string} id Fullname of the post
      * @returns {Promise}
      */
@@ -430,6 +445,7 @@
 
     /**
      * Un-marks a post NSFW.
+     * @function
      * @param {string} id Fullname of the post
      * @returns {Promise}
      */

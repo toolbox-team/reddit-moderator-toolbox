@@ -618,22 +618,19 @@
         throw error.responseText;
     });
 
-    TBApi.getLastActive = function (user, callback) {
-        TBApi.getJSON(`/user/${user}.json?limit=1&sort=new`, {
-            uh: TBCore.modhash,
-        })
-            .then(response => {
-                TBStorage.purifyObject(response);
-                if (typeof callback !== 'undefined') {
-                    callback(true, response.data.children[0].data.created_utc);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error.responseText);
-                }
-            });
-    };
+    /**
+     * Gets the timestamp of the last public activity on the user's profile.
+     * @param {string} user The user to look for
+     * @returns {Promise} Resolves to a number or rejects an error string
+     */
+    TBApi.getLastActive = user => TBApi.getJSON(`/user/${user}.json?limit=1&sort=new`, {
+        uh: TBCore.modhash,
+    }).then(response => {
+        TBStorage.purifyObject(response);
+        return response.data.children[0].data.created_utc;
+    }).catch(error => {
+        throw error.responseText;
+    });
 
     TBApi.getRules = function (sub, callback) {
         TBApi.getJSON(`/r/${sub}/about/rules.json`, {

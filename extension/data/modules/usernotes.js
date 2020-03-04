@@ -975,12 +975,8 @@ function usernotes () {
                     usersPrune, 20, (user, counter) => {
                         TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        TBApi.getLastActive(user, (succ, date) => {
-                            if (!succ) {
-                                self.log(`${user} is deleted, suspended or shadowbanned.`);
-                                $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
-                                emptyProfiles.push(user);
-                            } else if (pruneOld) {
+                        TBApi.getLastActive(user).then(date => {
+                            if (pruneOld) {
                                 const timeSince = now - date * 1000,
                                       daysSince = TBHelpers.millisecondsToDays(timeSince);
 
@@ -990,6 +986,10 @@ function usernotes () {
                                     emptyProfiles.push(user);
                                 }
                             }
+                        }).catch(() => {
+                            self.log(`${user} is deleted, suspended or shadowbanned.`);
+                            $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
+                            emptyProfiles.push(user);
                         });
                     },
 

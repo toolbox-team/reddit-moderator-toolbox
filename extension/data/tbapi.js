@@ -593,25 +593,6 @@
         }
     };
 
-    TBApi.sendPM = function (to, subject, message, callback) {
-        TBApi.post('/api/compose', {
-            to,
-            uh: TBCore.modhash,
-            subject,
-            text: message,
-        })
-            .then(() => {
-                if (typeof callback !== 'undefined') {
-                    callback(true);
-                }
-            })
-            .catch(error => {
-                if (typeof callback !== 'undefined') {
-                    callback(false, error.responseText);
-                }
-            });
-    };
-
     TBApi.markMessageRead = function (id, callback) {
         TBApi.post('/api/read_message', {
             api_type: 'json',

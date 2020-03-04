@@ -852,23 +852,12 @@ function removalreasons () {
                 function sendPM () {
                     const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
-                    if (notifyAsSub) {
-                        self.log(`Sending removal message by PM as ${data.subreddit}`);
-                        TBApi.sendMessage(data.author, subject, text, data.subreddit).then(() => {
-                            removePopup(popup);
-                        }).catch(() => {
-                            status.text(PM_ERROR);
-                        });
-                    } else {
-                        self.log('Sending removal message by PM as current user');
-                        TBApi.sendPM(data.author, subject, text, successful => {
-                            if (successful) {
-                                removePopup(popup);
-                            } else {
-                                status.text(PM_ERROR);
-                            }
-                        });
-                    }
+                    self.log('Sending removal message by PM');
+                    TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
+                        removePopup(popup);
+                    }).catch(() => {
+                        status.text(PM_ERROR);
+                    });
                 }
             }
         });

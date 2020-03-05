@@ -1363,7 +1363,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     'oldreddit.enabled',
                 ];
 
-                $.each(resp, (fullKey, value) => {
+                Object.entries(resp).forEach(([fullKey, value]) => {
                     const key = fullKey.split('.');
 
                     // Do not import certain legacy settings.
@@ -1518,7 +1518,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 const children = resp.data.children,
                       devs = [];
 
-                $.each(children, (index, child) => {
+                children.forEach(child => {
                     devs.push(child.name);
                 });
                 TBCore.tbDevs = devs;

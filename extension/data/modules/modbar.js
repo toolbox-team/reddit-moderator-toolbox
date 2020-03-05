@@ -374,7 +374,7 @@ function modbar () {
         }
 
         // Append shortcuts
-        $.each(shortcuts, (index, value) => {
+        Object.entries(shortcuts).forEach(([index, value]) => {
             // TODO: Separators here should probably use CSS rather than having nested elements and stuff
             const $shortcut = $(`<a class="tb-no-gustavobc" href="${TBHelpers.htmlEncode(unescape(value))}">${TBHelpers.htmlEncode(unescape(index))}</a>`);
             $shortcut.appendTo('#tb-toolbarshortcuts');

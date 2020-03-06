@@ -8,26 +8,31 @@
      * Sends a generic HTTP request through the background page.
      * @function
      * @param {object} options The options for the AJAX request
-     * @param {string} options.method The HTTP method to use for the request
+     * @param {string} [options.method] The HTTP method to use for the request
      * @param {string} options.endpoint The endpoint to request
-     * @param {object} options.data Query parameters as an object
-     * @param {boolean?} options.oauth If true, the request will be sent on
+     * @param {object} [options.query] Query parameters as an object
+     * @param {string} [options.body] Body to send with a POST request
+     * @param {boolean?} [options.oauth] If true, the request will be sent on
      * oauth.reddit.com, and the `Authorization` header will be set with the
      * OAuth access token for the logged-in user
      * @returns {Promise}
      */
-    TBApi.sendRequest = ({method, endpoint, data, oauth}) => browser.runtime.sendMessage({
+    TBApi.sendRequest = async ({method, endpoint, query, body, oauth}) => {
+        const response = await browser.runtime.sendMessage({
         action: 'tb-request',
         method,
         endpoint,
-        data,
+            query,
+            body,
         oauth,
-    }).then(response => {
-        if (response.errorThrown !== undefined) {
-            throw response;
+        });
+        if (response.error) {
+            // Errors are transmitted as objects with an 'error' key
+            throw new Error(response.error);
         }
-        return response;
-    });
+        // Response is serialized as an array of constructor arguments
+        return new Response(...response);
+    };
 
     /**
      * Performs a GET request and promises the body of the response, or the

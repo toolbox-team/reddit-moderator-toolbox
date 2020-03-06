@@ -71,6 +71,25 @@ async function serializeResponse (response) {
 }
 
 /**
+ * Creates a URL query string from the given parameters.
+ * @param {object} parameters An object of parameters
+ * @returns {string}
+ */
+function queryString (parameters) {
+    if (!parameters) {
+        return '';
+    }
+    const kvStrings = [];
+    for (const [k, v] of Object.entries(parameters)) {
+        kvStrings.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+    }
+    if (!kvStrings.length) {
+        return '';
+    }
+    return `?${kvStrings.join('&')}`;
+}
+
+/**
  * Makes a web request. Currently this passes directly through to `fetch`, but
  * in the future it will be responsible for handling ratelimits and queueing
  * requests as necessary.
@@ -83,17 +102,17 @@ function makeRequest (url, options) {
 }
 
 messageHandlers.set('tb-request', async request => {
-    const {method, endpoint, data, oauth} = request;
+    const {method, endpoint, query, body, oauth} = request;
     if (!endpoint.startsWith('/')) {
         // Old code used to send a full URL to these methods, so this check
         // is to identify old uses of the code
         return {errorThrown: `Request endpoint '${endpoint}' does not start with a slash`};
     }
 
-    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}`;
+    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${queryString(query)}`;
     const options = {
         method,
-        data,
+        body,
     };
 
     // If requested, fetch OAuth tokens and add `Authorization` header

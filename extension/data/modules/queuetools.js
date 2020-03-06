@@ -1300,7 +1300,7 @@ Action reason: ${value.data.details}
                             </div>
                             `);
 
-                            actions.forEach(value => {
+                            Object.values(actions).forEach(value => {
                                 const mod = value.mod;
                                 const action = value.action;
                                 const details = value.details;

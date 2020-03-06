@@ -119,6 +119,8 @@ messageHandlers.set('tb-request', async request => {
 
     const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${queryString(query)}`;
     const options = {
+        credentials: 'include', // required for cookies to be sent
+        redirect: 'error', // prevents strange reddit API shenanigans
         method,
         body,
     };

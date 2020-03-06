@@ -415,6 +415,7 @@ function queuetools () {
 
             // Fix the position of the modtools. We do it like this so we can support custom css
             const $modtoolsMenu = $body.find('.menuarea.modtools'),
+                  initialHeight = $modtoolsMenu.outerHeight(true),
                   offset = $modtoolsMenu.offset(),
                   offsetTop = offset.top,
                   offsetSticky = offset.left,
@@ -447,7 +448,7 @@ function queuetools () {
                         top: position === 'fixed' ? offsetSticky : 0,
                         position,
                     });
-                    $('#siteTable').css({marginTop: position === 'fixed' ? $modtoolsMenu.outerHeight(true) + 6 : 0});
+                    $('#siteTable').css({marginTop: position === 'fixed' ? initialHeight : 0});
                 });
             });
 

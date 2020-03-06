@@ -232,7 +232,7 @@ function removalreasons () {
                 };
 
                 // TODO: Dis ain't finished
-                // getRules(data.subreddit,function(rules){
+                // TBApi.getRules(data.subreddit).then(rules => {
                 //    self.log('getting rules');
                 //    self.log(rules);
                 // });
@@ -760,20 +760,18 @@ function removalreasons () {
                 }
 
                 // Submit log post
-                TBApi.postLink(data.url || data.link, TBHelpers.removeQuotes(logTitle), data.logSub, (successful, response) => {
-                    if (successful) {
-                        const logThingId = response.json.data.name,
-                              loglinkToken = response.json.data.url;
-                        TBApi.approveThing(logThingId);
+                TBApi.postLink(data.url || data.link, TBHelpers.removeQuotes(logTitle), data.logSub).then(response => {
+                    const logThingId = response.json.data.name,
+                          loglinkToken = response.json.data.url;
+                    TBApi.approveThing(logThingId);
 
-                        if (noneSelected === 'none') {
-                            removePopup(popup);
-                        } else {
-                            sendRemovalMessage(loglinkToken);
-                        }
+                    if (noneSelected === 'none') {
+                        removePopup(popup);
                     } else {
-                        status.text(LOG_POST_ERROR);
+                        sendRemovalMessage(loglinkToken);
                     }
+                }).catch(() => {
+                    status.text(LOG_POST_ERROR);
                 });
             } else {
                 // Otherwise only send PM and/or comment
@@ -809,49 +807,42 @@ function removalreasons () {
                 // Reply to submission/comment
                 if (notifyByReply) {
                     self.log('Sending removal message by comment reply.');
-                    TBApi.postComment(data.fullname, reason, (successful, response) => {
-                        if (successful) {
-                        // Check if reddit actually returned an error
-                            if (response.json.errors.length > 0) {
-                                status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
-                            } else {
-                            // Distinguish the new reply, stickying if necessary
-                                TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                                    if (notifyByPM) {
-                                        sendPM();
-                                    } else {
-                                        removePopup(popup);
-                                    }
-                                }).catch(() => {
-                                    status.text(DISTINGUISH_ERROR);
-                                });
-
-                                // Also lock the thread if requested
-                                if (actionLockThread) {
-                                    self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBApi.lock(data.fullname, successful => {
-                                        if (successful) {
-                                            removePopup(popup);
-                                        } else {
-                                            status.text(LOCK_POST_ERROR);
-                                        }
-                                    });
-                                }
-                                if (actionLockComment) {
-                                    const commentId = response.json.data.things[0].data.id;
-                                    self.log(`Fullname of reply: ${commentId}`);
-                                    TBApi.lock(commentId, successful => {
-                                        if (successful) {
-                                            removePopup(popup);
-                                        } else {
-                                            status.text(LOCK_COMMENT_ERROR);
-                                        }
-                                    });
-                                }
-                            }
+                    TBApi.postComment(data.fullname, reason).then(response => {
+                        if (response.json.errors.length > 0) {
+                            status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                         } else {
-                            status.text(REPLY_ERROR);
+                            // Distinguish the new reply, stickying if necessary
+                            TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
+                                if (notifyByPM) {
+                                    sendPM();
+                                } else {
+                                    removePopup(popup);
+                                }
+                            }).catch(() => {
+                                status.text(DISTINGUISH_ERROR);
+                            });
+
+                            // Also lock the thread if requested
+                            if (actionLockThread) {
+                                self.log(`Fullname of this link: ${data.fullname}`);
+                                TBApi.lock(data.fullname).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_POST_ERROR);
+                                });
+                            }
+                            if (actionLockComment) {
+                                const commentId = response.json.data.things[0].data.id;
+                                self.log(`Fullname of reply: ${commentId}`);
+                                TBApi.lock(commentId).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_COMMENT_ERROR);
+                                });
+                            }
                         }
+                    }).catch(() => {
+                        status.text(REPLY_ERROR);
                     });
                 } else if (notifyByPM) {
                     sendPM();
@@ -861,25 +852,12 @@ function removalreasons () {
                 function sendPM () {
                     const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
-                    if (notifyAsSub) {
-                        self.log(`Sending removal message by PM as ${data.subreddit}`);
-                        TBApi.sendMessage(data.author, subject, text, data.subreddit, successful => {
-                            if (successful) {
-                                removePopup(popup);
-                            } else {
-                                status.text(PM_ERROR);
-                            }
-                        });
-                    } else {
-                        self.log('Sending removal message by PM as current user');
-                        TBApi.sendPM(data.author, subject, text, successful => {
-                            if (successful) {
-                                removePopup(popup);
-                            } else {
-                                status.text(PM_ERROR);
-                            }
-                        });
-                    }
+                    self.log('Sending removal message by PM');
+                    TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
+                        removePopup(popup);
+                    }).catch(() => {
+                        status.text(PM_ERROR);
+                    });
                 }
             }
         });

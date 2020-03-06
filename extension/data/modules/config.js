@@ -360,29 +360,27 @@ function tbconfig () {
         function postToWiki (page, data, reason, isJSON, updateAM) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM, (succ, err) => {
-                self.log(`save succ = ${succ}`);
-                if (!succ) {
-                    self.log(err);
-                    if (page === 'config/automoderator') {
-                        const $error = $body.find('.edit_automoderator_config .error');
-                        $error.show();
+            TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(() => {
+                self.log('save succ = true');
+                if (page === 'config/automoderator') {
+                    $body.find('.edit_automoderator_config .error').hide();
+                }
+                self.log('clearing cache');
+                TBCore.clearCache();
 
-                        const saveError = err.responseJSON.special_errors[0];
-                        $error.find('.errorMessage').html(TBStorage.purify(saveError));
+                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+            }).catch(err => {
+                self.log(err);
+                if (page === 'config/automoderator') {
+                    const $error = $body.find('.edit_automoderator_config .error');
+                    $error.show();
 
-                        TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
-                    } else {
-                        TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
-                    }
+                    const saveError = err.responseJSON.special_errors[0];
+                    $error.find('.errorMessage').html(TBStorage.purify(saveError));
+
+                    TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
                 } else {
-                    if (page === 'config/automoderator') {
-                        $body.find('.edit_automoderator_config .error').hide();
-                    }
-                    self.log('clearing cache');
-                    TBCore.clearCache();
-
-                    TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
                 }
             });
         }

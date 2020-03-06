@@ -408,7 +408,7 @@ function betterbuttons () {
                   $thing = $button.parents('.thing'),
                   id = $thing.attr('data-fullname');
             const position = $button.attr('data-sticky-spot');
-            TBApi.stickyThread(id, true, position).then(() => {
+            TBApi.stickyThread(id, position).then(() => {
                 $button.parent().siblings('.success').show();
             }).catch(() => {
                 $button.parent().siblings('.error').show();

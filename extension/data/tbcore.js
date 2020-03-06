@@ -1233,7 +1233,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             function updateRateLimit () {
-                TBApi.getRatelimit(({ratelimitReset, ratelimitRemaining}) => {
+                TBApi.getRatelimit().then(({ratelimitReset, ratelimitRemaining}) => {
                     const $body = $('body');
 
                     if (!$body.find('#ratelimit-counter').length) {

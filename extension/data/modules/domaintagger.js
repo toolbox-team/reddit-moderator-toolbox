@@ -30,13 +30,11 @@ function domaintagger () {
 
         function postToWiki (sub, json, reason) {
             TBCore.updateCache('configCache', json, sub);
-            TBApi.postToWiki('toolbox', sub, json, reason, true, false, (succ, err) => {
-                if (succ) {
-                    $('div.thing.link.dt-processed').removeClass('dt-processed');
-                    run(false);
-                } else {
-                    self.log(err.responseText);
-                }
+            TBApi.postToWiki('toolbox', sub, json, reason, true, false).then(() => {
+                $('div.thing.link.dt-processed').removeClass('dt-processed');
+                run(false);
+            }).catch(err => {
+                self.log(err.responseText);
             });
         }
 

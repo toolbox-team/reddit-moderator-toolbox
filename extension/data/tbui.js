@@ -1636,28 +1636,20 @@
     $body.on('click', '.tb-submission-button-lock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.lock(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">locked</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.lock(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">locked</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 
     $body.on('click', '.tb-submission-button-unlock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.lock(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.unlock(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 

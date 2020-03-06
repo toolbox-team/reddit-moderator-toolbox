@@ -98,28 +98,25 @@ function personalnotes () {
         function saveNoteWiki (page, subreddit, data, reason, newnote) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, (succ, err) => {
-                self.log(`save succ = ${succ}`);
-                if (!succ) {
-                    self.log(err.responseText);
-                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
-                } else {
-                    self.log('clearing cache');
-                    TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+            TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false).then(() => {
+                self.log('clearing cache');
+                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
 
-                    if (newnote) {
-                        $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
+                if (newnote) {
+                    $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
 
-                        if (!$body.find('#tb-personal-notes-ul').length) {
-                            $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul>');
-                        }
-                        const $noteItem = $(TBHelpers.template(noteListTemplate, {name: page}));
-                        $noteItem.toggleClass('tb-personal-notes-active', true);
-                        $body.find('#tb-personal-notes-ul').append($noteItem);
-
-                        loadNoteWiki(page);
+                    if (!$body.find('#tb-personal-notes-ul').length) {
+                        $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul>');
                     }
+                    const $noteItem = $(TBHelpers.template(noteListTemplate, {name: page}));
+                    $noteItem.toggleClass('tb-personal-notes-active', true);
+                    $body.find('#tb-personal-notes-ul').append($noteItem);
+
+                    loadNoteWiki(page);
                 }
+            }).catch(err => {
+                self.log(err.responseText);
+                TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
             });
         }
 

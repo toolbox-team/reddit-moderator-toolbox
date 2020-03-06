@@ -53,41 +53,33 @@ async function getOAuthTokens (tries = 1) {
 }
 
 /**
- * Convert the string from getAllResponseHeaders() to a nice object.
- * @param headerString The input string
- * @returns {headerObject} An object containing all header values.
+ * Serializes a fetch Response to a JSON value that can be constructed into a
+ * new Response later.
+ * @param {Response} response
+ * @returns a JSONable thing
  */
-function makeHeaderObject (headerString) {
-    const headerArray = headerString.split('\r\n');
-    const headerObject = {};
-
-    headerArray.forEach(item => {
-        if (item) {
-            const itemArray = item.split(': ');
-            const itemName = itemArray[0];
-            const itemValue = /^[0-9]+$/.test(itemArray[1]) ? parseInt(itemArray[1], 10) : itemArray[1];
-            headerObject[itemName] = itemValue;
-        }
-    });
-
-    return headerObject;
+async function serializeResponse (response) {
+    const headers = {};
+    for (const [header, value] of response.headers) {
+        headers[header] = value;
+    }
+    return [await response.text(), {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+    }];
 }
 
 /**
- * Make an AJAX request, and then send a response with the result as an object.
+ * Makes a web request. Currently this passes directly through to `fetch`, but
+ * in the future it will be responsible for handling ratelimits and queueing
+ * requests as necessary.
  * @param options The options for the request
- * @param sendResponse The `sendResponse` callback that will be called
+ * @returns {Promise}
+ * @todo Ratelimit handling
  */
-function makeRequest (options) {
-    return new Promise(resolve => {
-        $.ajax(options).then((data, textStatus, jqXHR) => {
-            jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
-            resolve({data, textStatus, jqXHR});
-        }, (jqXHR, textStatus, errorThrown) => {
-            jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
-            resolve({jqXHR, textStatus, errorThrown});
-        });
-    });
+function makeRequest (url, options) {
+    return fetch(url, options);
 }
 
 messageHandlers.set('tb-request', async request => {
@@ -98,27 +90,23 @@ messageHandlers.set('tb-request', async request => {
         return {errorThrown: `Request endpoint '${endpoint}' does not start with a slash`};
     }
 
-    const host = `https://${oauth ? 'oauth' : 'old'}.reddit.com`;
+    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}`;
     const options = {
         method,
-        url: host + endpoint,
         data,
     };
 
+    // If requested, fetch OAuth tokens and add `Authorization` header
     if (oauth) {
-        // We have to get the OAuth token before we can send it
         try {
             const tokens = await getOAuthTokens();
-            // Set beforeSend to add the header
-            options.beforeSend = jqXHR => jqXHR.setRequestHeader('Authorization', `bearer ${tokens.accessToken}`);
-            // And make the request
-            return await makeRequest(options);
+            options.headers = {Authorization: `bearer ${tokens.accessToken}`};
         } catch (error) {
             // If we can't get a token, return the error as-is
             return {errorThrown: error.toString()};
         }
-    } else {
-        // We don't need to do anything extra, just make the request
-        return makeRequest(options);
     }
+
+    // TODO: Handle throws (network errors)
+    return makeRequest(url, options).then(serializeResponse);
 });

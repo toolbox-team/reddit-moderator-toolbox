@@ -79,27 +79,17 @@
     };
 
     /**
-     * Sends an authenticated request against the OAuth API from the
-     * background page.
-     * @function
-     * @param {string} method An HTTP verb
-     * @param {string} endpoint The endpoint to request
-     * @param {object} data Query parameters as an object
-     */
-    TBApi.apiOauthRequest = (method, endpoint, data) => TBApi.sendRequest({
-        endpoint,
-        method,
-        data,
-        oauth: true,
-    });
-
-    /**
      * Sends an authenticated POST request against the OAuth API.
      * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
-    TBApi.apiOauthPOST = TBApi.apiOauthRequest.bind(null, 'POST');
+    TBApi.apiOauthPOST = (endpoint, body) => TBApi.sendRequest({
+        method: 'POST',
+        oauth: true,
+        endpoint,
+        body,
+    });
 
     /**
      * Sends an authenticated GET request against the OAuth API.
@@ -107,7 +97,12 @@
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
-    TBApi.apiOauthGET = TBApi.apiOauthRequest.bind(null, 'GET');
+    TBApi.apiOauthGET = (endpoint, query) => TBApi.sendRequest({
+        method: 'POST',
+        oauth: true,
+        endpoint,
+        query,
+    });
 
     //
     // Reddit 'legacy' API stuff. Still very much in use.

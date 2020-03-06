@@ -106,7 +106,7 @@ messageHandlers.set('tb-request', async request => {
     if (!endpoint.startsWith('/')) {
         // Old code used to send a full URL to these methods, so this check
         // is to identify old uses of the code
-        return {errorThrown: `Request endpoint '${endpoint}' does not start with a slash`};
+        return {error: `Request endpoint '${endpoint}' does not start with a slash`};
     }
 
     const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${queryString(query)}`;
@@ -122,7 +122,7 @@ messageHandlers.set('tb-request', async request => {
             options.headers = {Authorization: `bearer ${tokens.accessToken}`};
         } catch (error) {
             // If we can't get a token, return the error as-is
-            return {errorThrown: error.toString()};
+            return {error: error.message};
         }
     }
 

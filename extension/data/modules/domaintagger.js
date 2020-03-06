@@ -256,7 +256,7 @@ function domaintagger () {
 
             let {config} = TBCore;
 
-            TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+            TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                 if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                     return;
                 }

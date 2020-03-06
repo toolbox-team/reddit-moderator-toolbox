@@ -329,7 +329,7 @@ function tbconfig () {
         $body.on('click', '#tb-config-link, .tb-config-link', function () {
             subreddit = $(this).data('subreddit');
 
-            TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+            TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                     self.log('Failed: wiki config');
 
@@ -486,7 +486,7 @@ function tbconfig () {
                     configEditor.save();
                 });
 
-                TBApi.readFromWiki(subreddit, actualPage, false, resp => {
+                TBApi.readFromWiki(subreddit, actualPage, false).then(resp => {
                     if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         $textArea.val('error getting wiki data.');
                         configEditor.setValue('error getting wiki data.');
@@ -519,7 +519,7 @@ function tbconfig () {
             // load the text area, but not the save button.
                 $textArea.val('getting wiki data...');
 
-                TBApi.readFromWiki(subreddit, actualPage, false, resp => {
+                TBApi.readFromWiki(subreddit, actualPage, false).then(resp => {
                     if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         $textArea.val('error getting wiki data.');
                         return;
@@ -880,7 +880,7 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                         if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
@@ -1032,7 +1032,7 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                         if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
@@ -1226,7 +1226,7 @@ function tbconfig () {
             $body.find('#tb-removal-sort-list').empty();
             // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
             if ($body.hasClass('toolbox-wiki-edited')) {
-                TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                         self.log('Failed: wiki config');
                         return;
@@ -1309,7 +1309,7 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                         if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;

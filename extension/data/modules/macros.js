@@ -20,7 +20,7 @@ function modmacros () {
             if (TBCore.configCache[sub] !== undefined) {
                 callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         self.log('!resp || resp === TBCore.WIKI_PAGE_UNKNOWN');
                         callback(false);

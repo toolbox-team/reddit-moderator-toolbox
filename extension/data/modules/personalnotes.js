@@ -71,7 +71,7 @@ function personalnotes () {
             $editArea.val('loading stuff...').attr('disabled', true);
             $editArea.css('display', 'block');
 
-            TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false, resp => {
+            TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false).then(resp => {
                 if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                     $editArea.val('error getting wiki data.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);

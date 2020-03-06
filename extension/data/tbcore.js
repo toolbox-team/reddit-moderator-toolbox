@@ -1347,7 +1347,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBCore.importSettings = function (subreddit, callback) {
-            TBApi.readFromWiki(subreddit, 'tbsettings', true, resp => {
+            TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                     logger.log('Error loading wiki page');
                     return;
@@ -1441,7 +1441,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             } else if (TBCore.hasConfig(sub)) {
                 callback(TBCore.configCache[sub], sub);
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         // Complete and utter failure
                         callback(false, sub);
@@ -1842,7 +1842,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // get toolbox news
         (function getNotes () {
-            TBApi.readFromWiki('toolbox', 'tbnotes', true, resp => {
+            TBApi.readFromWiki('toolbox', 'tbnotes', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                     return;
                 }
@@ -1854,7 +1854,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
 
             if (betaRelease) {
-                TBApi.readFromWiki('tb_beta', 'tbnotes', true, resp => {
+                TBApi.readFromWiki('tb_beta', 'tbnotes', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                         return;
                     }
@@ -1867,7 +1867,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
             // check dev sub, if debugMode
             if (TBCore.debugMode) {
-                TBApi.readFromWiki('tb_dev', 'tbnotes', true, resp => {
+                TBApi.readFromWiki('tb_dev', 'tbnotes', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                         TBCore.devMode = false;
                         TBCore.devModeLock = true;

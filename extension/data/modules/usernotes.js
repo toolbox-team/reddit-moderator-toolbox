@@ -1133,7 +1133,7 @@ function usernotes () {
         }
 
         // Read notes from wiki page
-        TBApi.readFromWiki(subreddit, 'usernotes', true, resp => {
+        TBApi.readFromWiki(subreddit, 'usernotes', true).then(resp => {
         // Errors when reading notes
         // // These errors are bad
             if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {

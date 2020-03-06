@@ -38,7 +38,7 @@
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
-    TBApi.getJSON = (endpoint, data) => TBApi.sendRequest({method: 'GET', endpoint, data})
+    TBApi.getJSON = (endpoint, query) => TBApi.sendRequest({method: 'GET', endpoint, query})
         .then(response => response.data)
         .catch(response => {
             throw response.jqXHR;
@@ -51,10 +51,10 @@
      * @param {string} endpoint The endpoint to request
      * @param {object} data The body of the request.
      */
-    TBApi.post = (endpoint, data) => TBApi.sendRequest({
+    TBApi.post = (endpoint, body) => TBApi.sendRequest({
         method: 'POST',
         endpoint,
-        data,
+        body,
     }).then(response => response.data).catch(response => {
         throw response.jqXHR;
     });

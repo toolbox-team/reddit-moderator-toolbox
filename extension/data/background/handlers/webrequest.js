@@ -10,6 +10,7 @@ async function getOAuthTokens (tries = 1) {
     // This function will fetch the cookie and if there is no cookie attempt to create one by visiting modmail.
     // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
 
+    // Grab the current token cookie
     const cookieInfo = {url: 'https://mod.reddit.com', name: 'token'};
     let rawCookie;
     try {
@@ -21,34 +22,41 @@ async function getOAuthTokens (tries = 1) {
         cookieInfo.firstPartyDomain = 'reddit.com';
         rawCookie = await browser.cookies.get(cookieInfo);
     }
-    // If we do get a rawcookie we first want to make sure it is still valid.
-    let expired = false;
+
+    // Make sure the cookie is still valid
+    let validCookie = true;
     if (rawCookie) {
         const cookieExpiration = rawCookie.expirationDate * 1000;
         const timeNow = Date.now();
-        expired = timeNow > cookieExpiration;
-        console.log('Found cookie expired:', expired);
-    }
-    // If no cookie is returned it is probably expired and we will need to generate a new one.
-    // Instead of trying to do the oauth refresh thing ourselves we just do a GET request for modmail.
-    // We try this three times, if we don't have a cookie after that the user clearly isn't logged in.
-    if ((!rawCookie || expired) && tries < 3) {
-        return new Promise(resolve => {
-            $.get('https://mod.reddit.com/mail/all').done(data => {
-                console.log('data:', data);
-                // Ok we have the data, let's give this a second attempt.
-                getOAuthTokens(tries + 1).then(resolve);
-            });
-        });
-    } else if ((!rawCookie || expired) && tries > 2) {
-        throw new Error('user not logged into new modmail');
+        // The cookie is valid if it's younger than its expiration date
+        validCookie = timeNow < cookieExpiration;
     } else {
+        // If we didn't get a cookie at all, we need a new one
+        validCookie = false;
+    }
+
+    // If we have a valid cookie, get the tokens from it and return those
+    if (validCookie) {
         // The cookie we grab has a base64 encoded string with data. Sometimes is invalid data at the end.
         // This RegExp should take care of that.
-        const invalidChar = new RegExp('[^A-Za-z0-9+/].*?$');
-        const base64Cookie = rawCookie.value.replace(invalidChar, '');
+        const base64Cookie = rawCookie.value.replace(/[^A-Za-z0-9+/].*?$/, '');
         const tokenData = atob(base64Cookie);
         return JSON.parse(tokenData);
+    }
+
+    // If we don't have a valid cookie, we need to generate a new one. If the user
+    // is logged in, we can do this by sending a request to the modmail page, and
+    // it'll send back a new cookie that the browser will write for us. We'll then
+    // be able to read the new cookie and all is well, without having to deal with
+    // the Reddit OAuth flow ourselves.
+    if (tries < 3) {
+        await makeRequest('https://mod.reddit.com/mail/all');
+        return getOAuthTokens(tries + 1);
+    } else {
+        // If we tried that 3 times and still no dice, the user probably isn't logged
+        // into modmail, which means this trick won't work. Prompt the user to log
+        // into modmail so we can get their token.
+        throw new Error('user not logged into new modmail');
     }
 }
 

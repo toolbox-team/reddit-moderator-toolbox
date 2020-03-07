@@ -326,6 +326,7 @@ function queuetools () {
 
             // Add checkboxes, tabs, menu, etc
             $('#siteTable').before(`
+    <div class="modtools-duplicate" style="display: none; visibility: hidden;"></div>
     <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;top: 0px">
         <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/>
         <span>
@@ -415,7 +416,7 @@ function queuetools () {
 
             // Fix the position of the modtools. We do it like this so we can support custom css
             const $modtoolsMenu = $body.find('.menuarea.modtools'),
-                  initialHeight = $modtoolsMenu.outerHeight(true),
+                  $modtoolsMenuDuplicate = $body.find('.modtools-duplicate'),
                   offset = $modtoolsMenu.offset(),
                   offsetTop = offset.top,
                   offsetSticky = offset.left,
@@ -433,6 +434,7 @@ function queuetools () {
             let frame = null;
             window.addEventListener('scroll', () => {
                 let position = 'relative';
+                const modtoolsHeight = $modtoolsMenu.outerHeight(true);
                 if (frame) {
                     cancelAnimationFrame(frame);
                 }
@@ -448,7 +450,10 @@ function queuetools () {
                         top: position === 'fixed' ? offsetSticky : 0,
                         position,
                     });
-                    $('#siteTable').css({marginTop: position === 'fixed' ? initialHeight : 0});
+                    $modtoolsMenuDuplicate.css({
+                        display: position === 'fixed' ? 'block' : 'none',
+                        height: modtoolsHeight,
+                    });
                 });
             });
 

@@ -27,7 +27,7 @@ function oldReddit () {
     /**
      * Handles `thing` items as they become visible in the viewport.
      * @function
-     * @param {IntersectionObserverEntry} entries
+     * @param {IntersectionObserverEntry[]} entries
      * @param {IntersectionObserver} observer
      */
     function handleThing (entries, observer) {

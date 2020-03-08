@@ -59,20 +59,6 @@ function historybutton () {
         });
     };
 
-    self.attachToModmail = function () {
-        const $body = $('body');
-        $body.find('.Thread__message').not('.tb-history').each(function () {
-            const $this = $(this);
-            if ($this.find('.tb-attr').length === 0) {
-                $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
-            }
-            const $tbAttrs = $this.find('.tb-attr');
-            const author = $this.find('.Message__header').find('.Message__author').text().substring(2);
-            const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user\'s submission and comment history">H</a></span>`;
-            $tbAttrs.append(UserButtonHTMLnewMM);
-        });
-    };
-
     self.runJsAPI = function () {
         self.log('run');
 
@@ -127,31 +113,13 @@ function historybutton () {
             if (modSubCheck) {
                 self.log('passed');
 
-                if (TBCore.isNewModmail) {
-                    self.runJsAPI();
-                    setTimeout(() => {
-                        self.attachToModmail();
-                    }, 750);
-                } else {
-                    self.log('not new modmail');
-                    self.runJsAPI();
-                }
-
-                // NER support.
-                window.addEventListener('TBNewThings', () => {
-                    self.attachToModmail();
-                });
+                self.runJsAPI();
 
                 $body.on('click', '.user-history-button, #tb-user-history', function (event) {
                     const $this = $(this);
                     const $target = $(event.currentTarget);
                     const author = $target.attr('data-author');
                     const thisSubreddit = $target.attr('data-subreddit');
-
-                    if ($target.attr('id') === 'tb-user-history') {
-                        event.pageY -= 600;
-                        event.pageX += 200;
-                    }
 
                     const positions = TBui.drawPosition(event);
 

@@ -1543,24 +1543,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         }
 
-        // Prep new modmail for toolbox stuff.
-        // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.
-        function addTbModmailSidebar () {
-            setTimeout(() => {
-                const $body = $('body');
-                if (TBCore.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
-                    $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
-                }
-            }, 500);
-        }
-        addTbModmailSidebar();
-
         // Watch for locationHref changes and sent an event with details
         let locationHref;
 
         // new modmail regex matches.
-        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?$/;
-        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?([^/]*)\/?$/;
+        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?$/;
+        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?([^/]*)\/?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
         // reddit regex matches.
@@ -1724,24 +1712,15 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
                 // create an observer instance
                 const newMMobserver = new MutationObserver(mutations => {
-                    let doAddTbModmailSidebar = false;
                     let doTBNewThings = false;
 
                     mutations.forEach(mutation => {
                         const $target = $(mutation.target);
 
-                        if ($target.find('.ThreadViewer__infobar').length > 0) {
-                            doAddTbModmailSidebar = true;
-                        }
                         if ($target.is('.Thread__message, .ThreadViewer, .Thread__messages')) {
                             doTBNewThings = true;
                         }
                     });
-
-                    if (doAddTbModmailSidebar) {
-                        logger.log('DOM: new modmail sidebar found.');
-                        addTbModmailSidebar();
-                    }
 
                     if (doTBNewThings) {
                         logger.log('DOM: processable elements found.');

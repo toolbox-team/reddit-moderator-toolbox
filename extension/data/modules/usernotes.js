@@ -46,22 +46,10 @@ function usernotes () {
               showDate = self.setting('showDate');
         let firstRun = true;
 
-        const TYPE_NEW_MODMAIL = 'newmodmail';
-
         TBCore.getModSubs(() => {
             self.log('Got mod subs');
             self.log(TBCore.mySubs);
-            // In new modmail we only run on threads.
-
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    if ($body.find('.ThreadViewer').length > 0) {
-                        run();
-                    }
-                }, 750);
-            } else {
-                run();
-            }
+            run();
         });
 
         function getUser (users, name) {
@@ -151,101 +139,15 @@ function usernotes () {
         }
 
         function run () {
-            // This can be done better, but this is for the new modmail user sidebar thing.
-            if ($body.find('.ThreadViewer').length > 0) {
-                const subreddit = $body.find('.ThreadTitle__community').text(),
-                      author = $body.find('.InfoBar__username').text();
-
-                const $thing = $body.find('.ThreadViewer__infobar');
-                $thing.addClass('ut-thing');
-                $thing.attr('data-author', author);
-                $thing.attr('data-subreddit', subreddit);
-
-                if ($thing.find('.tb-attr-note').length === 0) {
-                    $thing.find('.tb-recents').append('<span class="tb-attr-note InfoBar__recent"></span>');
-                }
-
-                const $tbAttrs = $thing.find('.tb-attr-note');
-                attachNoteTag($tbAttrs, subreddit, author, {
-                    customText: 'Usernotes',
-                });
-
-                foundSubreddit(subreddit);
-                processSub(subreddit);
-            }
-
             self.log('Running usernotes');
 
-            // This is only used in newmodmail until that also gets the event based api.
-            if (TBCore.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
-                const things = findThings();
-                let done = false;
-                TBCore.forEachChunked(
-                    things, 30, 100, processThing, () => {
-                        self.log('Done processing things');
-                        TBCore.forEachChunked(subs, 10, 200, processSub, () => {
-                            if (done) {
-                                self.printProfiles();
-                            }
-                        });
-                    },
-                    () => {
-                        self.log('Done processing things');
-                        done = true;
-                    }
-                );
-            }
-
             // We only need to add the listener on pageload.
-            if (firstRun && !TBCore.isNewModmail) {
+            if (firstRun) {
                 addTBListener();
                 firstRun = false;
-
-            //
-            } else if (!TBCore.isNewModmail) {
+            } else {
                 TBCore.forEachChunked(subs, 10, 200, processSub);
             }
-        }
-
-        function findThings () {
-            let $things;
-            if (TBCore.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
-                $things = $('.Thread__message:not(.ut-thing)');
-                $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
-                $things.addClass('ut-thing');
-            }
-            return $things;
-        }
-
-        function processThing (thing) {
-            self.startProfile('process-thing');
-            let subreddit,
-                author;
-
-            const $thing = $(thing),
-                  thingType = $thing.attr('data-ut-type');
-            // self.log("Processing thing: " + thingType);
-
-            if (thingType === TYPE_NEW_MODMAIL) {
-                subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text();
-                author = $thing.find('.Message__author').text().substring(2);
-
-                $thing.attr('data-author', author);
-                $thing.attr('data-subreddit', subreddit);
-
-                if ($thing.find('.tb-attr').length === 0) {
-                    $thing.find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
-                }
-
-                const $tbAttrs = $thing.find('.tb-attr');
-                attachNoteTag($tbAttrs, subreddit, author);
-
-                foundSubreddit(subreddit);
-            } else {
-                self.log(`Unknown thing type ${thingType} (THIS IS BAD)`);
-            }
-
-            self.endProfile('process-thing');
         }
 
         function attachNoteTag ($element, subreddit, author, options = {}) {

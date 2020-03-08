@@ -106,7 +106,7 @@
 .mod-toolbox-rd .tb-window-tabs {
     display: inline-block;
     width: 135px;
-    height: 100%;
+    height: auto;
 }
 
 .mod-toolbox-rd .tb-window-tabs a {

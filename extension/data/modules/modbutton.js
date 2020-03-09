@@ -134,7 +134,6 @@ function modbutton () {
     };
 
     self.init = function () {
-
         self.saveButton = 'Save';
         self.OTHER = 'other-sub';
 

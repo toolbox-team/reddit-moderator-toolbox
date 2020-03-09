@@ -74,7 +74,7 @@ function modbutton () {
                     parentID = 'unknown';
                 }
                 requestAnimationFrame(() => {
-                    $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
+                    $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">M</a>`);
                 });
             }
         });
@@ -134,7 +134,6 @@ function modbutton () {
     };
 
     self.init = function () {
-        self.buttonName = 'M';
 
         self.saveButton = 'Save';
         self.OTHER = 'other-sub';
@@ -155,7 +154,6 @@ function modbutton () {
         async function openModPopup (event, info) {
             const benbutton = event.target; // huehuehue
             const $benbutton = $(benbutton);
-            $benbutton.text('loading...');
             self.log('displaying mod button popup');
 
             const lastaction = self.setting('lastAction');
@@ -168,8 +166,7 @@ function modbutton () {
 
             // no user?
             if (!user) {
-                $benbutton.text('error');
-                $benbutton.css('color', 'red');
+                TB.ui.textFeedback('No user', TB.ui.FEEDBACK_NEGATIVE);
                 // abort
                 return;
             }
@@ -403,9 +400,6 @@ function modbutton () {
                     $banIncludeTime.hide();
                 }
             });
-
-            // reset button name.
-            $benbutton.text(self.buttonName);
 
             // 'cancel' button clicked
             $popup.on('click', '.close', () => {

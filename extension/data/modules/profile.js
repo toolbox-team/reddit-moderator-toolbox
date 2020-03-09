@@ -483,7 +483,7 @@ function profilepro () {
                 searchOptions.subredditPattern = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');
             }
             if (contentsearch) {
-                searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');
+                searchOptions.searchPattern = TBHelpers.literalRegExp(contentsearch, 'gi');
                 searchOptions.searchString = contentsearch;
             }
 

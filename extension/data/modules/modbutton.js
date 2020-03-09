@@ -500,7 +500,6 @@ function modbutton () {
                   user = $popup.find('.user').text();
 
             let banMessage = $popup.find('textarea.ban-message').val();
-            banMessage = createBanReason(banMessage);
 
             self.setting('lastAction', actionName);
 
@@ -551,17 +550,6 @@ function modbutton () {
                 }
             }
 
-            function createBanReason (message) {
-                let reason = '';
-
-                // Add message if exists
-                if (message && message.length > 0) {
-                    reason += '{0}';
-                }
-
-                return TBHelpers.stringFormat(reason, message);
-            }
-
             function completeCheck (failedSubs) {
                 const failed = failedSubs.length;
                 self.log(`${failed} subs failed`);
@@ -578,7 +566,7 @@ function modbutton () {
                 } else {
                     self.log('complete');
                     $('.mod-popup').remove();
-                // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
+                    // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
                 }
             }
 

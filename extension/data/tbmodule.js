@@ -157,11 +157,7 @@ function tbmodule () {
                 },
             ];
 
-            $.each(coreSettings, function () {
-                const settingName = this.settingName,
-                      content = this.content,
-                      display = this.display;
-
+            coreSettings.forEach(({settingName, content, display}) => {
                 coreSettingsContent += `
                 <p id="tb-toolbox-${settingName}" style="${display}">
                     ${content}&nbsp;
@@ -957,13 +953,13 @@ body {
                             break;
                         case 'sublist':
                             value = [];
-                            $.each($this.find('.selected-list option'), function () {
+                            $this.find('.selected-list option').each(function () {
                                 value.push($(this).val());
                             });
                             break;
                         case 'map':
                             value = {};
-                            $.each($this.find('.tb-map-input-table tbody tr'), function () {
+                            $this.find('.tb-map-input-table tbody tr').each(function () {
                                 const key = escape($(this).find('input[name=key]').val()).trim(),
                                       val = escape($(this).find('input[name=value]').val()).trim();
 

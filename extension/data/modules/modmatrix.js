@@ -486,7 +486,7 @@ function modmatrix () {
                 const value = parseInt(moderator[action]);
                 modRow.find(`.action-${action} .action-number`).text(value);
             }
-            modRow.toggleClass('filtered', hasModFilter && $.inArray(mod, self.modFilter) === -1);
+            modRow.toggleClass('filtered', hasModFilter && !self.modFilter.includes(mod));
             // matrix.find(".moderator-" + mod + " .action-total").text(total);
         }
         // modLogMatrix.filterModeratorActions();
@@ -494,7 +494,7 @@ function modmatrix () {
         // Action totals
         for (const action of Object.keys(this.subredditActions)) {
             // var total = actionTotals[action] || 0;
-            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) === -1);
+            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && !self.actionFilter.includes(action));
             let total = 0;
             matrix.find(`tbody .action-${action} .action-number:visible`).each(function () {
                 total += parseInt($(this).text());

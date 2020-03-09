@@ -262,7 +262,7 @@ function usernotes () {
         }
 
         function foundSubreddit (subreddit) {
-            if ($.inArray(subreddit, subs) === -1) {
+            if (!subs.includes(subreddit)) {
                 subs.push(subreddit);
             }
         }
@@ -856,7 +856,7 @@ function usernotes () {
 
                         self.startProfile('manager-render-notes');
                         // var notes = [];
-                        $.each(notes.users[user].notes, (key, val) => {
+                        Object.entries(notes.users[user].notes).forEach(([key, val]) => {
                             noteCount++;
 
                             const color = self._findSubredditColor(colors, val.type);
@@ -975,12 +975,8 @@ function usernotes () {
                     usersPrune, 20, (user, counter) => {
                         TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        TBApi.getLastActive(user, (succ, date) => {
-                            if (!succ) {
-                                self.log(`${user} is deleted, suspended or shadowbanned.`);
-                                $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
-                                emptyProfiles.push(user);
-                            } else if (pruneOld) {
+                        TBApi.getLastActive(user).then(date => {
+                            if (pruneOld) {
                                 const timeSince = now - date * 1000,
                                       daysSince = TBHelpers.millisecondsToDays(timeSince);
 
@@ -990,6 +986,10 @@ function usernotes () {
                                     emptyProfiles.push(user);
                                 }
                             }
+                        }).catch(() => {
+                            self.log(`${user} is deleted, suspended or shadowbanned.`);
+                            $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
+                            emptyProfiles.push(user);
                         });
                     },
 
@@ -1025,20 +1025,18 @@ function usernotes () {
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', function () {
+            $body.find('.tb-un-refresh').on('click', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent().find('.user');
                 if (!$this.hasClass('tb-un-refreshed')) {
                     $this.addClass('tb-un-refreshed');
                     self.log(`refreshing user: ${user}`);
-                    TBApi.aboutUser(user, succ => {
-                        const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
-                            status: succ ? 'active' : 'deleted',
-                        });
 
-                        $userSpan.after($status);
+                    const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
+                        status: await TBApi.aboutUser(user).then(() => 'active').catch(() => 'deleted'),
                     });
+                    $userSpan.after($status);
                 }
             });
 
@@ -1135,7 +1133,7 @@ function usernotes () {
         }
 
         // Read notes from wiki page
-        TBApi.readFromWiki(subreddit, 'usernotes', true, resp => {
+        TBApi.readFromWiki(subreddit, 'usernotes', true).then(resp => {
         // Errors when reading notes
         // // These errors are bad
             if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
@@ -1231,7 +1229,7 @@ function usernotes () {
             const mgr = new self._constManager(deflated.constants);
 
             self.log('Inflating all usernotes');
-            $.each(deflated.users, (name, user) => {
+            Object.entries(deflated.users).forEach(([name, user]) => {
                 inflated.users[name] = {
                     name,
                     notes: user.ns.map(note => inflateNote(deflated.ver, mgr, note, sub)),
@@ -1278,27 +1276,25 @@ function usernotes () {
 
         // Write to wiki page
         self.log('Saving usernotes to wiki...');
-        TBApi.postToWiki('usernotes', sub, notes, reason, true, false, (succ, jqXHR) => {
-            if (succ) {
-                self.log('Success!');
-                TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
-                if (callback) {
-                    callback(true);
-                }
+        TBApi.postToWiki('usernotes', sub, notes, reason, true, false).then(() => {
+            self.log('Success!');
+            TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
+            if (callback) {
+                callback(true);
+            }
+        }).catch(jqXHR => {
+            self.log(`Failure: ${jqXHR.status}`);
+            let reason;
+            if (jqXHR.status === 413) {
+                reason = 'usernotes full';
             } else {
-                self.log(`Failure: ${jqXHR.status}`);
-                let reason;
-                if (jqXHR.status === 413) {
-                    reason = 'usernotes full';
-                } else {
-                    reason = jqXHR.responseText;
-                }
-                self.log(`  ${reason}`);
+                reason = jqXHR.responseText;
+            }
+            self.log(`  ${reason}`);
 
-                TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
-                if (callback) {
-                    callback(false);
-                }
+            TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
+            if (callback) {
+                callback(false);
             }
         });
 
@@ -1338,7 +1334,7 @@ function usernotes () {
 
             const mgr = new self._constManager(deflated.constants);
 
-            $.each(notes.users, (name, user) => {
+            Object.entries(notes.users).forEach(([name, user]) => {
                 deflated.users[name] = {
                     ns: user.notes.filter(note => {
                         if (note === undefined) {

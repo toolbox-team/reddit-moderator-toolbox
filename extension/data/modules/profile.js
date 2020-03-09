@@ -208,7 +208,7 @@ function profilepro () {
                     const $userTrophies = $(`<div class="tb-user-trophies">
                         <h3> Trophies </h3>
                     </div>`).appendTo($sidebar);
-                    $.each(data.data.trophies, (i, trophy) => {
+                    data.data.trophies.forEach(trophy => {
                         let tropyHTML;
 
                         const trophyInnerHTML = `

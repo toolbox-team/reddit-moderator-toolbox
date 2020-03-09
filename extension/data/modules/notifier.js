@@ -216,12 +216,11 @@ function notifiermod () {
 
             TBApi.getJSON(`/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
                 TBStorage.purifyObject(json);
-                $.each(json.data.children, (i, value) => {
+                json.data.children.forEach(value => {
                     const unreadmessageid = value.data.name;
 
-                    TBApi.markMessageRead(unreadmessageid, () => {
-                        // TODO: Insert useful error handling here
-                    });
+                    // TODO: catch errors
+                    TBApi.markMessageRead(unreadmessageid);
                 });
             });
         }
@@ -463,11 +462,11 @@ function notifiermod () {
                     if (consolidatedMessages) {
                         let notificationbody,
                             messagecount = 0;
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             let subreddit,
                                 subject,
                                 author;
-                            if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
+                            if (!pushedunread.includes(value.data.name) && value.kind === 't1') {
                                 subreddit = value.data.subreddit;
                                 author = value.data.author;
 
@@ -479,7 +478,7 @@ function notifiermod () {
                                 messagecount++;
                                 pushedunread.push(value.data.name);
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
-                            } else if ($.inArray(value.data.name, pushedunread) === -1) {
+                            } else if (!pushedunread.includes(value.data.name)) {
                                 subject = value.data.subject;
                                 author = value.data.author;
 
@@ -509,7 +508,7 @@ function notifiermod () {
                             youveGotMail();
                         }
                     } else {
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             let context,
                                 body_html,
                                 author,
@@ -519,7 +518,7 @@ function notifiermod () {
                                 subject,
                                 id;
 
-                            if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
+                            if (!pushedunread.includes(value.data.name) && value.kind === 't1') {
                                 context = value.data.context;
                                 body_html = TBHelpers.htmlDecode(value.data.body_html);
                                 author = value.data.author;
@@ -531,7 +530,7 @@ function notifiermod () {
                                 pushedunread.push(value.data.name);
 
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
-                            } else if ($.inArray(value.data.name, pushedunread) === -1) {
+                            } else if (!pushedunread.includes(value.data.name)) {
                                 author = value.data.author;
                                 body_html = TBHelpers.htmlDecode(value.data.body_html);
                                 subject = value.data.subject;
@@ -599,11 +598,11 @@ function notifiermod () {
                     if (consolidatedMessages) {
                         // $.log('here we go!');
                         let notificationbody, queuecount = 0, xmoreModqueue = 0;
-                        $.each(json.data.children, (i, value) => {
+                        json.data.children.forEach(value => {
                             let subreddit,
                                 author;
 
-                            if ($.inArray(value.data.name, pusheditems) === -1 && value.kind === 't3') {
+                            if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
                                 subreddit = value.data.subreddit;
                                 author = value.data.author;
 
@@ -617,7 +616,7 @@ function notifiermod () {
 
                                 queuecount++;
                                 pusheditems.push(value.data.name);
-                            } else if ($.inArray(value.data.name, pusheditems) === -1) {
+                            } else if (!pusheditems.includes(value.data.name)) {
                                 subreddit = value.data.subreddit;
                                 author = value.data.author;
 
@@ -644,8 +643,8 @@ function notifiermod () {
                             TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                         }
                     } else {
-                        $.each(json.data.children, (i, value) => {
-                            if ($.inArray(value.data.name, pusheditems) === -1 && value.kind === 't3') {
+                        json.data.children.forEach(value => {
+                            if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
                                 const mqpermalink = value.data.permalink,
                                       mqtitle = value.data.title,
                                       mqauthor = value.data.author,
@@ -653,7 +652,7 @@ function notifiermod () {
 
                                 TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                                 pusheditems.push(value.data.name);
-                            } else if ($.inArray(value.data.name, pusheditems) === -1) {
+                            } else if (!pusheditems.includes(value.data.name)) {
                                 const reportauthor = value.data.author,
                                       idname = value.data.name,
                                       linkid = `/api/info.json?id=${value.data.link_id}`;
@@ -694,7 +693,7 @@ function notifiermod () {
                         if (consolidatedMessages) {
                             let notificationbody, queuecount = 0, xmoreUnmod = 0;
 
-                            $.each(json.data.children, (i, value) => {
+                            json.data.children.forEach(value => {
                                 if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                     const subreddit = value.data.subreddit,
                                           author = value.data.author;
@@ -721,7 +720,7 @@ function notifiermod () {
                                 TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                             }
                         } else {
-                            $.each(json.data.children, (i, value) => {
+                            json.data.children.forEach(value => {
                                 if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                     const uqpermalink = value.data.permalink,
                                           uqtitle = value.data.title,

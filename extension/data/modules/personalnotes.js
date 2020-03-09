@@ -71,7 +71,7 @@ function personalnotes () {
             $editArea.val('loading stuff...').attr('disabled', true);
             $editArea.css('display', 'block');
 
-            TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false, resp => {
+            TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false).then(resp => {
                 if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                     $editArea.val('error getting wiki data.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
@@ -98,28 +98,25 @@ function personalnotes () {
         function saveNoteWiki (page, subreddit, data, reason, newnote) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, (succ, err) => {
-                self.log(`save succ = ${succ}`);
-                if (!succ) {
-                    self.log(err.responseText);
-                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
-                } else {
-                    self.log('clearing cache');
-                    TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+            TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false).then(() => {
+                self.log('clearing cache');
+                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
 
-                    if (newnote) {
-                        $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
+                if (newnote) {
+                    $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
 
-                        if (!$body.find('#tb-personal-notes-ul').length) {
-                            $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul>');
-                        }
-                        const $noteItem = $(TBHelpers.template(noteListTemplate, {name: page}));
-                        $noteItem.toggleClass('tb-personal-notes-active', true);
-                        $body.find('#tb-personal-notes-ul').append($noteItem);
-
-                        loadNoteWiki(page);
+                    if (!$body.find('#tb-personal-notes-ul').length) {
+                        $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul>');
                     }
+                    const $noteItem = $(TBHelpers.template(noteListTemplate, {name: page}));
+                    $noteItem.toggleClass('tb-personal-notes-active', true);
+                    $body.find('#tb-personal-notes-ul').append($noteItem);
+
+                    loadNoteWiki(page);
                 }
+            }).catch(err => {
+                self.log(err.responseText);
+                TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
             });
         }
 
@@ -147,7 +144,7 @@ function personalnotes () {
                         createPersonalNotesPopup(notesPopupContent);
 
                     // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
-                    } else if ($.inArray(notewiki, mySubsLowerCase) === -1) {
+                    } else if (!mySubsLowerCase.includes(notewiki)) {
                         notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
@@ -189,7 +186,7 @@ function personalnotes () {
                                     let notecount = 0,
                                         noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
 
-                                    $.each(json.data, (i, value) => {
+                                    json.data.forEach(value => {
                                         if (/notes\//.test(value)) {
                                             value = value.replace('notes/', '');
                                             notecount++;
@@ -266,7 +263,7 @@ function personalnotes () {
 
             if (newNotename === '') {
                 TB.ui.textFeedback('You should try filling in an actual name...', TB.ui.FEEDBACK_NEGATIVE);
-            } else if ($.inArray(newNotename, notesArray) !== -1) {
+            } else if (notesArray.includes(newNotename)) {
                 TB.ui.textFeedback('That already is a note.', TB.ui.FEEDBACK_NEGATIVE);
             } else {
                 notesArray.push(newNotename);

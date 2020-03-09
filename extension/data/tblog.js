@@ -29,17 +29,18 @@
     const filteredCallers = {};
 
     /**
-     * @private
      * Generates a short timestamp for the current time. Strips unneeded info
      * from the ISO format.
+     * @private
      */
     function timestamp () {
         return new Date().toISOString().replace('T', ' ').replace(/Z|\..*/, '');
     }
 
     /**
-     * @private
      * Executes a log of a given type.
+     * @private
+     * @function
      * @this {object|string} The caller, if any, a TB module or a string
      * @param {string} type The name of the log type to use
      * @param {...any} args Arbitrary content passed through to the console
@@ -80,6 +81,7 @@
 
     /**
      * Creates a logger object with a given caller.
+     * @function
      * @param {string|object} caller A module serving as the caller, or a string
      * representing the name of non-module callers
      */

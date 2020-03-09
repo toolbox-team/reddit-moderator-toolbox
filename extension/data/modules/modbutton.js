@@ -120,22 +120,18 @@ function modbutton () {
             $popup.find('.edit-subreddits .savedSubs').remove();
             $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
 
-            $.each(self.savedSubs, function (i, subreddit) {
+            self.savedSubs.forEach(subreddit => {
                 // only subs we moderate
                 // and not the current sub
                 if (TBCore.modsSub(subreddit) && subreddit !== currentSub) {
-                    $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${this
-                    }" id="action-${this}"><label for="action-${this}">&nbsp;&nbsp;/r/${this}</label></div>`);
+                    $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${subreddit
+                    }" id="action-${subreddit}"><label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit}</label></div>`);
                 }
             });
         });
 
-        $.each(TBCore.mySubs, (i, subreddit) => {
-            $popups.find(`select.${self.OTHER}`)
-                .append($('<option>', {
-                    value: subreddit,
-                })
-                    .text(subreddit));
+        TBCore.mySubs.forEach(subreddit => {
+            $popups.find(`select.${self.OTHER}`).append(`<option value="${subreddit}">${subreddit}</option>`);
         });
     };
 
@@ -346,6 +342,7 @@ function modbutton () {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
+                // TODO: Use TBApi.getBanState()
                 const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;
@@ -618,11 +615,9 @@ function modbutton () {
                                 failedSubs.push(subreddit);
                             });
                         } else {
-                            TBApi.unfriendUser(user, action, subreddit, success => {
-                                if (!success) {
-                                    self.log('missed one');
-                                    failedSubs.push(subreddit);
-                                }
+                            TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
                             });
                         }
                     },
@@ -660,22 +655,20 @@ function modbutton () {
                 message = $subredditMessage.val();
             }
 
-            TBApi.sendMessage(user, subject, message, subreddit, (successful, response) => {
-                if (!successful) {
-                    $callbackSpan.text(`an error occurred: ${response[0][1]}`);
+            TBApi.sendMessage(user, subject, message, subreddit).then(response => {
+                if (response.json.errors.length) {
+                    $callbackSpan.text(response.json.errors[1]);
+                    TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
                     TB.ui.longLoadSpinner(false);
                 } else {
-                    if (response.json.errors.length) {
-                        $callbackSpan.text(response.json.errors[1]);
-                        TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
-                        TB.ui.longLoadSpinner(false);
-                    } else {
-                        TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
-                        $callbackSpan.text('message sent');
-                        $callbackSpan.css('color', 'green');
-                        TB.ui.longLoadSpinner(false);
-                    }
+                    TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
+                    $callbackSpan.text('message sent');
+                    $callbackSpan.css('color', 'green');
+                    TB.ui.longLoadSpinner(false);
                 }
+            }).catch(error => {
+                $callbackSpan.text(`an error occurred: ${error[0][1]}`);
+                TB.ui.longLoadSpinner(false);
             });
         });
 

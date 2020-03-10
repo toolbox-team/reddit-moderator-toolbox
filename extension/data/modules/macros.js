@@ -167,11 +167,16 @@ function modmacros () {
                 }
             });
         }
-        setTimeout(() => {
-            if (TBCore.isNewMMThread) {
-                addNewMMMacro();
-            }
-        }, 1000);
+
+        if (TBCore.isNewModmail) {
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    setTimeout(() => {
+                        addNewMMMacro();
+                    }, 1000);
+                }
+            });
+        }
 
         if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
             $('body').on('click', 'button:contains("Reply")', function () {
@@ -227,15 +232,6 @@ function modmacros () {
             } else {
                 // Remove all macros
                 $body.find('.tb-macro-select').remove();
-            }
-        });
-
-        // NER support.
-        window.addEventListener('TBNewThings', () => {
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    addNewMMMacro();
-                }, 1000);
             }
         });
 

@@ -74,12 +74,12 @@ function newmodmailpro () {
               showModmailPreview = self.setting('showModmailPreview');
 
         if (noReplyAsSelf) {
-            switchAwayFromReplyAsSelf();
-            window.addEventListener('TBNewThings', () => {
-                switchAwayFromReplyAsSelf();
-                setTimeout(() => {
-                    switchAwayFromReplyAsSelf();
-                }, 1000);
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    setTimeout(() => {
+                        switchAwayFromReplyAsSelf();
+                    }, 1000);
+                }
             });
         }
 

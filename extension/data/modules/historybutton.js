@@ -59,25 +59,6 @@ function historybutton () {
         });
     };
 
-    self.attachToModmail = function () {
-        const $body = $('body');
-        $body.find('.Thread__message').not('.tb-history').each(function () {
-            const $this = $(this);
-            if ($this.find('.tb-attr').length === 0) {
-                $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
-            }
-            const $tbAttrs = $this.find('.tb-attr');
-            const UserButtonHTMLnewMM = '<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
-            $tbAttrs.append(UserButtonHTMLnewMM);
-        });
-
-        const userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
-
-        const $sidebar = $body.find('.ThreadViewer__infobar');
-
-        $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
-    };
-
     self.runJsAPI = function () {
         self.log('run');
 
@@ -132,39 +113,13 @@ function historybutton () {
             if (modSubCheck) {
                 self.log('passed');
 
-                if (TBCore.isNewModmail) {
-                    setTimeout(() => {
-                        self.attachToModmail();
-                    }, 750);
-                } else {
-                    self.log('not new modmail');
-                    self.runJsAPI();
-                }
-
-                // NER support.
-                window.addEventListener('TBNewThings', () => {
-                    self.attachToModmail();
-                });
+                self.runJsAPI();
 
                 $body.on('click', '.user-history-button, #tb-user-history', function (event) {
                     const $this = $(this);
                     const $target = $(event.currentTarget);
-                    let author;
-                    if ($body.find('.ThreadViewer').length > 0) {
-                        if ($this.hasClass('modmail-sidebar')) {
-                            author = $('.InfoBar__username').text();
-                        } else {
-                            author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
-                        }
-                    } else {
-                        author = $target.attr('data-author');
-                    }
+                    const author = $target.attr('data-author');
                     const thisSubreddit = $target.attr('data-subreddit');
-
-                    if ($target.attr('id') === 'tb-user-history') {
-                        event.pageY -= 600;
-                        event.pageX += 200;
-                    }
 
                     const positions = TBui.drawPosition(event);
 

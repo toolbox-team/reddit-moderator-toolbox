@@ -810,13 +810,18 @@ body.mod-toolbox-rd .tb-bracket-button .tb-icons {
 }
 
 /* handle bracket buttons within the hovercard api container */
-
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserHovercard"] {
+    padding: 3px;
+    display: block;
+}
 body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] {
     margin: 3px 0 3px 8px;
     padding: 3px;
     display: block;
 }
 
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserHovercard"] .tb-bracket-button.tb-history-button,
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserHovercard"] .tb-bracket-button,
 body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bracket-button.tb-history-button,
 body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bracket-button {
     display: block;
@@ -1927,7 +1932,6 @@ Icons in the sidebar
     margin: 0 5px 0 1px;
     vertical-align: bottom;
 }
-
 
 /*
 ========================

@@ -974,7 +974,7 @@
                 }
             }
         });
-    };
+    }
 
     const viewportObserver = new IntersectionObserver(handleTBThings, {
         rootMargin: '200px',

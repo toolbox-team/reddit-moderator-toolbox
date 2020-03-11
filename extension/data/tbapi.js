@@ -109,7 +109,7 @@
      * @param {object} data Query parameters as an object
      */
     TBApi.apiOauthGET = (endpoint, query) => TBApi.sendRequest({
-        method: 'POST',
+        method: 'GET',
         oauth: true,
         endpoint,
         query,

@@ -92,12 +92,6 @@ function makeRequest (url, options) {
 
 messageHandlers.set('tb-request', async request => {
     const {method, endpoint, body, oauth} = request;
-    if (!endpoint.startsWith('/')) {
-        // Old code used to send a full URL to these methods, so this check
-        // is to identify old uses of the code
-        return {error: `Request endpoint '${endpoint}' does not start with a slash`};
-    }
-
     const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}`;
     const options = {
         credentials: 'include', // required for cookies to be sent

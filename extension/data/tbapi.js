@@ -18,10 +18,13 @@
      * @param {boolean?} [options.oauth] If true, the request will be sent on
      * oauth.reddit.com, and the `Authorization` header will be set with the
      * OAuth access token for the logged-in user
+     * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
+     * in an error being rejected. The error will have a `response` property
+     * containing the full `Response` object.
      * @returns {Promise}
      */
-    TBApi.sendRequest = async ({method, endpoint, query, body, oauth}) => {
-        const response = await browser.runtime.sendMessage({
+    TBApi.sendRequest = async ({method, endpoint, query, body, oauth, okOnly}) => {
+        let response = await browser.runtime.sendMessage({
             action: 'tb-request',
             method,
             endpoint,
@@ -29,12 +32,24 @@
             body,
             oauth,
         });
+
+        // Errors are transmitted as objects with an `error` key and get thrown immediately
         if (response.error) {
-            // Errors are transmitted as objects with an 'error' key
             throw new Error(response.error);
         }
-        // Response is serialized as an array of constructor arguments
-        return new Response(...response);
+
+        // Valid HTTP responses are serialized as an array of `Response` constructor arguments
+        response = new Response(...response);
+
+        // Throw an error if the caller requested only 2xx codes and we got a non-2xx code
+        if (okOnly && !response.ok) {
+            const error = new Error('Received non-OK response');
+            error.response = response;
+            throw error;
+        }
+
+        // Otherwise, return the response
+        return response;
     };
 
     /**

@@ -68,18 +68,12 @@
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
-    TBApi.getJSON = async (endpoint, query) => {
-        const response = await TBApi.sendRequest({method: 'GET', endpoint, query});
-
-        // Throw an error object if the response status is bad
-        if (!response.ok) {
-            const error = new Error('Non-OK response');
-            error.response = response;
-            throw error;
-        }
-
-        return response.json();
-    };
+    TBApi.getJSON = (endpoint, query) => TBApi.sendRequest({
+        okOnly: true,
+        method: 'GET',
+        endpoint,
+        query,
+    }).then(response => response.json());
 
     /**
      * Performs a POST request and promises the body of the response, or the

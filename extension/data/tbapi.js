@@ -14,7 +14,8 @@
      * @param {string} [options.method] The HTTP method to use for the request
      * @param {string} options.endpoint The endpoint to request
      * @param {object} [options.query] Query parameters as an object
-     * @param {string} [options.body] Body to send with a POST request
+     * @param {any} [options.body] Body to send with a POST request, serialized
+     * as JSON if not a string
      * @param {boolean?} [options.oauth] If true, the request will be sent on
      * oauth.reddit.com, and the `Authorization` header will be set with the
      * OAuth access token for the logged-in user
@@ -24,6 +25,12 @@
      * @returns {Promise}
      */
     TBApi.sendRequest = async ({method, endpoint, query, body, oauth, okOnly}) => {
+        // Convert body to JSON if necessary
+        if (typeof body !== 'string') {
+            body = JSON.stringify(body);
+        }
+
+        // Make the request
         let response = await browser.runtime.sendMessage({
             action: 'tb-request',
             method,
@@ -33,12 +40,12 @@
             oauth,
         });
 
-        // Errors are transmitted as objects with an `error` key and get thrown immediately
+        // Errors are received as objects with an `error` key and get thrown immediately
         if (response.error) {
             throw new Error(response.error);
         }
 
-        // Valid HTTP responses are serialized as an array of `Response` constructor arguments
+        // Valid HTTP responses are received as an array of `Response` constructor arguments
         response = new Response(...response);
 
         // Throw an error if the caller requested only 2xx codes and we got a non-2xx code

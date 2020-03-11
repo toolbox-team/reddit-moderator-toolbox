@@ -336,8 +336,8 @@ function notifiermod () {
             if (!activeNewMMcheck) {
                 activeNewMMcheck = true;
                 setTimeout(() => {
-                    TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
-                        const data = response.data;
+                    TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
+                        const data = await response.json();
                         const modmailFreshCount = data.notifications + data.archived + data.new + data.inprogress + data.mod;
                         self.setting('newModmailCount', modmailFreshCount);
                         self.setting('newModmailCategoryCount', data);
@@ -757,8 +757,8 @@ function notifiermod () {
             //
             // New modmail
             //
-            TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
-                const data = response.data;
+            TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
+                const data = await response.json();
                 const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
                 self.setting('newModmailCount', modmailFreshCount);
                 self.setting('newModmailCategoryCount', data);

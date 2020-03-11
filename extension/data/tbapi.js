@@ -636,8 +636,6 @@
     }).then(response => {
         TBStorage.purifyObject(response);
         return response;
-    }).catch(error => {
-        throw error.responseText;
     });
 
     /**
@@ -664,8 +662,6 @@
     }).then(response => {
         TBStorage.purifyObject(response);
         return response;
-    }).catch(error => {
-        throw error.responseText;
     });
 
     /**
@@ -689,7 +685,5 @@
                 mod_reports: data.mod_reports,
             };
         }
-    }).catch(error => {
-        throw error.responseText;
     });
 })(window.TBApi = window.TBApi || {});

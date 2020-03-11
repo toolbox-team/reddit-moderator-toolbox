@@ -84,12 +84,11 @@
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
     TBApi.post = (endpoint, body) => TBApi.sendRequest({
+        okOnly: true,
         method: 'POST',
         endpoint,
         body,
-    }).then(response => response.data).catch(response => {
-        throw response.jqXHR;
-    });
+    }).then(response => response.json());
 
     /**
      * Sends an authenticated POST request against the OAuth API.
@@ -102,6 +101,7 @@
         oauth: true,
         endpoint,
         body,
+        okOnly: true,
     });
 
     /**
@@ -115,6 +115,7 @@
         oauth: true,
         endpoint,
         query,
+        okOnly: true,
     });
 
     //
@@ -129,9 +130,9 @@
     TBApi.getRatelimit = () => TBApi.sendRequest({
         method: 'HEAD',
         endpoint: '/r/toolbox/wiki/ratelimit.json',
-    }).then(({jqXHR}) => {
-        const ratelimitRemaining = jqXHR.allResponseHeaders['x-ratelimit-remaining'],
-              ratelimitReset = jqXHR.allResponseHeaders['x-ratelimit-reset'];
+    }).then(response => {
+        const ratelimitRemaining = response.headers.get('x-ratelimit-remaining'),
+              ratelimitReset = response.headers.get('x-ratelimit-reset');
 
         logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 

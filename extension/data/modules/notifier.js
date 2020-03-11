@@ -346,7 +346,7 @@ function notifiermod () {
                         updateAllTabs();
                         activeNewMMcheck = false;
                     }).catch(error => {
-                        self.log(error.jqXHR.responseText);
+                        self.log(error);
                         activeNewMMcheck = false;
                     });
                 }, 500);
@@ -770,7 +770,7 @@ function notifiermod () {
                     updateAllTabs();
                 }
             }).catch(error => {
-                self.log(error.jqXHR.responseText);
+                self.log(error);
             });
         }
 

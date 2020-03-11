@@ -34,7 +34,7 @@
         let response = await browser.runtime.sendMessage({
             action: 'tb-request',
             method,
-            endpoint,
+            endpoint: endpoint + TBHelpers.queryString(query),
             query,
             body,
             oauth,

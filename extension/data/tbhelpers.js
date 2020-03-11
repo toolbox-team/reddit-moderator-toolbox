@@ -752,4 +752,23 @@
         // Collapse to base64
         return btoa(objThing);
     };
+
+    /**
+     * Creates a URL query string from the given parameters.
+     * @param {object} parameters An object of parameters
+     * @returns {string}
+     */
+    TBHelpers.queryString = function queryString (parameters) {
+        if (!parameters) {
+            return '';
+        }
+        const kvStrings = [];
+        for (const [k, v] of Object.entries(parameters)) {
+            kvStrings.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+        }
+        if (!kvStrings.length) {
+            return '';
+        }
+        return `?${kvStrings.join('&')}`;
+    };
 })(window.TBHelpers = window.TBHelpers || {});

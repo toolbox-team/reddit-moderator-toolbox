@@ -259,17 +259,15 @@ function queuetools () {
                     }
                     showing = !showing;
 
-                    TBApi.getReportReasons(window.location.href, (success, reports) => {
-                        if (success) {
-                            self.log(reports.user_reports);
-                            self.log(reports.mod_reports);
-                            const $reportReasons = $('.report-reasons');
+                    TBApi.getReportReasons(window.location.href).then(reports => {
+                        self.log(reports.user_reports);
+                        self.log(reports.mod_reports);
+                        const $reportReasons = $('.report-reasons');
 
-                            reports.user_reports.forEach(report => {
-                                $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
-                            });
-                            $reportReasons.show();
-                        }
+                        reports.user_reports.forEach(report => {
+                            $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
+                        });
+                        $reportReasons.show();
                     });
                 });
             }
@@ -328,7 +326,8 @@ function queuetools () {
 
             // Add checkboxes, tabs, menu, etc
             $('#siteTable').before(`
-    <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;">
+    <div class="modtools-duplicate" style="display: none; visibility: hidden;"></div>
+    <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;top: 0px">
         <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/>
         <span>
             <a href="javascript:;" class="tb-general-button invert inoffensive" accesskey="I" title="invert selection">invert</a>
@@ -417,8 +416,10 @@ function queuetools () {
 
             // Fix the position of the modtools. We do it like this so we can support custom css
             const $modtoolsMenu = $body.find('.menuarea.modtools'),
+                  $modtoolsMenuDuplicate = $body.find('.modtools-duplicate'),
                   offset = $modtoolsMenu.offset(),
                   offsetTop = offset.top,
+                  offsetSticky = offset.left,
                   rightPosition = $('.side').outerWidth() + 10;
 
             $modtoolsMenu.css({
@@ -430,24 +431,30 @@ function queuetools () {
                 'padding-top': '9px',
             });
 
-            $(window).scroll(() => {
-                if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-sub')) {
-                    $modtoolsMenu.css({
-                        top: `${$(window).scrollTop() - offsetTop + 20}px`,
-                    });
-                } else if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-header')) {
-                    $modtoolsMenu.css({
-                        top: `${$(window).scrollTop() - offsetTop + 72}px`,
-                    });
-                } else if ($(window).scrollTop() > offsetTop) {
-                    $modtoolsMenu.css({
-                        top: `${$(window).scrollTop() - offsetTop + 5}px`,
-                    });
-                } else {
-                    $modtoolsMenu.css({
-                        top: 'inherit',
-                    });
+            let frame = null;
+            window.addEventListener('scroll', () => {
+                let position = 'relative';
+                const modtoolsHeight = $modtoolsMenu.outerHeight(true);
+                if (frame) {
+                    cancelAnimationFrame(frame);
                 }
+                if (window.scrollY + offsetSticky > offsetTop) {
+                    position = 'fixed';
+                } else {
+                    position = 'relative';
+                }
+                frame = requestAnimationFrame(() => {
+                    $modtoolsMenu.css({
+                        left: position === 'fixed' ? offsetSticky : 0,
+                        right: position === 'fixed' ? offsetSticky : 0,
+                        top: position === 'fixed' ? offsetSticky : 0,
+                        position,
+                    });
+                    $modtoolsMenuDuplicate.css({
+                        display: position === 'fixed' ? 'block' : 'none',
+                        height: modtoolsHeight,
+                    });
+                });
             });
 
             // // Button actions ////
@@ -1302,7 +1309,7 @@ Action reason: ${value.data.details}
                             </div>
                             `);
 
-                            actions.forEach(value => {
+                            Object.values(actions).forEach(value => {
                                 const mod = value.mod;
                                 const action = value.action;
                                 const details = value.details;

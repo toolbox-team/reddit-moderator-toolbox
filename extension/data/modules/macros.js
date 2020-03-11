@@ -20,7 +20,7 @@ function modmacros () {
             if (TBCore.configCache[sub] !== undefined) {
                 callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         self.log('!resp || resp === TBCore.WIKI_PAGE_UNKNOWN');
                         callback(false);
@@ -167,11 +167,16 @@ function modmacros () {
                 }
             });
         }
-        setTimeout(() => {
-            if (TBCore.isNewMMThread) {
-                addNewMMMacro();
-            }
-        }, 1000);
+
+        if (TBCore.isNewModmail) {
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    setTimeout(() => {
+                        addNewMMMacro();
+                    }, 1000);
+                }
+            });
+        }
 
         if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
             $('body').on('click', 'button:contains("Reply")', function () {
@@ -227,15 +232,6 @@ function modmacros () {
             } else {
                 // Remove all macros
                 $body.find('.tb-macro-select').remove();
-            }
-        });
-
-        // NER support.
-        window.addEventListener('TBNewThings', () => {
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    addNewMMMacro();
-                }, 1000);
             }
         });
 
@@ -412,35 +408,31 @@ function modmacros () {
                             TB.ui.longLoadSpinner(false);
                         }, 1500);
                     } else {
-                        TBApi.postComment(info.id, editedcomment, (successful, response) => {
-                            if (!successful) {
-                                TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
+                        TBApi.postComment(info.id, editedcomment).then(response => {
+                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                            $currentMacroPopup.remove();
+                            $selectElement.prop('disabled', false);
+                            if (topLevel) {
+                                $selectElement.val(MACROS);
                             } else {
-                                TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
-                                $currentMacroPopup.remove();
-                                $selectElement.prop('disabled', false);
-                                if (topLevel) {
-                                    $selectElement.val(MACROS);
-                                } else {
-                                    $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
-                                }
-
-                                const commentId = response.json.data.things[0].data.id;
-
-                                if (lockreply) {
-                                    TBApi.lock(commentId, successful => {
-                                        if (!successful) {
-                                            TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
-                                        }
-                                    });
-                                }
-                                if (distinguish && !TBCore.isModmail) {
-                                    // Distinguish the new reply
-                                    TBApi.distinguishThing(commentId, sticky && topLevel).then(() => {
-                                        TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
-                                    });
-                                }
+                                $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
                             }
+
+                            const commentId = response.json.data.things[0].data.id;
+
+                            if (lockreply) {
+                                TBApi.lock(commentId).catch(() => {
+                                    TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
+                                });
+                            }
+                            if (distinguish && !TBCore.isModmail) {
+                                // Distinguish the new reply
+                                TBApi.distinguishThing(commentId, sticky && topLevel).then(() => {
+                                    TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                });
+                            }
+                        }).catch(() => {
+                            TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
                         });
 
                         if (!TBCore.isModmail && !TBCore.isNewModmail) {

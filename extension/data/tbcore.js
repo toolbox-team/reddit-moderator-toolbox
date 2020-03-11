@@ -465,9 +465,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             case CHROME: {
                 // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
                 // This way we can also cut some support requests short.
-                const vivaldiRegex = new RegExp(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
-                const yandexRegex = new RegExp(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
-                const chromeRegex = new RegExp(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
+                const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
+                const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
+                const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
                 if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
                     browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
                     debugObject.browser = 'Vivaldi';
@@ -491,8 +491,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 break;
             }
             case FIREFOX: {
-                const firefoxRegex = new RegExp(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
-                const firefoxDerivativeRegex = new RegExp(/\((.*?)\).*(Firefox\/[0-9.].*?)$/);
+                const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
+                const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
                 if (firefoxRegex.test(browserUserAgent)) {
                     browserMatchedInfo = browserUserAgent.match(firefoxRegex);
                     debugObject.browser = 'Firefox';
@@ -1233,7 +1233,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             function updateRateLimit () {
-                TBApi.getRatelimit(({ratelimitReset, ratelimitRemaining}) => {
+                TBApi.getRatelimit().then(({ratelimitReset, ratelimitRemaining}) => {
                     const $body = $('body');
 
                     if (!$body.find('#ratelimit-counter').length) {
@@ -1347,7 +1347,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBCore.importSettings = function (subreddit, callback) {
-            TBApi.readFromWiki(subreddit, 'tbsettings', true, resp => {
+            TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                     logger.log('Error loading wiki page');
                     return;
@@ -1441,7 +1441,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             } else if (TBCore.hasConfig(sub)) {
                 callback(TBCore.configCache[sub], sub);
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         // Complete and utter failure
                         callback(false, sub);
@@ -1543,24 +1543,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         }
 
-        // Prep new modmail for toolbox stuff.
-        // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.
-        function addTbModmailSidebar () {
-            setTimeout(() => {
-                const $body = $('body');
-                if (TBCore.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
-                    $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
-                }
-            }, 500);
-        }
-        addTbModmailSidebar();
-
         // Watch for locationHref changes and sent an event with details
         let locationHref;
 
         // new modmail regex matches.
-        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?$/;
-        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?([^/]*)\/?$/;
+        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?$/;
+        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?([^/]*)\/?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
         // reddit regex matches.
@@ -1603,7 +1591,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         };
                     } else if (newMMconversationReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(newMMconversationReg);
-                        contextObject.pageType = 'modmailListing';
+                        contextObject.pageType = 'modmailConversation';
                         contextObject.pageDetails = {
                             conversationType: matchDetails[1],
                             conversationID: matchDetails[2],
@@ -1713,71 +1701,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         watchPushState();
         // Watch for new things and send out events based on that.
-        if (TBCore.isNewModmail) {
-            // For new modmail we do things a bit different.
-            // We only listen for dom changes after a user interaction.
-            // Resulting in this event being fired less and less wasted requests.
-            let newThingRunning = false;
-
-            document.body.addEventListener('click', () => {
-                const newMMtarget = document.querySelector('body');
-
-                // create an observer instance
-                const newMMobserver = new MutationObserver(mutations => {
-                    let doAddTbModmailSidebar = false;
-                    let doTBNewThings = false;
-
-                    mutations.forEach(mutation => {
-                        const $target = $(mutation.target);
-
-                        if ($target.find('.ThreadViewer__infobar').length > 0) {
-                            doAddTbModmailSidebar = true;
-                        }
-                        if ($target.is('.Thread__message, .ThreadViewer, .Thread__messages')) {
-                            doTBNewThings = true;
-                        }
-                    });
-
-                    if (doAddTbModmailSidebar) {
-                        logger.log('DOM: new modmail sidebar found.');
-                        addTbModmailSidebar();
-                    }
-
-                    if (doTBNewThings) {
-                        logger.log('DOM: processable elements found.');
-
-                        // It is entirely possible that TBNewThings is fired multiple times.
-                        // That is why we only set a new timeout if there isn't one set already.
-                        if (!newThingRunning) {
-                            newThingRunning = true;
-                            // Wait a sec for stuff to load.
-                            setTimeout(() => {
-                                newThingRunning = false;
-                                const event = new CustomEvent('TBNewThings');
-                                window.dispatchEvent(event);
-                            }, 1000);
-                        }
-                    }
-                });
-
-                // configuration of the observer:
-                // We specifically want all child elements but nothing else.
-                const newMMconfig = {
-                    attributes: false,
-                    childList: true,
-                    characterData: false,
-                    subtree: true,
-                };
-
-                // pass in the target node, as well as the observer options
-                newMMobserver.observe(newMMtarget, newMMconfig);
-
-                // Wait a bit for dom changes to occur and then disconnect it again.
-                setTimeout(() => {
-                    newMMobserver.disconnect();
-                }, 2000);
-            });
-        } else if ($('#header').length) {
+        if ($('#header').length) {
             let newThingRunning = false;
             // NER, load more comments, and mod frame support.
             const target = document.querySelector('div.content');
@@ -1842,7 +1766,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // get toolbox news
         (function getNotes () {
-            TBApi.readFromWiki('toolbox', 'tbnotes', true, resp => {
+            TBApi.readFromWiki('toolbox', 'tbnotes', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                     return;
                 }
@@ -1854,7 +1778,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
 
             if (betaRelease) {
-                TBApi.readFromWiki('tb_beta', 'tbnotes', true, resp => {
+                TBApi.readFromWiki('tb_beta', 'tbnotes', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                         return;
                     }
@@ -1867,7 +1791,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
             // check dev sub, if debugMode
             if (TBCore.debugMode) {
-                TBApi.readFromWiki('tb_dev', 'tbnotes', true, resp => {
+                TBApi.readFromWiki('tb_dev', 'tbnotes', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                         TBCore.devMode = false;
                         TBCore.devModeLock = true;

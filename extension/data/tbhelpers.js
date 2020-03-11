@@ -359,11 +359,6 @@
         return str.slice(0, -1);
     };
 
-    /** @todo properly describe what this does */
-    TBHelpers.stringFormat = function (format, ...args) {
-        return format.replace(/{(\d+)}/g, (match, number) => typeof args[number] !== 'undefined' ? args[number] : match);
-    };
-
     /**
      * Sorts an array of objects by property value of specific properties.
      * @function
@@ -417,6 +412,14 @@
     };
 
     /**
+     * Generates a regular expression that will match only a given string.
+     * @param {string} text The text to match
+     * @param {string} flags The flags passed to the RegExp constructor
+     * @returns {RegExp}
+     */
+    TBHelpers.literalRegExp = (text, flags) => new RegExp(text.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1'), flags);
+
+    /**
      * Replace all instances of a certaing thing for another thing.
      * @function
      * @param {string} find what to find
@@ -424,10 +427,7 @@
      * @param {string} str where to do it all with
      * @returns {string} shiny new string with replaced stuff
      */
-    TBHelpers.replaceAll = function (find, replace, str) {
-        find = find.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
-        return str.replace(new RegExp(find, 'g'), replace);
-    };
+    TBHelpers.replaceAll = (find, replace, str) => str.replace(TBHelpers.literalRegExp(find, 'g'), replace);
 
     /**
      * Will compare the input color to a list of known color names and return the HEX value
@@ -613,26 +613,13 @@
     };
 
     /**
-     * Will tell if a number is odd
-     * @function isOdd
-     * @memberof TBHelpers
-     * @param {integer} num reddit API comment object.
-     * @returns {boolean} true if number is odd false if even.
-     */
-
-    TBHelpers.isOdd = function (num) {
-        return num % 2;
-    };
-
-    /**
      * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
      * @function
      * @param {string} dirtySub dirty dirty sub.
      * @returns {string} shiny sub!
      */
     TBHelpers.cleanSubredditName = function (dirtySub) {
-        dirtySub = dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
-        return dirtySub;
+        return dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
     };
 
     /**
@@ -687,10 +674,20 @@
     };
 
     // Utility methods
-    TBHelpers.removeQuotes = function (string) {
-        return string.replace(/['"]/g, '');
-    };
 
+    /**
+     * Removes ASCII single and double quotes from a string.
+     * @param {string} string
+     * @returns {string}
+     */
+    TBHelpers.removeQuotes = string => string.replace(/['"]/g, '');
+
+    /**
+     * Generates a color corresponding to a given string (used to assign colors
+     * to subreddits for post borders in shared queues)
+     * @param {string} str The string to generate a color for
+     */
+    // TODO: cache results?
     TBHelpers.stringToColor = function stringToColor (str) {
         // str to hash
         let hash = 0;
@@ -707,24 +704,34 @@
         return color;
     };
 
-    // Added back for MMP's live mod mail.
-    TBHelpers.compressHTML = function (src) {
-        return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" > {2}False/, 'child">');
-    };
-
-    // easy way to simulate the php html encode and decode functions
+    /**
+     * Escapes text for HTML.
+     * @param {string} value The text to escape
+     * @returns {string}
+     */
+    // TODO: How is this different than escapeHTML() above?
     TBHelpers.htmlEncode = function (value) {
     // create a in-memory div, set it's inner text(which jQuery automatically encodes)
     // then grab the encoded contents back out.  The div never exists on the page.
         return $('<div/>').text(value).html();
     };
 
+    /**
+     * Gets the text content of an HTML string.
+     * @param {string} value The HTML to read
+     * @returns {string}
+     */
     TBHelpers.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
     };
 
+    /**
+     * Inflates a base64-encoded zlib-compressed data string into data.
+     * @param {string} string The compressed string
+     * @returns {any}
+     */
     TBHelpers.zlibInflate = function (stringThing) {
-    // Expand base64
+        // Expand base64
         stringThing = atob(stringThing);
         // zlib time!
         const inflate = new pako.Inflate({to: 'string'});
@@ -732,6 +739,11 @@
         return inflate.result;
     };
 
+    /**
+     * Deflates some data into a base64-encoded zlib-compressed data string.
+     * @param {any} object The data to compress
+     * @returns {string}
+     */
     TBHelpers.zlibDeflate = function (objThing) {
     // zlib time!
         const deflate = new pako.Deflate({to: 'string'});

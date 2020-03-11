@@ -8,7 +8,7 @@ function metricstab () {
     self.settings['enabled']['default'] = true;
 
     self.getSectionFromUrl = function getSectionFromUrl (url) {
-        const regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^/]+)(\/|$)/g);
+        const regex = /^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^/]+)(\/|$)/g;
         const matches = regex.exec(url);
 
         if (matches) {

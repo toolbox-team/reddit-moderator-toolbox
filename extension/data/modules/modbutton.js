@@ -47,17 +47,6 @@ function modbutton () {
     const $body = $('body'),
           titleText = 'Perform various mod actions on this user';
 
-    // need this for RES NER support
-    self.run = function () {
-        if ($body.find('.ThreadViewer').length > 0) {
-            const modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}</a></span></span>`;
-
-            const $sidebar = $body.find('.ThreadViewer__infobar');
-
-            $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
-        }
-    };
-
     self.runRedesign = function () {
         // Not a mod, don't bother.
         if (TBCore.mySubs.length < 1) {
@@ -67,6 +56,11 @@ function modbutton () {
 
         TB.listener.on('author', e => {
             const $target = $(e.target);
+
+            // As the modbutton is already accessible in the sidebar and not needed for mods we don't show it in modmail threads.
+            if (e.detail.type === 'TBmodmailCommentAuthor') {
+                return;
+            }
             if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit) {
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;
@@ -80,7 +74,7 @@ function modbutton () {
                     parentID = 'unknown';
                 }
                 requestAnimationFrame(() => {
-                    $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
+                    $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">M</a>`);
                 });
             }
         });
@@ -136,12 +130,6 @@ function modbutton () {
     };
 
     self.init = function () {
-        if (TBCore.isNewModmail) {
-            self.buttonName = 'Mod Button';
-        } else {
-            self.buttonName = 'M';
-        }
-
         self.saveButton = 'Save';
         self.OTHER = 'other-sub';
 
@@ -155,26 +143,12 @@ function modbutton () {
 
         TBCore.getModSubs(() => {
         // it's Go Time™!
-
-            // Unless it is new modmail...
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    self.run();
-                }, 750);
-            } else {
-                self.runRedesign();
-            }
-        });
-
-        // NER support.
-        window.addEventListener('TBNewThings', () => {
-            self.run();
+            self.runRedesign();
         });
 
         async function openModPopup (event, info) {
             const benbutton = event.target; // huehuehue
             const $benbutton = $(benbutton);
-            $benbutton.text('loading...');
             self.log('displaying mod button popup');
 
             const lastaction = self.setting('lastAction');
@@ -187,8 +161,7 @@ function modbutton () {
 
             // no user?
             if (!user) {
-                $benbutton.text('error');
-                $benbutton.css('color', 'red');
+                TB.ui.textFeedback('No user', TB.ui.FEEDBACK_NEGATIVE);
                 // abort
                 return;
             }
@@ -342,6 +315,7 @@ function modbutton () {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
+                // TODO: Use TBApi.getBanState()
                 const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;
@@ -423,9 +397,6 @@ function modbutton () {
                 }
             });
 
-            // reset button name.
-            $benbutton.text(self.buttonName);
-
             // 'cancel' button clicked
             $popup.on('click', '.close', () => {
                 $popup.remove();
@@ -499,7 +470,6 @@ function modbutton () {
                   user = $popup.find('.user').text();
 
             let banMessage = $popup.find('textarea.ban-message').val();
-            banMessage = createBanReason(banMessage);
 
             self.setting('lastAction', actionName);
 
@@ -550,17 +520,6 @@ function modbutton () {
                 }
             }
 
-            function createBanReason (message) {
-                let reason = '';
-
-                // Add message if exists
-                if (message && message.length > 0) {
-                    reason += '{0}';
-                }
-
-                return TBHelpers.stringFormat(reason, message);
-            }
-
             function completeCheck (failedSubs) {
                 const failed = failedSubs.length;
                 self.log(`${failed} subs failed`);
@@ -577,7 +536,7 @@ function modbutton () {
                 } else {
                     self.log('complete');
                     $('.mod-popup').remove();
-                // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
+                    // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
                 }
             }
 
@@ -626,11 +585,9 @@ function modbutton () {
                                 failedSubs.push(subreddit);
                             });
                         } else {
-                            TBApi.unfriendUser(user, action, subreddit, success => {
-                                if (!success) {
-                                    self.log('missed one');
-                                    failedSubs.push(subreddit);
-                                }
+                            TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
                             });
                         }
                     },
@@ -668,22 +625,20 @@ function modbutton () {
                 message = $subredditMessage.val();
             }
 
-            TBApi.sendMessage(user, subject, message, subreddit, (successful, response) => {
-                if (!successful) {
-                    $callbackSpan.text(`an error occurred: ${response[0][1]}`);
+            TBApi.sendMessage(user, subject, message, subreddit).then(response => {
+                if (response.json.errors.length) {
+                    $callbackSpan.text(response.json.errors[1]);
+                    TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
                     TB.ui.longLoadSpinner(false);
                 } else {
-                    if (response.json.errors.length) {
-                        $callbackSpan.text(response.json.errors[1]);
-                        TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
-                        TB.ui.longLoadSpinner(false);
-                    } else {
-                        TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
-                        $callbackSpan.text('message sent');
-                        $callbackSpan.css('color', 'green');
-                        TB.ui.longLoadSpinner(false);
-                    }
+                    TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
+                    $callbackSpan.text('message sent');
+                    $callbackSpan.css('color', 'green');
+                    TB.ui.longLoadSpinner(false);
                 }
+            }).catch(error => {
+                $callbackSpan.text(`an error occurred: ${error[0][1]}`);
+                TB.ui.longLoadSpinner(false);
             });
         });
 

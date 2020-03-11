@@ -1,7 +1,3 @@
-body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .InfoBar__recents.tb-recents .InfoBar__recent  {
-    margin-bottom: 3px;
-}
-
 body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-usernote-button {
     vertical-align: middle;
     margin-right: 3px;
@@ -19,12 +15,6 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-bracket-button {
 }
 body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-popup a {
     text-decoration: none;
-}
-
-body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
-    border-width: 0 0 0 3px;
-    padding: 3px;
-    font-size: 1.2em;
 }
 
 /* Note styling */

@@ -180,7 +180,7 @@ function profilepro () {
 
                 // Fire jsAPI events and apply profile overlay filters where needed.
                 setTimeout(() => {
-                    TBui.tbRedditEvent($siteTable, 'comment,submission');
+                    TBui.tbRedditEvent($siteTable);
                     if (filterModThings) {
                         filterModdable(true);
                     }

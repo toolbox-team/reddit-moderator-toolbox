@@ -188,9 +188,9 @@
                 reason,
                 uh: TBCore.modhash,
             });
-        } catch (jqXHR) {
-            logger.log(jqXHR.responseText);
-            throw jqXHR;
+        } catch (error) {
+            logger.error(error);
+            throw error;
         }
 
         setTimeout(() => {
@@ -228,9 +228,7 @@
      */
     TBApi.readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
-        TBApi.sendRequest({
-            endpoint: `/r/${subreddit}/wiki/${page}.json`,
-        }).then(({data}) => {
+        TBApi.getJSON(`/r/${subreddit}/wiki/${page}.json`).then(data => {
             const wikiData = data.data.content_md;
             if (!wikiData) {
                 resolve(TBCore.NO_WIKI_PAGE);
@@ -255,17 +253,17 @@
             }
             // We have valid data, but it's not JSON.
             resolve(wikiData);
-        }).catch(({jqXHR, errorThrown}) => {
-            logger.log(`Wiki error (${subreddit}/${page}): ${errorThrown}`);
-            if (jqXHR.responseText === undefined) {
+        }).catch(async error => {
+            logger.error(`Wiki error (${subreddit}/${page}):`, error);
+            if (!error.response) {
                 resolve(TBCore.WIKI_PAGE_UNKNOWN);
                 return;
             }
             let reason;
-            if (jqXHR.responseText.startsWith('<!doctype html>')) {
+            try {
+                reason = (await error.response.json()).reason || '';
+            } catch (_) {
                 reason = 'WIKI_PAGE_UNKNOWN';
-            } else {
-                reason = JSON.parse(jqXHR.responseText).reason || '';
             }
 
             if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {

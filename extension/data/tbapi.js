@@ -78,14 +78,14 @@
      * full response object on error. Maintains an API similar to `$.post`.
      * @function
      * @param {string} endpoint The endpoint to request
-     * @param {object} data The body of the request.
+     * @param {object} query The query parameters of the request.
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
-    TBApi.post = (endpoint, body) => TBApi.sendRequest({
+    TBApi.post = (endpoint, query) => TBApi.sendRequest({
         okOnly: true,
         method: 'POST',
         endpoint,
-        body,
+        query,
     }).then(response => response.json());
 
     /**

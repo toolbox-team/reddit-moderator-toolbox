@@ -61,9 +61,7 @@
 
     /**
      * Performs a GET request and promises the body of the response, or the
-     * full response object on error. Maintains an API similar to
-     * `$.getJSON()` because that's what all these calls used before Chrome
-     * forced us to make all requests in the background.
+     * full response object on error.
      * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object

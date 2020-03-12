@@ -1266,7 +1266,7 @@
                     if (result) {
                         $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
                         <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
-                        $buildsubmission.removeClass('removed spammed').addClass('filtered');
+                        $buildsubmission.addClass('filtered');
                     }
                 });
             }

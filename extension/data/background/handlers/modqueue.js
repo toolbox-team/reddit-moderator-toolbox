@@ -29,7 +29,7 @@ messageHandlers.set('tb-modqueue', request => {
         }
 
         // The thing timestamp is bigger than the last refresh or cache isn't fresh anymore.
-        if (thingTimestamp * 1000 > lastRefresh || Date.now() - lastRefresh > 1000 * 60) {
+        if (thingTimestamp * 1000 > lastRefresh || Date.now() - lastRefresh > 1000 * 30) {
             // To reduce api calls we don't do a new one if one is already running for this subreddit.
             // Instead we wait for the finished event and then reference the cache object.
             if (refreshActive) {

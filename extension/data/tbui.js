@@ -811,7 +811,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                Object.keys(options.dataAttributes).forEach(([name, value]) => {
+                Object.entries(options.dataAttributes).forEach(([name, value]) => {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }

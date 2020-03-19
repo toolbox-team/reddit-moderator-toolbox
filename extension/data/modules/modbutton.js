@@ -573,11 +573,9 @@ function modbutton () {
                                         banMessage,
                                         banDuration,
                                         banContext,
-                                    }).then(success => {
-                                        if (!success) {
-                                            self.log('missed one');
-                                            failedSubs.push(subreddit);
-                                        }
+                                    }).catch(() => {
+                                        self.log('missed one');
+                                        failedSubs.push(subreddit);
                                     });
                                 }
                             }).catch(() => {

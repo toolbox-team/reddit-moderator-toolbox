@@ -79,20 +79,45 @@ async function serializeResponse (response) {
 }
 
 /**
- * Makes a web request. Currently this passes directly through to `fetch`, but
- * in the future it will be responsible for handling ratelimits and queueing
- * requests as necessary.
- * @param options The options for the request
+ * Creates a URL query string from the given parameters.
+ * @function
+ * @param {object} parameters An object of parameters
+ * @returns {string}
+ */
+function queryString (parameters) {
+    if (!parameters) {
+        return '';
+    }
+    const kvStrings = [];
+    for (const [k, v] of Object.entries(parameters)) {
+        kvStrings.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+    }
+    if (!kvStrings.length) {
+        return '';
+    }
+    return `?${kvStrings.join('&')}`;
+}
+
+/**
+ * Sends a generic HTTP request.
+ * @function
+ * @param {object} options The options for the AJAX request
+ * @param {string} [options.method] The HTTP method to use for the request
+ * @param {string} options.endpoint The endpoint to request
+ * @param {object} [options.query] Query parameters as an object
+ * @param {string} [options.body] Body to send with a POST request, serialized
+ * as JSON if not a string
+ * @param {boolean?} [options.oauth] If true, the request will be sent on
+ * oauth.reddit.com, and the `Authorization` header will be set with the
+ * OAuth access token for the logged-in user
+ * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
+ * in an error being rejected. The error will have a `response` property
+ * containing the full `Response` object.
  * @returns {Promise}
  * @todo Ratelimit handling
  */
-function makeRequest (url, options) {
-    return fetch(url, options);
-}
-
-messageHandlers.set('tb-request', async request => {
-    const {method, endpoint, body, oauth} = request;
-    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}`;
+async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
+    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${queryString(query)}`;
     const options = {
         credentials: 'include', // required for cookies to be sent
         redirect: 'error', // prevents strange reddit API shenanigans
@@ -111,6 +136,29 @@ messageHandlers.set('tb-request', async request => {
         }
     }
 
-    // TODO: Handle throws (network errors)
-    return makeRequest(url, options).then(serializeResponse);
-});
+    // Perform the request (may throw if request is cancelled/aborted)
+    const response = await fetch(url, options);
+
+    // `okOnly` means we should throw if the response has a non-2xx status
+    if (okOnly && !response.ok) {
+        const error = new Error();
+        error.response = response;
+        throw error;
+    }
+
+    // Otherwise return the raw response
+    return response;
+}
+
+// Makes a request and sends a reply with response and error properties
+messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions)
+    .then(async response => {
+        response = await serializeResponse(response);
+        return {response};
+    }).catch(async error => {
+        const reply = {error: error.message};
+        if (error.response) {
+            reply.response = await serializeResponse(error.response);
+        }
+        return reply;
+    }));

@@ -14,7 +14,7 @@
      * @param {string} [options.method] The HTTP method to use for the request
      * @param {string} options.endpoint The endpoint to request
      * @param {object} [options.query] Query parameters as an object
-     * @param {any} [options.body] Body to send with a POST request, serialized
+     * @param {string} [options.body] Body to send with a POST request, serialized
      * as JSON if not a string
      * @param {boolean?} [options.oauth] If true, the request will be sent on
      * oauth.reddit.com, and the `Authorization` header will be set with the
@@ -25,38 +25,33 @@
      * @returns {Promise}
      */
     TBApi.sendRequest = async ({method, endpoint, query, body, oauth, okOnly}) => {
-        // Convert body to JSON if necessary
-        if (typeof body !== 'string') {
-            body = JSON.stringify(body);
-        }
-
         // Make the request
-        let response = await browser.runtime.sendMessage({
+        const messageReply = await browser.runtime.sendMessage({
             action: 'tb-request',
             method,
-            endpoint: endpoint + TBHelpers.queryString(query),
+            endpoint,
             query,
             body,
             oauth,
+            okOnly,
         });
 
-        // Errors are received as objects with an `error` key and get thrown immediately
-        if (response.error) {
-            throw new Error(response.error);
-        }
+        // The reply from that message will always be an object. It can have
+        // `error` and `response` properties. `error` will be a string, and
+        // `response` will be an array of arguments to pass to `new Response()`.
 
-        // Valid HTTP responses are received as an array of `Response` constructor arguments
-        response = new Response(...response);
-
-        // Throw an error if the caller requested only 2xx codes and we got a non-2xx code
-        if (okOnly && !response.ok) {
-            const error = new Error('Received non-OK response');
-            error.response = response;
+        // If we get an error, we want to throw an `Error` object.
+        if (messageReply.error) {
+            const error = new Error(messageReply.error);
+            // If we get a response as well, we attach it to the error.
+            if (messageReply.response) {
+                error.response = new Response(...messageReply.response);
+            }
             throw error;
+        } else {
+            // We assume that if there is no error, then there is a response.
+            return new Response(...messageReply.response);
         }
-
-        // Otherwise, return the response
-        return response;
     };
 
     /**
@@ -202,10 +197,10 @@
                 method: 'POST',
                 endpoint: `/r/${subreddit}/wiki/settings/`,
                 query: {
-                page,
-                listed: true, // hrm, may need to make this a config setting.
-                permlevel: 2,
-                uh: TBCore.modhash,
+                    page,
+                    listed: true, // hrm, may need to make this a config setting.
+                    permlevel: 2,
+                    uh: TBCore.modhash,
                 },
             })
 

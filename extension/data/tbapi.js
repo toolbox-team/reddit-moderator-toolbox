@@ -193,11 +193,20 @@
 
         setTimeout(() => {
             // Set page access to 'mod only'.
-            TBApi.post(`/r/${subreddit}/wiki/settings/`, {
+            // HACK: Using sendRequest() rather than post() because this "endpoint"
+            //       isn't really part of the API, and doesn't return JSON, but .post()
+            //       assumes all endpoints will return JSON
+            // TODO: do we really need to do this every time?
+            TBApi.sendRequest({
+                okOnly: true,
+                method: 'POST',
+                endpoint: `/r/${subreddit}/wiki/settings/`,
+                query: {
                 page,
                 listed: true, // hrm, may need to make this a config setting.
                 permlevel: 2,
                 uh: TBCore.modhash,
+                },
             })
 
                 // Super extra double-secret secure, just to be safe.

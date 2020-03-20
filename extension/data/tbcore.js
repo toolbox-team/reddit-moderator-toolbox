@@ -181,8 +181,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
 
         TBCore.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
+        TBCore.toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
         TBCore.shortVersion = shortVersion;
-        TBCore.releaseName = 'Coaching Chicken';
         TBCore.configSchema = 1;
         TBCore.configMinSchema = 1;
         TBCore.configMaxSchema = 1;

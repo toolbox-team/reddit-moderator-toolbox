@@ -406,7 +406,7 @@ function tbmodule () {
                         TBCore.clearCache();
                         TB.storage.verifiedSettingsSave(succ => {
                             if (succ) {
-                                TB.ui.textFeedback('Settings imported and verified', TB.ui.FEEDBACK_POSITIVE);
+                                TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
                                 setTimeout(() => {
                                     window.location.reload();
                                 }, 1000);
@@ -416,6 +416,7 @@ function tbmodule () {
                         });
                     });
                 } else {
+                    TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
                     TBCore.exportSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                         TBCore.clearCache();

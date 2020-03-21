@@ -865,7 +865,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
                 spam = false;
                 ham = false;
-                user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
+                user = $threadBase.find('.Message__author').first().text() || $body.find('.InfoBar__username').first().text();
             } else {
                 const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
                 const $thing = $($sender.closest('.thing')[0] || $sender);

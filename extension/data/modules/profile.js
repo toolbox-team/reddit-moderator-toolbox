@@ -800,7 +800,7 @@ function profilepro () {
             TB.listener.on('author', e => {
                 const $target = $(e.target);
 
-                if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit)) {
+                if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {
                     const author = e.detail.data.author;
                     const subreddit = e.detail.data.subreddit.name;
                     TBCore.getModSubs(() => {

@@ -319,7 +319,9 @@ function profilepro () {
                       userCreated = data.data.created_utc,
                       verifiedMail = data.data.has_verified_email,
                       linkKarma = data.data.link_karma,
-                      commentKarma = data.data.comment_karma;
+                      commentKarma = data.data.comment_karma,
+                      displayName = data.data.subreddit.title,
+                      publicDescription = data.data.subreddit.public_description;
                 const readableCreatedUTC = TBHelpers.timeConverterRead(userCreated),
                       createdTimeAgo = TBHelpers.timeConverterISO(userCreated);
 
@@ -327,11 +329,17 @@ function profilepro () {
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
                     <ul class="tb-user-detail-ul">
                         <li><a href="${TBCore.link(`/user/${user}`)}">/u/${user}</a></li>
+                        ${displayName ? `<li>Display name: ${displayName}</li>` : ''}
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
                         <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>
                         <li>${verifiedMail ? 'Verified mail' : 'No verified mail'}</li>
                     </ul>
+                    ${publicDescription ? `
+                    <div class="tb-user-description">
+                        ${publicDescription}
+                    </div>
+                    ` : ''}
                 </div>`);
                 $tabWrapper.after($sidebar);
                 $sidebar.find('time.timeago').timeago();

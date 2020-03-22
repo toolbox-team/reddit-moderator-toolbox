@@ -209,7 +209,7 @@ function tbmodule () {
                     id: 'about',
                     content: `
                 <h1 id="tb-random-about-quote">"${TBCore.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox v${TBCore.toolboxVersion}: "${TBCore.releaseName}"</a>
+                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${TBCore.toolboxVersionName}</a>
                     <h3> Open source </h3>
                     Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
                     <h3> Privacy </h3>

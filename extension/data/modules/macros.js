@@ -427,7 +427,11 @@ function modmacros () {
                             }
                             if (distinguish && !TBCore.isModmail) {
                                 // Distinguish the new reply
-                                TBApi.distinguishThing(commentId, sticky && topLevel).then(() => {
+                                TBApi.distinguishThing(commentId, sticky && topLevel).then(result => {
+                                    if (!result.success) {
+                                        TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                    }
+                                }).catch(() => {
                                     TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
                                 });
                             }

@@ -426,7 +426,7 @@
      * @param {boolean?} spam If true, removes as spam
      * @returns {Promise}
      */
-    TBApi.removeThing = (id, spam) => TBApi.post('/api/remove', {
+    TBApi.removeThing = (id, spam = false) => TBApi.post('/api/remove', {
         uh: TBCore.modhash,
         id,
         spam,

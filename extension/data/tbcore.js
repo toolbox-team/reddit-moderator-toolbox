@@ -1341,9 +1341,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, () => {
-                callback();
-            });
+            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
         };
 
         TBCore.importSettings = function (subreddit, callback) {

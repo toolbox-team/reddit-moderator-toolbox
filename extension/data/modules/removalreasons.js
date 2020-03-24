@@ -316,13 +316,15 @@ function removalreasons () {
                         });
 
                         // Only show popup if there's removal reasons
-                        let removalReasonLength;
+                        let removalReasonLength = 0;
                         if (isComment) {
-                            removalReasonLength = data.reasons_comments.length;
-                            // If user does not have commentReasons enabled, only show removal reasons that is explicitly true and not undefined
+                            // get all RR for comments that's True and undefined
+                            let commentRemovalReasons = data.reasons_comments;
                             if (!commentReasons) {
-                                removalReasonLength = removalReasonLength.filter(r => r.removeComments).length;
+                                // user has disabled RR for comments (allow only True)
+                                commentRemovalReasons = commentRemovalReasons.filter(r => r.removeComments);
                             }
+                            removalReasonLength = commentRemovalReasons.length;
                         } else {
                             removalReasonLength = data.reasons_posts.length;
                         }
@@ -473,7 +475,13 @@ function removalreasons () {
 
                     let reasons = [];
                     if (isComment) {
-                        reasons = data.reasons_comments;
+                        if (commentReasons) {
+                            // show reasons with 'true' and 'undefined' for comments
+                            reasons = data.reasons_comments;
+                        } else {
+                            // show reasons with only 'true' for comments
+                            reasons = data.reasons_comments.filter(r => r.removeComments === true);
+                        }
                     } else {
                         reasons = data.reasons_posts;
                     }
@@ -726,7 +734,6 @@ function removalreasons () {
             subject = TBHelpers.replaceTokens(data, subject);
             logTitle = TBHelpers.replaceTokens(data, logTitle);
 
-            // At this point make extra sure the item actually does get removed
             TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
                 if (!ham) {
                     TBApi.removeThing(data.fullname);

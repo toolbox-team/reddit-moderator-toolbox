@@ -74,7 +74,6 @@ function newmodmailpro () {
     function reasonClickable () {
         const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen)');
         if ($reasons.length) {
-            console.log($reasons)
             $reasons.each(function () {
                 const $reason = $(this);
                 $reason.addClass('tb-reason-seen');

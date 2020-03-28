@@ -49,7 +49,7 @@ function modmacros () {
             }
         }
 
-        function populateSelect (selectClass, subreddit, config) {
+        function populateSelect (selectClass, subreddit, config, type) {
             $(selectClass).each(function () {
                 const $select = $(this),
                       sub = $select.attr('data-subreddit');
@@ -62,7 +62,22 @@ function modmacros () {
                         return;
                     }
                     $select.addClass('tb-populated');
+                    let context = 'contextpost';
+                    switch (type) {
+                    case 'post':
+                        context = 'contextpost';
+                        break;
+                    case 'comment':
+                        context = 'contextcomment';
+                        break;
+                    case 'modmail':
+                        context = 'contextmodmail';
+                        break;
+                    }
                     $(config).each((idx, item) => {
+                        if (item[context] !== undefined && !item[context]) {
+                            return;
+                        }
                         $($select)
                             .append($('<option>', {
                                 value: idx,
@@ -93,7 +108,7 @@ function modmacros () {
                                 $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                             }
 
-                            populateSelect('.tb-top-macro-select', TBCore.post_site, config);
+                            populateSelect('.tb-top-macro-select', TBCore.post_site, config, 'post');
                         }
                     });
                 }
@@ -133,7 +148,7 @@ function modmacros () {
                                 $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                             }
 
-                            populateSelect('.tb-macro-select', info.subreddit, config);
+                            populateSelect('.tb-macro-select', info.subreddit, config, 'comment');
                         }
                     });
                 }
@@ -163,7 +178,7 @@ function modmacros () {
                     const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
                     $body.find('.ThreadViewerReplyForm__replyOptions').after(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
 
-                    populateSelect('.tb-macro-select', info.subreddit, config);
+                    populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
                 }
             });
         }
@@ -199,7 +214,7 @@ function modmacros () {
                                 $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
                                     $macro.remove();
                                 });
-                                populateSelect('.tb-macro-select', subreddit, config);
+                                populateSelect('.tb-macro-select', subreddit, config, 'comment');
                             }
                         });
                     }
@@ -221,7 +236,7 @@ function modmacros () {
                                         <option value=${MACROS}>macros</option>
                                     </select>
                                     `);
-                                populateSelect('.tb-top-macro-select', subreddit, config);
+                                populateSelect('.tb-top-macro-select', subreddit, config, 'post');
                             }
                         });
                     } else {

@@ -372,19 +372,13 @@ function queuetools () {
                 }
                 const popupSelectContent = `
                 <div class="lightdrop select-options">
+                    <h2>Types</h2>
                     ${viewingreports ? '' : `<p><label><input type="checkbox" class="choice inoffensive" name="banned" /> shadow-banned</label></p>
                     <p><label><input type="checkbox" class="choice inoffensive" name="filtered"/> spam-filtered</label></p>
-                    ${viewingspam ? '' : '<p><label><input type="checkbox" class="choice inoffensive" name="reported"/> has-reports</label></p>'}`}
-                    <p><label><input type="checkbox" class="choice dashed" name="spammed"/> [ spammed ]</label></p>
-                    <p><label><input type="checkbox" class="choice" name="removed" /> [ removed ]</label></p>
-                    <p><label><input type="checkbox" class="choice" name="approved" /> [ approved ]</label></p>
-                    <p><label><input type="checkbox" class="choice" name="ignored" /> [ reports ignored ]</label></p>
-                    <p><label><input type="checkbox" class="choice" name="actioned" /> [ actioned ]</label></p>
-                    
-                    <p class="divider"><label><input type="checkbox" class="choice" name="comments" /> all comments</label></p>
-                    <p><label><input type="checkbox" class="choice" name="links" /> all submissions</label></p>
-                    
-                    <p class="divider"><label><input type="checkbox" class="choice" name="self" /> self posts</label></p>
+                    ${viewingspam ? '' : '<p><label><input type="checkbox" class="choice inoffensive" name="reported"/> reported</label></p>'}`}
+                    <p><label><input type="checkbox" class="choice" name="comments" /> comments</label></p>
+                    <p><label><input type="checkbox" class="choice" name="links" /> submissions</label></p>
+                    <p><label><input type="checkbox" class="choice" name="self" /> text posts</label></p>
                     <p><label><input type="checkbox" class="choice" name="flair" /> posts with flair</label></p>
                     
                     <p class="divider"><input type="text" class="choice tb-input" name="domain" placeholder="domain..." /></p>
@@ -392,8 +386,16 @@ function queuetools () {
                     <p><input type="text" class="choice tb-input" name="title" placeholder="title..." /></p>
                     <p><input type="text" class="choice tb-input" name="subreddit" placeholder="subreddit..." /></p>
                     
-                    <p class="divider"><input type="text" class="choice tb-input" name="pointsgt" placeholder="points >..." /></p>
+                    <h2 class="divider">Conditional</h2>
+                    <p><input type="text" class="choice tb-input" name="pointsgt" placeholder="points >..." /></p>
                     <p><input type="text" class="choice tb-input" name="pointslt" placeholder="points <..." /></p>
+
+                    <h2 class="divider">Acted on</h2>
+                    <p><label><input type="checkbox" class="choice dashed" name="spammed"/> [ spammed ]</label></p>
+                    <p><label><input type="checkbox" class="choice" name="removed" /> [ removed ]</label></p>
+                    <p><label><input type="checkbox" class="choice" name="approved" /> [ approved ]</label></p>
+                    <p><label><input type="checkbox" class="choice" name="ignored" /> [ reports ignored ]</label></p>
+                    <p><label><input type="checkbox" class="choice" name="actioned" /> [ actioned ]</label></p>
                 </div>`;
 
                 const $popup = TB.ui.popup({

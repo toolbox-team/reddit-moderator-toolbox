@@ -137,7 +137,7 @@ function modmacros () {
 
                     // if we don't have a config, get it.  If it fails, return.
                     getConfig(info.subreddit, (success, config) => {
-                    // if we're a mod, add macros to top level reply button.
+                        // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {
                             const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
                                   macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
@@ -147,8 +147,8 @@ function modmacros () {
                             } else {
                                 $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                             }
-
-                            populateSelect('.tb-macro-select', info.subreddit, config, 'comment');
+                            // populates for comment and old modmail
+                            populateSelect('.tb-macro-select', info.subreddit, config, TBCore.isModmail ? 'modmail' : 'comment');
                         }
                     });
                 }
@@ -178,7 +178,7 @@ function modmacros () {
                     const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
                     $body.find('.ThreadViewerReplyForm__replyOptions').after(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
 
-                    populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
+                    populateSelect('.tb-macro-select', info.subreddit, config, 'comment');
                 }
             });
         }
@@ -214,7 +214,7 @@ function modmacros () {
                                 $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
                                     $macro.remove();
                                 });
-                                populateSelect('.tb-macro-select', subreddit, config, 'comment');
+                                populateSelect('.tb-macro-select', subreddit, config, 'modmail');
                             }
                         });
                     }

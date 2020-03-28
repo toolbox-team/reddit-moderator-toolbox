@@ -31,7 +31,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          */
         TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
         const SHORTNAME = 'TBCore';
         const SETTINGS_NAME = 'Utils';
 
@@ -207,7 +207,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.tbDevs = toolboxDevs;
         TBCore.betaRelease = betaRelease;
 
-        TBCore.browser = UNKOWN_BROWSER;
+        TBCore.browser = UNKNOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
@@ -524,7 +524,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             }
-            case UNKOWN_BROWSER: {
+            case UNKNOWN_BROWSER: {
                 debugObject.browser = 'Unknown';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;

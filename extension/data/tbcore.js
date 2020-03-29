@@ -133,11 +133,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
         TBCore.isMod = $('body.moderator').length;
 
-        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
-
-        TBCore.mySubs = cacheDetails.moderatedSubs;
-        TBCore.mySubsData = cacheDetails.moderatedSubsData;
-
         const manifest = browser.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
@@ -220,7 +215,54 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
         </style>`);
 
+        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
+
         // Get cached info.
+        function processNewModSubs () {
+            TBCore.mySubs = [];
+            TBCore.mySubsData = [];
+            $(newModSubs).each(function () {
+                const sub = this.data.display_name.trim();
+                if (!TBCore.modsSub(sub)) {
+                    TBCore.mySubs.push(sub);
+                }
+
+                let isinthere = false;
+                $(TBCore.mySubsData).each(function () {
+                    if (this.subreddit === sub) {
+                        isinthere = true;
+                    }
+                });
+
+                if (!isinthere) {
+                    const subredditData = {
+                        subreddit: sub,
+                        subscribers: this.data.subscribers,
+                        over18: this.data.over18,
+                        created_utc: this.data.created_utc,
+                        subreddit_type: this.data.subreddit_type,
+                        submission_type: this.data.submission_type,
+                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
+                    };
+
+                    TBCore.mySubsData.push(subredditData);
+                }
+            });
+
+            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
+            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
+            // Update the cache.
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
+        }
+
+        if (newModSubs && newModSubs.length > 0) {
+            processNewModSubs();
+        } else {
+            TBCore.mySubs = cacheDetails.moderatedSubs;
+            TBCore.mySubsData = cacheDetails.moderatedSubsData;
+        }
+
         // Get cached info. Short stored.
         TBCore.noteCache = cacheDetails.noteCache;
         TBCore.noConfig = cacheDetails.noConfig;
@@ -1420,44 +1462,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 });
             }
         };
-
-        function processNewModSubs () {
-            TBCore.mySubs = [];
-            TBCore.mySubsData = [];
-            $(newModSubs).each(function () {
-                const sub = this.data.display_name.trim();
-                if (!TBCore.modsSub(sub)) {
-                    TBCore.mySubs.push(sub);
-                }
-
-                let isinthere = false;
-                $(TBCore.mySubsData).each(function () {
-                    if (this.subreddit === sub) {
-                        isinthere = true;
-                    }
-                });
-
-                if (!isinthere) {
-                    const subredditData = {
-                        subreddit: sub,
-                        subscribers: this.data.subscribers,
-                        over18: this.data.over18,
-                        created_utc: this.data.created_utc,
-                        subreddit_type: this.data.subreddit_type,
-                        submission_type: this.data.submission_type,
-                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
-                    };
-
-                    TBCore.mySubsData.push(subredditData);
-                }
-            });
-
-            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
-            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
-            // Update the cache.
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
-        }
 
         let firstCacheTimeout = true;
         // Listen to background page communication and act based on that.

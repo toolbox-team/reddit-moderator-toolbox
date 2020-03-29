@@ -131,7 +131,7 @@ function tbconfig () {
                                     </li>
                                     <li>
                                         <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${configData.removalReasons.autoArchive ? 'checked' : ''}/>
-                                        <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note</b>: Only works on new modmail.</label>
+                                        <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
                                     </li>
                                 </ul>
                             </li>

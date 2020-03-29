@@ -159,6 +159,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         created_utc: this.data.created_utc,
                         subreddit_type: this.data.subreddit_type,
                         submission_type: this.data.submission_type,
+                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                     };
 
                     TBCore.mySubsData.push(subredditData);
@@ -763,6 +764,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                             created_utc: this.data.created_utc,
                             subreddit_type: this.data.subreddit_type,
                             submission_type: this.data.submission_type,
+                            is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                         };
 
                         TBCore.mySubsData.push(subredditData);

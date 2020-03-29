@@ -135,46 +135,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
 
-        if (newModSubs && newModSubs.length > 0) {
-            TBCore.mySubs = [];
-            TBCore.mySubsData = [];
-            $(newModSubs).each(function () {
-                const sub = this.data.display_name.trim();
-                if (!TBCore.modsSub(sub)) {
-                    TBCore.mySubs.push(sub);
-                }
-
-                let isinthere = false;
-                $(TBCore.mySubsData).each(function () {
-                    if (this.subreddit === sub) {
-                        isinthere = true;
-                    }
-                });
-
-                if (!isinthere) {
-                    const subredditData = {
-                        subreddit: sub,
-                        subscribers: this.data.subscribers,
-                        over18: this.data.over18,
-                        created_utc: this.data.created_utc,
-                        subreddit_type: this.data.subreddit_type,
-                        submission_type: this.data.submission_type,
-                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
-                    };
-
-                    TBCore.mySubsData.push(subredditData);
-                }
-            });
-
-            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
-            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
-            // Update the cache.
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
-        } else {
-            TBCore.mySubs = cacheDetails.moderatedSubs;
-            TBCore.mySubsData = cacheDetails.moderatedSubsData;
-        }
+        TBCore.mySubs = cacheDetails.moderatedSubs;
+        TBCore.mySubsData = cacheDetails.moderatedSubsData;
 
         const manifest = browser.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
@@ -1459,6 +1421,45 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         };
 
+        function processNewModSubs () {
+            TBCore.mySubs = [];
+            TBCore.mySubsData = [];
+            $(newModSubs).each(function () {
+                const sub = this.data.display_name.trim();
+                if (!TBCore.modsSub(sub)) {
+                    TBCore.mySubs.push(sub);
+                }
+
+                let isinthere = false;
+                $(TBCore.mySubsData).each(function () {
+                    if (this.subreddit === sub) {
+                        isinthere = true;
+                    }
+                });
+
+                if (!isinthere) {
+                    const subredditData = {
+                        subreddit: sub,
+                        subscribers: this.data.subscribers,
+                        over18: this.data.over18,
+                        created_utc: this.data.created_utc,
+                        subreddit_type: this.data.subreddit_type,
+                        submission_type: this.data.submission_type,
+                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
+                    };
+
+                    TBCore.mySubsData.push(subredditData);
+                }
+            });
+
+            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
+            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
+            // Update the cache.
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
+        }
+
+        let firstCacheTimeout = true;
         // Listen to background page communication and act based on that.
         browser.runtime.onMessage.addListener(message => {
             switch (message.action) {
@@ -1466,7 +1467,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBCore.clearCache(true);
                 break;
             }
-            case 'tb-settings-update': {
+            case 'tb-cache-timeout': {
                 logger.log('Timed cache update', message.payload);
                 // Cache has timed out
                 if (message.payload === 'short') {
@@ -1481,6 +1482,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     TBCore.noRules = [];
                     TBCore.mySubs = [];
                     TBCore.mySubsData = [];
+
+                    // On first init where the modsubs cache was empty we already got this data.
+                    // Here we simply use that data to fill the cache so we don't need to do unneeded actions.
+                    if (newModSubs && newModSubs.length > 0 && firstCacheTimeout) {
+                        firstCacheTimeout = false;
+                        processNewModSubs();
+                    }
                 }
 
                 break;

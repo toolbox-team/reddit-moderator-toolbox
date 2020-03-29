@@ -31,7 +31,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          */
         TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
         const SHORTNAME = 'TBCore';
         const SETTINGS_NAME = 'Utils';
 
@@ -159,6 +159,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         created_utc: this.data.created_utc,
                         subreddit_type: this.data.subreddit_type,
                         submission_type: this.data.submission_type,
+                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                     };
 
                     TBCore.mySubsData.push(subredditData);
@@ -181,8 +182,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
 
         TBCore.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
+        TBCore.toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
         TBCore.shortVersion = shortVersion;
-        TBCore.releaseName = 'Spying Squirrel';
         TBCore.configSchema = 1;
         TBCore.configMinSchema = 1;
         TBCore.configMaxSchema = 1;
@@ -207,7 +208,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.tbDevs = toolboxDevs;
         TBCore.betaRelease = betaRelease;
 
-        TBCore.browser = UNKOWN_BROWSER;
+        TBCore.browser = UNKNOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
@@ -524,7 +525,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             }
-            case UNKOWN_BROWSER: {
+            case UNKNOWN_BROWSER: {
                 debugObject.browser = 'Unknown';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
@@ -763,6 +764,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                             created_utc: this.data.created_utc,
                             subreddit_type: this.data.subreddit_type,
                             submission_type: this.data.submission_type,
+                            is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                         };
 
                         TBCore.mySubsData.push(subredditData);
@@ -865,7 +867,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
                 spam = false;
                 ham = false;
-                user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
+                user = $threadBase.find('.Message__author').first().text() || $body.find('.InfoBar__username').first().text();
             } else {
                 const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
                 const $thing = $($sender.closest('.thing')[0] || $sender);
@@ -1320,7 +1322,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.reloadToolbox = function () {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-            browser.runtime.sendMessage({action: 'tb-reload'}, () => {
+            browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
                 window.location.reload();
             });
         };
@@ -1341,9 +1343,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, () => {
-                callback();
-            });
+            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
         };
 
         TBCore.importSettings = function (subreddit, callback) {

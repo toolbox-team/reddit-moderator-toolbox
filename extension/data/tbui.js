@@ -811,7 +811,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                Object.keys(options.dataAttributes).forEach(([name, value]) => {
+                Object.entries(options.dataAttributes).forEach(([name, value]) => {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }
@@ -851,18 +851,24 @@
     };
 
     /**
-     * Will send out events similar to the reddit jsAPI events for the elements given.
-     * Only support 'comment' for now and will only send the commentAuthor event.
+     * Handles toolbox generated `thing` items as they become visible in the viewport.
      * @function
-     * @param {object} $elements jquery object containing the e
-     * @param {string} types comma seperated list of type of elements the events need to be send for.
+     * @param {IntersectionObserverEntry[]} entries
+     * @param {IntersectionObserver} observer
      */
-    TBui.tbRedditEvent = function tbRedditEvent ($elements, types) {
-        const typesArray = types.split(',');
-        if (typesArray.includes('comment')) {
-            const $comments = $elements.find('.tb-comment');
-            TBCore.forEachChunkedDynamic($comments, value => {
-                const $element = $(value);
+    function handleTBThings (entries, observer) {
+        entries.forEach(entry => {
+            // The observer fires for everything on page load.
+            // This makes sure that we really only act on those items that are visible.
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            // Element is visible, we only want to handle it once. Stop observing.
+            observer.unobserve(entry.target);
+            const $element = $(entry.target);
+
+            if ($element.hasClass('tb-comment')) {
                 const $jsApiPlaceholderComment = $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
                 $jsApiPlaceholderComment.append('<span data-name="toolbox">');
                 const jsApiPlaceholderComment = $jsApiPlaceholderComment[0];
@@ -916,12 +922,9 @@
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
-            }, {framerate: 40});
-        }
-        if (typesArray.includes('submission')) {
-            const $submissions = $elements.find('.tb-submission');
-            TBCore.forEachChunkedDynamic($submissions, value => {
-                const $element = $(value);
+            }
+
+            if ($element.hasClass('tb-submission')) {
                 const $jsApiPlaceholderSubmission = $element.find('.tb-jsapi-submission-container');
                 $jsApiPlaceholderSubmission.append('<span data-name="toolbox">');
                 const jsApiPlaceholderSubmission = $jsApiPlaceholderSubmission[0];
@@ -966,12 +969,28 @@
                             },
                         },
                     };
-
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
-            }, {framerate: 40});
-        }
+            }
+        });
+    }
+
+    const viewportObserver = new IntersectionObserver(handleTBThings, {
+        rootMargin: '200px',
+    });
+    /**
+     * Will send out events similar to the reddit jsAPI events for the elements given.
+     * Only support 'comment' for now and will only send the commentAuthor event.
+     * @function
+     * @param {object} $elements jquery object containing the elements for which jsAPI events need to be send.
+     */
+    TBui.tbRedditEvent = function tbRedditEvent ($elements) {
+        // $elements can also be a parent container, so we find our things first.
+        const $tbThings = $elements.find('.tb-thing');
+        $tbThings.each(function () {
+            viewportObserver.observe(this);
+        });
     };
 
     /**

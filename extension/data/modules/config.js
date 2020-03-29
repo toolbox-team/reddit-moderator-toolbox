@@ -614,7 +614,7 @@ function tbconfig () {
 
                     const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
                           removalReasonTitle = config.removalReasons.reasons[i].title || '',
-                          removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts ? 'checked' : '',
+                          removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts !== false ? 'checked' : '',
                           removalReasonRemoveComments = config.removalReasons.reasons[i].removeComments ? 'checked' : '',
                           removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                           removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';

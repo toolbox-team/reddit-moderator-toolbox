@@ -100,7 +100,7 @@ function usernotes () {
             // event based handling of author elements.
             TB.listener.on('author', e => {
                 const $target = $(e.target);
-                if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit) {
+                if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                     const subreddit = e.detail.data.subreddit.name;
                     const author = e.detail.data.author;
                     $target.addClass('ut-thing');

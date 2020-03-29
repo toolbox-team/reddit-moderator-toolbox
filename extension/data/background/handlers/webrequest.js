@@ -117,7 +117,14 @@ function queryString (parameters) {
  * @todo Ratelimit handling
  */
 async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
-    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${queryString(query)}`;
+    query = queryString(query);
+    // If we have a query object and additional parameters in the endpoint, we
+    // just stick the object parameters on the end with `&` instead of `?`, and
+    // duplicate keys in the final URL are fine (consistent with jQuery)
+    if (endpoint.includes('?')) {
+        query = query.replace('?', '&');
+    }
+    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${query}`;
     const options = {
         credentials: 'include', // required for cookies to be sent
         redirect: 'error', // prevents strange reddit API shenanigans

@@ -71,6 +71,8 @@ function removalreasons () {
               NO_REPLY_TYPE_ERROR = 'error, no reply type selected',
               REPLY_ERROR = 'error, failed to post reply',
               PM_ERROR = 'error, failed to send PM',
+              MODMAIL_ERROR = 'error, failed to send Modmail',
+              MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail',
               DISTINGUISH_ERROR = 'error, failed to distinguish reply',
               LOCK_POST_ERROR = 'error, failed to lock post',
               LOCK_COMMENT_ERROR = 'error, failed to lock reply',
@@ -299,6 +301,7 @@ function removalreasons () {
                         data.typeStickied = response.typeStickied;
                         data.typeLockComment = response.typeLockComment;
                         data.typeAsSub = response.typeAsSub;
+                        data.autoArchive = response.autoArchive;
                         data.typeLockThread = response.typeLockThread;
 
                         // Loop through the reasons... unescaping each.
@@ -352,6 +355,7 @@ function removalreasons () {
                           typeStickied = data.typeStickied,
                           typeLockComment = data.typeLockComment,
                           typeAsSub = data.typeAsSub,
+                          autoArchive = data.autoArchive,
                           typeLockThread = data.typeLockThread,
                           leaveUpToMods = removalOption === undefined || removalOption === 'leave',
                           forced = removalOption === 'force';
@@ -437,7 +441,10 @@ function removalreasons () {
                             <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
                             <ul>
                                 <li>
-                                    <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? 'checked ' : ''} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                                    <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub" ${reasonAsSub ? 'checked ' : ''}/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                                </li>
+                                <li>
+                                    <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${autoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm.</label>
                                 </li>
                             </ul>
                         </li>
@@ -617,6 +624,7 @@ function removalreasons () {
             const popup = $(this).parents('.reason-popup'),
                   notifyBy = popup.find('.reason-type:checked').val(),
                   notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
+                  autoArchive = popup.find('.reason-auto-archive').prop('checked'),
                   notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
                   actionLockThread = popup.find('.action-lock-thread').prop('checked') && !popup.find('.action-lock-thread').prop('disabled'),
                   actionLockComment = popup.find('.action-lock-comment').prop('checked') && !popup.find('.action-lock-comment').prop('disabled'),
@@ -807,9 +815,10 @@ function removalreasons () {
                 if (typeof logLink !== 'undefined') {
                     reason = reason.replace('{loglink}', logLink);
                 }
-
-                const notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
-                      notifyByReply = notifyBy === 'reply' || notifyBy === 'both';
+                const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
+                      notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
+                      notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
+                      notifyByNewModmail = notifyByPM && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
 
                 // Reply to submission/comment
                 if (notifyByReply) {
@@ -820,7 +829,9 @@ function removalreasons () {
                         } else {
                             // Distinguish the new reply, stickying if necessary
                             TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                                if (notifyByPM) {
+                                if (notifyByNewModmail) {
+                                    sendNewModmail();
+                                } else if (notifyByPM) {
                                     sendPM();
                                 } else {
                                     removePopup(popup);
@@ -851,6 +862,8 @@ function removalreasons () {
                     }).catch(() => {
                         status.text(REPLY_ERROR);
                     });
+                } else if (notifyByNewModmail) {
+                    sendNewModmail();
                 } else if (notifyByPM) {
                     sendPM();
                 }
@@ -864,6 +877,28 @@ function removalreasons () {
                         removePopup(popup);
                     }).catch(() => {
                         status.text(PM_ERROR);
+                    });
+                }
+
+                function sendNewModmail () {
+                    const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
+
+                    self.log('Sending removal message by New Modmail');
+                    TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
+                        const id = res.data.conversation.id;
+                        // isInternal means mod conversation - can't archive that
+                        const isInternal = res.data.conversation.isInternal;
+                        if (autoArchive && !isInternal) {
+                            TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                                removePopup(popup);
+                            }).catch(() => {
+                                status.text(MODMAIL_ARCHIVE_ERROR);
+                            });
+                        } else {
+                            removePopup(popup);
+                        }
+                    }).catch(() => {
+                        status.text(MODMAIL_ERROR);
                     });
                 }
             }

@@ -11,8 +11,8 @@
      * Sends a generic HTTP request through the background page.
      * @function
      * @param {object} options The options for the AJAX request
-     * @param {string} [options.method] The HTTP method to use for the request
      * @param {string} options.endpoint The endpoint to request
+     * @param {string} [options.method] The HTTP method to use for the request
      * @param {object} [options.query] Query parameters as an object
      * @param {string} [options.body] Body to send with a POST request, serialized
      * as JSON if not a string

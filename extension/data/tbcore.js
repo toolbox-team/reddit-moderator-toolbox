@@ -1815,12 +1815,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBApi.getJSON('/subreddits/mine/moderator.json', {
             after,
             limit: 100,
-        }).then(data => {
-            TBStorage.purifyObject(data);
-            modSubs = modSubs.concat(data.data.children);
+        }).then(json => {
+            TBStorage.purifyObject(json);
+            modSubs = modSubs.concat(json.data.children);
 
-            if (data.data.after) {
-                getModSubs(data.data.after, subs => callback(modSubs.concat(subs)));
+            if (json.data.after) {
+                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
             } else {
                 return callback(modSubs);
             }

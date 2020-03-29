@@ -24,15 +24,12 @@ async function getOAuthTokens (tries = 1) {
     }
 
     // Make sure the cookie is still valid
-    let validCookie = true;
+    let validCookie = false;
     if (rawCookie) {
         const cookieExpiration = rawCookie.expirationDate * 1000;
         const timeNow = Date.now();
         // The cookie is valid if it's younger than its expiration date
         validCookie = timeNow < cookieExpiration;
-    } else {
-        // If we didn't get a cookie at all, we need a new one
-        validCookie = false;
     }
 
     // If we have a valid cookie, get the tokens from it and return those
@@ -159,10 +156,8 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
 
 // Makes a request and sends a reply with response and error properties
 messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions)
-    .then(async response => {
-        response = await serializeResponse(response);
-        return {response};
-    }).catch(async error => {
+    .then(async response => ({response: await serializeResponse(response)}))
+    .catch(async error => {
         const reply = {error: error.message};
         if (error.response) {
             reply.response = await serializeResponse(error.response);

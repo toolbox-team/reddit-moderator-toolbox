@@ -435,7 +435,7 @@ function modmatrix () {
                 self.dataCache[cacheKey] = data;
             })
                 .catch(error => {
-                    self.log(`Mod log request ${requestData.count}to ${requestData.count + requestData.limit} failed:`, error);
+                    self.log(`Mod log request ${requestData.count} to ${requestData.count + requestData.limit} failed:`, error);
                     if (error.response && error.response.status === 504) {
                         self.log('Retrying mod log request...');
                         self.getActions(callback);

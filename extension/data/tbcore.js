@@ -221,15 +221,15 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         function processNewModSubs () {
             TBCore.mySubs = [];
             TBCore.mySubsData = [];
-            $(newModSubs).each(function () {
-                const sub = this.data.display_name.trim();
+            newModSubs.forEach(subData => {
+                const sub = subData.data.display_name.trim();
                 if (!TBCore.modsSub(sub)) {
                     TBCore.mySubs.push(sub);
                 }
 
                 let isinthere = false;
-                $(TBCore.mySubsData).each(function () {
-                    if (this.subreddit === sub) {
+                TBCore.mySubsData.forEach(tbCoreSubData => {
+                    if (tbCoreSubData.subreddit === sub) {
                         isinthere = true;
                     }
                 });
@@ -237,12 +237,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (!isinthere) {
                     const subredditData = {
                         subreddit: sub,
-                        subscribers: this.data.subscribers,
-                        over18: this.data.over18,
-                        created_utc: this.data.created_utc,
-                        subreddit_type: this.data.subreddit_type,
-                        submission_type: this.data.submission_type,
-                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
+                        subscribers: subData.data.subscribers,
+                        over18: subData.data.over18,
+                        created_utc: subData.data.created_utc,
+                        subreddit_type: subData.data.subreddit_type,
+                        submission_type: subData.data.submission_type,
+                        is_enrolled_in_new_modmail: subData.data.is_enrolled_in_new_modmail,
                     };
 
                     TBCore.mySubsData.push(subredditData);

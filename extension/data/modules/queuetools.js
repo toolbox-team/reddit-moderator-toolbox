@@ -1008,7 +1008,7 @@ function queuetools () {
         const highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
         function getAutomodActionReason (sub) {
             self.log(sub);
-            TBApi.getJSON(`/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).then(json => {
+            TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {
                 TBStorage.purifyObject(json);
                 json.data.children.forEach(value => {
                     const actionReasonText = value.data.details,

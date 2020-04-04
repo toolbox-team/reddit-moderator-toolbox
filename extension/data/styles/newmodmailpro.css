@@ -24,7 +24,7 @@
 .NewThread #tb-modmail-preview {
     margin: 5px 15px 0 15px;
 }
-  
+
 #tb-modmail-preview {
     background: #ffffffd1;
     padding: 10px;
@@ -34,6 +34,18 @@
 #tb-modmail-preview h3.tb-preview-heading {
     border-bottom: solid 1px #c8c7c7;
     margin-bottom: 15px;
+}
+
+/* reason link styling
+*/
+.mod-toolbox-rd .InfoBar__banText a {
+    text-decoration: underline;
+    color: #ea0027;
+}
+
+.mod-toolbox-rd .InfoBar__muteText a {
+    text-decoration: underline;
+    color: #0dd3bb;
 }
 
 

@@ -782,7 +782,7 @@ function queuetools () {
 
             // sort sidebars
             if (TBCore.isModFakereddit) {
-                $('.sidecontentbox').find('.title:contains(THESE SUBREDDITS)').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${TB.ui.iconSort}" />sort by items</a>`);
+                $('.sidecontentbox:has(.subscription-box) > .title').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${TB.ui.iconSort}" />sort by items</a>`);
             }
 
             $body.on('click', '.tb-sort-subs', () => {

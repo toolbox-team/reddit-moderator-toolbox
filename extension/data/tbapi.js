@@ -73,21 +73,21 @@
      * full response object on error. Maintains an API similar to `$.post`.
      * @function
      * @param {string} endpoint The endpoint to request
-     * @param {object} query The query parameters of the request.
+     * @param {object} body The body parameters of the request.
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
-    TBApi.post = (endpoint, query) => TBApi.sendRequest({
+    TBApi.post = (endpoint, body) => TBApi.sendRequest({
         okOnly: true,
         method: 'POST',
         endpoint,
-        query,
+        body,
     }).then(response => response.json());
 
     /**
      * Sends an authenticated POST request against the OAuth API.
      * @function
      * @param {string} endpoint The endpoint to request
-     * @param {object} data Query parameters as an object
+     * @param {object} body Body parameters as an object
      */
     TBApi.apiOauthPOST = (endpoint, body) => TBApi.sendRequest({
         method: 'POST',

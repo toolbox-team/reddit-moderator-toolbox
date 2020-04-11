@@ -129,6 +129,10 @@ function tbconfig () {
                                         <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
                                         <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
                                     </li>
+                                    <li>
+                                        <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${configData.removalReasons.autoArchive ? 'checked' : ''}/>
+                                        <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
@@ -861,6 +865,7 @@ function tbconfig () {
                 typeStickied: $('#type-stickied').prop('checked'),
                 typeLockComment: $('#type-action-lock-comment').prop('checked'),
                 typeAsSub: $('#type-as-sub').prop('checked'),
+                autoArchive: $('#type-auto-archive').prop('checked'),
                 typeLockThread: $('#type-action-lock-thread').prop('checked'),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),

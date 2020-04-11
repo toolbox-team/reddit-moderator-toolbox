@@ -1070,7 +1070,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     const data = response.data;
 
                     let user = data.children[0].data.author;
-                    const body = data.children[0].data.body || '';
+                    const body = data.children[0].data.body || data.children[0].data.selftext || '';
                     let permalink = data.children[0].data.permalink;
                     const title = data.children[0].data.title || '';
                     const postlink = data.children[0].data.url || '';

@@ -126,8 +126,16 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
         credentials: 'include', // required for cookies to be sent
         redirect: 'error', // prevents strange reddit API shenanigans
         method,
-        body,
     };
+
+    // Post requests need their body to be in formdata format
+    if (body) {
+        const formData = new FormData();
+        Object.keys(body).forEach(key => {
+            formData.append(key, body[key]);
+        });
+        options.body = formData;
+    }
 
     // If requested, fetch OAuth tokens and add `Authorization` header
     if (oauth) {

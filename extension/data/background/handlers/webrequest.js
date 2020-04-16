@@ -47,7 +47,10 @@ async function getOAuthTokens (tries = 1) {
     // be able to read the new cookie and all is well, without having to deal with
     // the Reddit OAuth flow ourselves.
     if (tries < 3) {
-        await makeRequest('https://mod.reddit.com/mail/all');
+        await makeRequest({
+            endpoint: 'https://mod.reddit.com/mail/all',
+            absolute: true,
+        });
         return getOAuthTokens(tries + 1);
     } else {
         // If we tried that 3 times and still no dice, the user probably isn't logged
@@ -113,7 +116,7 @@ function queryString (parameters) {
  * @returns {Promise}
  * @todo Ratelimit handling
  */
-async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
+async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absolute}) {
     query = queryString(query);
     // If we have a query object and additional parameters in the endpoint, we
     // just stick the object parameters on the end with `&` instead of `?`, and
@@ -121,7 +124,7 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
     if (endpoint.includes('?')) {
         query = query.replace('?', '&');
     }
-    const url = `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${query}`;
+    const url = absolute ? endpoint : `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${query}`;
     const options = {
         credentials: 'include', // required for cookies to be sent
         redirect: 'error', // prevents strange reddit API shenanigans
@@ -143,6 +146,7 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly}) {
             const tokens = await getOAuthTokens();
             options.headers = {Authorization: `bearer ${tokens.accessToken}`};
         } catch (error) {
+            console.error('getOAuthTokens: ', error);
             // If we can't get a token, return the error as-is
             return {error: error.message};
         }

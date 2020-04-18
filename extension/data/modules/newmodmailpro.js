@@ -57,6 +57,12 @@ function newmodmailpro () {
         title: 'Make links in ban and mute reasons clickable.',
     });
 
+    self.register_setting('checkForNewMessages', {
+        type: 'boolean',
+        default: true,
+        title: 'Check for any new messages in a thread before sending a new message.'
+    })
+
     const $body = $('body');
 
     function switchAwayFromReplyAsSelf () {
@@ -88,6 +94,7 @@ function newmodmailpro () {
             });
         }
     }
+
     // All stuff we want to do when we are on new modmail
     if (TBCore.isNewModmail) {
         // Add a class to body
@@ -100,7 +107,101 @@ function newmodmailpro () {
               searchhelp = self.setting('searchhelp'),
               noReplyAsSelf = self.setting('noReplyAsSelf'),
               showModmailPreview = self.setting('showModmailPreview'),
-              clickableReason = self.setting('clickableReason');
+              clickableReason = self.setting('clickableReason'),
+              checkForNewMessages = self.setting('checkForNewMessages');
+
+        /**
+         * Handles a click on the modmail thread submit button. Depending on settings, will
+         * check if the reply type is different and if new comments have been made in the
+         * meantime.
+         * @function
+         */
+        async function handleSubmitButtonClick (event) {
+            // Cancel always. If allowed, we will manually submit the form.
+            event.preventDefault();
+
+            // First, check if the reply type is different.
+            if (lastReplyTypeCheck) {
+                // Get all mod replies and see if they are something we need to warn the user about.
+                const $lastModReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
+                const replyTypeMyself = $body.find('.FancySelect__valueText').text() === 'Reply as myself';
+
+                // if it finds this the last mod that replied did so with "as subreddit".
+                if ($lastModReply.find('.icon-profile-slash').length && replyTypeMyself) {
+                    if (confirm('The last mod that replied did so as the subreddit, are you sure you want to reply as yourself?')) {
+                        // Ok, do nothing and let the message be posted.
+                    } else {
+                        // Not ok, do nothing.
+                        return;
+                    }
+                }
+
+                // If it finds this class it means the last reply was a private mod note.
+                if ($lastModReply.find('.Thread__messageIsMod').length && replyTypeMyself) {
+                    if (confirm('The last mod that replied did so with a private mod note, are you sure you want to reply as yourself?')) {
+                        // Ok, do nothing and let the message be posted.
+                    } else {
+                        // Not ok, do nothing.
+                        return;
+                    }
+                }
+            }
+
+            // Next, check if any messages have been posted in the meantime.
+            const $lastReply = $body.find('.Thread__messages .Thread__message').last();
+            if (lastReplyTypeCheck && $lastReply) {
+                // Find the ID of the modmail and of the message.
+                const [, modmailId, lastMessageId] = $lastReply.find('.m-link').attr('href').match(/\/mail\/.*?\/(.*?)\/(.*?)$/i);
+
+                // Show a spinner while we load stuff.
+                TB.ui.longLoadSpinner(true);
+
+                // Find out the last comment as of right now.
+                const { conversation } = await TBApi.apiOauthGET('/api/mod/conversations/' + modmailId)
+                    .then(response => response.json());
+
+                // Evaluate reddit response.
+                TB.ui.longLoadSpinner(false);
+
+                // Find new actions that we didn't have local.
+                const localLastMessageIndex = conversation.objIds.findIndex(obj => obj.id === lastMessageId);
+                const newMessagesAndActions = conversation.objIds.slice(localLastMessageIndex + 1);
+
+                // If there are any, prompt.
+                if (newMessagesAndActions.length > 0) {
+                    const newMessages = newMessagesAndActions.filter(obj => obj.key === 'messages');
+                    const newActions = newMessagesAndActions.filter(obj => obj.key === 'modActions');
+
+                    let message = 'There have been ';
+
+                    if (newMessages.length > 0) {
+                        message += newMessages.length + ' message(s) sent';
+                    }
+
+                    if (newMessages.length > 0 && newActions.length > 0) {
+                        message += ' and ';
+                    }
+
+                    if (newActions.length > 0) {
+                        message += newActions.length + ' mod action(s)';
+                    }
+
+                    message += ' on this modmail thread since you loaded the page. Are you sure you want to send this reply?';
+
+                    if (confirm(message)) {
+                        // We're okay, continue.
+                    } else {
+                        // Abort.
+                        return;
+                    }
+                }
+            }
+
+            // Everything checks out, submit the form.
+            // Note: we can't use .submit here().
+            const formElement = $body.find('.ThreadViewerReplyForm')[0];
+            formElement.dispatchEvent(new CustomEvent('submit'));
+        }
 
         if (noReplyAsSelf) {
             window.addEventListener('TBNewPage', event => {
@@ -116,10 +217,16 @@ function newmodmailpro () {
             $body.on('input', '.ThreadViewerReplyForm__replyText, .NewThread__message', TBHelpers.debounce(e => {
                 let $previewArea;
                 if ($('#tb-modmail-preview').length) {
+                    // Use existing preview.
                     $previewArea = $('#tb-modmail-preview');
                 } else {
+                    // Create a new one.
+                    const $form = $('form.ThreadViewerReplyForm, form.NewThread__form');
                     $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
-                    $('form.ThreadViewerReplyForm, form.NewThread__form').after($previewArea);
+                    $form.after($previewArea);
+                    $form.one('submit', () => {
+                        $previewArea.remove();
+                    });
                 }
                 const renderedHTML = parser.render(TBStorage.purify(e.target.value));
                 $previewArea.html(`
@@ -128,9 +235,6 @@ function newmodmailpro () {
                     ${renderedHTML}
                 </div>
                 `);
-                $body.one('click', '.ThreadViewerReplyForm__replyButton, .NewThread__submitButton', () => {
-                    $previewArea.remove();
-                });
             }, 100));
         }
 
@@ -159,32 +263,9 @@ function newmodmailpro () {
             });
         }
 
-        if (lastReplyTypeCheck && TBCore.isNewMMThread) {
-            $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {
-                // Get all mod replies and see if they are something we need to warn the user about.
-                const $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
-                const replyTypeMyself = $body.find('.FancySelect__valueText').text() === 'Reply as myself';
-
-                // if it finds this the last mod that replied did so with "as subreddit".
-                if ($lastReply.find('.icon-profile-slash').length && replyTypeMyself) {
-                    if (confirm('The last mod that replied did so as the subreddit, are you sure you want to reply as yourself?')) {
-                        // Ok, do nothing and let the message be posted.
-                    } else {
-                        // Not ok, prevent the button from being clicked.
-                        event.preventDefault();
-                    }
-                }
-
-                // If it finds this class it means the last reply was a private mod note.
-                if ($lastReply.find('.Thread__messageIsMod').length && replyTypeMyself) {
-                    if (confirm('The last mod that replied did so with a private mod note, are you sure you want to reply as yourself?')) {
-                        // Ok, do nothing and let the message be posted.
-                    } else {
-                        // Not ok, prevent the button from being clicked.
-                        event.preventDefault();
-                    }
-                }
-            });
+        // If we have any settings that interfere with the message 'submission', register the listener.
+        if (TBCore.isNewMMThread && (lastReplyTypeCheck || checkForNewMessages)) {
+            $body.on('click', '.ThreadViewerReplyForm__replyButton', handleSubmitButtonClick);
         }
 
         if (modMailNightmode) {

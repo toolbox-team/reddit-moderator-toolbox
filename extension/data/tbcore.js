@@ -227,12 +227,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     TBCore.mySubs.push(sub);
                 }
 
-                let isinthere = false;
-                TBCore.mySubsData.forEach(tbCoreSubData => {
-                    if (tbCoreSubData.subreddit === sub) {
-                        isinthere = true;
-                    }
-                });
+                const isinthere = TBCore.mySubsData.some(tbCoreSubData => tbCoreSubData.subreddit === sub);
 
                 if (!isinthere) {
                     const subredditData = {

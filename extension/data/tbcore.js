@@ -31,7 +31,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          */
         TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
         const SHORTNAME = 'TBCore';
         const SETTINGS_NAME = 'Utils';
 
@@ -159,6 +159,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         created_utc: this.data.created_utc,
                         subreddit_type: this.data.subreddit_type,
                         submission_type: this.data.submission_type,
+                        is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                     };
 
                     TBCore.mySubsData.push(subredditData);
@@ -207,7 +208,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.tbDevs = toolboxDevs;
         TBCore.betaRelease = betaRelease;
 
-        TBCore.browser = UNKOWN_BROWSER;
+        TBCore.browser = UNKNOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
@@ -524,7 +525,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             }
-            case UNKOWN_BROWSER: {
+            case UNKNOWN_BROWSER: {
                 debugObject.browser = 'Unknown';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
@@ -763,6 +764,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                             created_utc: this.data.created_utc,
                             subreddit_type: this.data.subreddit_type,
                             submission_type: this.data.submission_type,
+                            is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                         };
 
                         TBCore.mySubsData.push(subredditData);
@@ -1068,7 +1070,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     const data = response.data;
 
                     let user = data.children[0].data.author;
-                    const body = data.children[0].data.body || '';
+                    const body = data.children[0].data.body || data.children[0].data.selftext || '';
                     let permalink = data.children[0].data.permalink;
                     const title = data.children[0].data.title || '';
                     const postlink = data.children[0].data.url || '';
@@ -1810,61 +1812,43 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        browser.runtime.sendMessage({
-            action: 'tb-request',
-            endpoint: '/subreddits/mine/moderator.json',
-            data: {
-                after,
-                limit: 100,
-            },
-        }).then(response => {
-            const {errorThrown, data, jqXHR, textStatus} = response;
-            if (errorThrown) {
-                logger.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                logger.log(jqXHR);
-                if (jqXHR.status === 504) {
-                    logger.log('504 Timeout retrying request');
-                    getModSubs(after, subs => callback(modSubs.concat(subs)));
-                } else {
-                    modSubs = [];
-                    return callback(modSubs);
-                }
-            } else {
-                TBStorage.purifyObject(data);
-                modSubs = modSubs.concat(data.data.children);
+        TBApi.getJSON('/subreddits/mine/moderator.json', {
+            after,
+            limit: 100,
+        }).then(json => {
+            TBStorage.purifyObject(json);
+            modSubs = modSubs.concat(json.data.children);
 
-                if (data.data.after) {
-                    getModSubs(data.data.after, subs => callback(modSubs.concat(subs)));
-                } else {
-                    return callback(modSubs);
-                }
+            if (json.data.after) {
+                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
+            } else {
+                return callback(modSubs);
+            }
+        }).catch(error => {
+            logger.log('getModSubs failed', error);
+            if (error.response && error.response.status === 504) {
+                logger.log('504 Timeout retrying request');
+                getModSubs(after, subs => callback(modSubs.concat(subs)));
+            } else {
+                modSubs = [];
+                return callback(modSubs);
             }
         });
     }
 
     function getUserDetails (tries = 0) {
-        return new Promise((resolve, reject) => {
-            browser.runtime.sendMessage({
-                action: 'tb-request',
-                endpoint: '/api/me.json',
-            }).then(response => {
-                const {errorThrown, data, jqXHR, textStatus} = response;
-                if (errorThrown) {
-                    logger.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                    logger.log(jqXHR);
-                    if (jqXHR.status === 504 && tries < 4) {
-                        tries++;
-                        logger.log('504 Timeout retrying request');
-                        resolve(getUserDetails(tries));
-                    } else {
-                        return reject(errorThrown);
-                    }
-                } else {
-                    TBStorage.purifyObject(data);
-                    logger.log(data);
-                    resolve(data);
-                }
-            });
+        return TBApi.getJSON('/api/me.json').then(data => {
+            TBStorage.purifyObject(data);
+            logger.log(data);
+            return data;
+        }).catch(error => {
+            logger.log('getUserDetails failed', error);
+            if (error.response && error.response.status === 504 && tries < 4) {
+                logger.log('504 Timeout retrying request');
+                return getUserDetails(tries + 1);
+            } else {
+                throw error;
+            }
         });
     }
 

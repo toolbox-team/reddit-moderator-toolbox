@@ -129,6 +129,10 @@ function tbconfig () {
                                         <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
                                         <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
                                     </li>
+                                    <li>
+                                        <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${configData.removalReasons.autoArchive ? 'checked' : ''}/>
+                                        <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
@@ -223,8 +227,8 @@ function tbconfig () {
                 <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <div id="tb-add-mod-macro-form">
-                    <textarea class="tb-input edit-area" placeholder="macro text"></textarea><br/>
                     <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
+                    <textarea class="tb-input edit-area" placeholder="macro text"></textarea><br/>
                     <div class="tb-macro-actions">
                         <div class="tb-macro-actions-row">
                             <h2>Reply</h2>
@@ -877,6 +881,7 @@ function tbconfig () {
                 typeStickied: $('#type-stickied').prop('checked'),
                 typeLockComment: $('#type-action-lock-comment').prop('checked'),
                 typeAsSub: $('#type-as-sub').prop('checked'),
+                autoArchive: $('#type-auto-archive').prop('checked'),
                 typeLockThread: $('#type-action-lock-thread').prop('checked'),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),

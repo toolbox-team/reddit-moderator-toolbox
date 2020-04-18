@@ -434,9 +434,9 @@ function modmatrix () {
                 self.processData(data, callback);
                 self.dataCache[cacheKey] = data;
             })
-                .catch(({jqXHR, textStatus, errorThrown}) => {
-                    self.log(`Mod log request ${requestData.count}to ${requestData.count + requestData.limit} failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                    if (jqXHR.status === 504) {
+                .catch(error => {
+                    self.log(`Mod log request ${requestData.count} to ${requestData.count + requestData.limit} failed:`, error);
+                    if (error.response && error.response.status === 504) {
                         self.log('Retrying mod log request...');
                         self.getActions(callback);
                     } else {

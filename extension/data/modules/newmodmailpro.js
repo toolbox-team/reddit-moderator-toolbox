@@ -60,8 +60,8 @@ function newmodmailpro () {
     self.register_setting('checkForNewMessages', {
         type: 'boolean',
         default: true,
-        title: 'Check for any new messages in a thread before sending a new message.'
-    })
+        title: 'Check whether there has been new activity in a modmail thread before submitting replies.',
+    });
 
     const $body = $('body');
 
@@ -110,13 +110,38 @@ function newmodmailpro () {
               clickableReason = self.setting('clickableReason'),
               checkForNewMessages = self.setting('checkForNewMessages');
 
+        // Lifted from reddit source.
+        const actionTypeMap = [
+            'highlighted this conversation',
+            'un-highlighted this conversation',
+            'archived this conversation',
+            'un-archived this conversation',
+            'reported user to admins',
+            'muted user',
+            'un-muted user',
+            'banned user',
+            'unbanned user',
+        ];
+
+        /**
+         * Submits the reply form, bypassing the submission button click. Should only be
+         * called from the handleSubmitButtonClick handler or embedded functions.
+         * @function
+         */
+        const submitReplyForm = () => {
+            // Note: we can't use .submit() here since it will trigger
+            // the native browser submission instead of the React event listener.
+            const formElement = $body.find('.ThreadViewerReplyForm')[0];
+            formElement.dispatchEvent(new CustomEvent('submit'));
+        };
+
         /**
          * Handles a click on the modmail thread submit button. Depending on settings, will
          * check if the reply type is different and if new comments have been made in the
          * meantime.
          * @function
          */
-        async function handleSubmitButtonClick (event) {
+        const handleSubmitButtonClick = async event => {
             // Cancel always. If allowed, we will manually submit the form.
             event.preventDefault();
 
@@ -157,7 +182,7 @@ function newmodmailpro () {
                 TB.ui.longLoadSpinner(true);
 
                 // Find out the last comment as of right now.
-                const { conversation } = await TBApi.apiOauthGET('/api/mod/conversations/' + modmailId)
+                const {conversation, messages, modActions} = await TBApi.apiOauthGET(`/api/mod/conversations/${modmailId}`)
                     .then(response => response.json());
 
                 // Evaluate reddit response.
@@ -165,43 +190,113 @@ function newmodmailpro () {
 
                 // Find new actions that we didn't have local.
                 const localLastMessageIndex = conversation.objIds.findIndex(obj => obj.id === lastMessageId);
-                const newMessagesAndActions = conversation.objIds.slice(localLastMessageIndex + 1);
+
+                // It could be that there were actions after the last message. We will need to check for those,
+                // since they don't have an ID but we want to avoid showing them twice. We will count the number
+                // of actions taken after the last message in the DOM, then add those to the index.
+                const numberOfActionsAfterLastMessage = $lastReply.nextAll('.Thread__modAction').length;
+
+                const newMessagesAndActions = conversation.objIds.slice(localLastMessageIndex + numberOfActionsAfterLastMessage + 1);
 
                 // If there are any, prompt.
-                if (newMessagesAndActions.length > 0) {
-                    const newMessages = newMessagesAndActions.filter(obj => obj.key === 'messages');
-                    const newActions = newMessagesAndActions.filter(obj => obj.key === 'modActions');
+                if (newMessagesAndActions.length) {
+                    // Construct a popup showing the new messages and asking for a confirm.
+                    let content = `
+                        <div class="header">
+                            New replies to modmail thread since page load, continue posting your reply?
+                        </div>
 
-                    let message = 'There have been ';
+                        <div class="activity">
+                    `;
 
-                    if (newMessages.length > 0) {
-                        message += newMessages.length + ' message(s) sent';
+                    // Add entries for new activity.
+                    for (const activity of newMessagesAndActions) {
+                        // Message
+                        if (activity.key === 'messages') {
+                            const message = messages[activity.id];
+
+                            content += `
+                                <div class='new-message'>
+                                    <div class='meta'>
+                                        <a href='https://reddit.com/u/${message.author.name}' class='${message.author.isMod ? 'mod' : ''}' target='_blank'>${message.author.name}</a>
+                                        •
+                                        <time class='timeago' datetime='${message.date}'></time>
+                                        ${message.author.isHidden ? '<span class="internal">(sent as subreddit)</span>' : ''}
+                                        ${message.isInternal ? '<span class="internal">(private moderator note)</span>' : ''}
+                                    </div>
+
+                                    <div class='content'>
+                                        ${message.body}
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        // Mod action
+                        if (activity.key === 'modActions') {
+                            const action = modActions[activity.id];
+
+                            content += `
+                                <div class='new-action'>
+                                    <a href='https://reddit.com/u/${action.author.name}' class='${action.author.isMod ? 'mod' : ''}' target='_blank'>${action.author.name}</a>
+                                    <span class='action'> ${actionTypeMap[action.actionTypeId]}</span>
+                                </div>
+                            `;
+                        }
                     }
 
-                    if (newMessages.length > 0 && newActions.length > 0) {
-                        message += ' and ';
-                    }
+                    content += '</div>';
 
-                    if (newActions.length > 0) {
-                        message += newActions.length + ' mod action(s)';
-                    }
+                    const $contextPopup = TB.ui.popup({
+                        title: 'New Activity',
+                        tabs: [
+                            {
+                                title: 'New Activity',
+                                tooltip: 'Tab with new modmail activity.',
+                                content,
+                                footer: `
+                                    <input type="button" class="tb-action-button close" value="Cancel">
+                                    <input type="button" class="tb-action-button submit" value="Post reply">
+                                `,
+                            },
+                        ],
+                        cssClass: 'new-modmail-activity-popup',
+                        draggable: true,
+                    }).appendTo($body)
+                        // Position in the center-top of the page.
+                        .css({
+                            left: ($body.width() - 600) / 2,
+                            top: 100,
+                            display: 'block',
+                        });
 
-                    message += ' on this modmail thread since you loaded the page. Are you sure you want to send this reply?';
+                    // Ensure that the time ago for new messages updates appropriately.
+                    $('time.timeago').timeago();
 
-                    if (confirm(message)) {
-                        // We're okay, continue.
-                    } else {
-                        // Abort.
-                        return;
-                    }
+                    // Handle popup closing.
+                    $contextPopup.on('click', '.close', () => {
+                        $contextPopup.remove();
+                    });
+
+                    // Handle popup submission.
+                    $contextPopup.on('click', '.submit', () => {
+                        $contextPopup.remove();
+                        submitReplyForm();
+                    });
+
+                    // Handle popup removal if we navigate away.
+                    window.addEventListener('TBNewPage', () => {
+                        $contextPopup.remove();
+                    });
+
+                    // Don't submit now. We submit from the popup, or not at all.
+                    return;
                 }
             }
 
             // Everything checks out, submit the form.
-            // Note: we can't use .submit here().
-            const formElement = $body.find('.ThreadViewerReplyForm')[0];
-            formElement.dispatchEvent(new CustomEvent('submit'));
-        }
+            submitReplyForm();
+        };
 
         if (noReplyAsSelf) {
             window.addEventListener('TBNewPage', event => {

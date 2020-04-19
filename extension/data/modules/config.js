@@ -227,8 +227,8 @@ function tbconfig () {
                 <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <div id="tb-add-mod-macro-form">
-                    <textarea class="tb-input edit-area"></textarea><br/>
                     <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
+                    <textarea class="tb-input edit-area"></textarea><br/>
                     <div class="tb-macro-actions">
                         <div class="tb-macro-actions-row">
                             <h2>Reply</h2>

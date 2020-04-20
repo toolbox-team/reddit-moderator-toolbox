@@ -178,7 +178,7 @@ function modmacros () {
                     const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
                     $body.find('.ThreadViewerReplyForm__replyOptions').after(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
 
-                    populateSelect('.tb-macro-select', info.subreddit, config, 'comment');
+                    populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
                 }
             });
         }

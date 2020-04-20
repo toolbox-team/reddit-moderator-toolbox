@@ -121,7 +121,11 @@ function newmodmailpro () {
                     $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
                     $('form.ThreadViewerReplyForm, form.NewThread__form').after($previewArea);
                 }
-                const renderedHTML = parser.render(TBStorage.purify(e.target.value));
+
+                // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                // people pasting malicious input on advice of shitty people.
+                const renderedHTML = TBStorage.purify(parser.render(e.target.value));
+
                 $previewArea.html(`
                 <h3 class="tb-preview-heading">Preview</h3>
                 <div class="md">

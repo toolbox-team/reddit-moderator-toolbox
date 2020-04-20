@@ -124,7 +124,9 @@ function newmodmailpro () {
 
                 // Render markdown and to be extra sure put it through purify to prevent possible issues with
                 // people pasting malicious input on advice of shitty people.
-                const renderedHTML = TBStorage.purify(parser.render(e.target.value));
+                let renderedHTML = TBStorage.purify(parser.render(e.target.value));
+                // Fix relative urls as new modmail uses a different subdomain.
+                renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
 
                 $previewArea.html(`
                 <h3 class="tb-preview-heading">Preview</h3>

@@ -206,6 +206,7 @@ function removalreasons () {
                 if ($button.hasClass('tb-add-removal-reason')) {
                     thingID = $button.attr('data-id');
                     thingSubreddit = $button.attr('data-subreddit');
+                    isComment = $button.closest('.tb-frontend-container').data('tb-type') === 'comment';
                 } else {
                     const $parent = $button.closest('.Post');
                     const postDetails = $parent.find('.tb-frontend-container[data-tb-type="post"]').data('tb-details');

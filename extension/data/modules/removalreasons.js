@@ -179,11 +179,17 @@ function removalreasons () {
         }
 
         // Open reason drop-down when we remove something as ham.
-        $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
+        $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function (event) {
             const $button = $(this);
             let thingID,
                 thingSubreddit,
                 isComment = false; // default to false for new Reddit
+
+            // If the shift key was pressed, remove without a removal reason,
+            // unless this is the explicit "Add removal reason" button.
+            if (event.shiftKey && !$button.hasClass('tb-add-removal-reason')) {
+                return;
+            }
 
             if (TBCore.isOldReddit) {
                 const $yes = $button.find('.yes')[0],

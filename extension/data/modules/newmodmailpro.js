@@ -121,7 +121,13 @@ function newmodmailpro () {
                     $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
                     $('form.ThreadViewerReplyForm, form.NewThread__form').after($previewArea);
                 }
-                const renderedHTML = parser.render(TBStorage.purify(e.target.value));
+
+                // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                // people pasting malicious input on advice of shitty people.
+                let renderedHTML = TBStorage.purify(parser.render(e.target.value));
+                // Fix relative urls as new modmail uses a different subdomain.
+                renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
+
                 $previewArea.html(`
                 <h3 class="tb-preview-heading">Preview</h3>
                 <div class="md">

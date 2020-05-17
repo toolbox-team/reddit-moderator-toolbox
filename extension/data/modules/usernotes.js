@@ -705,7 +705,6 @@ function usernotes () {
             self.startProfile('manager-run');
             const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
 
-            // Get the account status for all users.
             $body.find('#tb-un-prune-sb').on('click', () => {
                 const emptyProfiles = [],
                       pruneOld = $('.tb-prune-old').prop('checked'),
@@ -716,6 +715,7 @@ function usernotes () {
 
                 TB.ui.longLoadSpinner(true, 'Pruning usernotes', TB.ui.FEEDBACK_NEUTRAL);
 
+                // Get the account status for all users.
                 TBCore.forEachChunkedRateLimit(
                     usersPrune, 20, (user, counter) => {
                         TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);

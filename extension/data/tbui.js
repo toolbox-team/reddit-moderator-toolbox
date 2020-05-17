@@ -1629,7 +1629,7 @@
      * @param {string} options.controlPosition Where to display the pager's
      * controls, either 'top' or 'bottom'
      * @param {TBui~pagerCallback} contentFunction A function which generates
-     * content for a specific tab
+     * content for a given page
      * @returns {jQuery}
      */
     // TODO: optionally support caching calls to the content function to avoid wasting time regenerating identical pages

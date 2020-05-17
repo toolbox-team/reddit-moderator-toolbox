@@ -142,7 +142,7 @@ function trouble () {
         }
 
         function highlightComments ($things) {
-            const controversial = new RegExp(/\bcontroversial\b/);
+            const controversial = /\bcontroversial\b/;
 
             $things.find('.numchildren').each(numChildren);
 

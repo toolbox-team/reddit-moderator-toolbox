@@ -35,7 +35,7 @@ function modmatrix () {
         }
         this.subredditUrl = subredditUrl;
 
-        const regex = new RegExp(/reddit\.com\/r\/([^/]+)\//g);
+        const regex = /reddit\.com\/r\/([^/]+)\//g;
         const matches = regex.exec(subredditUrl);
 
         if (matches != null) {
@@ -434,9 +434,9 @@ function modmatrix () {
                 self.processData(data, callback);
                 self.dataCache[cacheKey] = data;
             })
-                .catch(({jqXHR, textStatus, errorThrown}) => {
-                    self.log(`Mod log request ${requestData.count}to ${requestData.count + requestData.limit} failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                    if (jqXHR.status === 504) {
+                .catch(error => {
+                    self.log(`Mod log request ${requestData.count} to ${requestData.count + requestData.limit} failed:`, error);
+                    if (error.response && error.response.status === 504) {
                         self.log('Retrying mod log request...');
                         self.getActions(callback);
                     } else {
@@ -486,7 +486,7 @@ function modmatrix () {
                 const value = parseInt(moderator[action]);
                 modRow.find(`.action-${action} .action-number`).text(value);
             }
-            modRow.toggleClass('filtered', hasModFilter && $.inArray(mod, self.modFilter) === -1);
+            modRow.toggleClass('filtered', hasModFilter && !self.modFilter.includes(mod));
             // matrix.find(".moderator-" + mod + " .action-total").text(total);
         }
         // modLogMatrix.filterModeratorActions();
@@ -494,7 +494,7 @@ function modmatrix () {
         // Action totals
         for (const action of Object.keys(this.subredditActions)) {
             // var total = actionTotals[action] || 0;
-            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) === -1);
+            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && !self.actionFilter.includes(action));
             let total = 0;
             matrix.find(`tbody .action-${action} .action-number:visible`).each(function () {
                 total += parseInt($(this).text());

@@ -29,7 +29,7 @@
      * Material design icons mapped to toolbox names through their hexcode.
      *
      * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
-     * @type {object}
+     * @constant {object}
      */
     TBui.icons = {
         add: '&#xe145;', // add
@@ -120,6 +120,7 @@
 
     /**
      * Show an in-page notification on the current tab.
+     * @function
      * @param {object} options The options for the notification
      * @param {string} options.id The notification's ID
      * @param {string} options.title The notification's title
@@ -158,6 +159,7 @@
 
     /**
      * Clears an in-page notification on the current tab.
+     * @function
      * @param {string} id The ID of the notification to clear
      */
     TBui.clearNotification = id => {
@@ -192,14 +194,13 @@
 
     /**
      * Generate a popup.
-     *
+     * @function
      * @param {object} options Options for the popup
      * @param {string} options.title The popup's title (raw HTML)
      * @param {object[]} options.tabs The tabs for the popup
      * @param {string?} options.cssClass Extra CSS class to add to the popup
      * @param {string?} options.meta Raw HTML to add to a "meta" container
      * @param {boolean?} [draggable=true] Whether the user can move the popup
-     *
      * @returns {jQuery}
      */
     TBui.popup = function popup ({
@@ -282,7 +283,9 @@
         }
 
         if (draggable) {
-            $popup.drag($popup.find('.tb-popup-title'));
+            $popup.drag($popup.find('.tb-popup-header'));
+            // Don't let people drag by the buttons, that gets confusing
+            $popup.find('.buttons a').on('mousedown', e => e.stopPropagation());
         }
 
         return $popup;
@@ -360,7 +363,7 @@
 </div>`);
 
         if (details) {
-            $.each(details, (key, value) => {
+            Object.entries(details).forEach(([key, value]) => {
                 $overlay.attr(`data-${key}`, value);
             });
         }
@@ -469,7 +472,7 @@
 
         // Add values to select
 
-        $.each(choices, (i, keyValue) => {
+        choices.forEach(keyValue => {
             const value = keyValue.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(keyValue));
         });
@@ -517,11 +520,11 @@
             }
         });
 
-        $.each(available, (i, value) => {
+        available.forEach(value => {
             $available_list.append($('<option>').attr('value', value).text(value));
         });
 
-        $.each(selected, (i, value) => {
+        selected.forEach(value => {
             $selected_list.append($('<option>').attr('value', value).text(value));
         });
 
@@ -566,7 +569,7 @@
         if ($.isEmptyObject(items)) {
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         } else {
-            $.each(items, (key, value) => {
+            Object.entries(items).forEach(([key, value]) => {
                 const $item = $(`
                 <tr class="tb-map-input-tr">
                     <td><input type="text" class="tb-input" value="${TBHelpers.htmlEncode(unescape(key))}" name="key"></td>
@@ -732,19 +735,25 @@
         }
     };
 
+    let contextTimeout;
+
     /**
-     * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
-     * @function contextTrigger
-     * @memberof TBui
+     * Add or remove a menu element to the context aware menu. Makes the menu
+     * shows if it was empty before adding, hides menu if it is empty after removing.
+     * @function
      * @param {string} triggerId This will be part of the id given to the element.
      * @param {object} options
-     * @param {boolean} options.addTrigger Indicates of the menu item needs to be added or removed.
-     * @param {string} options.triggerText Text displayed in menu. Not needed when addTrigger is false.
-     * @param {string} options.triggerIcon The material icon that needs to be displayed before the menu item. Defaults to 'label'
-     * @param {string} options.title Title to be used in title attribute. If no title is given the triggerText will be used.
-     * @param {object} options.dataAttributes Any data attribute that might be needed. Object keys will be used as the attribute name and value as value.
+     * @param {boolean} options.addTrigger Indicates of the menu item needs to
+     * be added or removed.
+     * @param {string} options.triggerText Text displayed in menu. Not needed
+     * when addTrigger is false.
+     * @param {string} options.triggerIcon The material icon that needs to be
+     * displayed before the menu item. Defaults to 'label'
+     * @param {string} options.title Title to be used in title attribute. If no
+     * title is given the triggerText will be used.
+     * @param {object} options.dataAttributes Any data attribute that might be
+     * needed. Object keys will be used as the attribute name and value as value.
      */
-    let contextTimeout;
     TBui.contextTrigger = function contextTrigger (triggerId, options) {
         // We really don't need two context menus side by side.
         if (TBCore.isEmbedded) {
@@ -804,7 +813,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                $.each(options.dataAttributes, (name, value) => {
+                Object.entries(options.dataAttributes).forEach(([name, value]) => {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }
@@ -844,19 +853,24 @@
     };
 
     /**
-     * Will send out events similar to the reddit jsAPI events for the elements given.
-     * Only support 'comment' for now and will only send the commentAuthor event.
-     * @function tbRedditEvent
-     * @memberof TBui
-     * @param {object} $elements jquery object containing the e
-     * @param {string} types comma seperated list of type of elements the events need to be send for.
+     * Handles toolbox generated `thing` items as they become visible in the viewport.
+     * @function
+     * @param {IntersectionObserverEntry[]} entries
+     * @param {IntersectionObserver} observer
      */
-    TBui.tbRedditEvent = function tbRedditEvent ($elements, types) {
-        const typesArray = types.split(',');
-        if (typesArray.includes('comment')) {
-            const $comments = $elements.find('.tb-comment');
-            TBCore.forEachChunkedDynamic($comments, value => {
-                const $element = $(value);
+    function handleTBThings (entries, observer) {
+        entries.forEach(entry => {
+            // The observer fires for everything on page load.
+            // This makes sure that we really only act on those items that are visible.
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            // Element is visible, we only want to handle it once. Stop observing.
+            observer.unobserve(entry.target);
+            const $element = $(entry.target);
+
+            if ($element.hasClass('tb-comment')) {
                 const $jsApiPlaceholderComment = $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
                 $jsApiPlaceholderComment.append('<span data-name="toolbox">');
                 const jsApiPlaceholderComment = $jsApiPlaceholderComment[0];
@@ -910,12 +924,9 @@
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
-            }, {framerate: 40});
-        }
-        if (typesArray.includes('submission')) {
-            const $submissions = $elements.find('.tb-submission');
-            TBCore.forEachChunkedDynamic($submissions, value => {
-                const $element = $(value);
+            }
+
+            if ($element.hasClass('tb-submission')) {
                 const $jsApiPlaceholderSubmission = $element.find('.tb-jsapi-submission-container');
                 $jsApiPlaceholderSubmission.append('<span data-name="toolbox">');
                 const jsApiPlaceholderSubmission = $jsApiPlaceholderSubmission[0];
@@ -960,29 +971,43 @@
                             },
                         },
                     };
-
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
-            }, {framerate: 40});
-        }
+            }
+        });
+    }
+
+    const viewportObserver = new IntersectionObserver(handleTBThings, {
+        rootMargin: '200px',
+    });
+    /**
+     * Will send out events similar to the reddit jsAPI events for the elements given.
+     * Only support 'comment' for now and will only send the commentAuthor event.
+     * @function
+     * @param {object} $elements jquery object containing the elements for which jsAPI events need to be send.
+     */
+    TBui.tbRedditEvent = function tbRedditEvent ($elements) {
+        // $elements can also be a parent container, so we find our things first.
+        const $tbThings = $elements.find('.tb-thing');
+        $tbThings.each(function () {
+            viewportObserver.observe(this);
+        });
     };
 
     /**
      * Will build a submission entry given a reddit API submission object.
-     * @function makeSubmissionEntry
-     * @memberof TBui
+     * @function
      * @param {object} submission reddit API submission object.
      * @param {object} submissionOptions object denoting what needs to be included.
      * @returns {object} jquery object with the build submission.
      */
-
     TBui.makeSubmissionEntry = function makeSubmissionEntry (submission, submissionOptions) {
         TBStorage.purifyObject(submission);
         // Misc
         const canModsubmission = submission.data.can_mod_post,
 
-              // submission basis (author, body, time)
+            // submission basis (author, body, time)
               submissionAuthor = submission.data.author,
               submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
               submissionCreatedUTC = submission.data.created_utc, // unix epoch
@@ -995,7 +1020,7 @@
               submissionThumbnail = submission.data.thumbnail,
               submissionDomain = submission.data.domain,
 
-              // submission details
+            // submission details
               submissionScore = submission.data.score, // integer
               submissionLikes = submission.data.likes, // boolean or null
               submissionIsSelf = submission.data.is_self,
@@ -1007,14 +1032,14 @@
               submissionNumComments = submission.data.num_comments,
               submissionUserReports = submission.data.user_reports, // array with reports by users
 
-              // submission details - mod related
+            // submission details - mod related
               submissionDistinguished = submission.data.distinguished, // string containing "moderator" or "admin"
               submissionModReports = submission.data.mod_reports, // array with reports by mods
 
-              // Author details
+            // Author details
               submissionIsSubmitter = submission.data.is_submitter, // boolean - is OP
 
-              // submission status - mod action
+            // submission status - mod action
               submissionApproved = submission.data.approved, // boolean
               submissionApprovedAtUTC = submission.data.approved_at_utc, // unix epoch
               submissionApprovedBy = submission.data.approved_by, // unix epoch
@@ -1244,55 +1269,54 @@
 
     /**
      * Will build a comment given a reddit API comment object.
-     * @function makeSingleComment
-     * @memberof TBui
+     * @function
      * @param {object} comment reddit API comment object.
-     * @param {object} commentOptions object denoting what needs to be included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @param {object} commentOptions object denoting what needs to be included.
+     * Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
      * @returns {object} jquery object with the build comment.
      */
-
     TBui.makeSingleComment = function makeSingleComment (comment, commentOptions = {}) {
         TBStorage.purifyObject(comment);
         // Misc
         const canModComment = comment.data.can_mod_post,
 
-              // Comment basis (author, body, time)
+            // Comment basis (author, body, time)
               commentAuthor = comment.data.author,
               commentBodyHTML = TBStorage.purify(comment.data.body_html), // html string
-              // commentMarkdownBody = comment.data.body, // markdown string
-              // commentCreated = comment.data.created, // unix epoch
+            // commentMarkdownBody = comment.data.body, // markdown string
+            // commentCreated = comment.data.created, // unix epoch
               commentCreatedUTC = comment.data.created_utc, // unix epoch
               commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
               commentLinkId = comment.data.link_id, // parent submission ID
-              // commentId = comment.data.id, // comment ID
+            // commentId = comment.data.id, // comment ID
               commentName = comment.data.name, // fullname t1_<comment ID>
               commentParentId = comment.data.parent_id,
               commentPermalink = comment.data.permalink,
               commentSubreddit = comment.data.subreddit,
-              // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
+            // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
               commentSubredditType = comment.data.subreddit_type,
             // commentReplies = comment.data.replies, // object with replies
 
-              // Comment details
-              // commentScoreHidden = comment.data.score_hidden, // boolean
+            // Comment details
+            // commentScoreHidden = comment.data.score_hidden, // boolean
               commentScore = comment.data.score, // integer
               commentControversiality = comment.data.controversiality, // integer
               commentEdited = comment.data.edited,
               commentGildings = comment.data.gildings,
-              // commentNumReports = comment.data.num_reports,
+            // commentNumReports = comment.data.num_reports,
               commentUserReports = comment.data.user_reports, // array with reports by users
 
-              // Comment details - mod related
+            // Comment details - mod related
               commentStickied = comment.data.stickied, // boolean
               commentDistinguished = comment.data.distinguished, // string containing "moderator" or "admin"
               commentModReports = comment.data.mod_reports, // array with reports by mods
 
-              // Author details
+            // Author details
               commentAuthorFlairCssClass = comment.data.author_flair_css_class,
               commentAuthorFlairText = comment.data.author_flair_text,
               commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
 
-              // Comment status - mod action
+            // Comment status - mod action
               commentApproved = comment.data.approved, // boolean
               commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
               commentApprovedBy = comment.data.approved_by, // unix epoch
@@ -1302,10 +1326,10 @@
               commentBannedBy = comment.data.banned_by, // Mod that removed the comment
               commentIgnoreReports = comment.data.ignore_reports, // boolean
 
-              // Comment status - other
-              // commentArchived = comment.data.archived,
-              // commentCollapsed = comment.data.collapsed,
-              // commentCollapsedReason = comment.data.collapsed_reason,
+            // Comment status - other
+            // commentArchived = comment.data.archived,
+            // commentCollapsed = comment.data.collapsed,
+            // commentCollapsedReason = comment.data.collapsed_reason,
               commentBanNote = comment.data.ban_note;
 
         // Do we have overview data?
@@ -1416,7 +1440,7 @@
         if (commentOptions.noOddEven) {
             commentDepthClass = commentDepth;
         } else {
-            commentDepthClass = TBHelpers.isOdd(commentDepth) ? 'odd' : 'even';
+            commentDepthClass = commentDepth % 2 ? 'odd' : 'even';
         }
 
         const commentOptionsJSON = TBHelpers.escapeHTML(JSON.stringify(commentOptions));
@@ -1567,10 +1591,11 @@
 
     /**
      * Will build a comment given a reddit API comment object.
-     * @function makeCommentThread
-     * @memberof TBui
+     * @function
      * @param {object} jsonInput reddit API comments object.
-     * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @param {object} commentOptions object denoting what needs to included.
+     * Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as
+     * boolean.
      * @returns {object} jquery object with the build comment thread.
      */
     TBui.makeCommentThread = function makeCommentThread (jsonInput, commentOptions) {
@@ -1719,28 +1744,20 @@
     $body.on('click', '.tb-submission-button-lock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.lock(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">locked</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.lock(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">locked</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 
     $body.on('click', '.tb-submission-button-unlock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBApi.lock(fullname, (succes, error) => {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
-            } else if (error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
-            }
+        TBApi.unlock(fullname).then(() => {
+            $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
+        }).catch(error => {
+            $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error || 'something went wrong'}</span>`);
         });
     });
 

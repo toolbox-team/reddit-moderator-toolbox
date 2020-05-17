@@ -51,6 +51,12 @@ function newmodmailpro () {
         title: 'Show a preview of modmail messages while typing.',
     });
 
+    self.register_setting('clickableReason', {
+        type: 'boolean',
+        default: true,
+        title: 'Make links in ban and mute reasons clickable.',
+    });
+
     const $body = $('body');
 
     function switchAwayFromReplyAsSelf () {
@@ -58,6 +64,28 @@ function newmodmailpro () {
         if (current === 'Reply as myself') {
             $body.find('.FancySelect__value').click();
             $body.find('.FancySelect__option:contains("Reply as the subreddit")').click();
+        }
+    }
+
+    /**
+     * Searches for ban reason elements on page and makes included links clickable.
+     * @function
+     */
+    function reasonClickable () {
+        const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen)');
+        if ($reasons.length) {
+            $reasons.each(function () {
+                const $reason = $(this);
+                $reason.addClass('tb-reason-seen');
+
+                let reasonText = $reason.text();
+                // Three regex passes to avoid silly logic about whole urls, urls starting with a slash and those without it.
+                reasonText = reasonText.replace(/(\s|'|^)(https:\/\/.+?)(\s|'|$)/gi, '$1<a href="$2" target="_blank">$2</a>$3');
+                reasonText = reasonText.replace(/(\s|'|^)(\/u\/.+?|\/user\/.+?|\/r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com$2" target="_blank">$2</a>$3');
+                reasonText = reasonText.replace(/(\s|'|^)(u\/.+?|user\/.+?|r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com/$2" target="_blank">$2</a>$3');
+
+                $reason.html(reasonText);
+            });
         }
     }
     // All stuff we want to do when we are on new modmail
@@ -71,15 +99,16 @@ function newmodmailpro () {
               lastReplyTypeCheck = self.setting('lastreplytypecheck'),
               searchhelp = self.setting('searchhelp'),
               noReplyAsSelf = self.setting('noReplyAsSelf'),
-              showModmailPreview = self.setting('showModmailPreview');
+              showModmailPreview = self.setting('showModmailPreview'),
+              clickableReason = self.setting('clickableReason');
 
         if (noReplyAsSelf) {
-            switchAwayFromReplyAsSelf();
-            window.addEventListener('TBNewThings', () => {
-                switchAwayFromReplyAsSelf();
-                setTimeout(() => {
-                    switchAwayFromReplyAsSelf();
-                }, 1000);
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    setTimeout(() => {
+                        switchAwayFromReplyAsSelf();
+                    }, 1000);
+                }
             });
         }
 
@@ -92,7 +121,13 @@ function newmodmailpro () {
                     $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
                     $('form.ThreadViewerReplyForm, form.NewThread__form').after($previewArea);
                 }
-                const renderedHTML = parser.render(TBStorage.purify(e.target.value));
+
+                // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                // people pasting malicious input on advice of shitty people.
+                let renderedHTML = TBStorage.purify(parser.render(e.target.value));
+                // Fix relative urls as new modmail uses a different subdomain.
+                renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
+
                 $previewArea.html(`
                 <h3 class="tb-preview-heading">Preview</h3>
                 <div class="md">
@@ -164,6 +199,20 @@ function newmodmailpro () {
 
             // Now enable toolbox nightmode.
             $('html').addClass('tb-nightmode');
+        }
+
+        if (clickableReason) {
+            $body.on('click', '.icon-user', () => {
+                setTimeout(() => {
+                    reasonClickable();
+                }, 500);
+            });
+
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    reasonClickable();
+                }
+            });
         }
     }
 

@@ -18,11 +18,11 @@ New contributions to toolbox are always welcome, there are some guidelines we as
 
 Since toolbox is a project that receives contributions from multiple people from various programming backgrounds it is important to be aware of style conventions. Our programming style guidelines aim is to make it easier for someone who starts work on toolbox to familiarize themselves with the style conventions agreed upon in toolbox.
 
-The document can be found [in this wiki article](../../wiki/Programming-style-guide).
+The document can be found [in this wiki article](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Programming-style-guide).
 
 ### Contributing completely new functionality 
 
-We welcome new functionality, however it is always possible that someone is already working on something you have thought up or that we have not implemented something deliberately. So if you are considering coding new functionality it is always a good idea to first check. Simply make an issue here on GitHub or [contact the team on Discord or IRC](../../wiki/Contacting-the-toolbox-team)
+We welcome new functionality, however it is always possible that someone is already working on something you have thought up or that we have not implemented something deliberately. So if you are considering coding new functionality it is always a good idea to first check. Simply make an issue here on GitHub or [contact the team on Discord or IRC](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Contacting-the-toolbox-team)
 
 ### Existing utility functions
 
@@ -30,9 +30,9 @@ We have a lot of utility functions in toolbox ready to be used for background op
 
 You can find the documentation for all this on the following locations:
 
-- [JSDoc code documentation](code_jsdocs.md) WIP
-- [Toolbox module documentation](../../wiki/Module-Structure) details how the general toolbox module structure works. 
-- Team members on Discord or IRC. We try to keep the documentation updated but it very much is a work in progress. So when things are unclear don't be afraid to simply ask. 
+- [JSDoc source code documentation](https://toolbox-team.github.io/source-docs/) Note: Not yet entirely complete, more documentation for code is an ongoing effort. 
+- [Toolbox module documentation](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Toolbox-Module-Structure) details how the general toolbox module structure works. 
+- Team members on Discord. We try to keep the documentation updated but it very much is a work in progress. So when things are unclear don't be afraid to simply ask. 
 
 ## Project structure
 
@@ -55,7 +55,7 @@ You can find the documentation for all this on the following locations:
 
 Building is only needed if you want to test in Firefox as the build process makes some changes to `extension/manifest.json` for firefox. For Chrome and other chromium based browsers the building steps below are not needed.
 
-Building the extension is relatively easy through [Node.js][nodejs].
+Building the extension is relatively easy through [Node.js](https://nodejs.org/en/).
 
 ```sh
 $ npm install          # Install dependencies
@@ -76,6 +76,7 @@ Once you've built a .zip for your platform, you're ready to test! Remember to re
 
 ## Testing on Firefox (Developer or Nightly Editions)
 
-- Go to `about:debugging`.
-- Click the "Load Temporary Add-on" button.
+- Go to `about:addons`.
+- Click the gear button.
+- Click "Install Add-On From File...".
 - Load the `/build/toolbox_v<version>_firefox.zip` file.

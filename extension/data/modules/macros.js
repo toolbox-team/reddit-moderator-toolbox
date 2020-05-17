@@ -20,7 +20,7 @@ function modmacros () {
             if (TBCore.configCache[sub] !== undefined) {
                 callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         self.log('!resp || resp === TBCore.WIKI_PAGE_UNKNOWN');
                         callback(false);
@@ -49,7 +49,7 @@ function modmacros () {
             }
         }
 
-        function populateSelect (selectClass, subreddit, config) {
+        function populateSelect (selectClass, subreddit, config, type) {
             $(selectClass).each(function () {
                 const $select = $(this),
                       sub = $select.attr('data-subreddit');
@@ -62,7 +62,22 @@ function modmacros () {
                         return;
                     }
                     $select.addClass('tb-populated');
+                    let context = 'contextpost';
+                    switch (type) {
+                    case 'post':
+                        context = 'contextpost';
+                        break;
+                    case 'comment':
+                        context = 'contextcomment';
+                        break;
+                    case 'modmail':
+                        context = 'contextmodmail';
+                        break;
+                    }
                     $(config).each((idx, item) => {
+                        if (item[context] !== undefined && !item[context]) {
+                            return;
+                        }
                         $($select)
                             .append($('<option>', {
                                 value: idx,
@@ -78,7 +93,7 @@ function modmacros () {
 
         if (TBCore.isOldReddit) {
             TBCore.getModSubs(() => {
-                if (TBCore.post_site && $.inArray(TBCore.post_site, TBCore.mySubs) !== -1) {
+                if (TBCore.post_site && TBCore.mySubs.includes(TBCore.post_site)) {
                     self.log('getting config');
                     getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
@@ -93,7 +108,7 @@ function modmacros () {
                                 $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                             }
 
-                            populateSelect('.tb-top-macro-select', TBCore.post_site, config);
+                            populateSelect('.tb-top-macro-select', TBCore.post_site, config, 'post');
                         }
                     });
                 }
@@ -122,7 +137,7 @@ function modmacros () {
 
                     // if we don't have a config, get it.  If it fails, return.
                     getConfig(info.subreddit, (success, config) => {
-                    // if we're a mod, add macros to top level reply button.
+                        // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {
                             const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
                                   macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
@@ -132,8 +147,8 @@ function modmacros () {
                             } else {
                                 $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                             }
-
-                            populateSelect('.tb-macro-select', info.subreddit, config);
+                            // populates for comment and old modmail
+                            populateSelect('.tb-macro-select', info.subreddit, config, TBCore.isModmail ? 'modmail' : 'comment');
                         }
                     });
                 }
@@ -163,15 +178,20 @@ function modmacros () {
                     const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
                     $body.find('.ThreadViewerReplyForm__replyOptions').after(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
 
-                    populateSelect('.tb-macro-select', info.subreddit, config);
+                    populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
                 }
             });
         }
-        setTimeout(() => {
-            if (TBCore.isNewMMThread) {
-                addNewMMMacro();
-            }
-        }, 1000);
+
+        if (TBCore.isNewModmail) {
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    setTimeout(() => {
+                        addNewMMMacro();
+                    }, 1000);
+                }
+            });
+        }
 
         if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
             $('body').on('click', 'button:contains("Reply")', function () {
@@ -194,7 +214,7 @@ function modmacros () {
                                 $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
                                     $macro.remove();
                                 });
-                                populateSelect('.tb-macro-select', subreddit, config);
+                                populateSelect('.tb-macro-select', subreddit, config, 'modmail');
                             }
                         });
                     }
@@ -216,7 +236,7 @@ function modmacros () {
                                         <option value=${MACROS}>macros</option>
                                     </select>
                                     `);
-                                populateSelect('.tb-top-macro-select', subreddit, config);
+                                populateSelect('.tb-top-macro-select', subreddit, config, 'post');
                             }
                         });
                     } else {
@@ -227,15 +247,6 @@ function modmacros () {
             } else {
                 // Remove all macros
                 $body.find('.tb-macro-select').remove();
-            }
-        });
-
-        // NER support.
-        window.addEventListener('TBNewThings', () => {
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    addNewMMMacro();
-                }, 1000);
             }
         });
 
@@ -412,35 +423,35 @@ function modmacros () {
                             TB.ui.longLoadSpinner(false);
                         }, 1500);
                     } else {
-                        TBApi.postComment(info.id, editedcomment, (successful, response) => {
-                            if (!successful) {
-                                TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
+                        TBApi.postComment(info.id, editedcomment).then(response => {
+                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                            $currentMacroPopup.remove();
+                            $selectElement.prop('disabled', false);
+                            if (topLevel) {
+                                $selectElement.val(MACROS);
                             } else {
-                                TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
-                                $currentMacroPopup.remove();
-                                $selectElement.prop('disabled', false);
-                                if (topLevel) {
-                                    $selectElement.val(MACROS);
-                                } else {
-                                    $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
-                                }
-
-                                const commentId = response.json.data.things[0].data.id;
-
-                                if (lockreply) {
-                                    TBApi.lock(commentId, successful => {
-                                        if (!successful) {
-                                            TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
-                                        }
-                                    });
-                                }
-                                if (distinguish && !TBCore.isModmail) {
-                                    // Distinguish the new reply
-                                    TBApi.distinguishThing(commentId, sticky && topLevel).then(() => {
-                                        TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
-                                    });
-                                }
+                                $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
                             }
+
+                            const commentId = response.json.data.things[0].data.id;
+
+                            if (lockreply) {
+                                TBApi.lock(commentId).catch(() => {
+                                    TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
+                                });
+                            }
+                            if (distinguish && !TBCore.isModmail) {
+                                // Distinguish the new reply
+                                TBApi.distinguishThing(commentId, sticky && topLevel).then(result => {
+                                    if (!result.success) {
+                                        TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                    }
+                                }).catch(() => {
+                                    TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                });
+                            }
+                        }).catch(() => {
+                            TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
                         });
 
                         if (!TBCore.isModmail && !TBCore.isNewModmail) {

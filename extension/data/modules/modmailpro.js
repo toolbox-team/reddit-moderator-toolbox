@@ -535,7 +535,7 @@ function modmailpro () {
                 }
 
                 // recolor new threads.
-                if ($.inArray(threadID, unreadThreads) !== -1) {
+                if (unreadThreads.includes(threadID)) {
                     $infoArea.addClass('new-highlight');
                     $subredditArea.addClass('new-highlight');
                     $thread.addClass('new-messages');
@@ -601,7 +601,7 @@ function modmailpro () {
                 self.log('LMC! LMC!');
                 $body.find('div.content').on('DOMNodeInserted', '.message-parent', e => {
                     const $sender = $(e.target);
-                    if ($.inArray($sender.data('fullname'), moreCommentThreads) === -1) {
+                    if (!moreCommentThreads.includes($sender.data('fullname'))) {
                         return;
                     }
 
@@ -778,7 +778,7 @@ function modmailpro () {
                 const $this = $(this),
                       id = $this.data('fullname');
 
-                if ($.inArray(id, getRepliedThreads()) !== -1) {
+                if (getRepliedThreads().includes(id)) {
                     $this.find('.tb-replied-tag').html(' Replied');
                     $this.removeClass('invitespam'); // it's not spam if we replied.
                 }
@@ -805,13 +805,13 @@ function modmailpro () {
                 if (!byID) {
                     const subname = $this.data('subreddit');
 
-                    if ($.inArray(subname, items) !== -1) {
+                    if (items.includes(subname)) {
                         $this.css('display', '');
                     }
                 } else {
                     const id = $this.data('fullname');
 
-                    if ($.inArray(id, items) !== -1) {
+                    if (items.includes(id)) {
                         $this.css('display', '');
                     }
                 }
@@ -829,7 +829,7 @@ function modmailpro () {
 
                 $this.css('display', '');
 
-                if ($.inArray(subname, subs) !== -1) {
+                if (subs.includes(subname, subs)) {
                     $this.css('display', 'none');
                 }
             });
@@ -882,7 +882,7 @@ function modmailpro () {
                   replied = getRepliedThreads();
 
             // Add sub to filtered subs.
-            if ($.inArray(id, replied) === -1 && id !== null) {
+            if (!replied.includes(id) && id !== null) {
                 replied.push(id);
             }
 

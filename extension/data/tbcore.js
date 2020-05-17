@@ -24,13 +24,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         });
 
         /**
-         * If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain. Used because some browsers do not like relative urls in extensions
-         * @var {string} baseDomain
-         * @memberof TBCore
+         * If we are on new modmail we use www.reddit.com for all other
+         * instances we use whatever is the current domain. Used because some
+         * browsers do not like relative urls in extensions
+         * @constant {string}
          */
         TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
         const SHORTNAME = 'TBCore';
         const SETTINGS_NAME = 'Utils';
 
@@ -132,56 +133,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
         TBCore.isMod = $('body.moderator').length;
 
-        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
-
-        if (newModSubs && newModSubs.length > 0) {
-            TBCore.mySubs = [];
-            TBCore.mySubsData = [];
-            $(newModSubs).each(function () {
-                const sub = this.data.display_name.trim();
-                if (!TBCore.modsSub(sub)) {
-                    TBCore.mySubs.push(sub);
-                }
-
-                let isinthere = false;
-                $(TBCore.mySubsData).each(function () {
-                    if (this.subreddit === sub) {
-                        isinthere = true;
-                    }
-                });
-
-                if (!isinthere) {
-                    const subredditData = {
-                        subreddit: sub,
-                        subscribers: this.data.subscribers,
-                        over18: this.data.over18,
-                        created_utc: this.data.created_utc,
-                        subreddit_type: this.data.subreddit_type,
-                        submission_type: this.data.submission_type,
-                    };
-
-                    TBCore.mySubsData.push(subredditData);
-                }
-            });
-
-            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
-            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
-            // Update the cache.
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
-        } else {
-            TBCore.mySubs = cacheDetails.moderatedSubs;
-            TBCore.mySubsData = cacheDetails.moderatedSubsData;
-        }
-
         const manifest = browser.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
         const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
 
         TBCore.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
+        TBCore.toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
         TBCore.shortVersion = shortVersion;
-        TBCore.releaseName = 'Spying Squirrel';
         TBCore.configSchema = 1;
         TBCore.configMinSchema = 1;
         TBCore.configMaxSchema = 1;
@@ -206,7 +165,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.tbDevs = toolboxDevs;
         TBCore.betaRelease = betaRelease;
 
-        TBCore.browser = UNKOWN_BROWSER;
+        TBCore.browser = UNKNOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
@@ -256,7 +215,49 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
         </style>`);
 
+        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
+
         // Get cached info.
+        function processNewModSubs () {
+            TBCore.mySubs = [];
+            TBCore.mySubsData = [];
+            newModSubs.forEach(subData => {
+                const sub = subData.data.display_name.trim();
+                if (!TBCore.modsSub(sub)) {
+                    TBCore.mySubs.push(sub);
+                }
+
+                const isinthere = TBCore.mySubsData.some(tbCoreSubData => tbCoreSubData.subreddit === sub);
+
+                if (!isinthere) {
+                    const subredditData = {
+                        subreddit: sub,
+                        subscribers: subData.data.subscribers,
+                        over18: subData.data.over18,
+                        created_utc: subData.data.created_utc,
+                        subreddit_type: subData.data.subreddit_type,
+                        submission_type: subData.data.submission_type,
+                        is_enrolled_in_new_modmail: subData.data.is_enrolled_in_new_modmail,
+                    };
+
+                    TBCore.mySubsData.push(subredditData);
+                }
+            });
+
+            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
+            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
+            // Update the cache.
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
+        }
+
+        if (newModSubs && newModSubs.length > 0) {
+            processNewModSubs();
+        } else {
+            TBCore.mySubs = cacheDetails.moderatedSubs;
+            TBCore.mySubsData = cacheDetails.moderatedSubsData;
+        }
+
         // Get cached info. Short stored.
         TBCore.noteCache = cacheDetails.noteCache;
         TBCore.noConfig = cacheDetails.noConfig;
@@ -269,11 +270,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Updates in page cache and background page.
-         * @function updateCache
-         * @memberof TBCore
+         * @function
          * @param {string} cacheNAme the cache to be written.
          * @param {} value the cache value to be updated
-         * @param {string} subreddit when present cache is threated as an object and the value will be written to subreddit property. If missing the value is pushed.
+         * @param {string} subreddit when present cache is threated as an object and the
+         * value will be written to subreddit property. If missing the value is pushed.
          */
         TBCore.updateCache = function updateCache (cacheName, value, subreddit) {
             logger.debug('update cache', cacheName, subreddit, value);
@@ -433,15 +434,16 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
           * Takes an absolute path for a link and prepends the www.reddit.com
           * domain if we're in new modmail (mod.reddit.com). Makes absolute path
           * links work everywhere.
+          * @function
           * @param {string} link The link path, starting with "/"
           * @returns {string}
           */
         TBCore.link = link => TBCore.isNewModmail ? `https://www.reddit.com${link}` : link;
 
         /**
-         * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
-         * @function debugInformation
-         * @memberof TBCore
+         * Puts important debug information in a object so we can easily include
+         * it in /r/toolbox posts and comments when people need support.
+         * @function
          * @returns {TBCore.debugObject} Object with debug information
          */
         TBCore.debugInformation = function debugInformation () {
@@ -463,9 +465,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             case CHROME: {
                 // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
                 // This way we can also cut some support requests short.
-                const vivaldiRegex = new RegExp(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
-                const yandexRegex = new RegExp(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
-                const chromeRegex = new RegExp(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
+                const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
+                const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
+                const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
                 if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
                     browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
                     debugObject.browser = 'Vivaldi';
@@ -489,8 +491,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 break;
             }
             case FIREFOX: {
-                const firefoxRegex = new RegExp(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
-                const firefoxDerivativeRegex = new RegExp(/\((.*?)\).*(Firefox\/[0-9.].*?)$/);
+                const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
+                const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
                 if (firefoxRegex.test(browserUserAgent)) {
                     browserMatchedInfo = browserUserAgent.match(firefoxRegex);
                     debugObject.browser = 'Firefox';
@@ -522,7 +524,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             }
-            case UNKOWN_BROWSER: {
+            case UNKNOWN_BROWSER: {
                 debugObject.browser = 'Unknown';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
@@ -542,8 +544,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Checks if a given subreddit config version is valid with this version of toolbox
-         * @function isConfigValidVersion
-         * @memberof TBCore
+         * @function
          * @param {object} config
          * @param {string} subreddit
          * @returns {booleean} valid
@@ -565,8 +566,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         /**
          * Fetches the toolbox dev from /r/toolbox or falls back to a predefined list.
-         * @function getToolboxDevs
-         * @memberof TBCore
+         * @function
          * @returns {array} List of toolbox devs
          */
         TBCore.getToolboxDevs = function getToolboxDevs () {
@@ -587,10 +587,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         /**
-         * Opens the toolbox "nag" alert everyone loves so much.
-         * USE SPARINGLY
-         * @function alert
-         * @memberof TBCore
+         * Opens the toolbox "nag" alert everyone loves so much. USE SPARINGLY.
+         * @function
          * @param {object} options The options for the alert
          * @param {string} options.message The text of the alert
          * @param {number} options.noteID The ID of the note we're displaying
@@ -686,8 +684,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         /**
          * Shows a notification, uses native browser notifications if the user
          * allows it or falls back on html notifications.
-         * @function notification
-         * @memberof TBCore
+         * @function
          * @param {string} title Notification title
          * @param {string} body Body text
          * @param {string} path Absolute path to be opend when clicking the
@@ -766,6 +763,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                             created_utc: this.data.created_utc,
                             subreddit_type: this.data.subreddit_type,
                             submission_type: this.data.submission_type,
+                            is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                         };
 
                         TBCore.mySubsData.push(subredditData);
@@ -868,7 +866,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
                 spam = false;
                 ham = false;
-                user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
+                user = $threadBase.find('.Message__author').first().text() || $body.find('.InfoBar__username').first().text();
             } else {
                 const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
                 const $thing = $($sender.closest('.thing')[0] || $sender);
@@ -1071,7 +1069,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     const data = response.data;
 
                     let user = data.children[0].data.author;
-                    const body = data.children[0].data.body || '';
+                    const body = data.children[0].data.body || data.children[0].data.selftext || '';
                     let permalink = data.children[0].data.permalink;
                     const title = data.children[0].data.title || '';
                     const postlink = data.children[0].data.url || '';
@@ -1236,7 +1234,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             function updateRateLimit () {
-                TBApi.getRatelimit(({ratelimitReset, ratelimitRemaining}) => {
+                TBApi.getRatelimit().then(({ratelimitReset, ratelimitRemaining}) => {
                     const $body = $('body');
 
                     if (!$body.find('#ratelimit-counter').length) {
@@ -1323,7 +1321,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.reloadToolbox = function () {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-            browser.runtime.sendMessage({action: 'tb-reload'}, () => {
+            browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
                 window.location.reload();
             });
         };
@@ -1344,13 +1342,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, () => {
-                callback();
-            });
+            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
         };
 
         TBCore.importSettings = function (subreddit, callback) {
-            TBApi.readFromWiki(subreddit, 'tbsettings', true, resp => {
+            TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                     logger.log('Error loading wiki page');
                     return;
@@ -1366,7 +1362,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     'oldreddit.enabled',
                 ];
 
-                $.each(resp, (fullKey, value) => {
+                Object.entries(resp).forEach(([fullKey, value]) => {
                     const key = fullKey.split('.');
 
                     // Do not import certain legacy settings.
@@ -1444,7 +1440,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             } else if (TBCore.hasConfig(sub)) {
                 callback(TBCore.configCache[sub], sub);
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true, resp => {
+                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         // Complete and utter failure
                         callback(false, sub);
@@ -1462,6 +1458,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         };
 
+        let firstCacheTimeout = true;
         // Listen to background page communication and act based on that.
         browser.runtime.onMessage.addListener(message => {
             switch (message.action) {
@@ -1469,7 +1466,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBCore.clearCache(true);
                 break;
             }
-            case 'tb-settings-update': {
+            case 'tb-cache-timeout': {
                 logger.log('Timed cache update', message.payload);
                 // Cache has timed out
                 if (message.payload === 'short') {
@@ -1484,6 +1481,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     TBCore.noRules = [];
                     TBCore.mySubs = [];
                     TBCore.mySubsData = [];
+
+                    // On first init where the modsubs cache was empty we already got this data.
+                    // Here we simply use that data to fill the cache so we don't need to do unneeded actions.
+                    if (newModSubs && newModSubs.length > 0 && firstCacheTimeout) {
+                        firstCacheTimeout = false;
+                        processNewModSubs();
+                    }
                 }
 
                 break;
@@ -1521,7 +1525,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 const children = resp.data.children,
                       devs = [];
 
-                $.each(children, (index, child) => {
+                children.forEach(child => {
                     devs.push(child.name);
                 });
                 TBCore.tbDevs = devs;
@@ -1546,24 +1550,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         }
 
-        // Prep new modmail for toolbox stuff.
-        // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.
-        function addTbModmailSidebar () {
-            setTimeout(() => {
-                const $body = $('body');
-                if (TBCore.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
-                    $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
-                }
-            }, 500);
-        }
-        addTbModmailSidebar();
-
         // Watch for locationHref changes and sent an event with details
         let locationHref;
 
         // new modmail regex matches.
-        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?$/;
-        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?([^/]*)\/?$/;
+        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?$/;
+        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?([^/]*)\/?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
         // reddit regex matches.
@@ -1606,7 +1598,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         };
                     } else if (newMMconversationReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(newMMconversationReg);
-                        contextObject.pageType = 'modmailListing';
+                        contextObject.pageType = 'modmailConversation';
                         contextObject.pageDetails = {
                             conversationType: matchDetails[1],
                             conversationID: matchDetails[2],
@@ -1716,71 +1708,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         watchPushState();
         // Watch for new things and send out events based on that.
-        if (TBCore.isNewModmail) {
-            // For new modmail we do things a bit different.
-            // We only listen for dom changes after a user interaction.
-            // Resulting in this event being fired less and less wasted requests.
-            let newThingRunning = false;
-
-            document.body.addEventListener('click', () => {
-                const newMMtarget = document.querySelector('body');
-
-                // create an observer instance
-                const newMMobserver = new MutationObserver(mutations => {
-                    let doAddTbModmailSidebar = false;
-                    let doTBNewThings = false;
-
-                    mutations.forEach(mutation => {
-                        const $target = $(mutation.target);
-
-                        if ($target.find('.ThreadViewer__infobar').length > 0) {
-                            doAddTbModmailSidebar = true;
-                        }
-                        if ($target.is('.Thread__message, .ThreadViewer, .Thread__messages')) {
-                            doTBNewThings = true;
-                        }
-                    });
-
-                    if (doAddTbModmailSidebar) {
-                        logger.log('DOM: new modmail sidebar found.');
-                        addTbModmailSidebar();
-                    }
-
-                    if (doTBNewThings) {
-                        logger.log('DOM: processable elements found.');
-
-                        // It is entirely possible that TBNewThings is fired multiple times.
-                        // That is why we only set a new timeout if there isn't one set already.
-                        if (!newThingRunning) {
-                            newThingRunning = true;
-                            // Wait a sec for stuff to load.
-                            setTimeout(() => {
-                                newThingRunning = false;
-                                const event = new CustomEvent('TBNewThings');
-                                window.dispatchEvent(event);
-                            }, 1000);
-                        }
-                    }
-                });
-
-                // configuration of the observer:
-                // We specifically want all child elements but nothing else.
-                const newMMconfig = {
-                    attributes: false,
-                    childList: true,
-                    characterData: false,
-                    subtree: true,
-                };
-
-                // pass in the target node, as well as the observer options
-                newMMobserver.observe(newMMtarget, newMMconfig);
-
-                // Wait a bit for dom changes to occur and then disconnect it again.
-                setTimeout(() => {
-                    newMMobserver.disconnect();
-                }, 2000);
-            });
-        } else if ($('#header').length) {
+        if ($('#header').length) {
             let newThingRunning = false;
             // NER, load more comments, and mod frame support.
             const target = document.querySelector('div.content');
@@ -1845,7 +1773,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // get toolbox news
         (function getNotes () {
-            TBApi.readFromWiki('toolbox', 'tbnotes', true, resp => {
+            TBApi.readFromWiki('toolbox', 'tbnotes', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                     return;
                 }
@@ -1857,7 +1785,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
 
             if (betaRelease) {
-                TBApi.readFromWiki('tb_beta', 'tbnotes', true, resp => {
+                TBApi.readFromWiki('tb_beta', 'tbnotes', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                         return;
                     }
@@ -1870,7 +1798,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
             // check dev sub, if debugMode
             if (TBCore.debugMode) {
-                TBApi.readFromWiki('tb_dev', 'tbnotes', true, resp => {
+                TBApi.readFromWiki('tb_dev', 'tbnotes', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
                         TBCore.devMode = false;
                         TBCore.devModeLock = true;
@@ -1891,61 +1819,43 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        browser.runtime.sendMessage({
-            action: 'tb-request',
-            endpoint: '/subreddits/mine/moderator.json',
-            data: {
-                after,
-                limit: 100,
-            },
-        }).then(response => {
-            const {errorThrown, data, jqXHR, textStatus} = response;
-            if (errorThrown) {
-                logger.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                logger.log(jqXHR);
-                if (jqXHR.status === 504) {
-                    logger.log('504 Timeout retrying request');
-                    getModSubs(after, subs => callback(modSubs.concat(subs)));
-                } else {
-                    modSubs = [];
-                    return callback(modSubs);
-                }
-            } else {
-                TBStorage.purifyObject(data);
-                modSubs = modSubs.concat(data.data.children);
+        TBApi.getJSON('/subreddits/mine/moderator.json', {
+            after,
+            limit: 100,
+        }).then(json => {
+            TBStorage.purifyObject(json);
+            modSubs = modSubs.concat(json.data.children);
 
-                if (data.data.after) {
-                    getModSubs(data.data.after, subs => callback(modSubs.concat(subs)));
-                } else {
-                    return callback(modSubs);
-                }
+            if (json.data.after) {
+                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
+            } else {
+                return callback(modSubs);
+            }
+        }).catch(error => {
+            logger.log('getModSubs failed', error);
+            if (error.response && error.response.status === 504) {
+                logger.log('504 Timeout retrying request');
+                getModSubs(after, subs => callback(modSubs.concat(subs)));
+            } else {
+                modSubs = [];
+                return callback(modSubs);
             }
         });
     }
 
     function getUserDetails (tries = 0) {
-        return new Promise((resolve, reject) => {
-            browser.runtime.sendMessage({
-                action: 'tb-request',
-                endpoint: '/api/me.json',
-            }).then(response => {
-                const {errorThrown, data, jqXHR, textStatus} = response;
-                if (errorThrown) {
-                    logger.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                    logger.log(jqXHR);
-                    if (jqXHR.status === 504 && tries < 4) {
-                        tries++;
-                        logger.log('504 Timeout retrying request');
-                        resolve(getUserDetails(tries));
-                    } else {
-                        return reject(errorThrown);
-                    }
-                } else {
-                    TBStorage.purifyObject(data);
-                    logger.log(data);
-                    resolve(data);
-                }
-            });
+        return TBApi.getJSON('/api/me.json').then(data => {
+            TBStorage.purifyObject(data);
+            logger.log(data);
+            return data;
+        }).catch(error => {
+            logger.log('getUserDetails failed', error);
+            if (error.response && error.response.status === 504 && tries < 4) {
+                logger.log('504 Timeout retrying request');
+                return getUserDetails(tries + 1);
+            } else {
+                throw error;
+            }
         });
     }
 

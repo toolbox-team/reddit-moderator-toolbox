@@ -94,56 +94,88 @@ function tbconfig () {
                         title: 'removal reasons settings',
                         tooltip: 'Configure the basic behavior for removal reasons here.',
                         content: `
-                <table>
-                    <td><textarea placeholder="Header" class="tb-input edit-header" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
-                    </tr><tr>
-                    <td><textarea placeholder="Footer" class="tb-input edit-footer" >${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
-                    </tr>
-                    <tr class="advanced-enable" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>
-                    <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                <div id="tb-removal-reason-settings">
+                    <h3>Removal reason header text</h3>
+                    <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea>
+                    <h3>Removal reason footer text</h3>
+                    <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
+                    <h3>Removal reason actions</h3>
+                    <select name="removal-option" id="removal-option">
+                        <option value="suggest" ${!configData.removalReasons.removalOption || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
+                        <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>
+                        <option value="leave" ${configData.removalReasons.removalOption === 'leave' ? 'selected' : ''}>Leave up to moderator settings</option>
+                    </select>
+                    <div id="buttons">
+                        <ul>
+                            <li>
+                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${!configData.removalReasons.typeReply || configData.removalReasons.typeReply === 'reply' ? 'checked' : ''}/>
+                                <label for="type-reply-comment">Reply with a comment to the item that is removed.</label>
+                                <ul>
+                                    <li>
+                                        <input class="reason-sticky" type="checkbox" id="type-stickied" ${configData.removalReasons.typeStickied ? 'checked' : ''}/>
+                                        <label for="type-stickied">Sticky the removal comment.</label>
+                                    </li>
+                                    <li>
+                                        <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment" ${configData.removalReasons.typeLockComment ? 'checked' : ''}/>
+                                        <label for="type-action-lock-comment">Lock the removal comment.</label>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <input name="type-reply" class="reason-type" type="radio" value="pm" id="type-reply-pm" ${configData.removalReasons.typeReply === 'pm' ? 'checked' : ''}/>
+                                <label for="type-reply-pm">Send as PM (personal message)</label>
+                                <ul>
+                                    <li>
+                                        <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
+                                        <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
+                                    </li>
+                                    <li>
+                                        <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${configData.removalReasons.autoArchive ? 'checked' : ''}/>
+                                        <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <input name="type-reply" class="reason-type" type="radio" value="both" id="type-reply-both" ${configData.removalReasons.typeReply === 'both' ? 'checked' : ''}/>
+                                <label for="type-reply-both">Send as both PM and reply.</label>
+                            </li>
+                            <li class="rr-advanced">
+                                <input name="type-reply" class="reason-type" type="radio" value="none" id="type-reply-none" ${configData.removalReasons.typeReply === 'none' ? 'checked' : ''}/>
+                                <label for="type-reply-none">Send nothing and log the removal.</label>
+                            </li>
+                            <li>
+                                <input class="action-lock-thread" type="checkbox" id="type-action-lock-thread" ${configData.removalReasons.typeLockThread ? 'checked' : ''}/>
+                                <label for="type-action-lock-thread">Lock the removed thread.</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${(TBCore.advancedMode ? '' : 'style="display:none;"')}>show advanced settings</a>
+                    <h3 class="rr-advanced">Advanced settings</h3>
+                    <div class="rr-advanced">
                         get reason from /r/:
-                    </td><td>
                         <input class="getfrom tb-input" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '')}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
                         logsub /r/:
-                    </td><td>
                         <input class="logsub tb-input" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
-                       pmsubject:
-                    </td><td>
-                       <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
+                        pmsubject:
+                        <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '')}"/>
+                    </div>
+                    <div class="rr-advanced">
                         logtitle:
-                    </td><td>
                         <input class="logtitle tb-input" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
                         bantitle:
-                    </td><td>
                         <input class="bantitle tb-input" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '')}"/>
-                    </td>
-                    </tr>
-                    <tr class="rr-advanced">
-                    <td>
+                    </div>
+                    <div class="rr-advanced">
                         logreason:
-                    </td><td>
                         <input class="logreason tb-input" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : '')}"/>
-                    </td>
-                    </tr><tr>
-                </table>`,
+                    </div>
+                </div>`,
                         footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">',
                     },
                     {
@@ -155,6 +187,13 @@ function tbconfig () {
                 <span id="tb-add-removal-reason-form">
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
                     <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
+                    <div>
+                        <b>Use for:</b>
+                        <input type="checkbox" id="remove-posts" name="remove-posts" checked>
+                        <label for="remove-posts">Posts</label>
+                        <input type="checkbox" id="remove-comments" name="remove-comments">
+                        <label for="remove-comments">Comments</label>
+                    </div>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
                     <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
@@ -188,8 +227,8 @@ function tbconfig () {
                 <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <div id="tb-add-mod-macro-form">
-                    <textarea class="tb-input edit-area"></textarea><br/>
                     <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
+                    <textarea class="tb-input edit-area" placeholder="macro text"></textarea><br/>
                     <div class="tb-macro-actions">
                         <div class="tb-macro-actions-row">
                             <h2>Reply</h2>
@@ -210,6 +249,12 @@ function tbconfig () {
                             <label><input type="checkbox" id="banuser">ban user</label>
                             <label><input type="checkbox" id="muteuser">mute user</label>
                         </div>
+                    </div>
+                    <div class="tb-macro-context">
+                        <h2>Which context</h2>
+                        <label><input type="checkbox" id="context-post" name="context-post"> Post</label>
+                        <label><input type="checkbox" id="context-comment" name="context-comment"> Comment</label>
+                        <label><input type="checkbox" id="context-modmail" name="context-modmail"> Modmail</label>
                     </div>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">
@@ -294,7 +339,7 @@ function tbconfig () {
         $body.on('click', '#tb-config-link, .tb-config-link', function () {
             subreddit = $(this).data('subreddit');
 
-            TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+            TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                     self.log('Failed: wiki config');
 
@@ -325,29 +370,27 @@ function tbconfig () {
         function postToWiki (page, data, reason, isJSON, updateAM) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM, (succ, err) => {
-                self.log(`save succ = ${succ}`);
-                if (!succ) {
-                    self.log(err);
-                    if (page === 'config/automoderator') {
-                        const $error = $body.find('.edit_automoderator_config .error');
-                        $error.show();
+            TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(() => {
+                self.log('save succ = true');
+                if (page === 'config/automoderator') {
+                    $body.find('.edit_automoderator_config .error').hide();
+                }
+                self.log('clearing cache');
+                TBCore.clearCache();
 
-                        const saveError = err.responseJSON.special_errors[0];
-                        $error.find('.errorMessage').html(TBStorage.purify(saveError));
+                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+            }).catch(err => {
+                self.log(err);
+                if (page === 'config/automoderator') {
+                    const $error = $body.find('.edit_automoderator_config .error');
+                    $error.show();
 
-                        TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
-                    } else {
-                        TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
-                    }
+                    const saveError = err.responseJSON.special_errors[0];
+                    $error.find('.errorMessage').html(TBStorage.purify(saveError));
+
+                    TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
                 } else {
-                    if (page === 'config/automoderator') {
-                        $body.find('.edit_automoderator_config .error').hide();
-                    }
-                    self.log('clearing cache');
-                    TBCore.clearCache();
-
-                    TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
                 }
             });
         }
@@ -453,7 +496,7 @@ function tbconfig () {
                     configEditor.save();
                 });
 
-                TBApi.readFromWiki(subreddit, actualPage, false, resp => {
+                TBApi.readFromWiki(subreddit, actualPage, false).then(resp => {
                     if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         $textArea.val('error getting wiki data.');
                         configEditor.setValue('error getting wiki data.');
@@ -486,7 +529,7 @@ function tbconfig () {
             // load the text area, but not the save button.
                 $textArea.val('getting wiki data...');
 
-                TBApi.readFromWiki(subreddit, actualPage, false, resp => {
+                TBApi.readFromWiki(subreddit, actualPage, false).then(resp => {
                     if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         $textArea.val('error getting wiki data.');
                         return;
@@ -581,6 +624,8 @@ function tbconfig () {
 
                     const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
                           removalReasonTitle = config.removalReasons.reasons[i].title || '',
+                          removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts !== false ? 'checked' : '',
+                          removalReasonRemoveComments = config.removalReasons.reasons[i].removeComments ? 'checked' : '',
                           removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                           removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
 
@@ -595,6 +640,13 @@ function tbconfig () {
                         <span class="removal-reason-edit">
                             <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
                             <textarea class="tb-input edit-area">{{removalReasonText}}</textarea><br/>
+                            <div>
+                                <b>Use for:</b>
+                                <input type="checkbox" class="tb-input" id="remove-posts{{i}}" name="remove-posts" {{removalReasonRemovePosts}}>
+                                <label for="remove-posts{{i}}">Posts</label>
+                                <input type="checkbox" class="tb-input" id="remove-comments{{i}}" name="remove-comments" {{removalReasonRemoveComments}}>
+                                <label for="remove-comments{{i}}">Comments</label>
+                            </div>
                             <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
                             <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
@@ -610,6 +662,8 @@ function tbconfig () {
                         label,
                         'removalReasonText': TBHelpers.escapeHTML(removalReasonText),
                         removalReasonTitle,
+                        removalReasonRemovePosts,
+                        removalReasonRemoveComments,
                         removalReasonFlairText,
                         removalReasonFlairCSS,
                     });
@@ -674,20 +728,20 @@ function tbconfig () {
                     <td class="mod-macros-content" data-macro="{{i}}">
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>
                         <span class="mod-macro-edit">
-                            <textarea class="tb-input edit-area">{{modMacroText}}</textarea><br/>
+                            <textarea class="tb-input edit-area" placeholder="macro text">{{modMacroText}}</textarea><br/>
                             <input type="text" class="macro-title tb-input" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>
                             <div class="tb-macro-actions">
                                 <div class="tb-macro-actions-row">
                                     <h2>Reply</h2>
                                     <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>
                                     <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>
-                                        <label><input type="checkbox" class="{{i}}-lockreply" id="lockreply">lock reply</label>
+                                    <label><input type="checkbox" class="{{i}}-lockreply" id="lockreply">lock reply</label>
                                 </div>
                                 <div class="tb-macro-actions-row">
                                     <h2>Item</h2>
                                     <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>
                                     <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>
-                                        <label><input type="checkbox" class="{{i}}-lockitem" id="lockitem">lock item</label>
+                                    <label><input type="checkbox" class="{{i}}-lockitem" id="lockitem">lock item</label>
                                     <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
                                     <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
                                 </div>
@@ -696,6 +750,12 @@ function tbconfig () {
                                     <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>
                                     <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>
                                 </div>
+                            </div>
+                            <div class="tb-macro-context">
+                                <h2>Which context</h2>
+                                <label><input type="checkbox" class="{{i}}-context-post" id="context-post" name="context-post"> Post</label>
+                                <label><input type="checkbox" class="{{i}}-context-comment" id="context-comment" name="context-comment"> Comment</label>
+                                <label><input type="checkbox" class="{{i}}-context-modmail" id="context-modmail" name="context-modmail"> Modmail</label>
                             </div>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />
@@ -724,6 +784,10 @@ function tbconfig () {
                     $(`.${i}-sticky`).prop('checked', macro.sticky);
                     $(`.${i}-archivemodmail`).prop('checked', macro.archivemodmail);
                     $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
+
+                    $(`.${i}-context-post`).prop('checked', macro.contextpost);
+                    $(`.${i}-context-comment`).prop('checked', macro.contextcomment);
+                    $(`.${i}-context-modmail`).prop('checked', macro.contextmodmail);
                 });
             }
         }
@@ -812,6 +876,13 @@ function tbconfig () {
                 logreason: $('.logreason').val(),
                 header: escape($('.edit-header').val()),
                 footer: escape($('.edit-footer').val()),
+                removalOption: $('#removal-option').val(),
+                typeReply: $('input[name="type-reply"]:checked').val(),
+                typeStickied: $('#type-stickied').prop('checked'),
+                typeLockComment: $('#type-action-lock-comment').prop('checked'),
+                typeAsSub: $('#type-as-sub').prop('checked'),
+                autoArchive: $('#type-auto-archive').prop('checked'),
+                typeLockThread: $('#type-action-lock-thread').prop('checked'),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),
                 bantitle: $('.bantitle').val(),
@@ -830,7 +901,7 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                         if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
@@ -982,7 +1053,7 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                         if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
@@ -1018,6 +1089,8 @@ function tbconfig () {
 
             $removalContent.find('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
             $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[reasonsNum].title || '');
+            $removalContent.find('input[name=remove-posts]').val(config.removalReasons.reasons[reasonsNum].removePosts || undefined);
+            $removalContent.find('input[name=remove-comments]').val(config.removalReasons.reasons[reasonsNum].removeComments || undefined);
             $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
             $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
             $removalContent.find('input[name=edit-note]').val('');
@@ -1033,6 +1106,8 @@ function tbconfig () {
                   reasonsNum = $removalContent.attr('data-reason'),
                   reasonText = $removalContent.find('.edit-area').val(),
                   reasonTitle = $removalContent.find('input[name=removal-title]').val(),
+                  reasonRemovePosts = $removalContent.find('input[name=remove-posts]').is(':checked'),
+                  reasonRemoveComments = $removalContent.find('input[name=remove-comments]').is(':checked'),
                   reasonFlairText = $removalContent.find('input[name=flair-text]').val(),
                   reasonFlairCSS = $removalContent.find('input[name=flair-css]').val();
             let editNote = $removalContent.find('input[name=edit-note]').val();
@@ -1046,6 +1121,8 @@ function tbconfig () {
             config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
             config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
             config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
+            config.removalReasons.reasons[reasonsNum].removePosts = reasonRemovePosts;
+            config.removalReasons.reasons[reasonsNum].removeComments = reasonRemoveComments;
             config.removalReasons.reasons[reasonsNum].title = reasonTitle;
 
             postToWiki('toolbox', config, editNote, true);
@@ -1113,6 +1190,8 @@ function tbconfig () {
         $body.on('click', '#tb-add-removal-reason-form .save-new-reason', () => {
             const reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
                   reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val(),
+                  reasonRemovePosts = $body.find('#tb-add-removal-reason-form input[name=remove-posts]').is(':checked'),
+                  reasonRemoveComments = $body.find('#tb-add-removal-reason-form input[name=remove-comments]').is(':checked'),
                   reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
                   reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val();
             let editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
@@ -1125,6 +1204,8 @@ function tbconfig () {
 
             reason.flairText = reasonFlairText;
             reason.flairCSS = reasonFlairCSS;
+            reason.removePosts = reasonRemovePosts;
+            reason.removeComments = reasonRemoveComments;
             reason.title = reasonTitle;
 
             if (!config.removalReasons) {
@@ -1142,25 +1223,23 @@ function tbconfig () {
             // And finally we repopulate the reasons list and hide the current form.
             $body.find('#tb-removal-reasons-list').html('');
             removalReasonsContent();
-            $body.find('#tb-add-removal-reason').show();
-            $body.find('#tb-add-removal-reason-form').hide();
-            $body.find('#tb-add-removal-reason-form .edit-area').val('');
-            $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
-            $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
-            $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
-            $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
+            resetForm();
         });
 
-        // cancel
-        $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', () => {
+        const resetForm = () => {
             $body.find('#tb-add-removal-reason').show();
             $body.find('#tb-add-removal-reason-form').hide();
             $body.find('#tb-add-removal-reason-form .edit-area').val('');
             $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
+            $body.find('#tb-add-removal-reason-form input[name=remove-posts]').prop('checked', true);
+            $body.find('#tb-add-removal-reason-form input[name=remove-comments]').prop('checked', false);
             $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
             $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
             $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
-        });
+        };
+
+        // cancel
+        $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', resetForm);
 
         // Removal reasons sorting tab
         $body.on('click', '.tb-window-tabs .sort_removal_reasons', function () {
@@ -1168,7 +1247,7 @@ function tbconfig () {
             $body.find('#tb-removal-sort-list').empty();
             // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
             if ($body.hasClass('toolbox-wiki-edited')) {
-                TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                         self.log('Failed: wiki config');
                         return;
@@ -1251,7 +1330,7 @@ function tbconfig () {
             if (!$this.hasClass('content-populated')) {
                 // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
                 if ($body.hasClass('toolbox-wiki-edited')) {
-                    TBApi.readFromWiki(subreddit, 'toolbox', true, resp => {
+                    TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                         if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                             self.log('Failed: wiki config');
                             return;
@@ -1321,6 +1400,9 @@ function tbconfig () {
                   sticky = $macroContent.find('#sticky').prop('checked'),
                   archivemodmail = $macroContent.find('#archivemodmail').prop('checked'),
                   highlightmodmail = $macroContent.find('#highlightmodmail').prop('checked'),
+                  contextpost = $macroContent.find('#context-post').prop('checked'),
+                  contextcomment = $macroContent.find('#context-comment').prop('checked'),
+                  contextmodmail = $macroContent.find('#context-modmail').prop('checked'),
                   macro = config.modMacros[macroNum];
             let editNote = $macroContent.find('input[name=edit-note]').val();
 
@@ -1348,6 +1430,9 @@ function tbconfig () {
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
+            macro.contextpost = contextpost;
+            macro.contextcomment = contextcomment;
+            macro.contextmodmail = contextmodmail;
 
             postToWiki('toolbox', config, editNote, true);
 
@@ -1424,7 +1509,10 @@ function tbconfig () {
                   lockreply = $body.find('#lockreply').prop('checked'),
                   sticky = $body.find('#sticky').prop('checked'),
                   archivemodmail = $body.find('#archivemodmail').prop('checked'),
-                  highlightmodmail = $body.find('#highlightmodmail').prop('checked');
+                  highlightmodmail = $body.find('#highlightmodmail').prop('checked'),
+                  contextpost = $body.find('#context-post').prop('checked'),
+                  contextcomment = $body.find('#context-comment').prop('checked'),
+                  contextmodmail = $body.find('#context-modmail').prop('checked');
             let editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
             if (macroTitle.length < 1) {
@@ -1450,6 +1538,9 @@ function tbconfig () {
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
+            macro.contextpost = contextpost;
+            macro.contextcomment = contextcomment;
+            macro.contextmodmail = contextmodmail;
 
             if (!config.modMacros) {
                 config.modMacros = [];
@@ -1477,6 +1568,9 @@ function tbconfig () {
             $body.find('#sticky').prop('checked', false);
             $body.find('#archivemodmail').prop('checked', false);
             $body.find('#highlightmodmail').prop('checked', false);
+            $body.find('#context-post').prop('checked', false);
+            $body.find('#context-comment').prop('checked', false);
+            $body.find('#context-modmail').prop('checked', false);
         });
 
         // cancel

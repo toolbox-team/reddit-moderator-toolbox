@@ -152,10 +152,8 @@ function nukecomments () {
                             missedComments.push(comment);
                         });
                     } else if (executionType === 'lock') {
-                        TBApi.lock(`t1_${comment}`, result => {
-                            if (!result) {
-                                missedComments.push(comment);
-                            }
+                        TBApi.lock(`t1_${comment}`).catch(() => {
+                            missedComments.push(comment);
                         });
                     }
                 }, () => {

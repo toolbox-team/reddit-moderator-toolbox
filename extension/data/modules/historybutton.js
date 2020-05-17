@@ -39,6 +39,12 @@ function historybutton () {
         hidden: true,
     });
 
+    self.register_setting('includeNsfwSearches', {
+        type: 'boolean',
+        default: false,
+        title: 'Include NSFW submissions in searches',
+    });
+
     /**
      * Attach an [H] button to all users
      */
@@ -51,25 +57,6 @@ function historybutton () {
                 </a>
             `);
         });
-    };
-
-    self.attachToModmail = function () {
-        const $body = $('body');
-        $body.find('.Thread__message').not('.tb-history').each(function () {
-            const $this = $(this);
-            if ($this.find('.tb-attr').length === 0) {
-                $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
-            }
-            const $tbAttrs = $this.find('.tb-attr');
-            const UserButtonHTMLnewMM = '<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
-            $tbAttrs.append(UserButtonHTMLnewMM);
-        });
-
-        const userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
-
-        const $sidebar = $body.find('.ThreadViewer__infobar');
-
-        $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
     };
 
     self.runJsAPI = function () {
@@ -126,39 +113,13 @@ function historybutton () {
             if (modSubCheck) {
                 self.log('passed');
 
-                if (TBCore.isNewModmail) {
-                    setTimeout(() => {
-                        self.attachToModmail();
-                    }, 750);
-                } else {
-                    self.log('not new modmail');
-                    self.runJsAPI();
-                }
-
-                // NER support.
-                window.addEventListener('TBNewThings', () => {
-                    self.attachToModmail();
-                });
+                self.runJsAPI();
 
                 $body.on('click', '.user-history-button, #tb-user-history', function (event) {
                     const $this = $(this);
                     const $target = $(event.currentTarget);
-                    let author;
-                    if ($body.find('.ThreadViewer').length > 0) {
-                        if ($this.hasClass('modmail-sidebar')) {
-                            author = $('.InfoBar__username').text();
-                        } else {
-                            author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
-                        }
-                    } else {
-                        author = $target.attr('data-author');
-                    }
+                    const author = $target.attr('data-author');
                     const thisSubreddit = $target.attr('data-subreddit');
-
-                    if ($target.attr('id') === 'tb-user-history') {
-                        event.pageY -= 600;
-                        event.pageX += 200;
-                    }
 
                     const positions = TBui.drawPosition(event);
 
@@ -432,6 +393,9 @@ function historybutton () {
             $error.html('unable to load userdata</br>shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).then(d => {
+            if (!d) {
+                return;
+            }
             TBStorage.purifyObject(d);
             // This is another exit point of the script. Hits this code after loading 1000 submissions for a user
             if ($.isEmptyObject(d.data.children)) {
@@ -468,7 +432,7 @@ function historybutton () {
 
             TB.ui.longLoadNonPersistent(false);
             // For every submission, incremenet the count for the subreddit and domain by one.
-            $.each(d.data.children, (index, value) => {
+            d.data.children.forEach(value => {
                 const data = value.data;
 
                 if (!user.domains[data.domain]) {
@@ -536,6 +500,8 @@ function historybutton () {
             // Are there more domains than are shown?
             let moreDomains = 0;
 
+            const maybeNsfwParam = self.setting('includeNsfwSearches') ? '&include_over_18=on' : '';
+
             // Append all domains to the table and to the report comment
             user.domainList.forEach((domain, index) => {
                 const domainCount = user.domains[domain].count,
@@ -547,10 +513,10 @@ function historybutton () {
                     cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
 
-                let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off&sort=new&feature=legacy_search`);
+                let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
                 // If the domain is a self post, change the URL
                 if (match) {
-                    url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on&sort=new&feature=legacy_search`);
+                    url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
                 }
 
                 // Append domain to the table
@@ -594,7 +560,7 @@ function historybutton () {
             user.subredditList.forEach((subreddit, index) => {
                 const subredditCount = user.subreddits.submissions[subreddit].count,
                       subredditKarma = user.subreddits.submissions[subreddit].karma,
-                      url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`),
+                      url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`),
                       percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 let cssClass = '';
@@ -744,8 +710,11 @@ function historybutton () {
             $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).then(d => {
+            if (!d) {
+                return;
+            }
             TBStorage.purifyObject(d);
-            $.each(d.data.children, (index, value) => {
+            d.data.children.forEach(value => {
                 const data = value.data;
 
                 if (!user.subreddits.comments[data.subreddit]) {
@@ -816,44 +785,39 @@ function historybutton () {
         const link = `https://www.reddit.com/user/${author}`,
               title = `Overview for ${author}`;
 
-        TBApi.postLink(link, title, self.SPAM_REPORT_SUB, (successful, submission) => {
-            if (!successful) {
-                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${submission[0][1]}</span>`);
-            // $rtsLink.hide();
-            } else {
-                if (submission.json.errors.length) {
-                    $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
-                    // $rtsLink.hide();
-                    if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                        rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
-                    }
-                    return;
+        TBApi.postLink(link, title, self.SPAM_REPORT_SUB).then(submission => {
+            if (submission.json.errors.length) {
+                $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
+                // $rtsLink.hide();
+                if (submission.json.errors[0][0] === 'ALREADY_SUB') {
+                    rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
                 }
-
-                // Post stats as a comment.
-                if (!commentBody.length || !rtsComment) {
-                    rtsNativeLink.textContent = 'reported';
-                    rtsNativeLink.href = submission.json.data.url;
-                    rtsNativeLink.className = 'tb-general-button';
-                    return;
-                }
-
-                TBApi.postComment(submission.json.data.name, commentBody, (successful, comment) => {
-                    if (!successful) {
-                        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${comment[0][1]}</span>`);
-                    // $rtsLink.hide();
-                    } else {
-                        if (comment.json.errors.length) {
-                            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
-                            // $rtsLink.hide();
-                            return;
-                        }
-                        rtsNativeLink.textContent = 'reported';
-                        rtsNativeLink.href = submission.json.data.url;
-                        rtsNativeLink.className = 'tb-general-button';
-                    }
-                });
+                return;
             }
+
+            // Post stats as a comment.
+            if (!commentBody.length || !rtsComment) {
+                rtsNativeLink.textContent = 'reported';
+                rtsNativeLink.href = submission.json.data.url;
+                rtsNativeLink.className = 'tb-general-button';
+                return;
+            }
+
+            TBApi.postComment(submission.json.data.name, commentBody).then(comment => {
+                // $rtsLink.hide();
+                if (comment.json.errors.length) {
+                    $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
+                    // $rtsLink.hide();
+                    return;
+                }
+                rtsNativeLink.textContent = 'reported';
+                rtsNativeLink.href = submission.json.data.url;
+                rtsNativeLink.className = 'tb-general-button';
+            }).catch(error => {
+                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${error[0][1]}</span>`);
+            });
+        }).catch(error => {
+            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${error[0][1]}</span>`);
         });
     };
 

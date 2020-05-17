@@ -24,6 +24,12 @@ function oldReddit () {
         }
     }
 
+    /**
+     * Handles `thing` items as they become visible in the viewport.
+     * @function
+     * @param {IntersectionObserverEntry[]} entries
+     * @param {IntersectionObserver} observer
+     */
     function handleThing (entries, observer) {
         entries.forEach(entry => {
             // The observer fires for everything on page load.
@@ -149,6 +155,82 @@ function oldReddit () {
         });
     }
 
+    function newModmailConversationAuthors () {
+        const $body = $('body');
+        const subreddit = $body.find('.ThreadTitle__community').text();
+        $body.find('.Thread__message:not(.tb-seen)').each(function () {
+            const $this = $(this);
+            $this.addClass('tb-seen');
+            const $jsApiThingPlaceholder = $(`
+                <span class="tb-jsapi-container">
+                    <span data-name="toolbox"></span>
+                </span>
+            `).insertAfter($this.find('.Message__divider').eq(0));
+            const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
+
+            const author = $this.find('.Message__header .Message__author').text().substring(2);
+            const idDetails = $this.find('.m-link').attr('href').match(/\/mail\/.*?\/(.*?)\/(.*?)$/i);
+
+            const detailObject = {
+                type: 'TBmodmailCommentAuthor',
+                data: {
+                    author,
+                    post: {
+                        id: idDetails[1],
+                    },
+                    comment: {
+                        id: idDetails[2],
+                    },
+                    subreddit: {
+                        name: subreddit,
+                    },
+                },
+            };
+
+            dispatchApiEvent(jsApiThingPlaceholder, detailObject);
+        });
+    }
+
+    /**
+     * Makes sure to fire a jsAPI `TBuserHovercard` event for new modmail sidebar instances.
+     * @function
+     */
+    function newModmailSidebar () {
+        setTimeout(() => {
+            const $body = $('body');
+            if ($body.find('.ThreadViewer').length) {
+                $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)').each(function () {
+                    const $infobar = $(this);
+                    $infobar.addClass('tb-seen');
+                    const info = TBCore.getThingInfo(this, true);
+                    const $jsApiThingPlaceholder = $(`
+                        <div class="tb-jsapi-container InfoBar__recents">
+                            <div class="InfoBar__recentsTitle">Toolbox functions:</div>
+                            <span data-name="toolbox"></span>
+                        </div>
+                    `).appendTo($infobar);
+
+                    const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
+
+                    const detailObject = {
+                        type: 'TBuserHovercard',
+                        data: {
+                            user: {
+                                username: info.user,
+                            },
+                            contextID: info.id,
+                            subreddit: {
+                                name: info.subreddit,
+                            },
+                        },
+                    };
+
+                    dispatchApiEvent(jsApiThingPlaceholder, detailObject);
+                });
+            }
+        }, 500);
+    }
+
     self.init = function () {
         // Looks like we are on old reddit. Activate!
         if (TBCore.isOldReddit) {
@@ -159,6 +241,29 @@ function oldReddit () {
                     thingCrawler();
                 });
             }, 500);
+        }
+
+        if (TBCore.isNewModmail) {
+            const $body = $('body');
+
+            $body.on('click', '.icon-user', () => {
+                setTimeout(() => {
+                    newModmailSidebar();
+                }, 500);
+            });
+
+            $body.on('click', '.Thread__grouped', () => {
+                setTimeout(() => {
+                    newModmailConversationAuthors();
+                }, 500);
+            });
+
+            window.addEventListener('TBNewPage', event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    newModmailSidebar();
+                    newModmailConversationAuthors();
+                }
+            });
         }
     };
 }

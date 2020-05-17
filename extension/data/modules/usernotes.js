@@ -46,22 +46,10 @@ function usernotes () {
               showDate = self.setting('showDate');
         let firstRun = true;
 
-        const TYPE_NEW_MODMAIL = 'newmodmail';
-
         TBCore.getModSubs(() => {
             self.log('Got mod subs');
             self.log(TBCore.mySubs);
-            // In new modmail we only run on threads.
-
-            if (TBCore.isNewModmail) {
-                setTimeout(() => {
-                    if ($body.find('.ThreadViewer').length > 0) {
-                        run();
-                    }
-                }, 750);
-            } else {
-                run();
-            }
+            run();
         });
 
         function getUser (users, name) {
@@ -112,7 +100,7 @@ function usernotes () {
             // event based handling of author elements.
             TB.listener.on('author', e => {
                 const $target = $(e.target);
-                if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit) {
+                if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                     const subreddit = e.detail.data.subreddit.name;
                     const author = e.detail.data.author;
                     $target.addClass('ut-thing');
@@ -151,101 +139,15 @@ function usernotes () {
         }
 
         function run () {
-            // This can be done better, but this is for the new modmail user sidebar thing.
-            if ($body.find('.ThreadViewer').length > 0) {
-                const subreddit = $body.find('.ThreadTitle__community').text(),
-                      author = $body.find('.InfoBar__username').text();
-
-                const $thing = $body.find('.ThreadViewer__infobar');
-                $thing.addClass('ut-thing');
-                $thing.attr('data-author', author);
-                $thing.attr('data-subreddit', subreddit);
-
-                if ($thing.find('.tb-attr-note').length === 0) {
-                    $thing.find('.tb-recents').append('<span class="tb-attr-note InfoBar__recent"></span>');
-                }
-
-                const $tbAttrs = $thing.find('.tb-attr-note');
-                attachNoteTag($tbAttrs, subreddit, author, {
-                    customText: 'Usernotes',
-                });
-
-                foundSubreddit(subreddit);
-                processSub(subreddit);
-            }
-
             self.log('Running usernotes');
 
-            // This is only used in newmodmail until that also gets the event based api.
-            if (TBCore.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
-                const things = findThings();
-                let done = false;
-                TBCore.forEachChunked(
-                    things, 30, 100, processThing, () => {
-                        self.log('Done processing things');
-                        TBCore.forEachChunked(subs, 10, 200, processSub, () => {
-                            if (done) {
-                                self.printProfiles();
-                            }
-                        });
-                    },
-                    () => {
-                        self.log('Done processing things');
-                        done = true;
-                    }
-                );
-            }
-
             // We only need to add the listener on pageload.
-            if (firstRun && !TBCore.isNewModmail) {
+            if (firstRun) {
                 addTBListener();
                 firstRun = false;
-
-            //
-            } else if (!TBCore.isNewModmail) {
+            } else {
                 TBCore.forEachChunked(subs, 10, 200, processSub);
             }
-        }
-
-        function findThings () {
-            let $things;
-            if (TBCore.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
-                $things = $('.Thread__message:not(.ut-thing)');
-                $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
-                $things.addClass('ut-thing');
-            }
-            return $things;
-        }
-
-        function processThing (thing) {
-            self.startProfile('process-thing');
-            let subreddit,
-                author;
-
-            const $thing = $(thing),
-                  thingType = $thing.attr('data-ut-type');
-            // self.log("Processing thing: " + thingType);
-
-            if (thingType === TYPE_NEW_MODMAIL) {
-                subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text();
-                author = $thing.find('.Message__author').text().substring(2);
-
-                $thing.attr('data-author', author);
-                $thing.attr('data-subreddit', subreddit);
-
-                if ($thing.find('.tb-attr').length === 0) {
-                    $thing.find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
-                }
-
-                const $tbAttrs = $thing.find('.tb-attr');
-                attachNoteTag($tbAttrs, subreddit, author);
-
-                foundSubreddit(subreddit);
-            } else {
-                self.log(`Unknown thing type ${thingType} (THIS IS BAD)`);
-            }
-
-            self.endProfile('process-thing');
         }
 
         function attachNoteTag ($element, subreddit, author, options = {}) {
@@ -262,7 +164,7 @@ function usernotes () {
         }
 
         function foundSubreddit (subreddit) {
-            if ($.inArray(subreddit, subs) === -1) {
+            if (!subs.includes(subreddit)) {
                 subs.push(subreddit);
             }
         }
@@ -421,11 +323,9 @@ function usernotes () {
                                         <td class="utagger-notes-td3"></td></tr>
                                 </tbody>
                             </table>
-                            <table class="utagger-types">
-                                <tbody>
-                                    <tr class="utagger-type-list"></tr>
-                                </tbody>
-                            </table>
+                            <div class="utagger-types">
+                                <div class="utagger-type-list"></div>
+                            </div>
                             <div class="utagger-input-wrapper">
                                 <input type="text" class="utagger-user-note tb-input" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
                                 <label class="utagger-include-link">
@@ -448,7 +348,7 @@ function usernotes () {
 
             // defined so we can easily add things to these specific areas after loading the notes.
             const $noteList = $popup.find('.utagger-content .utagger-notes tbody'),
-                  $typeList = $popup.find('.utagger-types tbody .utagger-type-list');
+                  $typeList = $popup.find('.utagger-types .utagger-type-list');
 
             // We want to make sure windows fit on the screen.
             const positions = TBui.drawPosition(e);
@@ -471,12 +371,12 @@ function usernotes () {
                     self.log(`    ${info.text}`);
                     self.log(`    ${info.color}`);
                     $typeList.append(`
-                    <td>
+                    <div>
                         <label class="utagger-type type-${info.key}">
                             <input type="checkbox" name="type-group-${group}" value="${info.key}" class="type-input type-input-${info.key}">
-                            <span style="color: ${info.color}">${info.text}</span>
+                            <div style="color: ${info.color}">${info.text}</div>
                         </label>
-                    </td>
+                    </div>
                     `);
                 });
 
@@ -820,12 +720,8 @@ function usernotes () {
                     usersPrune, 20, (user, counter) => {
                         TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        TBApi.getLastActive(user, (succ, date) => {
-                            if (!succ) {
-                                self.log(`${user} is deleted, suspended or shadowbanned.`);
-                                $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
-                                emptyProfiles.push(user);
-                            } else if (pruneOld) {
+                        TBApi.getLastActive(user).then(date => {
+                            if (pruneOld) {
                                 const timeSince = now - date * 1000,
                                       daysSince = TBHelpers.millisecondsToDays(timeSince);
 
@@ -835,6 +731,10 @@ function usernotes () {
                                     emptyProfiles.push(user);
                                 }
                             }
+                        }).catch(() => {
+                            self.log(`${user} is deleted, suspended or shadowbanned.`);
+                            $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
+                            emptyProfiles.push(user);
                         });
                     },
 
@@ -871,20 +771,18 @@ function usernotes () {
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', function () {
+            $body.find('.tb-un-refresh').on('click', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent().find('.user');
                 if (!$this.hasClass('tb-un-refreshed')) {
                     $this.addClass('tb-un-refreshed');
                     self.log(`refreshing user: ${user}`);
-                    TBApi.aboutUser(user, succ => {
-                        const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
-                            status: succ ? 'active' : 'deleted',
-                        });
 
-                        $userSpan.after($status);
+                    const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
+                        status: await TBApi.aboutUser(user).then(() => 'active').catch(() => 'deleted'),
                     });
+                    $userSpan.after($status);
                 }
             });
 
@@ -983,7 +881,7 @@ function usernotes () {
                 self.startProfile('manager-render-notes');
 
                 // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
-                $.each(user.notes, (key, val) => {
+                Object.entries(user.notes).forEach(([key, val]) => {
                     const color = self._findSubredditColor(colors, val.type);
 
                     const timeUTC = Math.round(val.time / 1000),
@@ -1168,7 +1066,7 @@ function usernotes () {
         }
 
         // Read notes from wiki page
-        TBApi.readFromWiki(subreddit, 'usernotes', true, resp => {
+        TBApi.readFromWiki(subreddit, 'usernotes', true).then(resp => {
         // Errors when reading notes
         // // These errors are bad
             if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
@@ -1264,7 +1162,7 @@ function usernotes () {
             const mgr = new self._constManager(deflated.constants);
 
             self.log('Inflating all usernotes');
-            $.each(deflated.users, (name, user) => {
+            Object.entries(deflated.users).forEach(([name, user]) => {
                 inflated.users[name] = {
                     name,
                     notes: user.ns.map(note => inflateNote(deflated.ver, mgr, note, sub)),
@@ -1311,27 +1209,25 @@ function usernotes () {
 
         // Write to wiki page
         self.log('Saving usernotes to wiki...');
-        TBApi.postToWiki('usernotes', sub, notes, reason, true, false, (succ, jqXHR) => {
-            if (succ) {
-                self.log('Success!');
-                TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
-                if (callback) {
-                    callback(true);
-                }
+        TBApi.postToWiki('usernotes', sub, notes, reason, true, false).then(() => {
+            self.log('Success!');
+            TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
+            if (callback) {
+                callback(true);
+            }
+        }).catch(jqXHR => {
+            self.log(`Failure: ${jqXHR.status}`);
+            let reason;
+            if (jqXHR.status === 413) {
+                reason = 'usernotes full';
             } else {
-                self.log(`Failure: ${jqXHR.status}`);
-                let reason;
-                if (jqXHR.status === 413) {
-                    reason = 'usernotes full';
-                } else {
-                    reason = jqXHR.responseText;
-                }
-                self.log(`  ${reason}`);
+                reason = jqXHR.responseText;
+            }
+            self.log(`  ${reason}`);
 
-                TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
-                if (callback) {
-                    callback(false);
-                }
+            TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
+            if (callback) {
+                callback(false);
             }
         });
 
@@ -1371,7 +1267,7 @@ function usernotes () {
 
             const mgr = new self._constManager(deflated.constants);
 
-            $.each(notes.users, (name, user) => {
+            Object.entries(notes.users).forEach(([name, user]) => {
                 deflated.users[name] = {
                     ns: user.notes.filter(note => {
                         if (note === undefined) {

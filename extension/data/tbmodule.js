@@ -157,11 +157,7 @@ function tbmodule () {
                 },
             ];
 
-            $.each(coreSettings, function () {
-                const settingName = this.settingName,
-                      content = this.content,
-                      display = this.display;
-
+            coreSettings.forEach(({settingName, content, display}) => {
                 coreSettingsContent += `
                 <p id="tb-toolbox-${settingName}" style="${display}">
                     ${content}&nbsp;
@@ -213,7 +209,7 @@ function tbmodule () {
                     id: 'about',
                     content: `
                 <h1 id="tb-random-about-quote">"${TBCore.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox v${TBCore.toolboxVersion}: "${TBCore.releaseName}"</a>
+                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${TBCore.toolboxVersionName}</a>
                     <h3> Open source </h3>
                     Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
                     <h3> Privacy </h3>
@@ -239,7 +235,7 @@ function tbmodule () {
                             <td><a href="https://www.reddit.com/user/geo1088">/u/geo1088</a></td>
                         </tr><tr>
                             <td><a href="https://www.reddit.com/user/SpyTec13">/u/SpyTec13</a></td>
-                            <td></td>
+                            <td><a href="https://www.reddit.com/user/kenman">/u/kenman</a></td>
                             <td></td>
                         </tr>
                     </table>
@@ -266,7 +262,7 @@ function tbmodule () {
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>
-                    <span>© 2013-2019 toolbox development team. </span>
+                    <span>© 2013-2020 toolbox development team. </span>
                     <p>Licensed under the Apache License, Version 2.0 (the "License");
                         <br> you may not use this file except in compliance with the License.
                         <br> You may obtain a copy of the License at </p>
@@ -410,7 +406,7 @@ function tbmodule () {
                         TBCore.clearCache();
                         TB.storage.verifiedSettingsSave(succ => {
                             if (succ) {
-                                TB.ui.textFeedback('Settings imported and verified', TB.ui.FEEDBACK_POSITIVE);
+                                TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
                                 setTimeout(() => {
                                     window.location.reload();
                                 }, 1000);
@@ -420,6 +416,7 @@ function tbmodule () {
                         });
                     });
                 } else {
+                    TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
                     TBCore.exportSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                         TBCore.clearCache();
@@ -957,13 +954,13 @@ body {
                             break;
                         case 'sublist':
                             value = [];
-                            $.each($this.find('.selected-list option'), function () {
+                            $this.find('.selected-list option').each(function () {
                                 value.push($(this).val());
                             });
                             break;
                         case 'map':
                             value = {};
-                            $.each($this.find('.tb-map-input-table tbody tr'), function () {
+                            $this.find('.tb-map-input-table tbody tr').each(function () {
                                 const key = escape($(this).find('input[name=key]').val()).trim(),
                                       val = escape($(this).find('input[name=value]').val()).trim();
 

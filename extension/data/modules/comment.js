@@ -438,7 +438,7 @@ function comments () {
             }).then(() => {
                 $flatSearchCount.text(count);
                 setTimeout(() => {
-                    TBui.tbRedditEvent($htmlCommentView, 'comment');
+                    TBui.tbRedditEvent($htmlCommentView);
                     TB.ui.longLoadSpinner(false);
                     $body.css('overflow', 'hidden');
                     $flatViewOverlay.show();
@@ -522,7 +522,7 @@ function comments () {
                             top: positions.topPosition,
                             display: 'block',
                         });
-                    TBui.tbRedditEvent($comments, 'comment');
+                    TBui.tbRedditEvent($comments);
                     $('time.timeago').timeago();
                     $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
                     // Close the popup

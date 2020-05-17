@@ -155,12 +155,12 @@ function devtools () {
                 if ($this.hasClass('fetch-thread')) {
                     const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
                     $siteTable.append($comments);
-                    TBui.tbRedditEvent($comments, 'comment');
+                    TBui.tbRedditEvent($comments);
                     $('time.timeago').timeago();
                 } else {
                     const $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
                     $siteTable.append($comment);
-                    TBui.tbRedditEvent($comment, 'comment');
+                    TBui.tbRedditEvent($comment);
                     $('time.timeago').timeago();
                 }
             });
@@ -179,7 +179,7 @@ function devtools () {
                     }
                 }).then(() => {
                     setTimeout(() => {
-                        TBui.tbRedditEvent($siteTable, 'comment');
+                        TBui.tbRedditEvent($siteTable);
                         TB.ui.longLoadSpinner(false);
                     }, 1000);
                 });

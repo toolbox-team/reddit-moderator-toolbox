@@ -1,6 +1,6 @@
 
 toolbox for reddit [![Build Status](https://travis-ci.org/toolbox-team/reddit-moderator-toolbox.svg?branch=master)](https://travis-ci.org/toolbox-team/reddit-moderator-toolbox) 
-[![DeepScan grade](https://deepscan.io/api/teams/5774/projects/7592/branches/79819/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5774&pid=7592&bid=79819) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=toolbox-team_reddit-moderator-toolbox&metric=alert_status)](https://sonarcloud.io/dashboard?id=toolbox-team_reddit-moderator-toolbox) [![codecov](https://codecov.io/gh/toolbox-team/reddit-moderator-toolbox/branch/master/graph/badge.svg)](https://codecov.io/gh/toolbox-team/reddit-moderator-toolbox) 
+[![DeepScan grade](https://deepscan.io/api/teams/5774/projects/7592/branches/79819/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5774&pid=7592&bid=79819) 
 ========================
 
 [![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox) [![Discord](https://img.shields.io/discord/535490452066009090.svg?color=blue&label=discord&logo=discord&logoColor=fff)](https://discord.gg/8fGCykQ)

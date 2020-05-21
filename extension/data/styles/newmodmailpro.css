@@ -65,7 +65,51 @@ html.tb-nightmode,
     height: 100vh;
 }
 
+/* new modmail activity
+*/
+.new-modmail-activity-popup .tb-popup-content {
+    padding: 0 !important;
+}
 
+.new-modmail-activity-popup .header {
+    font-weight: bold;
+    max-width: 600px;
+    padding: 5px;
+    border-bottom: 1px solid black;
+}
+
+.new-modmail-activity-popup .activity {
+    background-color: #fafafa;
+    padding: 5px 10px;
+}
+
+.new-modmail-activity-popup .new-message,
+.new-modmail-activity-popup .new-action {
+    padding: 10px 0;
+}
+
+.new-modmail-activity-popup .new-message:not(:last-child),
+.new-modmail-activity-popup .new-action:not(:last-child) {
+    border-bottom: 1px solid darkgray;
+}
+
+.new-modmail-activity-popup .content {
+    margin-top: 4px;
+    max-width: 580px;
+    word-wrap: break-word;
+}
+
+.new-modmail-activity-popup a.mod {
+    color: #46d160 !important;
+}
+
+.new-modmail-activity-popup .new-action {
+    font-style: italic;
+}
+
+.new-modmail-activity-popup .tb-action-button.submit {
+    margin-left: 5px;
+}
 
 /* misc fixes.
 */

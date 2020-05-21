@@ -179,7 +179,7 @@ function removalreasons () {
         }
 
         // Open reason drop-down when we remove something as ham.
-        $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function (event) {
+        $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button, .tb-submission-button-remove, .tb-comment-button-remove', function (event) {
             const $button = $(this);
             let thingID,
                 thingSubreddit,
@@ -193,7 +193,7 @@ function removalreasons () {
 
             if (TBCore.isOldReddit) {
                 const $yes = $button.find('.yes')[0],
-                      $thing = $button.closest('.thing');
+                      $thing = $button.closest('.thing, .tb-thing');
                 isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment');
 
                 if ($yes) {

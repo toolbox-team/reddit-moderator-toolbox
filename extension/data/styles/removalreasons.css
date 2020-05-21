@@ -252,3 +252,9 @@
     margin: 4px 0 0 3px !important;
     display: inline;
 }
+
+/* Fake placeholders being normal text. */
+.mod-toolbox-rd .reason-popup ::placeholder,
+.mod-toolbox-rd .reason-popup ::-webkit-input-placeholder {
+    color: inherit;
+}

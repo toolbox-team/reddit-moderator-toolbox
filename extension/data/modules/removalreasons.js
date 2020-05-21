@@ -395,7 +395,7 @@ function removalreasons () {
 
                     // Set up markdown renderer
                     SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
-                    SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id');
+                    SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id', 'placeholder', 'label', 'value');
                     const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
 
                     // Render header and footer
@@ -686,7 +686,9 @@ function removalreasons () {
                 // Get input from HTML-formatted reason
                 const htmlReason = $this.find('.reason-content');
                 htmlReason.find('select, input, textarea').each(function () {
-                    customInput.push(this.value);
+                    // Value, if it is not empty. If it is, placeholder.
+                    // If no placeholder, empty string.
+                    customInput.push(this.value || this.placeholder || '');
                 });
 
                 // Get flair data

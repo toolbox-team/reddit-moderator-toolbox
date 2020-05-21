@@ -103,10 +103,10 @@
     background: #fff
 }
 
-.tb-popup.queuetools-select-popup .divider {
+.tb-window.queuetools-select-popup .divider {
     margin-top: 8px
 }
 
-.tb-popup.queuetools-select-popup .choice {
+.tb-window.queuetools-select-popup .choice {
     margin-top: 2px
 }

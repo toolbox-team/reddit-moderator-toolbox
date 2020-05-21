@@ -302,7 +302,7 @@ function modbar () {
                     const $this = $(this);
                     if (!$this.hasClass('tb-mysubs-activated')) {
                         $this.addClass('tb-mysubs-activated');
-                        const $popup = TB.ui.popup({
+                        TB.ui.popup({
                             title: 'Subreddits you moderate',
                             tabs: [
                                 {
@@ -321,7 +321,6 @@ function modbar () {
                         });
                         // Focus the filter bar for convenience
                         $('#tb-livefilter-input').focus();
-                        // Add event listener to open usernotes manager
                     } else {
                         $this.removeClass('tb-mysubs-activated');
                         $('.subreddits-you-mod-popup').remove();

@@ -896,18 +896,22 @@ function removalreasons () {
 
                         self.log('Sending removal message by New Modmail');
                         TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
-                            const id = res.data.conversation.id;
-                            // isInternal means mod conversation - can't archive that
-                            const isInternal = res.data.conversation.isInternal;
-                            if (autoArchive && !isInternal) {
-                                TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                            res.json().then(data => {
+                                const id = data.conversation.id;
+                                // isInternal means mod conversation - can't archive that
+                                const isInternal = data.conversation.isInternal;
+                                if (autoArchive && !isInternal) {
+                                    TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                                        removePopup(popup);
+                                    });
+                                } else {
                                     removePopup(popup);
-                                }).catch(() => {
-                                    status.text(MODMAIL_ARCHIVE_ERROR);
-                                });
-                            } else {
-                                removePopup(popup);
-                            }
+                                }
+                            }).catch(() => {
+                                status.text(MODMAIL_ARCHIVE_ERROR);
+                                // Disable Send button as we already sent modmail successfully - avoids multiple modmails
+                                $('.save.tb-action-button').prop('disabled', true);
+                            });
                         }).catch(() => {
                             status.text(MODMAIL_ERROR);
                         });

@@ -51,6 +51,7 @@
             ],
             "exclude_matches": [
                 "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/framedModal/*",
                 "https://*.reddit.com/chat/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",
@@ -94,6 +95,7 @@
             ],
             "exclude_matches": [
                 "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/framedModal/*",
                 "https://*.reddit.com/chat/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",

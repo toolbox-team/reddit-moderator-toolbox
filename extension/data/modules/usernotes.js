@@ -977,7 +977,7 @@ function usernotes () {
             self.endProfile('manager-run');
         }
 
-        $body.on('click', '#tb-un-config-link', function () {
+        $body.on('click', '#tb-un-config-link, .tb-un-config-link', function () {
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
 

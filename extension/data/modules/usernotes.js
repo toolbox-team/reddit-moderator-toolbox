@@ -309,9 +309,7 @@ function usernotes () {
                 $appendTo = $('body');
             }
             const $popup = TB.ui.popup({
-                title: `<div class="utagger-title">
-                    <span>User Notes - <a href="${TBCore.link(`/user/${user}`)}" id="utagger-user-link">/u/${user}</a></span>
-                </div>`,
+                title: `User Notes - <a href="${TBCore.link(`/user/${user}`)}" id="utagger-user-link">/u/${user}</a>`,
                 tabs: [{
                     content: `
                         <div class="utagger-content">
@@ -338,7 +336,7 @@ function usernotes () {
 
                     footer: `
                         <div class="utagger-footer">
-                            <span class="tb-popup-error" style="display: none;"></span>
+                            <span class="tb-header-error" style="display: none;"></span>
                             <input type="button" class="utagger-save-user tb-action-button" id="utagger-save-user" value="Save for /r/${subreddit}">
                         </div>
                     `,
@@ -505,7 +503,7 @@ function usernotes () {
         });
 
         // Cancel button clicked
-        $body.on('click', '.utagger-popup .close', function () {
+        $body.on('click', '.utagger-popup .tb-window-close', function () {
             $(this).parents('.utagger-popup').remove();
         });
 

@@ -458,9 +458,7 @@ function tbmodule () {
                     });
                 });
 
-                $viewSettings.on('click', '.close', () => {
-                    $viewSettings.remove(); // should we have some confirmation dialog here?
-                });
+                // should we have some confirmation dialog when closing with unsaved changes?
             });
 
             $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {

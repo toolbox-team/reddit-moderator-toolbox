@@ -30,7 +30,7 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-history-button {
     display: inline-block;
     width: 310px;
 }
-.mod-toolbox-rd .history-button-popup div.tb-popup-content {
+.mod-toolbox-rd .history-button-popup div.tb-window-content {
     min-width: 650px;
 }
 

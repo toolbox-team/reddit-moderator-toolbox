@@ -67,11 +67,6 @@ function devtools () {
                         top: event.pageY - 10,
                         display: 'block',
                     });
-
-                // Close the popup
-                $apiPopup.on('click', '.close', () => {
-                    $apiPopup.remove();
-                });
             });
         }
 

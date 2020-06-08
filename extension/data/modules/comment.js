@@ -525,10 +525,6 @@ function comments () {
                     TBui.tbRedditEvent($comments);
                     $('time.timeago').timeago();
                     $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
-                    // Close the popup
-                    $contextPopup.on('click', '.close', () => {
-                        $contextPopup.remove();
-                    });
                 });
             });
         }

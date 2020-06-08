@@ -114,6 +114,106 @@
         return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
     };
 
+    /**
+     * Creates an area of tabbed content from the given list of tabs.
+     * @function
+     * @param {object[]} tabs The tabs for the tabber. Each object in this array should have the keys `title`
+     * for the title of the tab and `content` for the tab's content.
+     * @param {object} options Additional display options
+     * @param {string} [options.barOrientation='horizontal'] Can be set to 'horizontal' for tabs across the top of the
+     * tabber (default) or 'vertical' for tabs along the left edge.
+     * @returns {object} The tabber as a jQuery object.
+     */
+    TBui.tabber = function tabber (tabs, {
+        tabOrientation = 'horizontal',
+    } = {}) {
+        const $buttonList = $('<div class="tb-tabber-navigation"></div>');
+        const $contentList = $('<div class="tb-tabber-content"></div>');
+        tabs.forEach(({title, content}, index) => {
+            const $button = $(`
+                <a class="tb-tabber-button" data-tab-id="${index}" tabindex="0">
+                    ${title}
+                </a>
+            `);
+            const $content = $(`<div class="tb-tabber-panel" data-tab-id="${index}">`).append(content);
+            $button.on('click', () => {
+                $buttonList.children().toggleClass('tb-tabber-button-active', false);
+                $button.toggleClass('tb-tabber-button-active', true);
+                $contentList.children().hide();
+                $content.show();
+            });
+        });
+
+        // Click the first tab to default to showing its content
+        $buttonList.children().eq(0).click();
+
+        // Wrap the tabs and content, and add the vertical class if necessary
+        return $('<div class="tb-tabber">')
+            .toggleClass('tb-tabber-vertical', tabOrientation === 'vertical')
+            .append($buttonList, $contentList);
+    };
+
+    /**
+     * Generates a window.
+     */
+    TBui.createWindow = function createWindow ({
+        title,
+        content,
+        footer,
+        large = false,
+        draggable = false,
+        tabOrientation = 'horizontal',
+        registerCloseHandler = true,
+    }) {
+        // Create the basic window structure
+        const $window = $(`
+            <div class="tb-window ${large ? 'tb-window-large' : ''}">
+                <div class="tb-window-header">
+                    <div class="tb-window-title">${title}</div>
+                    <div class="tb-window-buttons">
+                        <a class="tb-window-close">
+                            <i class="tb-icons">${TBui.icons.close}</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        // Add the window content
+        const $windowContent = $('<div class="tb-window-content">');
+        if (Array.isArray(content)) {
+            // If content is an array, it's interpreted as an array of tabs and we make a tabber for it
+            $windowContent.append(TBui.tabber(content, {tabOrientation}));
+        } else {
+            // Otherwise, we assume it's an HTML string or jQuery object and add it normally
+            $windowContent.append(content);
+        }
+        $window.append($windowContent);
+
+        // Add the window footer if there is one
+        if (footer) {
+            const $windowFooter = $('<div class="tb-window-footer">');
+            $windowFooter.append(footer);
+            $window.append($windowFooter);
+        }
+
+        // Make the window draggable if necessary
+        if (draggable) {
+            $window.drag($window.find('.tb-window-header'));
+            // Don't let people drag by the buttons, that gets confusing
+            $window.find('.tb-window-buttons *').on('mousedown', e => e.stopPropagation());
+        }
+
+        // Register a close button listener, unless the user wants custom stuff
+        if (registerCloseHandler) {
+            $window.on('click', '.tb-window-close', () => {
+                $window.remove();
+            });
+        }
+
+        return $window;
+    };
+
     // Notification stuff
 
     /**
@@ -141,8 +241,8 @@
             .join('');
 
         $notificationDiv.prepend(`
-            <div class="tb-notification" data-id="${id}">
-                <div class="tb-notification-header">
+            <div class="tb-window" data-id="${id}">
+                <div class="tb-window-header">
                     <div class="tb-notification-title">${title}</div>
                     <div class="buttons">
                         <a class="close">
@@ -208,82 +308,15 @@
         meta,
         draggable = true,
     }) {
-        // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        const $popup = $(`
-            <div class="tb-popup ${cssClass}">
-                ${meta ? `<div class="meta" style="display: none;">${meta}</div>` : ''}
-                <div class="tb-popup-header">
-                    <div class="tb-popup-title">${title}</div>
-                    <div class="buttons">
-                        <a class="close" href="javascript:;">
-                            <i class="tb-icons">${TBui.icons.close}</i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `);
-        if (tabs.length === 1) {
-            // We don't use template literals here as the content can be a jquery object.
-            $popup.append($('<div class="tb-popup-content"></div>').append(tabs[0].content));
-            $popup.append($('<div class="tb-popup-footer""></div>').append(tabs[0].footer));
-        } else {
-            const $tabs = $('<div class="tb-popup-tabs"></div>');
-            $popup.append($tabs);
-
-            for (let i = 0; i < tabs.length; i++) {
-                const tab = tabs[i];
-                if (tab.id === 'undefined' || !tab.id) {
-                    tab.id = tab.title.trim().toLowerCase().replace(/\s/g, '_');
-                }
-
-                // Create tab button
-                const $button = $(`
-                    <a class="${tab.id}" title="${tab.tooltip || ''}">
-                        ${tab.title}
-                    </a>
-                `);
-
-                $button.click({tab}, function (e) {
-                    const tab = e.data.tab;
-
-                    // hide others
-                    $tabs.find('a').removeClass('active');
-                    $popup.find('.tb-popup-tab').hide();
-
-                    // show current
-                    $popup.find(`.tb-popup-tab.${tab.id}`).show();
-                    $(this).addClass('active');
-
-                    e.preventDefault();
-                });
-
-                // default first tab is active tab
-                if (i === 0) {
-                    $button.addClass('active');
-                }
-
-                $button.appendTo($tabs);
-
-                // We don't use template literals here as the content can be a jquery object.
-                const $tab = $(`<div class="tb-popup-tab ${tab.id}"></div>`);
-                $tab.append($('<div class="tb-popup-content"></div>').append(tab.content));
-                $tab.append($('<div class="tb-popup-footer""></div>').append(tab.footer));
-
-                // default first tab is visible; hide others
-                if (i === 0) {
-                    $tab.show();
-                } else {
-                    $tab.hide();
-                }
-
-                $tab.appendTo($popup);
-            }
-        }
-
-        if (draggable) {
-            $popup.drag($popup.find('.tb-popup-header'));
-            // Don't let people drag by the buttons, that gets confusing
-            $popup.find('.buttons a').on('mousedown', e => e.stopPropagation());
+        const $popup = TBui.createWindow({
+            title,
+            content: tabs.length === 1 ? tabs[0].content : tabs,
+            footer: tabs.length === 1 ? tabs[0].footer : '', // TODO: implement footers nicely somehow
+            draggable,
+        });
+        $popup.toggleClass(cssClass, true);
+        if (meta) {
+            $popup.prepend(`<div class="meta" style="display:none">${meta}</div>`);
         }
 
         return $popup;
@@ -338,6 +371,7 @@
         $('.tb-window-wrapper .tb-window-tab').hide();
         $(`.tb-window-wrapper .tb-window-tab.${tabName}`).show();
     };
+
     // Window Overlay HTML generator
     TBui.overlay = function overlay (title, tabs, buttons, css_class, single_footer, details) {
         buttons = typeof buttons !== 'undefined' ? buttons : '';
@@ -345,20 +379,13 @@
         single_footer = typeof single_footer !== 'undefined' ? single_footer : false;
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
-        const $overlay = $(`
-<div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
-    <div class="tb-window-wrapper">
-        <div class="tb-window-header">
-            <div class="tb-window-title">${title}</div>
-            <div class="buttons">
-                ${buttons}
-                <a class="close" href="javascript:;">
-                    <i class="tb-icons">${TBui.icons.close}</i>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>`);
+        const $overlay = $(`<div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">`)
+            .append(TBui.createWindow({
+                title,
+                content: '',
+                large: true,
+                tabOrientation: 'horizontal',
+            }));
 
         if (details) {
             Object.entries(details).forEach(([key, value]) => {

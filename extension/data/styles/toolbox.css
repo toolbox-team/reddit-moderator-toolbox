@@ -65,7 +65,7 @@ body.mod-toolbox[toolbox-warning]::before {
 */
 
 /* Let's use verdana for toolbox stuff. Can't get used to the reddit font */
-.mod-toolbox-rd.mod-toolbox-extra .tb-popup,
+.mod-toolbox-rd.mod-toolbox-extra .tb-window,
 .mod-toolbox-rd.mod-toolbox-extra .tb-page-overlay,
 .mod-toolbox-rd #tb-bottombar,
 .mod-toolbox-rd #tb-context-menu,
@@ -510,7 +510,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 ------------
 */
 
-.mod-toolbox-rd .tb-popup {
+.mod-toolbox-rd .tb-window {
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;
@@ -520,28 +520,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     z-index: 2147483645 !important;
 }
 
-.mod-toolbox-rd .tb-popup-tabs {
-    border-bottom: 1px solid #B6C9DD;
-    background-color: #C7D6E6;
-}
 
-.mod-toolbox-rd .tb-popup-tabs a {
-    background-color: #C7D6E6;
-    border-right: 1px dotted #A8B5C2;
-    display: inline-block;
-    padding: 4px;
-    cursor: pointer;
-}
-
-.mod-toolbox-rd .tb-popup-tabs a:hover,
-.mod-toolbox-rd .tb-popup-tabs a.active {
-    background-color: #9FBAD6;
-    border-right: 1px solid #9FBAD6;
-}
-.mod-toolbox-rd .tb-popup-tabs a:not(:first-child):hover,
-.mod-toolbox-rd .tb-popup-tabs a:not(:first-child).active {
-    box-shadow: -1px 0 #9FBAD6;
-}
 
 .mod-toolbox-rd .mod-popup .other-subs {
     padding: 5px;
@@ -564,7 +543,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     width: initial !important;
 }
 
-.mod-toolbox-rd .tb-popup-error {
+.mod-toolbox-rd .tb-window-error {
     color: red;
 }
 
@@ -668,7 +647,7 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
     line-height: 20px;
 }
 
-.mod-toolbox-rd .tb-debug-window .tb-popup-content {
+.mod-toolbox-rd .tb-debug-window .tb-window-content {
     box-sizing: content-box;
 }
 
@@ -1466,7 +1445,7 @@ body.mod-toolbox-rd .tb-action-button:hover {
 
 /* link colors (for those themes that change all the link colors */
 body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
-body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
+body.mod-toolbox-rd .tb-window a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
 body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons) {
     color: #369;
 }
@@ -1680,11 +1659,11 @@ span.rate-limit-explain {
     height: 26px !important;
 }
 
-.mod-toolbox-rd .macro-popup .tb-popup-content {
+.mod-toolbox-rd .macro-popup .tb-window-content {
     margin-bottom: 30px;
 }
 
-.mod-toolbox-rd .macro-popup .tb-popup-footer {
+.mod-toolbox-rd .macro-popup .tb-window-footer {
     position: absolute;
     bottom: 0;
 }
@@ -2057,7 +2036,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .tb-action-table,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
 .res-nightmode .mod-toolbox-rd .reason-popup,
-.res-nightmode .mod-toolbox-rd .tb-popup,
+.res-nightmode .mod-toolbox-rd .tb-window,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-bottombar-hidden,
 .res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
@@ -2084,12 +2063,12 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button:hover,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button:hover,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button:hover,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-general-button,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-button,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-action-button,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-action-button,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-bracket-button,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-bracket-button,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-table {
     filter: invert(0%);
 }
@@ -2100,7 +2079,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .tb-feedback-text,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
 .res-nightmode .mod-toolbox-rd .reason-popup,
-.res-nightmode .mod-toolbox-rd .tb-popup,
+.res-nightmode .mod-toolbox-rd .tb-window,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
 .res-nightmode .mod-toolbox-rd .menuarea.modtools

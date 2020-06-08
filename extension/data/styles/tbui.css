@@ -1,44 +1,58 @@
-/** Window/Popup Common **/
+/** Tabber styles **/
+.mod-toolbox-rd .tb-tabber-navigation {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    background: #c7d6e6;
+    /*
+     * just to be safe, though if the tabs need multiple lines you should
+     * probably not be using horizontal tabs
+     */
+    flex-wrap: wrap;
+}
+.mod-toolbox-rd .tb-tabber-tab {
+    border-right: solid 1px #FFF;
+}
+.mod-toolbox-rd .tb-window-tab + .tb-window-tab {
+    border-top: 0;
+}
+
+/** Window styles **/
 
 /* Box sizing reset for custom sub CSS */
 .mod-toolbox-rd .tb-window,
 .mod-toolbox-rd .tb-window *,
 .mod-toolbox-rd .tb-window *::before,
-.mod-toolbox-rd .tb-window *::after,
-.mod-toolbox-rd .tb-popup,
-.mod-toolbox-rd .tb-popup *,
-.mod-toolbox-rd .tb-popup *::before,
-.mod-toolbox-rd .tb-popup *::after {
+.mod-toolbox-rd .tb-window *::after {
     box-sizing: content-box;
+}
+
+/* Windows need to have a background */
+.mod-toolbox-rd .tb-window {
+    background: #FFF;
 }
 
 /* Headers */
 /* TODO: generic classname that windows/popups/notifications can share? */
-.mod-toolbox-rd .tb-window-header,
-.mod-toolbox-rd .tb-popup-header,
-.mod-toolbox-rd .tb-notification-header {
+.mod-toolbox-rd .tb-window-header {
     display: flex;
     background-color: #CEE3F8;
     line-height: 26px;
     white-space: nowrap;
 }
-.mod-toolbox-rd .tb-window-header {
+.mod-toolbox-rd .tb-window-large .tb-window-header {
     /* Windows get bigger headers */
     line-height: 36px;
     font-size: 14px;
 }
 
-/* Pseudo-element added to the beginning of the window to help center titles */
-.mod-toolbox-rd .tb-window-header::before,
-.mod-toolbox-rd .tb-popup-header::before,
-.mod-toolbox-rd .tb-notification-header::before {
+/* Pseudo-element added to the beginning of the header to help center titles */
+.mod-toolbox-rd .tb-window-header::before {
     content: "";
     flex: 1;
 }
 
-.mod-toolbox-rd .tb-window-title,
-.mod-toolbox-rd .tb-popup-title,
-.mod-toolbox-rd .tb-notification-title {
+.mod-toolbox-rd .tb-window-title {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -47,17 +61,13 @@
     margin: 0 10px;
 }
 
-.mod-toolbox-rd .tb-window-header .buttons,
-.mod-toolbox-rd .tb-popup-header .buttons,
-.mod-toolbox-rd .tb-notification-header .buttons {
+.mod-toolbox-rd .tb-window-buttons {
     flex: 1;
     display: flex;
     justify-content: flex-end;
 }
 
-.mod-toolbox-rd .tb-window-header .buttons a,
-.mod-toolbox-rd .tb-popup-header .buttons a,
-.mod-toolbox-rd .tb-notification-header .buttons a {
+.mod-toolbox-rd .tb-window-buttons a {
     display: flex;
     background-color: #C7D6E6;
     width: 36px;
@@ -66,27 +76,19 @@
     /* center inner icons */
     justify-content: center;
     align-items: center;
+    cursor: pointer; /* reset draggable cursor for movable headers */
 }
-.mod-toolbox-rd .tb-window-header .buttons a:hover,
-.mod-toolbox-rd .tb-popup-header .buttons a:hover,
-.mod-toolbox-rd .tb-notification-header .buttons a:hover {
+.mod-toolbox-rd .tb-window-buttons a:hover {
     background-color: #9FBAD6;
 }
 
 /* Content resets */
 .mod-toolbox-rd .tb-window-wrapper,
-.mod-toolbox-rd .tb-popup-content,
-.mod-toolbox-rd .tb-notification-content {
+.mod-toolbox-rd .tb-window-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
-}
-.mod-toolbox-rd .tb-popup-content,
-.mod-toolbox-rd .tb-notification-content {
-    overflow: auto;
-    padding: 5px !important;
 }
 
 /* Footer stuff */
-.mod-toolbox-rd .tb-popup-footer,
 .mod-toolbox-rd .tb-window-footer {
     width: 100%;
     height: 36px;
@@ -95,20 +97,17 @@
     align-items: center;
     background-color: #CEE3F8;
 }
-/* Window footers are slightly larger */
-.mod-toolbox-rd .tb-window-footer {
-    height: 40px;
-}
 
 /** Window-specific stuff **/
 
 /* Window tabs */
-.mod-toolbox-rd .tb-window-tabs {
+/* disabled because this will be reimplemented with horizontal tabs being the first choice
+.mod-toolbox-rd .tb-window-large .tb-window-tabs {
     display: inline-block;
     width: 135px;
 }
 
-.mod-toolbox-rd .tb-window-tabs a {
+.mod-toolbox-rd .tb-window-large .tb-window-tabs a {
     background-color: #C7D6E6;
     display: block;
     padding: 7px;
@@ -134,7 +133,7 @@
 }
 .mod-toolbox-rd .tb-window-tabs * + * {
     border-top: 1px solid #FFF;
-}
+} */
 
 /* Window tab content */
 .mod-toolbox-rd .tb-window-tabs-wrapper { /* Bad name - this element wraps the tab content */
@@ -144,54 +143,67 @@
     width: calc(100% - 135px);
 }
 
+/* Window footers are slightly larger */
+.mod-toolbox-rd .tb-window-large .tb-window-footer {
+    height: 40px;
+}
+
 /* TODO: why? */
 .mod-toolbox-rd .tb-window-wrapper a:not(.tb-comment-author):hover {
     color: #000 !important;
 }
 
-/* Horizontal tabs for stuff like the profile */
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    background: #c7d6e6;
-    /*
-     * just to be safe, though if the tabs need multiple lines you should
-     * probably not be using horizontal tabs
-     */
-    flex-wrap: wrap;
-}
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs a {
-    border-right: solid 1px #FFF;
-}
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs a + a {
-    border-top: 0;
-}
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs-wrapper {
-    /* No tabs on the left, so content gets full width */
-    width: 100%;
-}
+/* In-page notifications stuff */
 
-/* In-page notifications */
+/* The wrapper element that notifications live inside */
 .mod-toolbox-rd #tb-notifications-wrapper {
     position: fixed;
     bottom: 42px;
     right: 10px;
     width: 300px;
 }
-/* Leave space for the context menu handle when it's on the right side */
 .mod-toolbox-rd.tb-has-context-right #tb-notifications-wrapper {
+    /* Leave space for the context menu handle when it's on the right side */
     right: 30px;
 }
-.mod-toolbox-rd .tb-notification {
+
+/* TODO: can we get rid of these? */
+.mod-toolbox-rd #tb-notifications-wrapper .tb-window {
     background: #FFF;
     margin-top: 5px;
     cursor: default;
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
 }
-.mod-toolbox-rd .tb-notification-content {
+.mod-toolbox-rd #tb-notifications-wrapper .tb-window-content {
     font-size: 11px;
 }
-.mod-toolbox-rd .tb-notification-content p + p {
+.mod-toolbox-rd #tb-notifications-wrapper .tb-window-content p + p {
     margin-top: 0.5em;
+}
+
+NEW CODE THAT NEEDS TO BE SORTED OUT IS UNDER HERE AND THIS IS A SELECTOR
+INSTEAD OF A COMMENT TO REMIND ME TO GET IT DONE BECAUSE MY EDITOR WILL YELL AT
+ME ABOUT THE EMPTY BLOCK {}
+
+.mod-toolbox-rd .tb-tabber-navigation {
+    border-bottom: 1px solid #B6C9DD;
+    background-color: #C7D6E6;
+}
+
+.mod-toolbox-rd .tb-tabber-button {
+    background-color: #C7D6E6;
+    border-right: 1px dotted #A8B5C2;
+    display: inline-block;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.mod-toolbox-rd .tb-tabber-button:hover,
+.mod-toolbox-rd .tb-tabber-button-active {
+    background-color: #9FBAD6;
+    border-right: 1px solid #9FBAD6;
+}
+.mod-toolbox-rd .tb-tabber-button + .tb-tabber-button:hover,
+.mod-toolbox-rd .tb-tabber-button + .tb-tabber-button-active {
+    box-shadow: -1px 0 #9FBAD6;
 }

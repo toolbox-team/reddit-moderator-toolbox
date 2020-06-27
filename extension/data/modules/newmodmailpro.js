@@ -1,5 +1,5 @@
 'use strict';
-function newmodmailpro () {
+function newmodmailpro() {
     const self = new TB.Module('New Mod Mail Pro');
     self.shortname = 'NewModMail';
 
@@ -65,7 +65,7 @@ function newmodmailpro () {
 
     const $body = $('body');
 
-    function switchAwayFromReplyAsSelf () {
+    function switchAwayFromReplyAsSelf() {
         const current = $('.ThreadViewerReplyForm__replyOptions .FancySelect__valueText').text();
         if (current === 'Reply as myself') {
             $body.find('.FancySelect__value').click();
@@ -77,7 +77,7 @@ function newmodmailpro () {
      * Searches for ban reason elements on page and makes included links clickable.
      * @function
      */
-    function reasonClickable () {
+    function reasonClickable() {
         const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen)');
         if ($reasons.length) {
             $reasons.each(function () {
@@ -103,12 +103,12 @@ function newmodmailpro () {
 
         // ready some variables.
         const modMailNightmode = self.setting('modmailnightmode'),
-              lastReplyTypeCheck = self.setting('lastreplytypecheck'),
-              searchhelp = self.setting('searchhelp'),
-              noReplyAsSelf = self.setting('noReplyAsSelf'),
-              showModmailPreview = self.setting('showModmailPreview'),
-              clickableReason = self.setting('clickableReason'),
-              checkForNewMessages = self.setting('checkForNewMessages');
+            lastReplyTypeCheck = self.setting('lastreplytypecheck'),
+            searchhelp = self.setting('searchhelp'),
+            noReplyAsSelf = self.setting('noReplyAsSelf'),
+            showModmailPreview = self.setting('showModmailPreview'),
+            clickableReason = self.setting('clickableReason'),
+            checkForNewMessages = self.setting('checkForNewMessages');
 
         // Lifted from reddit source.
         const actionTypeMap = [
@@ -182,7 +182,7 @@ function newmodmailpro () {
                 TB.ui.longLoadSpinner(true);
 
                 // Find out the last comment as of right now.
-                const {conversation, messages, modActions} = await TBApi.apiOauthGET(`/api/mod/conversations/${modmailId}`)
+                const { conversation, messages, modActions } = await TBApi.apiOauthGET(`/api/mod/conversations/${modmailId}`)
                     .then(response => response.json());
 
                 // Evaluate reddit response.
@@ -390,17 +390,28 @@ function newmodmailpro () {
                 }
             });
         }
+
+        // 'Source' button to display message source
+        window.addEventListener('TBNewPage', event => {
+            if (event.detail.pageType === 'modmailConversation') {
+                $('.Message__header').append('<div id="tb-source-button">Source</div>');
+
+                $body.on('click', '#tb-source-button', e => {
+                    // TODO
+                });
+            }
+        });
     }
 
     // Below all stuff we do when we are NOT on new modmail.
     if (!TBCore.isNewModmail) {
         // ready some variables.
         const modmailLink = self.setting('modmaillink'),
-              openMailTab = self.setting('openmailtab');
+            openMailTab = self.setting('openmailtab');
 
         // Let's mess around with the link to modmail.
         const $newModmailLinkElement = $('#new_modmail'),
-              newModmailBaseUrl = 'https://mod.reddit.com/mail/';
+            newModmailBaseUrl = 'https://mod.reddit.com/mail/';
 
         // Open modmail in a new tab if the option is selected
         if (openMailTab) {
@@ -409,32 +420,32 @@ function newmodmailpro () {
 
         // let's replace urls.
         switch (modmailLink) {
-        case 'all_modmail':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
+            case 'all_modmail':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
 
-            break;
-        case 'new':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}new`);
+                break;
+            case 'new':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}new`);
 
-            break;
-        case 'in_progress':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inprogress`);
+                break;
+            case 'in_progress':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inprogress`);
 
-            break;
-        case 'archived':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}archived`);
+                break;
+            case 'archived':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}archived`);
 
-            break;
-        case 'highlighted':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}highlighted`);
+                break;
+            case 'highlighted':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}highlighted`);
 
-            break;
-        case 'mod_discussions':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}mod`);
+                break;
+            case 'mod_discussions':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}mod`);
 
-            break;
-        case 'notifications':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
+                break;
+            case 'notifications':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
         }
     }
 

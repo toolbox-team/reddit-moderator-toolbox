@@ -38,7 +38,7 @@
 
 /* source button
 */
-#tb-source-button {
+.tb-source-button {
     margin-left: 16px;
     display: inline-block;
     color: #595959;
@@ -47,9 +47,18 @@
     vertical-align: middle;
 }
 
-#tb-source-button:hover {
+.tb-source-button:hover {
     color: #24a0ed;
     text-decoration: underline;
+}
+
+.tb-source-field {
+    padding-top: 10px;
+}
+
+.tb-source-field textarea {
+    height: 125px;
+    width: 400px;
 }
 
 /* reason link styling

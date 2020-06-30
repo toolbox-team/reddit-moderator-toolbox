@@ -392,12 +392,30 @@ function newmodmailpro() {
         }
 
         // 'Source' button to display message source
-        window.addEventListener('TBNewPage', event => {
+        window.addEventListener('TBNewPage', async event => {
             if (event.detail.pageType === 'modmailConversation') {
-                $('.Message__header').append('<div id="tb-source-button">Source</div>');
+                // Add the button to the buttons over the message
+                $('.Message__header').append(`<div class="tb-source-button">Source</div>`);
 
-                $body.on('click', '#tb-source-button', e => {
-                    // TODO
+                // Fetch and store the conversation info in cache
+                const currentID = event.detail.pageDetails.conversationID;
+
+                TBStorage.setCache('NewModmailPro', 'current-conversation', await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json()));
+
+                $body.on('click', '.tb-source-button', async e => {
+                    // Getting the ID of the message on which the button was clicked
+                    const activeMessageID = e.currentTarget.parentElement.children[3].pathname.split('/').slice(-1)[0];
+
+                    // Getting the body in markdown from selected message
+                    const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                    const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
+
+                    const $currentSourceBtn = $(e.currentTarget.parentElement);
+                    $currentSourceBtn.closest('div.Thread__message').append(`
+                        <div class="tb-source-field">
+                            <textarea readonly>${messageSource}</textarea>
+                        </div>
+                    `);
                 });
             }
         });

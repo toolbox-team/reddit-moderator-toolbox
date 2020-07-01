@@ -36,21 +36,8 @@
     margin-bottom: 15px;
 }
 
-/* source button
+/* source textarea
 */
-.tb-source-button {
-    margin-left: 16px;
-    display: inline-block;
-    color: #595959;
-    cursor: pointer;
-    font-size: 12px;
-    vertical-align: middle;
-}
-
-.tb-source-button:hover {
-    color: #24a0ed;
-    text-decoration: underline;
-}
 
 .tb-source-field {
     padding-top: 10px;

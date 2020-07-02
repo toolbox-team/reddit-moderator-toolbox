@@ -395,17 +395,17 @@ function newmodmailpro() {
         window.addEventListener('TBNewPage', async event => {
             if (event.detail.pageType === 'modmailConversation') {
                 // Add the button to the buttons over the message
-                $('.Message__header').append('<button class="tb-source-button tb-action-button">Show Source</button>');
+                $('.Thread__message').append('<button class="tb-source-button tb-action-button">Show Source</button>');
 
                 // Fetch and store the conversation info in cache
                 const currentID = event.detail.pageDetails.conversationID;
                 TBStorage.setCache('NewModmailPro', 'current-conversation', await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json()));
 
                 $body.on('click', '.tb-source-button', async e => {
-                    // Getting the ID of the message on which the button was clicked
-                    const activeMessageID = e.currentTarget.parentElement.children[3].pathname.split('/').slice(-1)[0];
-
                     const $currentSourceBtn = $(e.currentTarget.parentElement);
+
+                    // Getting the ID of the message on which the button was clicked
+                    const activeMessageID = $currentSourceBtn.find('.Message__date')[0].pathname.split('/').slice(-1)[0]; // children[0].
 
                     // Preventing displaying multiple sources
                     if ($currentSourceBtn.closest('div.Thread__message').has('.tb-source-field').length) return;

@@ -39,6 +39,10 @@
 /* source textarea
 */
 
+.tb-source-button {
+    margin-top: 10px;
+}
+
 .tb-source-field {
     padding-top: 10px;
 }

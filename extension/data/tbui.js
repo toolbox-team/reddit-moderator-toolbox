@@ -1013,7 +1013,7 @@
               submissionSubreddit = submission.data.subreddit,
               submissionSubredditType = submission.data.subreddit_type,
               submissionName = submission.data.name,
-              submissionUrl = submission.data.url,
+              submissionUrl = submission.data.is_self ? TBCore.link(submission.data.permalink) : submission.data.url,
               submissionTitle = submission.data.title,
               submissionThumbnail = submission.data.thumbnail,
               submissionDomain = submission.data.domain,

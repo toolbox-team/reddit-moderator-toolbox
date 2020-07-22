@@ -191,7 +191,8 @@ function removalreasons () {
                 return;
             }
 
-            if (TBCore.isOldReddit) {
+            // For now, removals on Toolbox-generated posts/comments work the same way as on old Reddit (without jsAPI)
+            if (TBCore.isOldReddit || $button.is('.tb-submission-button-remove, .tb-comment-button-remove')) {
                 const $yes = $button.find('.yes')[0],
                       $thing = $button.closest('.thing, .tb-thing');
                 isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment') || $thing.hasClass('tb-comment');

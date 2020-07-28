@@ -229,8 +229,8 @@ function removalreasons () {
                     domain: info.domain,
                     body: info.body,
                     raw_body: info.raw_body,
-                    uri_body: info.uri_body,
-                    uri_title: info.uri_title,
+                    uri_body: info.uri_body || encodeURIComponent(info.uri_body),
+                    uri_title: info.uri_title || encodeURIComponent(info.title),
                     reasons: [],
                     get reasons_posts () {
                         return this.reasons.filter(r => r.removePosts || r.removePosts === undefined);

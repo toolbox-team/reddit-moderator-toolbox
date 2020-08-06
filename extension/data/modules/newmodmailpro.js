@@ -403,7 +403,7 @@ function newmodmailpro () {
             window.addEventListener('TBNewPage', async event => {
                 if (event.detail.pageType === 'modmailConversation') {
                     // Add the button to the buttons over the message
-                    $('.Thread__message').append('<button class="tb-source-button tb-action-button">Show Source</button>');
+                    $('.Thread__message').append('<button class="tb-source-button tb-action-button">Toggle Source</button>');
 
                     // Fetch and store the conversation info in cache
                     const currentID = event.detail.pageDetails.conversationID;
@@ -413,22 +413,34 @@ function newmodmailpro () {
                         const $currentSourceBtn = $(e.currentTarget.parentElement);
 
                         // Getting the ID of the message on which the button was clicked
-                        const activeMessageID = $currentSourceBtn.find('.Message__date')[0].pathname.split('/').slice(-1)[0]; // children[0].
+                        const [activeMessageID] = $currentSourceBtn.find('.Message__date')[0].pathname.split('/').slice(-1);
+                        const $currentSourceField = $(`#tb-source-${activeMessageID}`);
 
-                        // Preventing displaying multiple sources
-                        if ($currentSourceBtn.closest('div.Thread__message').has('.tb-source-field').length) {
+                        // Toggling the source
+                        // currentSourceBtn.closest('div.Thread__message').has('.tb-source-field').length &&
+                        if ($currentSourceField && $currentSourceField.is(':visible')) {
+                            // If the source is visible, hide it
+
+                            $currentSourceField.hide();
                             return;
+                        } else if ($currentSourceField && $currentSourceField.is(':hidden')) {
+                            // If the source field exists (has already been requested), but has been hidden, just show it
+
+                            $currentSourceField.show();
+                            return;
+                        } else {
+                            // If the source field is not present (has not been requested yet), request it and create
+
+                            // Getting the body in markdown from selected message
+                            const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                            const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
+
+                            $currentSourceBtn.closest('div.Thread__message').append(`
+                                <div class="tb-source-field" id="tb-source-${activeMessageID}">
+                                    <textarea readonly>${messageSource}</textarea>
+                                </div>
+                            `);
                         }
-
-                        // Getting the body in markdown from selected message
-                        const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
-                        const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
-
-                        $currentSourceBtn.closest('div.Thread__message').append(`
-                            <div class="tb-source-field">
-                                <textarea readonly>${messageSource}</textarea>
-                            </div>
-                        `);
                     });
                 }
             });

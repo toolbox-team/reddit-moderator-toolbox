@@ -398,11 +398,9 @@ function newmodmailpro () {
             });
         }
 
-        // 'Source' button to display message source
         if (sourceButton) {
             window.addEventListener('TBNewPage', async event => {
                 if (event.detail.pageType === 'modmailConversation') {
-                    // Add the button to the buttons over the message
                     $('.Thread__message').append('<button class="tb-source-button tb-action-button">Toggle Source</button>');
 
                     // Fetch and store the conversation info in cache
@@ -417,7 +415,6 @@ function newmodmailpro () {
                         const $currentSourceField = $(`#tb-source-${activeMessageID}`);
 
                         // Toggling the source
-                        // currentSourceBtn.closest('div.Thread__message').has('.tb-source-field').length &&
                         if ($currentSourceField && $currentSourceField.is(':visible')) {
                             // If the source is visible, hide it
 
@@ -430,6 +427,7 @@ function newmodmailpro () {
                             return;
                         } else {
                             // If the source field is not present (has not been requested yet), request it and create
+                            // a div+textarea with the source.
 
                             // Getting the body in markdown from selected message
                             const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');

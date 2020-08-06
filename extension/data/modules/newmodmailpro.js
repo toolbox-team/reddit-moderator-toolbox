@@ -63,6 +63,12 @@ function newmodmailpro () {
         title: 'Check whether there has been new activity in a modmail thread before submitting replies.',
     });
 
+    self.register_setting('sourceButton', {
+        type: 'boolean',
+        default: true,
+        title: 'Displays a "Show Source" button allowing you to display the message source in markdown.',
+    });
+
     const $body = $('body');
 
     function switchAwayFromReplyAsSelf () {
@@ -108,7 +114,8 @@ function newmodmailpro () {
               noReplyAsSelf = self.setting('noReplyAsSelf'),
               showModmailPreview = self.setting('showModmailPreview'),
               clickableReason = self.setting('clickableReason'),
-              checkForNewMessages = self.setting('checkForNewMessages');
+              checkForNewMessages = self.setting('checkForNewMessages'),
+              sourceButton = self.setting('sourceButton');
 
         // Lifted from reddit source.
         const actionTypeMap = [
@@ -392,38 +399,40 @@ function newmodmailpro () {
         }
 
         // 'Source' button to display message source
-        window.addEventListener('TBNewPage', async event => {
-            if (event.detail.pageType === 'modmailConversation') {
-                // Add the button to the buttons over the message
-                $('.Thread__message').append('<button class="tb-source-button tb-action-button">Show Source</button>');
+        if (sourceButton) {
+            window.addEventListener('TBNewPage', async event => {
+                if (event.detail.pageType === 'modmailConversation') {
+                    // Add the button to the buttons over the message
+                    $('.Thread__message').append('<button class="tb-source-button tb-action-button">Show Source</button>');
 
-                // Fetch and store the conversation info in cache
-                const currentID = event.detail.pageDetails.conversationID;
-                TBStorage.setCache('NewModmailPro', 'current-conversation', await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json()));
+                    // Fetch and store the conversation info in cache
+                    const currentID = event.detail.pageDetails.conversationID;
+                    TBStorage.setCache('NewModmailPro', 'current-conversation', await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json()));
 
-                $body.on('click', '.tb-source-button', async e => {
-                    const $currentSourceBtn = $(e.currentTarget.parentElement);
+                    $body.on('click', '.tb-source-button', async e => {
+                        const $currentSourceBtn = $(e.currentTarget.parentElement);
 
-                    // Getting the ID of the message on which the button was clicked
-                    const activeMessageID = $currentSourceBtn.find('.Message__date')[0].pathname.split('/').slice(-1)[0]; // children[0].
+                        // Getting the ID of the message on which the button was clicked
+                        const activeMessageID = $currentSourceBtn.find('.Message__date')[0].pathname.split('/').slice(-1)[0]; // children[0].
 
-                    // Preventing displaying multiple sources
-                    if ($currentSourceBtn.closest('div.Thread__message').has('.tb-source-field').length) {
-                        return;
-                    }
+                        // Preventing displaying multiple sources
+                        if ($currentSourceBtn.closest('div.Thread__message').has('.tb-source-field').length) {
+                            return;
+                        }
 
-                    // Getting the body in markdown from selected message
-                    const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
-                    const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
+                        // Getting the body in markdown from selected message
+                        const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                        const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
 
-                    $currentSourceBtn.closest('div.Thread__message').append(`
-                        <div class="tb-source-field">
-                            <textarea readonly>${messageSource}</textarea>
-                        </div>
-                    `);
-                });
-            }
-        });
+                        $currentSourceBtn.closest('div.Thread__message').append(`
+                            <div class="tb-source-field">
+                                <textarea readonly>${messageSource}</textarea>
+                            </div>
+                        `);
+                    });
+                }
+            });
+        }
     }
 
     // Below all stuff we do when we are NOT on new modmail.

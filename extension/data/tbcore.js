@@ -1554,8 +1554,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         let locationHref;
 
         // new modmail regex matches.
-        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?$/;
-        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?([^/]*)\/?$/;
+        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
+        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma|appeals|thread)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
         // reddit regex matches.

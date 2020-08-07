@@ -869,7 +869,7 @@ function usernotes () {
         }
 
         // Open the usernotes manager when the context item is clicked
-        $body.on('click', '#tb-un-config-link, .tb-un-config-link', function () {
+        $body.on('click', '#tb-un-config-link, .tb-un-config-link', async function () {
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
 

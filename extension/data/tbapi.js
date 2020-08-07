@@ -378,8 +378,8 @@
         banDuration,
         banContext,
     }) {
-        const trimmedBanMessage = banMessage.length > 999 ? banMessage.substring(0, 999) : banMessage;
-        const trimmedBanReason = banReason.length > 99 ? banReason.substring(0, 99) : banReason;
+        const trimmedBanMessage = banMessage.substring(0, 999);
+        const trimmedBanReason = banReason.substring(0, 300);
         if (banDuration) {
             if (banDuration > 999) {
                 banDuration = 999;

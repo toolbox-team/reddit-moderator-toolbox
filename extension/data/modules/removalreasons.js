@@ -179,7 +179,7 @@ function removalreasons () {
         }
 
         // Open reason drop-down when we remove something as ham.
-        $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function (event) {
+        $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button, .tb-submission-button-remove, .tb-comment-button-remove', function (event) {
             const $button = $(this);
             let thingID,
                 thingSubreddit,
@@ -191,10 +191,11 @@ function removalreasons () {
                 return;
             }
 
-            if (TBCore.isOldReddit) {
+            // For now, removals on Toolbox-generated posts/comments work the same way as on old Reddit (without jsAPI)
+            if (TBCore.isOldReddit || $button.is('.tb-submission-button-remove, .tb-comment-button-remove')) {
                 const $yes = $button.find('.yes')[0],
-                      $thing = $button.closest('.thing');
-                isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment');
+                      $thing = $button.closest('.thing, .tb-thing');
+                isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment') || $thing.hasClass('tb-comment');
 
                 if ($yes) {
                     $yes.click();
@@ -395,7 +396,7 @@ function removalreasons () {
 
                     // Set up markdown renderer
                     SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
-                    SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id');
+                    SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id', 'placeholder', 'label', 'value');
                     const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
 
                     // Render header and footer
@@ -686,7 +687,9 @@ function removalreasons () {
                 // Get input from HTML-formatted reason
                 const htmlReason = $this.find('.reason-content');
                 htmlReason.find('select, input, textarea').each(function () {
-                    customInput.push(this.value);
+                    // Value, if it is not empty. If it is, placeholder.
+                    // If no placeholder, empty string.
+                    customInput.push(this.value || this.placeholder || '');
                 });
 
                 // Get flair data
@@ -894,18 +897,22 @@ function removalreasons () {
 
                         self.log('Sending removal message by New Modmail');
                         TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
-                            const id = res.data.conversation.id;
-                            // isInternal means mod conversation - can't archive that
-                            const isInternal = res.data.conversation.isInternal;
-                            if (autoArchive && !isInternal) {
-                                TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                            res.json().then(data => {
+                                const id = data.conversation.id;
+                                // isInternal means mod conversation - can't archive that
+                                const isInternal = data.conversation.isInternal;
+                                if (autoArchive && !isInternal) {
+                                    TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                                        removePopup(popup);
+                                    });
+                                } else {
                                     removePopup(popup);
-                                }).catch(() => {
-                                    status.text(MODMAIL_ARCHIVE_ERROR);
-                                });
-                            } else {
-                                removePopup(popup);
-                            }
+                                }
+                            }).catch(() => {
+                                status.text(MODMAIL_ARCHIVE_ERROR);
+                                // Disable Send button as we already sent modmail successfully - avoids multiple modmails
+                                $('.save.tb-action-button').prop('disabled', true);
+                            });
                         }).catch(() => {
                             status.text(MODMAIL_ERROR);
                         });

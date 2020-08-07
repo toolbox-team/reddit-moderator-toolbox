@@ -701,73 +701,120 @@ function usernotes () {
         }
 
         // Sets up the note manager's even listeners and runs timeago for relative dates
-        function registerManagerEventListeners () {
+        function registerManagerEventListeners (sub) {
             self.startProfile('manager-run');
-            const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
 
-            $body.find('#tb-un-prune-sb').on('click', () => {
-                const emptyProfiles = [],
-                      pruneOld = $('.tb-prune-old').prop('checked'),
-                      pruneLength = $('.tb-prune-length').val(),
-                      now = TBHelpers.getTime(),
-                      usersPrune = Object.keys(subUsenotes.users),
-                      userCountPrune = usersPrune.length;
+            $body.find('#tb-un-prune-sb').on('click', event => {
+                const $popup = TBui.popup({
+                    title: `Pruning usernotes for /r/${sub}`,
+                    tabs: [{
+                        content: `
+                            <p>
+                                <input type="checkbox" id="tb-un-prune-by-note-age"/>
+                                Delete notes older than
+                                <select id="tb-un-prune-by-note-age-limit">
+                                    <option value="15552000000">6 months</option>
+                                    <option value="31104000000">1 year</option>
+                                    <option value="62208000000">2 years</option>
+                                    <option value="93312000000">3 years</option>
+                                    <option value="124416000000">4 years</option>
+                                </select>
+                            </p>
+                            <p>
+                                <input disabled type="checkbox" id="tb-un-prune-by-user-inactivity"/>
+                                Delete notes on users who have been inactive for
+                                <select id="tb-un-prune-by-user-inactivity-limit" disabled>
+                                    <option value="15552000000">6 months</option>
+                                    <option value="31104000000">1 year</option>
+                                    <option value="62208000000">2 years</option>
+                                    <option value="93312000000">3 years</option>
+                                    <option value="124416000000">4 years</option>
+                                </select>
+                            </p>
+                            <p>
+                                <input disabled type="checkbox" id="tb-un-prune-by-unavailable"/>
+                                Delete notes on users who no longer exist
+                            </p>
+                        `,
+                        footer: `
+                            <button class="tb-action-button" id="tb-un-prune-confirm">Prune</button>
+                        `,
+                    }],
+                });
 
-                TB.ui.longLoadSpinner(true, 'Pruning usernotes', TB.ui.FEEDBACK_NEUTRAL);
+                const $pruneByNoteAge = $popup.find('#tb-un-prune-by-note-age');
+                const $pruneByNoteAgeLimit = $popup.find('#tb-un-prune-by-note-age-limit');
+                // const $pruneByUserInactivity = $popup.find('#tb-un-prune-by-user-activity');
+                // const $pruneByUserInactivityLimit = $popup.find('#tb-un-prune-by-user-inactivity-limit');
+                // const $pruneByUnavailable = $popup.find('#tb-un-prune-by-unavailable');
+                const $confirmButton = $popup.find('#tb-un-prune-confirm');
 
-                // Get the account status for all users.
-                TBCore.forEachChunkedRateLimit(
-                    usersPrune, 20, (user, counter) => {
-                        TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);
+                $confirmButton.on('click', () => {
+                    const checkNoteAge = $pruneByNoteAge.is(':checked');
+                    // const checkUserActivity = $pruneByUserInactivity.is(':checked');
+                    // const checkUserExists = $pruneByUnavailable.is(':checked');
 
-                        TBApi.getLastActive(user).then(date => {
-                            if (pruneOld) {
-                                const timeSince = now - date * 1000,
-                                      daysSince = TBHelpers.millisecondsToDays(timeSince);
+                    const users = {};
+                    let prunedNotes = 0;
+                    let totalNotes = 0;
+                    let prunedUsers = 0;
+                    let totalUsers = 0;
 
-                                if (daysSince > pruneLength) {
-                                    self.log(`${user} has not been active in: ${daysSince.toFixed()} days.`);
-                                    $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
-                                    emptyProfiles.push(user);
-                                }
-                            }
-                        }).catch(() => {
-                            self.log(`${user} is deleted, suspended or shadowbanned.`);
-                            $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
-                            emptyProfiles.push(user);
-                        });
-                    },
-
-                    () => {
-                        // The previous calls have been async, let's wait a little while before we continue. A better fix might be needed but this might be enough.
-                        // TODO
-                        setTimeout(() => {
-                            self.log(emptyProfiles);
-                            if (emptyProfiles.length > 0) {
-                                const deleteEmptyProfile = confirm(`${emptyProfiles.length} deleted or shadowbanned users. Delete all notes for these users?`);
-                                if (deleteEmptyProfile === true) {
-                                    self.log('You pressed OK!');
-
-                                    emptyProfiles.forEach(emptyProfile => {
-                                        delete subUsenotes.users[emptyProfile];
-                                        $body.find(`#tb-un-note-content-wrap div[data-user="${emptyProfile}"]`).css('background-color', 'rgb(244, 179, 179)');
-                                    });
-
-                                    TBCore.updateCache('noteCache', subUsenotes, sub);
-                                    self.saveUserNotes(sub, subUsenotes, 'pruned all deleted/shadowbanned users.');
-
-                                    TB.ui.longLoadSpinner(false, `Profiles checked, notes for ${emptyProfiles.length} missing users deleted`, TB.ui.FEEDBACK_POSITIVE);
-                                } else {
-                                    self.log('You pressed Cancel!');
-
-                                    TB.ui.longLoadSpinner(false, 'Profiles checked, no notes deleted.', TB.ui.FEEDBACK_POSITIVE);
-                                }
-                            } else {
-                                TB.ui.longLoadSpinner(false, 'Profiles checked, everyone is still here!', TB.ui.FEEDBACK_POSITIVE);
-                            }
-                        }, 2000);
+                    // Do nothing if no pruning criteria are selected
+                    // if (!checkNoteAge && !checkUserActivity && !checkUserExists) {
+                    if (!checkNoteAge) {
+                        return;
                     }
-                );
+
+                    const pruneReasons = [];
+
+                    if (checkNoteAge) {
+                        const ageThreshold = Date.now() - parseInt($pruneByNoteAgeLimit.val(), 10);
+                        pruneReasons.push(`notes before ${new Date(ageThreshold * 1000).toISOString()}`);
+
+                        // delete all notes from earlier than ageThreshold
+                        for (const user of Object.values(subUsenotes.users)) {
+                            totalUsers += 1;
+                            users[user.name] = {
+                                notes: user.notes.filter(note => {
+                                    totalNotes += 1;
+                                    if (note.time >= ageThreshold) {
+                                        return true;
+                                    }
+                                    prunedNotes += 1;
+                                    return false;
+                                }),
+                            };
+                            if (users[user.name].notes.length === 0) {
+                                // delete in loop is safe because we're iterating over Object.values()
+                                delete users[user.name];
+                                prunedUsers += 1;
+                            }
+                        }
+                    }
+
+                    // TODO: finish implementing other prune strategies
+
+                    const confirmation = confirm(`${prunedNotes} of ${totalNotes} notes will be pruned. ${prunedUsers} of ${totalUsers} users will no longer have any notes. Proceed?`);
+                    if (!confirmation) {
+                        return;
+                    }
+                    subUsenotes.users = users;
+                    self.saveUserNotes(sub, subUsenotes, `prune: ${pruneReasons.join(', ')}`, () => {
+                        window.location.reload();
+                    });
+                });
+
+                $popup.on('click', '.close', () => {
+                    $popup.remove();
+                });
+
+                const {topPosition, leftPosition} = TBui.drawPosition(event);
+                $popup.appendTo('#tb-un-note-content-wrap').css({
+                    // position: 'absolute',
+                    top: topPosition,
+                    left: leftPosition,
+                });
             });
 
             // Update user status.
@@ -839,6 +886,10 @@ function usernotes () {
                         }
                     });
                 });
+                // TBui.pagerForItems can't handle an empty array yet, so just return early if there's nothing to display
+                if (!Object.keys(notes.users).length) {
+                    throw new Error('No users found');
+                }
             } catch (_) {
                 self.error(`un status: ${status}\nnotes: ${notes}`);
                 TB.ui.longLoadSpinner(false, 'No notes found', TB.ui.FEEDBACK_NEGATIVE);
@@ -930,17 +981,7 @@ function usernotes () {
                         <span class="tb-info">There are ${userCount} users with ${noteCount} notes.</span>
                         <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
                         <br><br>
-                        <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>
-                        <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>
-                        <select class="tb-prune-length">
-                            <option value="180">six-months</option>
-                            <option value="365">one-year</option>
-                            <option value="730">two-years</option>
-                            <option value="1095">three-years</option>
-                            <option value="1460">four-years</option>
-                            <option value="1825">five-years</option>
-                            <option value="2190">six-years</option>
-                        </select>
+                        <button id="tb-un-prune-sb" class="tb-general-button">Prune deleted/suspended profiles</button>
                     </div></br></br>
                 </div>
             `);
@@ -1028,12 +1069,12 @@ function usernotes () {
             TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
 
             // Set other events after all items are loaded.
-            registerManagerEventListeners();
+            registerManagerEventListeners(sub);
 
             self.printProfiles();
         });
 
-        $body.on('click', '.tb-un-editor .close', () => {
+        $body.on('click', '.tb-un-editor > .tb-window-wrapper > .tb-window-header .close', () => {
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
         });

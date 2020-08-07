@@ -240,18 +240,21 @@ function personalnotes () {
 
             const confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
-                TBApi.post(`/r/${notewiki}/wiki/settings/`, {
-                    page: `notes/${page}`,
-                    listed: false,
-                    permlevel: 2,
-                    uh: TBCore.modhash,
-                })
-
-                    .catch(() => {
-                        TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
-                    });
-
-                $this.closest('li').remove();
+                TBApi.sendRequest({
+                    okOnly: true,
+                    method: 'POST',
+                    endpoint: `/r/${notewiki}/wiki/settings/`,
+                    body: {
+                        page: `notes/${page}`,
+                        listed: false,
+                        permlevel: 2,
+                        uh: TBCore.modhash,
+                    },
+                }).then(() => {
+                    $this.closest('li').remove();
+                }).catch(() => {
+                    TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
+                });
             }
         });
         // When clicking 'create note'

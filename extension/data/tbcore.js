@@ -1501,11 +1501,16 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // private functions
         function setWikiPrivate (subreddit, page, failAlert) {
-            TBApi.post(`/r/${subreddit}/wiki/settings/`, {
-                page,
-                listed: true, // hrm, may need to make this a config setting.
-                permlevel: 2,
-                uh: TBCore.modhash,
+            TBApi.sendRequest({
+                okOnly: true,
+                method: 'POST',
+                endpoint: `/r/${subreddit}/wiki/settings/`,
+                body: {
+                    page,
+                    listed: true, // hrm, may need to make this a config setting.
+                    permlevel: 2,
+                    uh: TBCore.modhash,
+                },
             })
             // Super extra double-secret secure, just to be safe.
                 .then(() => {

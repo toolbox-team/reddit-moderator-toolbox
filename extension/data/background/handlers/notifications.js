@@ -66,7 +66,12 @@ async function sendPageNotification ({title, body, url, modHash, markreadid}) {
     };
     const tabs = await browser.tabs.query({url: 'https://*.reddit.com/*'});
     for (const tab of tabs) {
-        browser.tabs.sendMessage(tab.id, message);
+        browser.tabs.sendMessage(tab.id, message).catch(error => {
+            // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
+            if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
+                console.warn('tb-show-page-notification: ', error.message, error);
+            }
+        });
     }
     return notificationID;
 }
@@ -104,7 +109,12 @@ async function clearNotification (notificationID) {
         };
         const tabs = await browser.tabs.query({url: 'https://*.reddit.com/*'});
         for (const tab of tabs) {
-            browser.tabs.sendMessage(tab.id, message);
+            browser.tabs.sendMessage(tab.id, message).catch(error => {
+                // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
+                if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
+                    console.warn('tb-clear-page-notification: ', error.message, error);
+                }
+            });
         }
         // We don't get a callback when the notifications are closed, so we just
         // clean up the data here

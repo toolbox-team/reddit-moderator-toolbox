@@ -308,6 +308,7 @@ function notifiermod () {
             }
             $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
             $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
+            $tbNewModmailTooltip.find('#tb-new-modmail-banappeals .tb-new-mm-count').text(data.appeals);
             $tbNewModmailTooltip.find('#tb-new-modmail-highlighted .tb-new-mm-count').text(data.highlighted);
             $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
             $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
@@ -336,9 +337,9 @@ function notifiermod () {
             if (!activeNewMMcheck) {
                 activeNewMMcheck = true;
                 setTimeout(() => {
-                    TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
-                        const data = response.data;
-                        const modmailFreshCount = data.notifications + data.archived + data.new + data.inprogress + data.mod;
+                    TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
+                        const data = await response.json();
+                        const modmailFreshCount = data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod;
                         self.setting('newModmailCount', modmailFreshCount);
                         self.setting('newModmailCategoryCount', data);
 
@@ -346,7 +347,7 @@ function notifiermod () {
                         updateAllTabs();
                         activeNewMMcheck = false;
                     }).catch(error => {
-                        self.log(error.jqXHR.responseText);
+                        self.log(error);
                         activeNewMMcheck = false;
                     });
                 }, 500);
@@ -757,9 +758,9 @@ function notifiermod () {
             //
             // New modmail
             //
-            TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(response => {
-                const data = response.data;
-                const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
+            TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
+                const data = await response.json();
+                const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod;
                 self.setting('newModmailCount', modmailFreshCount);
                 self.setting('newModmailCategoryCount', data);
                 updateNewModMailCount(modmailFreshCount, data);
@@ -770,7 +771,7 @@ function notifiermod () {
                     updateAllTabs();
                 }
             }).catch(error => {
-                self.log(error.jqXHR.responseText);
+                self.log(error);
             });
         }
 

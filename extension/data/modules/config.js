@@ -129,6 +129,10 @@ function tbconfig () {
                                         <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
                                         <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
                                     </li>
+                                    <li>
+                                        <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${configData.removalReasons.autoArchive ? 'checked' : ''}/>
+                                        <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
@@ -223,8 +227,8 @@ function tbconfig () {
                 <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <div id="tb-add-mod-macro-form">
-                    <textarea class="tb-input edit-area"></textarea><br/>
                     <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
+                    <textarea class="tb-input edit-area" placeholder="macro text"></textarea><br/>
                     <div class="tb-macro-actions">
                         <div class="tb-macro-actions-row">
                             <h2>Reply</h2>
@@ -245,6 +249,12 @@ function tbconfig () {
                             <label><input type="checkbox" id="banuser">ban user</label>
                             <label><input type="checkbox" id="muteuser">mute user</label>
                         </div>
+                    </div>
+                    <div class="tb-macro-context">
+                        <h2>Which context</h2>
+                        <label><input type="checkbox" id="context-post" name="context-post"> Post</label>
+                        <label><input type="checkbox" id="context-comment" name="context-comment"> Comment</label>
+                        <label><input type="checkbox" id="context-modmail" name="context-modmail"> Modmail</label>
                     </div>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">
@@ -614,7 +624,7 @@ function tbconfig () {
 
                     const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
                           removalReasonTitle = config.removalReasons.reasons[i].title || '',
-                          removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts ? 'checked' : '',
+                          removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts !== false ? 'checked' : '',
                           removalReasonRemoveComments = config.removalReasons.reasons[i].removeComments ? 'checked' : '',
                           removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                           removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
@@ -718,20 +728,20 @@ function tbconfig () {
                     <td class="mod-macros-content" data-macro="{{i}}">
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>
                         <span class="mod-macro-edit">
-                            <textarea class="tb-input edit-area">{{modMacroText}}</textarea><br/>
+                            <textarea class="tb-input edit-area" placeholder="macro text">{{modMacroText}}</textarea><br/>
                             <input type="text" class="macro-title tb-input" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>
                             <div class="tb-macro-actions">
                                 <div class="tb-macro-actions-row">
                                     <h2>Reply</h2>
                                     <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>
                                     <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>
-                                        <label><input type="checkbox" class="{{i}}-lockreply" id="lockreply">lock reply</label>
+                                    <label><input type="checkbox" class="{{i}}-lockreply" id="lockreply">lock reply</label>
                                 </div>
                                 <div class="tb-macro-actions-row">
                                     <h2>Item</h2>
                                     <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>
                                     <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>
-                                        <label><input type="checkbox" class="{{i}}-lockitem" id="lockitem">lock item</label>
+                                    <label><input type="checkbox" class="{{i}}-lockitem" id="lockitem">lock item</label>
                                     <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
                                     <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
                                 </div>
@@ -740,6 +750,12 @@ function tbconfig () {
                                     <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>
                                     <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>
                                 </div>
+                            </div>
+                            <div class="tb-macro-context">
+                                <h2>Which context</h2>
+                                <label><input type="checkbox" class="{{i}}-context-post" id="context-post" name="context-post"> Post</label>
+                                <label><input type="checkbox" class="{{i}}-context-comment" id="context-comment" name="context-comment"> Comment</label>
+                                <label><input type="checkbox" class="{{i}}-context-modmail" id="context-modmail" name="context-modmail"> Modmail</label>
                             </div>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />
@@ -768,6 +784,10 @@ function tbconfig () {
                     $(`.${i}-sticky`).prop('checked', macro.sticky);
                     $(`.${i}-archivemodmail`).prop('checked', macro.archivemodmail);
                     $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
+
+                    $(`.${i}-context-post`).prop('checked', macro.contextpost);
+                    $(`.${i}-context-comment`).prop('checked', macro.contextcomment);
+                    $(`.${i}-context-modmail`).prop('checked', macro.contextmodmail);
                 });
             }
         }
@@ -861,6 +881,7 @@ function tbconfig () {
                 typeStickied: $('#type-stickied').prop('checked'),
                 typeLockComment: $('#type-action-lock-comment').prop('checked'),
                 typeAsSub: $('#type-as-sub').prop('checked'),
+                autoArchive: $('#type-auto-archive').prop('checked'),
                 typeLockThread: $('#type-action-lock-thread').prop('checked'),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),
@@ -1379,6 +1400,9 @@ function tbconfig () {
                   sticky = $macroContent.find('#sticky').prop('checked'),
                   archivemodmail = $macroContent.find('#archivemodmail').prop('checked'),
                   highlightmodmail = $macroContent.find('#highlightmodmail').prop('checked'),
+                  contextpost = $macroContent.find('#context-post').prop('checked'),
+                  contextcomment = $macroContent.find('#context-comment').prop('checked'),
+                  contextmodmail = $macroContent.find('#context-modmail').prop('checked'),
                   macro = config.modMacros[macroNum];
             let editNote = $macroContent.find('input[name=edit-note]').val();
 
@@ -1406,6 +1430,9 @@ function tbconfig () {
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
+            macro.contextpost = contextpost;
+            macro.contextcomment = contextcomment;
+            macro.contextmodmail = contextmodmail;
 
             postToWiki('toolbox', config, editNote, true);
 
@@ -1482,7 +1509,10 @@ function tbconfig () {
                   lockreply = $body.find('#lockreply').prop('checked'),
                   sticky = $body.find('#sticky').prop('checked'),
                   archivemodmail = $body.find('#archivemodmail').prop('checked'),
-                  highlightmodmail = $body.find('#highlightmodmail').prop('checked');
+                  highlightmodmail = $body.find('#highlightmodmail').prop('checked'),
+                  contextpost = $body.find('#context-post').prop('checked'),
+                  contextcomment = $body.find('#context-comment').prop('checked'),
+                  contextmodmail = $body.find('#context-modmail').prop('checked');
             let editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
             if (macroTitle.length < 1) {
@@ -1508,6 +1538,9 @@ function tbconfig () {
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
+            macro.contextpost = contextpost;
+            macro.contextcomment = contextcomment;
+            macro.contextmodmail = contextmodmail;
 
             if (!config.modMacros) {
                 config.modMacros = [];
@@ -1535,6 +1568,9 @@ function tbconfig () {
             $body.find('#sticky').prop('checked', false);
             $body.find('#archivemodmail').prop('checked', false);
             $body.find('#highlightmodmail').prop('checked', false);
+            $body.find('#context-post').prop('checked', false);
+            $body.find('#context-comment').prop('checked', false);
+            $body.find('#context-modmail').prop('checked', false);
         });
 
         // cancel

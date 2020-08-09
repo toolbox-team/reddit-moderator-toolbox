@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "5.2.1",
-    "version_name": "5.2.1: \"Spying Squirrel\"",
+    "version": "5.3.1",
+    "version_name": "5.3.1: \"Coaching Chicken\"",
     "incognito": "split",
     "applications": {
         "gecko": {
@@ -31,7 +31,7 @@
     },
     "background": {
         "scripts": [
-            "data/libs/browser-polyfill-0.5.0.js",
+            "data/libs/browser-polyfill-0.6.0.js",
             "data/libs/jquery-3.4.1.js",
             "data/background/background.js",
             "data/background/handlers/webrequest.js",
@@ -52,6 +52,7 @@
             ],
             "exclude_matches": [
                 "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/framedModal/*",
                 "https://*.reddit.com/chat/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",
@@ -60,7 +61,7 @@
                 "https://*.reddit.com/*.json-html?*"
             ],
             "js": [
-                "data/libs/browser-polyfill-0.5.0.js",
+                "data/libs/browser-polyfill-0.6.0.js",
                 "data/tbmigrate.js",
                 "data/libs/jquery-3.4.1.js",
                 "data/libs/snuownd.js",
@@ -95,6 +96,7 @@
             ],
             "exclude_matches": [
                 "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/framedModal/*",
                 "https://*.reddit.com/chat/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",

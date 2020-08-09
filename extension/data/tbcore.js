@@ -31,7 +31,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          */
         TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
         const SHORTNAME = 'TBCore';
         const SETTINGS_NAME = 'Utils';
 
@@ -133,56 +133,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
         TBCore.isMod = $('body.moderator').length;
 
-        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
-
-        if (newModSubs && newModSubs.length > 0) {
-            TBCore.mySubs = [];
-            TBCore.mySubsData = [];
-            $(newModSubs).each(function () {
-                const sub = this.data.display_name.trim();
-                if (!TBCore.modsSub(sub)) {
-                    TBCore.mySubs.push(sub);
-                }
-
-                let isinthere = false;
-                $(TBCore.mySubsData).each(function () {
-                    if (this.subreddit === sub) {
-                        isinthere = true;
-                    }
-                });
-
-                if (!isinthere) {
-                    const subredditData = {
-                        subreddit: sub,
-                        subscribers: this.data.subscribers,
-                        over18: this.data.over18,
-                        created_utc: this.data.created_utc,
-                        subreddit_type: this.data.subreddit_type,
-                        submission_type: this.data.submission_type,
-                    };
-
-                    TBCore.mySubsData.push(subredditData);
-                }
-            });
-
-            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
-            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
-            // Update the cache.
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
-        } else {
-            TBCore.mySubs = cacheDetails.moderatedSubs;
-            TBCore.mySubsData = cacheDetails.moderatedSubsData;
-        }
-
         const manifest = browser.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
         const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
 
         TBCore.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
+        TBCore.toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
         TBCore.shortVersion = shortVersion;
-        TBCore.releaseName = 'Spying Squirrel';
         TBCore.configSchema = 1;
         TBCore.configMinSchema = 1;
         TBCore.configMaxSchema = 1;
@@ -207,7 +165,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.tbDevs = toolboxDevs;
         TBCore.betaRelease = betaRelease;
 
-        TBCore.browser = UNKOWN_BROWSER;
+        TBCore.browser = UNKNOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
@@ -257,7 +215,49 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
         </style>`);
 
+        TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
+
         // Get cached info.
+        function processNewModSubs () {
+            TBCore.mySubs = [];
+            TBCore.mySubsData = [];
+            newModSubs.forEach(subData => {
+                const sub = subData.data.display_name.trim();
+                if (!TBCore.modsSub(sub)) {
+                    TBCore.mySubs.push(sub);
+                }
+
+                const isinthere = TBCore.mySubsData.some(tbCoreSubData => tbCoreSubData.subreddit === sub);
+
+                if (!isinthere) {
+                    const subredditData = {
+                        subreddit: sub,
+                        subscribers: subData.data.subscribers,
+                        over18: subData.data.over18,
+                        created_utc: subData.data.created_utc,
+                        subreddit_type: subData.data.subreddit_type,
+                        submission_type: subData.data.submission_type,
+                        is_enrolled_in_new_modmail: subData.data.is_enrolled_in_new_modmail,
+                    };
+
+                    TBCore.mySubsData.push(subredditData);
+                }
+            });
+
+            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
+            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
+            // Update the cache.
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
+        }
+
+        if (newModSubs && newModSubs.length > 0) {
+            processNewModSubs();
+        } else {
+            TBCore.mySubs = cacheDetails.moderatedSubs;
+            TBCore.mySubsData = cacheDetails.moderatedSubsData;
+        }
+
         // Get cached info. Short stored.
         TBCore.noteCache = cacheDetails.noteCache;
         TBCore.noConfig = cacheDetails.noConfig;
@@ -524,7 +524,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             }
-            case UNKOWN_BROWSER: {
+            case UNKNOWN_BROWSER: {
                 debugObject.browser = 'Unknown';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
@@ -763,6 +763,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                             created_utc: this.data.created_utc,
                             subreddit_type: this.data.subreddit_type,
                             submission_type: this.data.submission_type,
+                            is_enrolled_in_new_modmail: this.data.is_enrolled_in_new_modmail,
                         };
 
                         TBCore.mySubsData.push(subredditData);
@@ -865,7 +866,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
                 spam = false;
                 ham = false;
-                user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
+                user = $threadBase.find('.Message__author').first().text() || $body.find('.InfoBar__username').first().text();
             } else {
                 const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
                 const $thing = $($sender.closest('.thing')[0] || $sender);
@@ -1068,7 +1069,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     const data = response.data;
 
                     let user = data.children[0].data.author;
-                    const body = data.children[0].data.body || '';
+                    const body = data.children[0].data.body || data.children[0].data.selftext || '';
                     let permalink = data.children[0].data.permalink;
                     const title = data.children[0].data.title || '';
                     const postlink = data.children[0].data.url || '';
@@ -1320,7 +1321,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBCore.reloadToolbox = function () {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-            browser.runtime.sendMessage({action: 'tb-reload'}, () => {
+            browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
                 window.location.reload();
             });
         };
@@ -1341,9 +1342,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, () => {
-                callback();
-            });
+            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
         };
 
         TBCore.importSettings = function (subreddit, callback) {
@@ -1459,6 +1458,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         };
 
+        let firstCacheTimeout = true;
         // Listen to background page communication and act based on that.
         browser.runtime.onMessage.addListener(message => {
             switch (message.action) {
@@ -1466,7 +1466,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBCore.clearCache(true);
                 break;
             }
-            case 'tb-settings-update': {
+            case 'tb-cache-timeout': {
                 logger.log('Timed cache update', message.payload);
                 // Cache has timed out
                 if (message.payload === 'short') {
@@ -1481,6 +1481,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     TBCore.noRules = [];
                     TBCore.mySubs = [];
                     TBCore.mySubsData = [];
+
+                    // On first init where the modsubs cache was empty we already got this data.
+                    // Here we simply use that data to fill the cache so we don't need to do unneeded actions.
+                    if (newModSubs && newModSubs.length > 0 && firstCacheTimeout) {
+                        firstCacheTimeout = false;
+                        processNewModSubs();
+                    }
                 }
 
                 break;
@@ -1494,11 +1501,16 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // private functions
         function setWikiPrivate (subreddit, page, failAlert) {
-            TBApi.post(`/r/${subreddit}/wiki/settings/`, {
-                page,
-                listed: true, // hrm, may need to make this a config setting.
-                permlevel: 2,
-                uh: TBCore.modhash,
+            TBApi.sendRequest({
+                okOnly: true,
+                method: 'POST',
+                endpoint: `/r/${subreddit}/wiki/settings/`,
+                body: {
+                    page,
+                    listed: true, // hrm, may need to make this a config setting.
+                    permlevel: 2,
+                    uh: TBCore.modhash,
+                },
             })
             // Super extra double-secret secure, just to be safe.
                 .then(() => {
@@ -1547,8 +1559,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         let locationHref;
 
         // new modmail regex matches.
-        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?$/;
-        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma)\/?([^/]*)\/?$/;
+        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
+        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma|appeals|thread)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
         // reddit regex matches.
@@ -1812,61 +1824,43 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        browser.runtime.sendMessage({
-            action: 'tb-request',
-            endpoint: '/subreddits/mine/moderator.json',
-            data: {
-                after,
-                limit: 100,
-            },
-        }).then(response => {
-            const {errorThrown, data, jqXHR, textStatus} = response;
-            if (errorThrown) {
-                logger.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                logger.log(jqXHR);
-                if (jqXHR.status === 504) {
-                    logger.log('504 Timeout retrying request');
-                    getModSubs(after, subs => callback(modSubs.concat(subs)));
-                } else {
-                    modSubs = [];
-                    return callback(modSubs);
-                }
-            } else {
-                TBStorage.purifyObject(data);
-                modSubs = modSubs.concat(data.data.children);
+        TBApi.getJSON('/subreddits/mine/moderator.json', {
+            after,
+            limit: 100,
+        }).then(json => {
+            TBStorage.purifyObject(json);
+            modSubs = modSubs.concat(json.data.children);
 
-                if (data.data.after) {
-                    getModSubs(data.data.after, subs => callback(modSubs.concat(subs)));
-                } else {
-                    return callback(modSubs);
-                }
+            if (json.data.after) {
+                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
+            } else {
+                return callback(modSubs);
+            }
+        }).catch(error => {
+            logger.log('getModSubs failed', error);
+            if (error.response && error.response.status === 504) {
+                logger.log('504 Timeout retrying request');
+                getModSubs(after, subs => callback(modSubs.concat(subs)));
+            } else {
+                modSubs = [];
+                return callback(modSubs);
             }
         });
     }
 
     function getUserDetails (tries = 0) {
-        return new Promise((resolve, reject) => {
-            browser.runtime.sendMessage({
-                action: 'tb-request',
-                endpoint: '/api/me.json',
-            }).then(response => {
-                const {errorThrown, data, jqXHR, textStatus} = response;
-                if (errorThrown) {
-                    logger.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
-                    logger.log(jqXHR);
-                    if (jqXHR.status === 504 && tries < 4) {
-                        tries++;
-                        logger.log('504 Timeout retrying request');
-                        resolve(getUserDetails(tries));
-                    } else {
-                        return reject(errorThrown);
-                    }
-                } else {
-                    TBStorage.purifyObject(data);
-                    logger.log(data);
-                    resolve(data);
-                }
-            });
+        return TBApi.getJSON('/api/me.json').then(data => {
+            TBStorage.purifyObject(data);
+            logger.log(data);
+            return data;
+        }).catch(error => {
+            logger.log('getUserDetails failed', error);
+            if (error.response && error.response.status === 504 && tries < 4) {
+                logger.log('504 Timeout retrying request');
+                return getUserDetails(tries + 1);
+            } else {
+                throw error;
+            }
         });
     }
 

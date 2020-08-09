@@ -393,6 +393,9 @@ function historybutton () {
             $error.html('unable to load userdata</br>shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).then(d => {
+            if (!d) {
+                return;
+            }
             TBStorage.purifyObject(d);
             // This is another exit point of the script. Hits this code after loading 1000 submissions for a user
             if ($.isEmptyObject(d.data.children)) {
@@ -707,6 +710,9 @@ function historybutton () {
             $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).then(d => {
+            if (!d) {
+                return;
+            }
             TBStorage.purifyObject(d);
             d.data.children.forEach(value => {
                 const data = value.data;

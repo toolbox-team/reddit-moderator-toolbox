@@ -11,80 +11,91 @@
      * Sends a generic HTTP request through the background page.
      * @function
      * @param {object} options The options for the AJAX request
-     * @param {string} options.method The HTTP method to use for the request
      * @param {string} options.endpoint The endpoint to request
-     * @param {object} options.data Query parameters as an object
-     * @param {boolean?} options.oauth If true, the request will be sent on
+     * @param {string} [options.method] The HTTP method to use for the request
+     * @param {object} [options.query] Query parameters as an object
+     * @param {string} [options.body] Body to send with a POST request, serialized
+     * as JSON if not a string
+     * @param {boolean?} [options.oauth] If true, the request will be sent on
      * oauth.reddit.com, and the `Authorization` header will be set with the
      * OAuth access token for the logged-in user
+     * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
+     * in an error being rejected. The error will have a `response` property
+     * containing the full `Response` object.
      * @returns {Promise}
      */
-    TBApi.sendRequest = ({method, endpoint, data, oauth}) => browser.runtime.sendMessage({
-        action: 'tb-request',
-        method,
-        endpoint,
-        data,
-        oauth,
-    }).then(response => {
-        if (response.errorThrown !== undefined) {
-            throw response;
+    TBApi.sendRequest = async ({method, endpoint, query, body, oauth, okOnly}) => {
+        // Make the request
+        const messageReply = await browser.runtime.sendMessage({
+            action: 'tb-request',
+            method,
+            endpoint,
+            query,
+            body,
+            oauth,
+            okOnly,
+        });
+
+        // The reply from that message will always be an object. It can have
+        // `error` and `response` properties. `error` will be a string, and
+        // `response` will be an array of arguments to pass to `new Response()`.
+
+        // If we get an error, we want to throw an `Error` object.
+        if (messageReply.error) {
+            const error = new Error(messageReply.error);
+            // If we get a response as well, we attach it to the error.
+            if (messageReply.response) {
+                error.response = new Response(...messageReply.response);
+            }
+            throw error;
+        } else {
+            // We assume that if there is no error, then there is a response.
+            return new Response(...messageReply.response);
         }
-        return response;
-    });
+    };
 
     /**
      * Performs a GET request and promises the body of the response, or the
-     * full response object on error. Maintains an API similar to
-     * `$.getJSON()` because that's what all these calls used before Chrome
-     * forced us to make all requests in the background.
+     * full response object on error.
      * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
-    TBApi.getJSON = (endpoint, data) => TBApi.sendRequest({method: 'GET', endpoint, data})
-        .then(response => response.data)
-        .catch(response => {
-            throw response.jqXHR;
-        });
+    TBApi.getJSON = (endpoint, query) => TBApi.sendRequest({
+        okOnly: true,
+        method: 'GET',
+        endpoint,
+        query,
+    }).then(response => response.json());
 
     /**
      * Performs a POST request and promises the body of the response, or the
      * full response object on error. Maintains an API similar to `$.post`.
      * @function
      * @param {string} endpoint The endpoint to request
-     * @param {object} data The body of the request.
+     * @param {object} body The body parameters of the request.
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
-    TBApi.post = (endpoint, data) => TBApi.sendRequest({
+    TBApi.post = (endpoint, body) => TBApi.sendRequest({
+        okOnly: true,
         method: 'POST',
         endpoint,
-        data,
-    }).then(response => response.data).catch(response => {
-        throw response.jqXHR;
-    });
-
-    /**
-     * Sends an authenticated request against the OAuth API from the
-     * background page.
-     * @function
-     * @param {string} method An HTTP verb
-     * @param {string} endpoint The endpoint to request
-     * @param {object} data Query parameters as an object
-     */
-    TBApi.apiOauthRequest = (method, endpoint, data) => TBApi.sendRequest({
-        endpoint,
-        method,
-        data,
-        oauth: true,
-    });
+        body,
+    }).then(response => response.json());
 
     /**
      * Sends an authenticated POST request against the OAuth API.
      * @function
      * @param {string} endpoint The endpoint to request
-     * @param {object} data Query parameters as an object
+     * @param {object} body Body parameters as an object
      */
-    TBApi.apiOauthPOST = TBApi.apiOauthRequest.bind(null, 'POST');
+    TBApi.apiOauthPOST = (endpoint, body) => TBApi.sendRequest({
+        method: 'POST',
+        oauth: true,
+        endpoint,
+        body,
+        okOnly: true,
+    });
 
     /**
      * Sends an authenticated GET request against the OAuth API.
@@ -92,7 +103,13 @@
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
      */
-    TBApi.apiOauthGET = TBApi.apiOauthRequest.bind(null, 'GET');
+    TBApi.apiOauthGET = (endpoint, query) => TBApi.sendRequest({
+        method: 'GET',
+        oauth: true,
+        endpoint,
+        query,
+        okOnly: true,
+    });
 
     //
     // Reddit 'legacy' API stuff. Still very much in use.
@@ -106,9 +123,9 @@
     TBApi.getRatelimit = () => TBApi.sendRequest({
         method: 'HEAD',
         endpoint: '/r/toolbox/wiki/ratelimit.json',
-    }).then(({jqXHR}) => {
-        const ratelimitRemaining = jqXHR.allResponseHeaders['x-ratelimit-remaining'],
-              ratelimitReset = jqXHR.allResponseHeaders['x-ratelimit-reset'];
+    }).then(response => {
+        const ratelimitRemaining = response.headers.get('x-ratelimit-remaining'),
+              ratelimitReset = response.headers.get('x-ratelimit-reset');
 
         logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
@@ -164,18 +181,27 @@
                 reason,
                 uh: TBCore.modhash,
             });
-        } catch (jqXHR) {
-            logger.log(jqXHR.responseText);
-            throw jqXHR;
+        } catch (error) {
+            logger.error(error);
+            throw error;
         }
 
         setTimeout(() => {
             // Set page access to 'mod only'.
-            TBApi.post(`/r/${subreddit}/wiki/settings/`, {
-                page,
-                listed: true, // hrm, may need to make this a config setting.
-                permlevel: 2,
-                uh: TBCore.modhash,
+            // HACK: Using sendRequest() rather than post() because this "endpoint"
+            //       isn't really part of the API, and doesn't return JSON, but .post()
+            //       assumes all endpoints will return JSON
+            // TODO: do we really need to do this every time?
+            TBApi.sendRequest({
+                okOnly: true,
+                method: 'POST',
+                endpoint: `/r/${subreddit}/wiki/settings/`,
+                query: {
+                    page,
+                    listed: true, // hrm, may need to make this a config setting.
+                    permlevel: 2,
+                    uh: TBCore.modhash,
+                },
             })
 
                 // Super extra double-secret secure, just to be safe.
@@ -204,9 +230,7 @@
      */
     TBApi.readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
-        TBApi.sendRequest({
-            endpoint: `/r/${subreddit}/wiki/${page}.json`,
-        }).then(({data}) => {
+        TBApi.getJSON(`/r/${subreddit}/wiki/${page}.json`).then(data => {
             const wikiData = data.data.content_md;
             if (!wikiData) {
                 resolve(TBCore.NO_WIKI_PAGE);
@@ -231,17 +255,17 @@
             }
             // We have valid data, but it's not JSON.
             resolve(wikiData);
-        }).catch(({jqXHR, errorThrown}) => {
-            logger.log(`Wiki error (${subreddit}/${page}): ${errorThrown}`);
-            if (jqXHR.responseText === undefined) {
+        }).catch(async error => {
+            logger.error(`Wiki error (${subreddit}/${page}):`, error);
+            if (!error.response) {
                 resolve(TBCore.WIKI_PAGE_UNKNOWN);
                 return;
             }
             let reason;
-            if (jqXHR.responseText.startsWith('<!doctype html>')) {
+            try {
+                reason = (await error.response.json()).reason || '';
+            } catch (_) {
                 reason = 'WIKI_PAGE_UNKNOWN';
-            } else {
-                reason = JSON.parse(jqXHR.responseText).reason || '';
             }
 
             if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
@@ -354,8 +378,8 @@
         banDuration,
         banContext,
     }) {
-        const trimmedBanMessage = banMessage.length > 999 ? banMessage.substring(0, 999) : banMessage;
-        const trimmedBanReason = banReason.length > 99 ? banReason.substring(0, 99) : banReason;
+        const trimmedBanMessage = banMessage.substring(0, 999);
+        const trimmedBanReason = banReason.substring(0, 300);
         if (banDuration) {
             if (banDuration > 999) {
                 banDuration = 999;
@@ -426,7 +450,7 @@
      * @param {boolean?} spam If true, removes as spam
      * @returns {Promise}
      */
-    TBApi.removeThing = (id, spam) => TBApi.post('/api/remove', {
+    TBApi.removeThing = (id, spam = false) => TBApi.post('/api/remove', {
         uh: TBCore.modhash,
         id,
         spam,
@@ -614,8 +638,6 @@
     }).then(response => {
         TBStorage.purifyObject(response);
         return response;
-    }).catch(error => {
-        throw error.responseText;
     });
 
     /**
@@ -642,8 +664,6 @@
     }).then(response => {
         TBStorage.purifyObject(response);
         return response;
-    }).catch(error => {
-        throw error.responseText;
     });
 
     /**
@@ -667,7 +687,5 @@
                 mod_reports: data.mod_reports,
             };
         }
-    }).catch(error => {
-        throw error.responseText;
     });
 })(window.TBApi = window.TBApi || {});

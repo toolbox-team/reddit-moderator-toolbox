@@ -79,3 +79,7 @@ tr.removal-reason:last-of-type a.tb-sort-down {
 .mod-toolbox-rd .tb-macro-actions-row > *:not(:first-child) {
     padding: 0 5px;
 }
+
+.mod-toolbox-rd .tb-macro-context {
+    margin-top: 8px;
+}

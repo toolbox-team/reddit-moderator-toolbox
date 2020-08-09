@@ -811,7 +811,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                Object.keys(options.dataAttributes).forEach(([name, value]) => {
+                Object.entries(options.dataAttributes).forEach(([name, value]) => {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }
@@ -1013,7 +1013,7 @@
               submissionSubreddit = submission.data.subreddit,
               submissionSubredditType = submission.data.subreddit_type,
               submissionName = submission.data.name,
-              submissionUrl = submission.data.url,
+              submissionUrl = submission.data.is_self ? TBCore.link(submission.data.permalink) : submission.data.url,
               submissionTitle = submission.data.title,
               submissionThumbnail = submission.data.thumbnail,
               submissionDomain = submission.data.domain,
@@ -1128,7 +1128,7 @@
         }
 
         const $buildsubmission = $(`
-            <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
+            <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-fullname="${submissionName}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score ${voteState}">${submissionScore}</div>
                 <a class="tb-submission-thumbnail ${submissionOver18 ? 'nsfw' : ''}" href="${submissionUrl}">
                     ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
@@ -1459,7 +1459,7 @@
         const commentOptionsJSON = TBHelpers.escapeHTML(JSON.stringify(commentOptions));
         // Let's start building our comment.
         const $buildComment = $(`
-            <div class="tb-thing tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-subreddit="${commentSubreddit}" data-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
+            <div class="tb-thing tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-subreddit="${commentSubreddit}" data-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-fullname="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied' : ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` : ''}">
                     ${commentOptions.overviewData ? parentHtml : ''}
                     <div class="tb-tagline">

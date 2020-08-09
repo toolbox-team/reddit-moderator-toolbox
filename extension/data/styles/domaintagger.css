@@ -8,11 +8,11 @@
 
 /* Popup */
 
-.mod-toolbox-rd .tb-popup.dtagger-popup {
+.mod-toolbox-rd .tb-window.dtagger-popup {
     max-width: 900px;
     text-align: center;
 }
-.mod-toolbox-rd .tb-popup.dtagger-popup .dt-popup-content {
+.mod-toolbox-rd .tb-window.dtagger-popup .dt-popup-content {
     display: inline-block;
 }
 .mod-toolbox-rd .dtagger-popup .right {

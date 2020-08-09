@@ -87,6 +87,11 @@
     margin-left: 0;
 }
 
+.mod-toolbox-rd .tb-profile-sidebar .tb-user-description {
+    padding: 5px;
+    font-style: italic;
+}
+
 .mod-toolbox-rd .tb-profile-overlay .tb-window-wrapper {
     max-width: 1350px;
 }

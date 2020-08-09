@@ -61,7 +61,7 @@ function modbutton () {
             if (e.detail.type === 'TBmodmailCommentAuthor') {
                 return;
             }
-            if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit) {
+            if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;
 
@@ -573,11 +573,9 @@ function modbutton () {
                                         banMessage,
                                         banDuration,
                                         banContext,
-                                    }).then(success => {
-                                        if (!success) {
-                                            self.log('missed one');
-                                            failedSubs.push(subreddit);
-                                        }
+                                    }).catch(() => {
+                                        self.log('missed one');
+                                        failedSubs.push(subreddit);
                                     });
                                 }
                             }).catch(() => {

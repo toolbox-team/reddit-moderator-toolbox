@@ -49,16 +49,30 @@ messageHandlers.set('tb-modqueue', request => {
                     };
                 }
 
-                $.getJSON(`https://old.reddit.com/r/${subreddit}/about/modqueue.json?limit=100`).done(updatedQueue => {
-                    const nowRefresh = Date.now();
-                    queueCacheObject[subreddit] = {
-                        lastRefresh: nowRefresh,
-                        things: updatedQueue.data.children.map(thing => thing.data.name),
-                        refreshActive: false,
-                    };
-                    window.dispatchEvent(new CustomEvent(`freshCache-${subreddit}`));
-                    resolve(thingFound(thingName, subreddit));
-                });
+                makeRequest({
+                    method: 'GET',
+                    endpoint: `/r/${subreddit}/about/modqueue.json`,
+                    query: {
+                        limit: 100,
+                    },
+                    okOnly: true,
+                })
+                    .then(response => response.json())
+                    .then(updatedQueue => {
+                        const nowRefresh = Date.now();
+                        queueCacheObject[subreddit] = {
+                            lastRefresh: nowRefresh,
+                            things: updatedQueue.data.children.map(thing => thing.data.name),
+                            refreshActive: false,
+                        };
+                        window.dispatchEvent(new CustomEvent(`freshCache-${subreddit}`));
+                        resolve(thingFound(thingName, subreddit));
+                    }).catch(error => {
+                        console.error('getting modqeueue error: ', error);
+                        // Probably reddit errors, could build in a retry method but that seems overkill for now.
+                        // Resolving with whatever is in cache.
+                        resolve(thingFound(thingName, subreddit));
+                    });
             }
         } else {
             resolve(thingFound(thingName, subreddit));

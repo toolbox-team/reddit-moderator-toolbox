@@ -32,6 +32,13 @@
             "error",
             "global"
         ],
+        "no-shadow": [
+            "error",
+            {
+                "builtinGlobals": true,
+                "hoist": "all"
+            }
+        ],
         "no-prototype-builtins": "warn",
         "no-console": 0,
         "no-multi-spaces": "error",

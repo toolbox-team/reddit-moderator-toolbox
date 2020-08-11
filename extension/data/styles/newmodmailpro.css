@@ -49,7 +49,7 @@
 
 .tb-source-field textarea {
     height: 125px;
-    width: 400px;
+    width: 100%;
 }
 
 /* reason link styling

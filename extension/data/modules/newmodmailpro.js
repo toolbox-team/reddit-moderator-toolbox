@@ -412,9 +412,7 @@ function newmodmailpro () {
                 const currentID = event.detail.data.post.id;
                 TBStorage.setCache('NewModmailPro', 'current-conversation', await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json()));
 
-                $body.on('click', '.tb-source-button', async e => {
-                    console.log(e);
-                    // console.log($(e.target))
+                $('.tb-source-button').unbind().click(async e => {
                     const $currentSourceBtn = $(e.currentTarget.parentElement);
 
                     // Getting the ID of the message on which the button was clicked
@@ -430,15 +428,19 @@ function newmodmailpro () {
                         // If the source field is not present (has not been requested yet), request it and create
                         // a div+textarea with the source.
 
-                        // Getting the body in markdown from selected message
-                        const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
-                        const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
+                        // console.log($currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length)
 
-                        $currentSourceBtn.closest('.Thread__message').append(`
-                        <div class="tb-source-field" id="tb-source-${activeMessageID}">
-                            <textarea readonly></textarea>
-                        </div>`);
-                        $(`#tb-source-${activeMessageID} textarea`).text(messageSource);
+                        if (!$currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length) {
+                            // Getting the body in markdown from selected message
+                            const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                            const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
+
+                            $currentSourceBtn.closest('.Thread__message').append(`
+                                <div class="tb-source-field" id="tb-source-${activeMessageID}">
+                                    <textarea readonly></textarea>
+                                </div>`);
+                            $(`#tb-source-${activeMessageID} textarea`).text(messageSource);
+                        }
                     }
                 });
             });

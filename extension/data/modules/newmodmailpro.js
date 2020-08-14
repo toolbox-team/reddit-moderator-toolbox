@@ -428,8 +428,6 @@ function newmodmailpro () {
                         // If the source field is not present (has not been requested yet), request it and create
                         // a div+textarea with the source.
 
-                        // console.log($currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length)
-
                         if (!$currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length) {
                             // Getting the body in markdown from selected message
                             const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');

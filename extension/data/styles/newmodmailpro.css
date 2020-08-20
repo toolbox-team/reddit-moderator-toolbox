@@ -36,6 +36,26 @@
     margin-bottom: 15px;
 }
 
+/* source textarea
+*/
+
+.tb-source-button {
+    margin-top: 10px;
+}
+
+.tb-source-field {
+    padding-top: 10px;
+}
+
+.tb-source-field textarea {
+    height: 125px;
+    width: 100%;
+}
+
+body.mod-toolbox-rd .tb-source-button {
+    margin-left: 16px;
+}
+
 /* reason link styling
 */
 .mod-toolbox-rd .InfoBar__banText a {

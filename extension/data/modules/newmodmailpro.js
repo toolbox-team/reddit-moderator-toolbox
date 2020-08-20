@@ -399,24 +399,26 @@ function newmodmailpro () {
         }
 
         if (sourceButton) {
-            TB.listener.on('author', async event => {
+            let conversationCached = false;
+            window.addEventListener('TBNewPage', () => {
+                conversationCached = false;
+            });
+
+            TB.listener.on('author', event => {
                 if (event.detail.type !== 'TBmodmailCommentAuthor') {
                     return;
                 }
-
                 const $target = $(event.target);
 
-                $target.closest('.Thread__message').append('<button class="tb-source-button tb-action-button">Toggle Source</button>');
+                $target.closest('.Message__header').append('<button class="tb-source-button tb-general-button">source</button>');
 
-                // Fetch and store the conversation info in cache
-                const currentID = event.detail.data.post.id;
-                TBStorage.setCache('NewModmailPro', 'current-conversation', await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json()));
-
-                $('.tb-source-button').unbind().click(async e => {
+                $('.tb-source-button').click(async e => {
+                    // Something is causing the listener to be triggered multiple times.
+                    e.stopImmediatePropagation();
                     const $currentSourceBtn = $(e.currentTarget.parentElement);
 
-                    // Getting the ID of the message on which the button was clicked
-                    const [activeMessageID] = $currentSourceBtn.find('.Message__date')[0].pathname.split('/').slice(-1);
+                    // Getting the ID of the message on which the button was clicked.
+                    const activeMessageID = event.detail.data.comment.id;
                     const $currentSourceField = $(`#tb-source-${activeMessageID}`);
 
                     // Toggling the source
@@ -429,8 +431,17 @@ function newmodmailpro () {
                         // a div+textarea with the source.
 
                         if (!$currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length) {
+                            let conversationInfo;
+                            if (conversationCached) {
+                                conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                            } else {
+                                // Fetch and store the conversation info in cache
+                                const currentID = event.detail.data.post.id;
+                                conversationInfo = await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json());
+                                TBStorage.setCache('NewModmailPro', 'current-conversation', conversationInfo);
+                                conversationCached = true;
+                            }
                             // Getting the body in markdown from selected message
-                            const conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
                             const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
 
                             $currentSourceBtn.closest('.Thread__message').append(`

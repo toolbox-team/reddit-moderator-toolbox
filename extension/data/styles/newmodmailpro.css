@@ -52,6 +52,10 @@
     width: 100%;
 }
 
+body.mod-toolbox-rd .tb-source-button {
+    margin-left: 16px;
+}
+
 /* reason link styling
 */
 .mod-toolbox-rd .InfoBar__banText a {

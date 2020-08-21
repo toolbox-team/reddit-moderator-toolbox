@@ -1509,6 +1509,7 @@
 
         // Let's see if we need to add reports starting with user reports
         if (commentUserReports.length && !commentIgnoreReports) {
+            $commentEntry.addClass('filtered');
             const $commentUserReports = $(`
             <ul class="tb-user-reports">
                 <li>user reports</li>

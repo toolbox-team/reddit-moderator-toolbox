@@ -1,5 +1,7 @@
 'use strict';
 
+const MODQUEUE_CACHE_TTL = 30;
+
 // Object containing the queue cached data per subreddit
 const queueCache = new Map();
 
@@ -40,7 +42,7 @@ messageHandlers.set('tb-modqueue', request => new Promise(resolve => {
         });
 
     // The thing timestamp is bigger than the last refresh or cache isn't fresh anymore.
-    } else if (thingTimestamp * 1000 > lastRefresh || Date.now() - lastRefresh > 1000 * 30) {
+    } else if (thingTimestamp * 1000 > lastRefresh || Date.now() - lastRefresh > 1000 * MODQUEUE_CACHE_TTL) {
         if (subredditQueueCache) {
             subredditQueueCache.refreshActive = true;
         } else {

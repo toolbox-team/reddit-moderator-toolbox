@@ -10,12 +10,12 @@ const queueCache = new Map();
  * @returns {boolean}
  */
 function thingFound (thingName, subreddit) {
-    let thingFound = false;
+    let isThingFound = false;
     if (queueCache.has(subreddit)) {
         const subredditQueueCache = queueCache.get(subreddit);
-        thingFound = subredditQueueCache.things.includes(thingName);
+        isThingFound = subredditQueueCache.things.includes(thingName);
     }
-    return thingFound;
+    return isThingFound;
 }
 
 messageHandlers.set('tb-modqueue', request => {

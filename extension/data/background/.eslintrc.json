@@ -1,6 +1,7 @@
 {
 	"globals": {
 		"messageHandlers": true,
-		"handleMessage": true
+        "handleMessage": true,
+        "makeRequest": true
 	}
 }

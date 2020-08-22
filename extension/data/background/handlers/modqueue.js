@@ -12,12 +12,11 @@ const queueCache = new Map();
  * @returns {boolean}
  */
 function thingFound (thingName, subreddit) {
-    let isThingFound = false;
-    if (queueCache.has(subreddit)) {
-        const subredditQueueCache = queueCache.get(subreddit);
-        isThingFound = subredditQueueCache.things.includes(thingName);
+    const subredditQueueCache = queueCache.get(subreddit);
+    if (!subredditQueueCache) {
+        return false;
     }
-    return isThingFound;
+    return subredditQueueCache.things.includes(thingName);
 }
 
 messageHandlers.set('tb-modqueue', request => new Promise(resolve => {
@@ -25,9 +24,8 @@ messageHandlers.set('tb-modqueue', request => new Promise(resolve => {
     // Check if we need to fetch data.
     let lastRefresh = 0;
     let refreshActive = false;
-    let subredditQueueCache;
-    if (queueCache.has(subreddit)) {
-        subredditQueueCache = queueCache.get(subreddit);
+    const subredditQueueCache = queueCache.get(subreddit);
+    if (subredditQueueCache) {
         lastRefresh = subredditQueueCache.lastRefresh;
         refreshActive = subredditQueueCache.refreshActive;
     }

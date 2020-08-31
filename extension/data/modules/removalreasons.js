@@ -31,6 +31,13 @@ function removalreasons () {
         advanced: true,
         title: 'Send removal reasons as a subreddit. <b>Note:</b> these will appear in modmail and potentially clutter it up.',
     });
+
+    self.register_setting('reasonAutoArchive', {
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Auto-archive sent modmail pm. <b>Note:</b> Only works on new modmail.',
+    });
     self.register_setting('reasonSticky', {
         type: 'boolean',
         default: false,
@@ -390,6 +397,7 @@ function removalreasons () {
                     }
 
                     const reasonAsSub = leaveUpToMods ? self.setting('reasonAsSub') : typeAsSub;
+                    const reasonAutoArchive = leaveUpToMods ? self.setting('reasonAutoArchive') : autoArchive;
                     const reasonSticky = leaveUpToMods ? self.setting('reasonSticky') : typeStickied;
                     const actionLockThread = leaveUpToMods ? self.setting('actionLock') : typeLockThread;
                     const actionLockComment = leaveUpToMods ? self.setting('actionLockComment') : typeLockComment;
@@ -452,7 +460,7 @@ function removalreasons () {
                                     <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub" ${reasonAsSub ? 'checked ' : ''}/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
                                 </li>
                                 <li>
-                                    <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${autoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                    <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${reasonAutoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
                                 </li>
                             </ul>
                         </li>

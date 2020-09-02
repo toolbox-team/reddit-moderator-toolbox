@@ -167,7 +167,7 @@
 /* My subreddits list */
 .mod-toolbox-rd #tb-my-subreddits {
     max-height: 65vh;
-    width: 320px;
+    width: 330px;
     overflow: auto;
     /* font-size: 11px; */
     color: #696969;

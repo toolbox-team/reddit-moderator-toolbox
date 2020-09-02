@@ -838,7 +838,7 @@ function removalreasons () {
                     const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
                           notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
                           notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
-                          notifyByNewModmail = notifyByPM && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
+                          notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
 
                     // Reply to submission/comment
                     if (notifyByReply) {

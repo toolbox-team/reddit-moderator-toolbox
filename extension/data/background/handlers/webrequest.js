@@ -90,7 +90,9 @@ function queryString (parameters) {
     }
     const kvStrings = [];
     for (const [k, v] of Object.entries(parameters)) {
-        kvStrings.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+        if (v !== undefined && v !== null) {
+            kvStrings.push(`${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+        }
     }
     if (!kvStrings.length) {
         return '';
@@ -134,9 +136,11 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
     // Post requests need their body to be in formdata format
     if (body) {
         const formData = new FormData();
-        Object.keys(body).forEach(key => {
-            formData.append(key, body[key]);
-        });
+        for (const [key, value] of Object.entries(body)) {
+            if (value !== undefined && value !== null) {
+                formData.append(key, value);
+            }
+        }
         options.body = formData;
     }
 

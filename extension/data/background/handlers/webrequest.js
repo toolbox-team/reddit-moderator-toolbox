@@ -115,7 +115,7 @@ function queryString (parameters) {
  * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
  * in an error being rejected. The error will have a `response` property
  * containing the full `Response` object.
- * @returns {Promise}
+ * @returns {Promise} Resolves to a Response object, or rejects an Error
  * @todo Ratelimit handling
  */
 async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absolute}) {
@@ -151,17 +151,22 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
             options.headers = {Authorization: `bearer ${tokens.accessToken}`};
         } catch (error) {
             console.error('getOAuthTokens: ', error);
-            // If we can't get a token, return the error as-is
-            return {error: error.message};
+            throw error;
         }
     }
 
-    // Perform the request (may throw if request is cancelled/aborted)
-    const response = await fetch(url, options);
+    // Perform the request
+    let response;
+    try {
+        response = await fetch(url, options);
+    } catch (error) {
+        console.error('Fetch request failed:', error);
+        throw error;
+    }
 
     // `okOnly` means we should throw if the response has a non-2xx status
     if (okOnly && !response.ok) {
-        const error = new Error();
+        const error = new Error('Response returned non-2xx status code');
         error.response = response;
         throw error;
     }
@@ -172,9 +177,17 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
 
 // Makes a request and sends a reply with response and error properties
 messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions)
+    // For succeeded requests, we send only the raw `response`
     .then(async response => ({response: await serializeResponse(response)}))
+    // For failed requests, we send:
+    // - `error: true` to indicate the failure
+    // - `message` containing information about the error
+    // - `response` containing the raw response data (if applicable)
     .catch(async error => {
-        const reply = {error: error.message};
+        const reply = {
+            error: true,
+            message: error.message,
+        };
         if (error.response) {
             reply.response = await serializeResponse(error.response);
         }

@@ -379,13 +379,14 @@ function tbconfig () {
                 TBCore.clearCache();
 
                 TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
-            }).catch(err => {
+            }).catch(async err => {
                 self.log(err);
                 if (page === 'config/automoderator') {
                     const $error = $body.find('.edit_automoderator_config .error');
                     $error.show();
 
-                    const saveError = err.responseJSON.special_errors[0];
+                    const responseJSON = await err.response.json();
+                    const saveError = responseJSON.special_errors[0];
                     $error.find('.errorMessage').html(TBStorage.purify(saveError));
 
                     TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);

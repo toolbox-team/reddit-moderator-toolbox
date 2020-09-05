@@ -786,9 +786,9 @@ function tbconfig () {
                     $(`.${i}-archivemodmail`).prop('checked', macro.archivemodmail);
                     $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
 
-                    $(`.${i}-context-post`).prop('checked', macro.contextpost);
-                    $(`.${i}-context-comment`).prop('checked', macro.contextcomment);
-                    $(`.${i}-context-modmail`).prop('checked', macro.contextmodmail);
+                    $(`.${i}-context-post`).prop('checked', macro.contextpost === undefined ? true : macro.contextpost);
+                    $(`.${i}-context-comment`).prop('checked', macro.contextcomment === undefined ? true : macro.contextcomment);
+                    $(`.${i}-context-modmail`).prop('checked', macro.contextmodmail === undefined ? true : macro.contextmodmail);
                 });
             }
         }

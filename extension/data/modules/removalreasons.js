@@ -28,14 +28,14 @@ function removalreasons () {
     self.register_setting('reasonAsSub', {
         type: 'boolean',
         default: false,
-        advanced: true,
+        advanced: false,
         title: 'Send removal reasons as a subreddit. <b>Note:</b> these will appear in modmail and potentially clutter it up.',
     });
 
     self.register_setting('reasonAutoArchive', {
         type: 'boolean',
         default: false,
-        advanced: true,
+        advanced: false,
         title: 'Auto-archive sent modmail pm. <b>Note:</b> Only works on new modmail.',
     });
     self.register_setting('reasonSticky', {

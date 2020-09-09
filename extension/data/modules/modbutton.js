@@ -228,8 +228,8 @@ function modbutton () {
                 <button class="flair-save tb-action-button">Save Flair</button>`,
                     },
                     {
-                        title: 'Send Message',
-                        tooltip: 'Send a message from the subreddit.',
+                        title: 'Send Modmail',
+                        tooltip: 'Send a modmail to the user.',
                         content: `
                     <input id="subreddit-message-subject" class="subreddit-message-subject tb-input" type="text" placeholder="(subject)" maxlength="100"></input><br>
                     <textarea name="subreddit-message" class="tb-input subreddit-message" placeholder="(message to user)" ></textarea><br>
@@ -237,7 +237,7 @@ function modbutton () {
                     `,
                         footer: `
                 <span class="status error left"></span>
-                <button class="message-send tb-action-button">Send Message</button>`,
+                <button class="message-send tb-action-button">Send as /r/${subreddit}</button>`,
                     },
                 ],
                 cssClass: 'mod-popup',

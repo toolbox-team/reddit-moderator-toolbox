@@ -212,8 +212,7 @@ function storagewrapper () {
                 }).then(() => {
                     // now verify them
                     browser.storage.local.get('tbsettings').then(returnObject => {
-                        if (returnObject.tbsettings && returnObject.tbsettings !== undefined
-                        && isEquivalent(returnObject.tbsettings, settingsObject)) {
+                        if (returnObject.tbsettings && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             // Succes, tell other browser tabs with toolbox that there are new settings.
                             browser.runtime.sendMessage({
                                 action: 'tb-global',

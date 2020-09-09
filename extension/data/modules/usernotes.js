@@ -711,29 +711,30 @@ function usernotes () {
                         content: `
                             <p>
                                 <input type="checkbox" id="tb-un-prune-by-note-age"/>
-                                Delete notes older than
-                                <select id="tb-un-prune-by-note-age-limit">
-                                    <option value="15552000000">6 months</option>
-                                    <option value="31104000000">1 year</option>
-                                    <option value="62208000000">2 years</option>
-                                    <option value="93312000000">3 years</option>
-                                    <option value="124416000000">4 years</option>
-                                </select>
+                                <label for="tb-un-prune-by-note-age">
+                                    Prune notes older than
+                                    <select id="tb-un-prune-by-note-age-limit">
+                                        <option value="15552000000">6 months</option>
+                                        <option value="31104000000">1 year</option>
+                                        <option value="62208000000">2 years</option>
+                                        <option value="93312000000">3 years</option>
+                                        <option value="124416000000">4 years</option>
+                                    </select>
+                                </label>
                             </p>
                             <p>
-                                <input disabled type="checkbox" id="tb-un-prune-by-user-inactivity"/>
-                                Delete notes on users who have been inactive for
-                                <select id="tb-un-prune-by-user-inactivity-limit" disabled>
-                                    <option value="15552000000">6 months</option>
-                                    <option value="31104000000">1 year</option>
-                                    <option value="62208000000">2 years</option>
-                                    <option value="93312000000">3 years</option>
-                                    <option value="124416000000">4 years</option>
-                                </select>
-                            </p>
-                            <p>
-                                <input disabled type="checkbox" id="tb-un-prune-by-unavailable"/>
-                                Delete notes on users who no longer exist
+                                <input type="checkbox" id="tb-un-prune-by-user-inactivity"/>
+                                <label for="tb-un-prune-by-user-inactivity">
+                                    Prune deleted users and users who haven't posted or commented in
+                                    <select id="tb-un-prune-by-user-inactivity-limit">
+                                        <option value="15552000000">6 months</option>
+                                        <option value="31104000000">1 year</option>
+                                        <option value="62208000000">2 years</option>
+                                        <option value="93312000000">3 years</option>
+                                        <option value="124416000000">4 years</option>
+                                    </select>
+                                    (slow)
+                                </label>
                             </p>
                         `,
                         footer: `
@@ -744,56 +745,86 @@ function usernotes () {
 
                 const $pruneByNoteAge = $popup.find('#tb-un-prune-by-note-age');
                 const $pruneByNoteAgeLimit = $popup.find('#tb-un-prune-by-note-age-limit');
-                // const $pruneByUserInactivity = $popup.find('#tb-un-prune-by-user-activity');
-                // const $pruneByUserInactivityLimit = $popup.find('#tb-un-prune-by-user-inactivity-limit');
-                // const $pruneByUnavailable = $popup.find('#tb-un-prune-by-unavailable');
+                const $pruneByUserInactivity = $popup.find('#tb-un-prune-by-user-inactivity');
+                const $pruneByUserInactivityLimit = $popup.find('#tb-un-prune-by-user-inactivity-limit');
                 const $confirmButton = $popup.find('#tb-un-prune-confirm');
 
-                $confirmButton.on('click', () => {
+                $confirmButton.on('click', async () => {
                     const checkNoteAge = $pruneByNoteAge.is(':checked');
-                    // const checkUserActivity = $pruneByUserInactivity.is(':checked');
-                    // const checkUserExists = $pruneByUnavailable.is(':checked');
-
-                    const users = {};
-                    let prunedNotes = 0;
-                    let totalNotes = 0;
-                    let prunedUsers = 0;
-                    let totalUsers = 0;
+                    const checkUserActivity = $pruneByUserInactivity.is(':checked');
 
                     // Do nothing if no pruning criteria are selected
-                    // if (!checkNoteAge && !checkUserActivity && !checkUserExists) {
-                    if (!checkNoteAge) {
+                    if (!checkNoteAge && !checkUserActivity) {
                         return;
                     }
 
+                    // Create a deep copy of the users object to avoid overwriting live data
+                    const users = JSON.parse(JSON.stringify(subUsenotes.users));
+
+                    // Record initial number of notes and users
+                    const totalNotes = Object.values(users).reduce((acc, {notes}) => acc + notes.length, 0);
+                    const totalUsers = Object.keys(users).length;
+
+                    // Keep track of the number of users and notes we prune
+                    let prunedNotes = 0;
+                    let prunedUsers = 0;
+
+                    // Also keep track of what sorts of notes we're pruning (to generate the wiki edit message)
                     const pruneReasons = [];
 
+                    // Prune by note age
                     if (checkNoteAge) {
                         const ageThreshold = Date.now() - parseInt($pruneByNoteAgeLimit.val(), 10);
                         pruneReasons.push(`notes before ${new Date(ageThreshold).toISOString()}`);
 
                         // delete all notes from earlier than ageThreshold
-                        for (const user of Object.values(subUsenotes.users)) {
-                            totalUsers += 1;
-                            users[user.name] = {
-                                notes: user.notes.filter(note => {
-                                    totalNotes += 1;
-                                    if (note.time >= ageThreshold) {
-                                        return true;
-                                    }
-                                    prunedNotes += 1;
-                                    return false;
-                                }),
-                            };
-                            if (users[user.name].notes.length === 0) {
+                        for (const [username, user] of Object.entries(users)) {
+                            user.notes = user.notes.filter(note => {
+                                if (note.time >= ageThreshold) {
+                                    return true;
+                                }
+                                prunedNotes += 1;
+                                return false;
+                            });
+                            if (user.notes.length === 0) {
                                 // delete in loop is safe because we're iterating over Object.values()
-                                delete users[user.name];
+                                delete users[username];
                                 prunedUsers += 1;
                             }
                         }
                     }
 
-                    // TODO: finish implementing other prune strategies
+                    // Prune by user activity and availability
+                    if (checkUserActivity) {
+                        const dateThreshold = Date.now() - parseInt($pruneByUserInactivityLimit.val(), 10);
+                        pruneReasons.push(`users inactive since ${new Date(dateThreshold).toISOString()}`);
+
+                        // Check each individual user
+                        // `await Promise.all()` allows requests to be sent in parallel
+                        TBui.longLoadSpinner(true, 'Checking user activity, this could take a bit', TB.ui.FEEDBACK_NEUTRAL);
+                        await Promise.all(Object.entries(users).map(async ([username, user]) => {
+                            let shouldDelete;
+                            try {
+                                const {data} = await TBApi.getJSON(`/user/${username}.json`, {sort: 'new'});
+                                // `created_utc` is in seconds, JS timestamps are in milliseconds
+                                shouldDelete = !data.children.some(thing => thing.data.created_utc * 1000 > dateThreshold);
+                            } catch (error) {
+                                // 403 = permanently suspended, 404 = deleted/shadowbanned
+                                if (error.response) {
+                                    shouldDelete = error.response.status === 403 || error.response.status === 404;
+                                } else {
+                                    shouldDelete = false;
+                                }
+                            }
+
+                            if (shouldDelete) {
+                                prunedNotes += user.notes.length;
+                                prunedUsers += 1;
+                                delete users[username];
+                            }
+                        }));
+                        TBui.longLoadSpinner(false);
+                    }
 
                     const confirmation = confirm(`${prunedNotes} of ${totalNotes} notes will be pruned. ${prunedUsers} of ${totalUsers} users will no longer have any notes. Proceed?`);
                     if (!confirmation) {

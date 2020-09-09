@@ -770,7 +770,7 @@ function usernotes () {
 
                     if (checkNoteAge) {
                         const ageThreshold = Date.now() - parseInt($pruneByNoteAgeLimit.val(), 10);
-                        pruneReasons.push(`notes before ${new Date(ageThreshold * 1000).toISOString()}`);
+                        pruneReasons.push(`notes before ${new Date(ageThreshold).toISOString()}`);
 
                         // delete all notes from earlier than ageThreshold
                         for (const user of Object.values(subUsenotes.users)) {

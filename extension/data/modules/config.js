@@ -929,10 +929,8 @@ function tbconfig () {
                   name = $this.val(),
                   $key = $this.parents('.usernote-type').find('.key'),
                   keyEdited = $key.data('edited');
-            let key = $key.val();
             if (!keyEdited && name) {
-                key = name.toLowerCase().replace(/ /g, '_').replace(/[^\w-]/g, '').replace(/([-_])\1+/g, '$1');
-                $key.val(key);
+                $key.val(name.toLowerCase().replace(/ /g, '_').replace(/[^\w-]/g, '').replace(/([-_])\1+/g, '$1'));
             }
         });
 

@@ -223,13 +223,6 @@ function domaintagger () {
 
             const $popup = createPopup().hide();
 
-            // Init color selector
-            const colors = Object.values(TBui.standardColors);
-            const colorPalette = [];
-            for (let i = 0; i < colors.length; i += 2) {
-                colorPalette.push([colors[i], colors[i + 1]]);
-            }
-
             // Add to page
             $popup.appendTo('body');
             $popup.css({

@@ -22,7 +22,7 @@
      * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
      * in an error being rejected. The error will have a `response` property
      * containing the full `Response` object.
-     * @returns {Promise}
+     * @returns {Promise} Resolves to a `Response` object or rejects an `Error`.
      */
     TBApi.sendRequest = async ({method, endpoint, query, body, oauth, okOnly}) => {
         // Make the request
@@ -36,20 +36,21 @@
             okOnly,
         });
 
-        // The reply from that message will always be an object. It can have
-        // `error` and `response` properties. `error` will be a string, and
-        // `response` will be an array of arguments to pass to `new Response()`.
+        // The reply from that message will always be an object. It can have these keys:
+        // - `error` (true if the request failed, otherwise not present)
+        // - `message` (present only with `error`, a string error message)
+        // - `response` (response data as an array of arguments to `Response()`)
 
-        // If we get an error, we want to throw an `Error` object.
         if (messageReply.error) {
-            const error = new Error(messageReply.error);
+            // If we get an error, we want to throw an `Error` object.
+            const error = new Error(messageReply.message);
             // If we get a response as well, we attach it to the error.
             if (messageReply.response) {
                 error.response = new Response(...messageReply.response);
             }
             throw error;
         } else {
-            // We assume that if there is no error, then there is a response.
+            // If we didn't get an error, then we return a `Response`.
             return new Response(...messageReply.response);
         }
     };

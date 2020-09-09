@@ -63,6 +63,12 @@ function newmodmailpro () {
         title: 'Check whether there has been new activity in a modmail thread before submitting replies.',
     });
 
+    self.register_setting('sourceButton', {
+        type: 'boolean',
+        default: true,
+        title: 'Displays a "Show Source" button allowing you to display the message source in markdown.',
+    });
+
     const $body = $('body');
 
     function switchAwayFromReplyAsSelf () {
@@ -108,7 +114,8 @@ function newmodmailpro () {
               noReplyAsSelf = self.setting('noReplyAsSelf'),
               showModmailPreview = self.setting('showModmailPreview'),
               clickableReason = self.setting('clickableReason'),
-              checkForNewMessages = self.setting('checkForNewMessages');
+              checkForNewMessages = self.setting('checkForNewMessages'),
+              sourceButton = self.setting('sourceButton');
 
         // Lifted from reddit source.
         const actionTypeMap = [
@@ -388,6 +395,63 @@ function newmodmailpro () {
                 if (event.detail.pageType === 'modmailConversation') {
                     reasonClickable();
                 }
+            });
+        }
+
+        if (sourceButton) {
+            let conversationCached = false;
+            window.addEventListener('TBNewPage', () => {
+                conversationCached = false;
+            });
+
+            TB.listener.on('author', event => {
+                if (event.detail.type !== 'TBmodmailCommentAuthor') {
+                    return;
+                }
+                const $target = $(event.target);
+
+                $target.closest('.Message__header').append('<button class="tb-source-button tb-general-button">source</button>');
+
+                $('.tb-source-button').click(async e => {
+                    // Something is causing the listener to be triggered multiple times.
+                    e.stopImmediatePropagation();
+                    const $currentSourceBtn = $(e.currentTarget.parentElement);
+
+                    // Getting the ID of the message on which the button was clicked.
+                    const activeMessageID = event.detail.data.comment.id;
+                    const $currentSourceField = $(`#tb-source-${activeMessageID}`);
+
+                    // Toggling the source
+                    if ($currentSourceField.length) {
+                        // If the source field exists, toggle it
+
+                        $currentSourceField.toggle();
+                    } else {
+                        // If the source field is not present (has not been requested yet), request it and create
+                        // a div+textarea with the source.
+
+                        if (!$currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length) {
+                            let conversationInfo;
+                            if (conversationCached) {
+                                conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                            } else {
+                                // Fetch and store the conversation info in cache
+                                const currentID = event.detail.data.post.id;
+                                conversationInfo = await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json());
+                                TBStorage.setCache('NewModmailPro', 'current-conversation', conversationInfo);
+                                conversationCached = true;
+                            }
+                            // Getting the body in markdown from selected message
+                            const messageSource = conversationInfo.messages[activeMessageID].bodyMarkdown;
+
+                            $currentSourceBtn.closest('.Thread__message').append(`
+                                <div class="tb-source-field" id="tb-source-${activeMessageID}">
+                                    <textarea readonly></textarea>
+                                </div>`);
+                            $(`#tb-source-${activeMessageID} textarea`).text(messageSource);
+                        }
+                    }
+                });
             });
         }
     }

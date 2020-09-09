@@ -1257,6 +1257,21 @@
             } else {
                 $(`<a class="tb-submission-button tb-submission-button-nsfw" data-fullname="${submissionName}" href="javascript:void(0)">nsfw</a>`).appendTo($submissionButtonList);
             }
+
+            if (submissionStatus === 'removed' || submissionStatus === 'spammed') {
+                browser.runtime.sendMessage({
+                    action: 'tb-modqueue',
+                    subreddit: submissionSubreddit,
+                    thingName: submissionName,
+                    thingTimestamp: submissionCreatedUTC,
+                }).then(result => {
+                    if (result) {
+                        $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
+                        <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
+                        $buildsubmission.addClass('filtered');
+                    }
+                });
+            }
         }
         $buildsubmission.find('p').addClass('tb-comment-p');
         if (submissionOptions && submissionOptions.subredditColor) {
@@ -1496,6 +1511,7 @@
 
         // Let's see if we need to add reports starting with user reports
         if (commentUserReports.length && !commentIgnoreReports) {
+            $commentEntry.addClass('filtered');
             const $commentUserReports = $(`
             <ul class="tb-user-reports">
                 <li>user reports</li>
@@ -1527,6 +1543,7 @@
         // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
 
         if (commentModReports.length) {
+            $commentEntry.addClass('filtered');
             const $commentModReports = $(`
                 <ul class="tb-user-reports">
                     <li>mod reports</li>
@@ -1577,6 +1594,21 @@
             if (commentStatus === 'approved' || commentStatus === 'neutral') {
                 $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
                 <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
+            }
+
+            if (commentStatus === 'removed' || commentStatus === 'spammed') {
+                browser.runtime.sendMessage({
+                    action: 'tb-modqueue',
+                    subreddit: commentSubreddit,
+                    thingName: commentName,
+                    thingTimestamp: commentCreatedUTC,
+                }).then(result => {
+                    if (result) {
+                        $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
+                        <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
+                        $commentEntry.addClass('filtered');
+                    }
+                });
             }
         }
         $buildComment.find('p').addClass('tb-comment-p');

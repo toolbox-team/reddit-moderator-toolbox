@@ -260,8 +260,10 @@ function oldReddit () {
 
             window.addEventListener('TBNewPage', event => {
                 if (event.detail.pageType === 'modmailConversation') {
-                    newModmailSidebar();
-                    newModmailConversationAuthors();
+                    setTimeout(() => {
+                        newModmailSidebar();
+                        newModmailConversationAuthors();
+                    }, 500);
                 }
             });
         }

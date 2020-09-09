@@ -278,7 +278,7 @@ function modbar () {
                     const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
                     subList += `
                         <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
-                            <td class="tb-my-subreddits-name"><a href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
+                            <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
                             <td class="tb-my-subreddits-subreddit">
                                 <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
                                 <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>

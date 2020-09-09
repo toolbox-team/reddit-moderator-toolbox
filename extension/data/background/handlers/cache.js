@@ -46,6 +46,11 @@ async function emptyCacheTimeout (timeoutDuration, cacheType) {
             browser.tabs.sendMessage(tabs[i].id, {
                 action: 'tb-cache-timeout',
                 payload: cacheType,
+            }).catch(error => {
+                // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
+                if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
+                    console.warn('tb-cache-timeout: ', error.message, error);
+                }
             });
         }
     }

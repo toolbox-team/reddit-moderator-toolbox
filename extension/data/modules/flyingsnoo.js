@@ -73,7 +73,7 @@ function flyingsnoo () {
             }
 
             function killSnoo () {
-                const newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.0005));
+                const newTop = oldTop + Math.min(50, Math.max(10, oldTop * 0.0005));
                 floater.css({
                     top: `${newTop}px`,
                 });

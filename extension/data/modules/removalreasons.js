@@ -695,9 +695,7 @@ function removalreasons () {
                 // Get input from HTML-formatted reason
                 const htmlReason = $this.find('.reason-content');
                 htmlReason.find('select, input, textarea').each(function () {
-                    // Value, if it is not empty. If it is, placeholder.
-                    // If no placeholder, empty string.
-                    customInput.push(this.value || this.placeholder || '');
+                    customInput.push(this.value || '');
                 });
 
                 // Get flair data

@@ -911,9 +911,9 @@ function queuetools () {
 
             // This method is evil and breaks shit if it's called too early.
             function sortThings (order, asc) {
-                let A, B;
                 const $sitetable = $('#siteTable');
                 const things = $('#siteTable .thing').sort((a, b) => {
+                    let A, B;
                     if (asc) {
                         A = a;
                         B = b;
@@ -969,8 +969,9 @@ function queuetools () {
                     }
                     case 'score':
                     {
-                        const scoreA = $A.find('.score:visible').text().match(numberRX),
-                              scoreB = $B.find('.score:visible').text().match(numberRX);
+                        const scoreA = $A.find('.score:visible').attr('title'),
+                              scoreB = $B.find('.score:visible').attr('title');
+                        // implicit conversion string to number
                         return scoreA - scoreB;
                     }
                     case 'reports':

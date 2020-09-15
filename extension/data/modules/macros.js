@@ -214,7 +214,7 @@ function modmacros () {
                                 $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
                                     $macro.remove();
                                 });
-                                populateSelect('.tb-macro-select', subreddit, config, 'modmail');
+                                populateSelect('.tb-macro-select', subreddit, config, 'comment');
                             }
                         });
                     }

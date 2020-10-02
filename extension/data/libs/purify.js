@@ -10,8 +10,7 @@
 
   var hasOwnProperty = Object.hasOwnProperty,
       setPrototypeOf = Object.setPrototypeOf,
-      isFrozen = Object.isFrozen,
-      objectKeys = Object.keys;
+      isFrozen = Object.isFrozen;
   var freeze = Object.freeze,
       seal = Object.seal,
       create = Object.create; // eslint-disable-line import/no-mutable-exports
@@ -45,11 +44,8 @@
   }
 
   var arrayForEach = unapply(Array.prototype.forEach);
-  var arrayIndexOf = unapply(Array.prototype.indexOf);
-  var arrayJoin = unapply(Array.prototype.join);
   var arrayPop = unapply(Array.prototype.pop);
   var arrayPush = unapply(Array.prototype.push);
-  var arraySlice = unapply(Array.prototype.slice);
 
   var stringToLowerCase = unapply(String.prototype.toLowerCase);
   var stringMatch = unapply(String.prototype.match);
@@ -58,7 +54,6 @@
   var stringTrim = unapply(String.prototype.trim);
 
   var regExpTest = unapply(RegExp.prototype.test);
-  var regExpCreate = unconstruct(RegExp);
 
   var typeErrorCreate = unconstruct(TypeError);
 
@@ -214,7 +209,7 @@
      * Version label, exposed for easier checks
      * if DOMPurify is up to date or not
      */
-    DOMPurify.version = '2.0.15';
+    DOMPurify.version = '2.1.0';
 
     /**
      * Array of elements that DOMPurify removed during sanitation.
@@ -231,7 +226,6 @@
     }
 
     var originalDocument = window.document;
-    var removeTitle = false;
 
     var document = window.document;
     var DocumentFragment = window.DocumentFragment,
@@ -270,7 +264,10 @@
     var importNode = originalDocument.importNode;
 
 
-    var documentMode = clone(document).documentMode ? document.documentMode : {};
+    var documentMode = {};
+    try {
+      documentMode = clone(document).documentMode ? document.documentMode : {};
+    } catch (_) {}
 
     var hooks = {};
 
@@ -315,9 +312,6 @@
 
     /* Decide if unknown protocols are okay */
     var ALLOW_UNKNOWN_PROTOCOLS = false;
-
-    /* Output should be safe for jQuery's $() factory? */
-    var SAFE_FOR_JQUERY = false;
 
     /* Output should be safe for common template engines.
      * This means, DOMPurify removes data attributes, mustaches and ERB
@@ -416,7 +410,6 @@
       ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false; // Default true
       ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false; // Default true
       ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false; // Default false
-      SAFE_FOR_JQUERY = cfg.SAFE_FOR_JQUERY || false; // Default false
       SAFE_FOR_TEMPLATES = cfg.SAFE_FOR_TEMPLATES || false; // Default false
       WHOLE_DOCUMENT = cfg.WHOLE_DOCUMENT || false; // Default false
       RETURN_DOM = cfg.RETURN_DOM || false; // Default false
@@ -571,11 +564,6 @@
         doc = new DOMParser().parseFromString(dirtyPayload, 'text/html');
       } catch (_) {}
 
-      /* Remove title to fix a mXSS bug in older MS Edge */
-      if (removeTitle) {
-        addToSet(FORBID_TAGS, ['title']);
-      }
-
       /* Use createHTMLDocument in case DOMParser is not available */
       if (!doc || !doc.documentElement) {
         doc = implementation.createHTMLDocument('');
@@ -593,18 +581,6 @@
       /* Work on whole document or just its body */
       return getElementsByTagName.call(doc, WHOLE_DOCUMENT ? 'html' : 'body')[0];
     };
-
-    /* Here we test for a broken feature in Edge that might cause mXSS */
-    if (DOMPurify.isSupported) {
-      (function () {
-        try {
-          var doc = _initDocument('<x/><title>&lt;/title&gt;&lt;img&gt;');
-          if (regExpTest(/<\/title/, doc.querySelector('title').innerHTML)) {
-            removeTitle = true;
-          }
-        } catch (_) {}
-      })();
-    }
 
     /**
      * _createIterator
@@ -674,7 +650,6 @@
      * @param   {Node} currentNode to check for permission to exist
      * @return  {Boolean} true if node was killed, false if left alive
      */
-    // eslint-disable-next-line complexity
     var _sanitizeElements = function _sanitizeElements(currentNode) {
       var content = void 0;
 
@@ -708,6 +683,12 @@
         return true;
       }
 
+      /* Detect mXSS attempts abusing namespace confusion */
+      if (!_isNode(currentNode.firstElementChild) && (!_isNode(currentNode.content) || !_isNode(currentNode.content.firstElementChild)) && regExpTest(/<[!/\w]/g, currentNode.innerHTML) && regExpTest(/<[!/\w]/g, currentNode.textContent)) {
+        _forceRemove(currentNode);
+        return true;
+      }
+
       /* Remove element if anything forbids its presence */
       if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
         /* Keep content except for bad-listed elements */
@@ -723,24 +704,9 @@
       }
 
       /* Remove in case a noscript/noembed XSS is suspected */
-      if (tagName === 'noscript' && regExpTest(/<\/noscript/i, currentNode.innerHTML)) {
+      if ((tagName === 'noscript' || tagName === 'noembed') && regExpTest(/<\/no(script|embed)/i, currentNode.innerHTML)) {
         _forceRemove(currentNode);
         return true;
-      }
-
-      if (tagName === 'noembed' && regExpTest(/<\/noembed/i, currentNode.innerHTML)) {
-        _forceRemove(currentNode);
-        return true;
-      }
-
-      /* Convert markup to cover jQuery behavior */
-      if (SAFE_FOR_JQUERY && !_isNode(currentNode.firstElementChild) && (!_isNode(currentNode.content) || !_isNode(currentNode.content.firstElementChild)) && regExpTest(/</g, currentNode.textContent)) {
-        arrayPush(DOMPurify.removed, { element: currentNode.cloneNode() });
-        if (currentNode.innerHTML) {
-          currentNode.innerHTML = stringReplace(currentNode.innerHTML, /</g, '&lt;');
-        } else {
-          currentNode.innerHTML = stringReplace(currentNode.textContent, /</g, '&lt;');
-        }
       }
 
       /* Sanitize element content to be template-safe */
@@ -801,12 +767,10 @@
      *
      * @param  {Node} currentNode to sanitize
      */
-    // eslint-disable-next-line complexity
     var _sanitizeAttributes = function _sanitizeAttributes(currentNode) {
       var attr = void 0;
       var value = void 0;
       var lcName = void 0;
-      var idAttr = void 0;
       var l = void 0;
       /* Execute a hook if present */
       _executeHook('beforeSanitizeAttributes', currentNode, null);
@@ -850,32 +814,7 @@
         }
 
         /* Remove attribute */
-        // Safari (iOS + Mac), last tested v8.0.5, crashes if you try to
-        // remove a "name" attribute from an <img> tag that has an "id"
-        // attribute at the time.
-        if (lcName === 'name' && currentNode.nodeName === 'IMG' && attributes.id) {
-          idAttr = attributes.id;
-          attributes = arraySlice(attributes, []);
-          _removeAttribute('id', currentNode);
-          _removeAttribute(name, currentNode);
-          if (arrayIndexOf(attributes, idAttr) > l) {
-            currentNode.setAttribute('id', idAttr.value);
-          }
-        } else if (
-        // This works around a bug in Safari, where input[type=file]
-        // cannot be dynamically set after type has been removed
-        currentNode.nodeName === 'INPUT' && lcName === 'type' && value === 'file' && hookEvent.keepAttr && (ALLOWED_ATTR[lcName] || !FORBID_ATTR[lcName])) {
-          continue;
-        } else {
-          // This avoids a crash in Safari v9.0 with double-ids.
-          // The trick is to first set the id to be empty and then to
-          // remove the attribute
-          if (name === 'id') {
-            currentNode.setAttribute(name, '');
-          }
-
-          _removeAttribute(name, currentNode);
-        }
+        _removeAttribute(name, currentNode);
 
         /* Did the hooks approve of the attribute? */
         if (!hookEvent.keepAttr) {
@@ -883,13 +822,7 @@
         }
 
         /* Work around a security issue in jQuery 3.0 */
-        if (SAFE_FOR_JQUERY && regExpTest(/\/>/i, value)) {
-          _removeAttribute(name, currentNode);
-          continue;
-        }
-
-        /* Take care of an mXSS pattern using namespace switches */
-        if (regExpTest(/svg|math/i, currentNode.namespaceURI) && regExpTest(regExpCreate('</(' + arrayJoin(objectKeys(FORBID_CONTENTS), '|') + ')', 'i'), value)) {
+        if (regExpTest(/\/>/i, value)) {
           _removeAttribute(name, currentNode);
           continue;
         }
@@ -1022,7 +955,7 @@
       if (IN_PLACE) ; else if (dirty instanceof Node) {
         /* If dirty is a DOM element, append to an empty document to avoid
            elements being stripped by the parser */
-        body = _initDocument('<!-->');
+        body = _initDocument('<!---->');
         importedNode = body.ownerDocument.importNode(dirty, true);
         if (importedNode.nodeType === 1 && importedNode.nodeName === 'BODY') {
           /* Node is already a body, use as is */

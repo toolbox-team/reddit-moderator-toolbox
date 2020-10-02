@@ -469,7 +469,7 @@ function modbutton () {
                   subreddits = [],
                   user = $popup.find('.user').text();
 
-            let banMessage = $popup.find('textarea.ban-message').val();
+            const banMessage = $popup.find('textarea.ban-message').val();
 
             self.setting('lastAction', actionName);
 
@@ -559,12 +559,18 @@ function modbutton () {
                                 banMessage,
                                 banDuration,
                                 banContext,
+                            }).then(response => {
+                                if (response.json.errors.length) {
+                                    throw new Error('There were one or more errors banning the user');
+                                }
                             }).catch(() => {
+                                // catches the above `errors.length` condition as well as network errors
                                 self.log('missed one');
                                 failedSubs.push(subreddit);
                             });
                         } else {
                             TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                                // only catches network errors because unfriend is weird
                                 self.log('missed one');
                                 failedSubs.push(subreddit);
                             });

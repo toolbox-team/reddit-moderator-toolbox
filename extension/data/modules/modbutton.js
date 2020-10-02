@@ -469,7 +469,7 @@ function modbutton () {
                   subreddits = [],
                   user = $popup.find('.user').text();
 
-            let banMessage = $popup.find('textarea.ban-message').val();
+            const banMessage = $popup.find('textarea.ban-message').val();
 
             self.setting('lastAction', actionName);
 
@@ -560,30 +560,17 @@ function modbutton () {
                                 banDuration,
                                 banContext,
                             }).then(response => {
-                                if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
-                                    // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
-
-                                    self.log('no ban message allowed, falling back to no message.');
-                                    banMessage = '';
-                                    TBApi.friendUser({
-                                        user,
-                                        action,
-                                        subreddit,
-                                        banReason,
-                                        banMessage,
-                                        banDuration,
-                                        banContext,
-                                    }).catch(() => {
-                                        self.log('missed one');
-                                        failedSubs.push(subreddit);
-                                    });
+                                if (response.json.errors.length) {
+                                    throw new Error('There were one or more errors banning the user');
                                 }
                             }).catch(() => {
+                                // catches the above `errors.length` condition as well as network errors
                                 self.log('missed one');
                                 failedSubs.push(subreddit);
                             });
                         } else {
                             TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                                // only catches network errors because unfriend is weird
                                 self.log('missed one');
                                 failedSubs.push(subreddit);
                             });

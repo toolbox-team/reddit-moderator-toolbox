@@ -74,8 +74,8 @@
      * full response object on error. Maintains an API similar to `$.post`.
      * @function
      * @param {string} endpoint The endpoint to request
-     * @param {object} body The body parameters of the request.
-     * @returns {Promise} Resolves to response data or rejects with a jqXHR
+     * @param {object} body The body parameters of the request
+     * @returns {Promise} Resolves to response data or rejects an error
      */
     TBApi.post = (endpoint, body) => TBApi.sendRequest({
         okOnly: true,
@@ -355,6 +355,14 @@
      * - Adding moderators
      * - Adding wiki contributors
      * - Accepting moderator invitations
+     * Note: This API route is weird and will always return 200 OK with a body
+     * looking something like this:
+     *     {"json": {"errors": []}}
+     * As a result, this method will resolve even if the relationship is not
+     * established. Check the contents of the errors array to confirm that the
+     * call actually worked. This method may still reject if the network request
+     * can't be completed or if Reddit's API returns a different response code
+     * (e.g. 401 Unauthorized).
      * @function
      * @param {object} options
      * @param {string} options.user The user to apply the relationship to
@@ -404,12 +412,16 @@
     };
 
     /**
-     * Removes a relationship between a user and a subreddit.
+     * Removes a relationship between a user and a subreddit. Note that
+     * this API method seems to always return 200 OK with a blank object
+     * (`{}`) in response, so there's no meaningful error handling
+     * possible here other than network errors.
      * @param {string} user The name of the user
      * @param {string} action The type of relationship to remove (see
      * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
      * @param {string} subreddit The name of the subreddit
-     * @returns {Promise} Resolves to response data or rejects with a jqXHR
+     * @returns {Promise} Resolves to the JSON response body or rejects
+     * an error.
      */
     TBApi.unfriendUser = (user, action, subreddit) => TBApi.post('/api/unfriend', {
         api_type: 'json',

@@ -346,19 +346,20 @@
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         const $overlay = $(`
-<div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
-    <div class="tb-window tb-window-large ${verticalTabs ? 'tb-window-vertical-tabs' : ''}">
-        <div class="tb-window-header">
-            <div class="tb-window-title">${title}</div>
-            <div class="buttons">
-                ${buttons}
-                <a class="close" href="javascript:;">
-                    <i class="tb-icons">${TBui.icons.close}</i>
-                </a>
+            <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
+                <div class="tb-window tb-window-large ${verticalTabs ? 'tb-window-vertical-tabs' : ''}">
+                    <div class="tb-window-header">
+                        <div class="tb-window-title">${title}</div>
+                        <div class="buttons">
+                            ${buttons}
+                            <a class="close" href="javascript:;">
+                                <i class="tb-icons">${TBui.icons.close}</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>`);
+        `);
 
         if (details) {
             Object.entries(details).forEach(([key, value]) => {

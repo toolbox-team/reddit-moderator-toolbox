@@ -83,6 +83,10 @@
     overflow: auto;
     padding: 5px !important;
 }
+/* ensures hover styles still show up even though we have a very harsh link color reset in windows */
+.mod-toolbox-rd .tb-window-large a:not(.tb-comment-author):hover {
+    color: #000 !important;
+}
 
 /* Footer stuff */
 .mod-toolbox-rd .tb-window-footer {
@@ -171,12 +175,8 @@
     height: 40px;
 }
 
-/* TODO: why? */
-.mod-toolbox-rd .tb-window-large a:not(.tb-comment-author):hover {
-    color: #000 !important;
-}
-
 /* In-page notifications */
+
 .mod-toolbox-rd #tb-notifications-wrapper {
     position: fixed;
     bottom: 42px;

@@ -522,29 +522,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     z-index: 2147483645 !important;
 }
 
-.mod-toolbox-rd .tb-window:not(.tb-window-large) .tb-window-tabs {
-    border-bottom: 1px solid #B6C9DD;
-    background-color: #C7D6E6;
-}
-
-.mod-toolbox-rd .tb-window:not(.tb-window-large) .tb-window-tabs a {
-    background-color: #C7D6E6;
-    border-right: 1px dotted #A8B5C2;
-    display: inline-block;
-    padding: 4px;
-    cursor: pointer;
-}
-
-.mod-toolbox-rd .tb-window:not(.tb-window-large) .tb-window-tabs a:hover,
-.mod-toolbox-rd .tb-window:not(.tb-window-large) .tb-window-tabs a.active {
-    background-color: #9FBAD6;
-    border-right: 1px solid #9FBAD6;
-}
-.mod-toolbox-rd .tb-window:not(.tb-window-large) .tb-window-tabs a:not(:first-child):hover,
-.mod-toolbox-rd .tb-window:not(.tb-window-large) .tb-window-tabs a:not(:first-child).active {
-    box-shadow: -1px 0 #9FBAD6;
-}
-
 .mod-toolbox-rd .mod-popup .other-subs {
     padding: 5px;
 }

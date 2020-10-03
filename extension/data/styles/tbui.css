@@ -1,4 +1,4 @@
-/** Window/Popup Common **/
+/** Windows **/
 
 /* Box sizing reset for custom sub CSS */
 .mod-toolbox-rd .tb-window,
@@ -8,26 +8,18 @@
     box-sizing: content-box;
 }
 
-/* Headers */
-/* TODO: generic classname that windows/popups/notifications can share? */
+/* Header/titlebar */
 .mod-toolbox-rd .tb-window-header {
     display: flex;
     background-color: #CEE3F8;
     line-height: 26px;
     white-space: nowrap;
 }
-.mod-toolbox-rd .tb-window-large .tb-window-header {
-    /* Windows get bigger headers */
-    line-height: 36px;
-    font-size: 14px;
-}
-
-/* Pseudo-element added to the beginning of the window to help center titles */
 .mod-toolbox-rd .tb-window-header::before {
+    /* Pseudo-element added to the beginning of the window to help center titles */
     content: "";
     flex: 1;
 }
-
 .mod-toolbox-rd .tb-window-title {
     flex: 1;
     display: flex;
@@ -36,13 +28,12 @@
     padding: 0;
     margin: 0 10px;
 }
-
+/* Close/help buttons */
 .mod-toolbox-rd .tb-window-header .buttons {
     flex: 1;
     display: flex;
     justify-content: flex-end;
 }
-
 .mod-toolbox-rd .tb-window-header .buttons a {
     display: flex;
     background-color: #C7D6E6;
@@ -55,6 +46,32 @@
 }
 .mod-toolbox-rd .tb-window-header .buttons a:hover {
     background-color: #9FBAD6;
+}
+
+/* Tabs */
+.mod-toolbox-rd .tb-window-tabs {
+    background-color: #C7D6E6;
+}
+.mod-toolbox-rd .tb-window-tabs a {
+    background-color: #C7D6E6;
+    border-style: dotted;
+    border-color: #A8B5C2;
+    border-width: 0;
+    border-right-width: 1px;
+    font-size: 11px;
+    display: inline-block;
+    padding: 4px;
+    cursor: pointer;
+}
+.mod-toolbox-rd .tb-window-tabs a:hover,
+.mod-toolbox-rd .tb-window-tabs a.active {
+    background-color: #9FBAD6;
+    border-style: solid;
+    border-color: #9FBAD6;
+}
+.mod-toolbox-rd .tb-window-tabs a:not(:first-child):hover,
+.mod-toolbox-rd .tb-window-tabs a:not(:first-child).active {
+    box-shadow: -1px 0 #9FBAD6;
 }
 
 /* Content resets */
@@ -76,80 +93,87 @@
     align-items: center;
     background-color: #CEE3F8;
 }
-.mod-toolbox-rd .tb-window-large .tb-window-footer {
-    height: 40px;
-}
 
-/** Window-specific stuff **/
+/* Vertical tabs modifier*/
 
-/* Window tabs */
-.mod-toolbox-rd .tb-window-large .tb-window-tabs {
+/* Move tab bar next to the content pane */
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs {
     display: inline-block;
     width: 135px;
 }
-
-.mod-toolbox-rd .tb-window-large .tb-window-tabs a {
-    background-color: #C7D6E6;
-    display: block;
-    padding: 7px;
-    box-sizing: border-box !important;
-    font-size: 11px;
-}
-.mod-toolbox-rd .tb-window-large .tb-window-tabs a.active,
-.mod-toolbox-rd .tb-window-large .tb-window-tabs a:hover {
-    background-color: #9FBAD6;
-}
-.mod-toolbox-rd .tb-window-large .tb-window-tabs-header {
-    padding: 7px 0;
-    font-size: 11px;
-    font-weight: normal;
-    font-style: italic;
-}
-.mod-toolbox-rd .tb-window-large .tb-window-tabs-category {
-    background-color: #C7D6E6;
-    padding-left: 7px;
-}
-.mod-toolbox-rd .tb-window-large .tb-window-tabs-category a {
-    border-left: 1px solid #FFF;
-}
-.mod-toolbox-rd .tb-window-large .tb-window-tabs * + * {
-    border-top: 1px solid #FFF;
-}
-
-/* Window tab content */
-.mod-toolbox-rd .tb-window-tabs-wrapper { /* Bad name - this element wraps the tab content */
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-wrapper { /* Bad name - this element wraps the tab content */
     display: inline-block;
     vertical-align: top;
     /* Leave space for the tabs on the left */
     width: calc(100% - 135px);
 }
 
+/* Restyle the tab buttons to be vertical */
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs a {
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    display: block;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs a:not(:first-child):hover,
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs a:not(:first-child).active {
+    box-shadow: 0 -1px #9FBAD6;
+}
+
+/* Vertical tab bars can also have categories and getting them to look nice is a pain */
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-header {
+    padding: 4px 0 !important;
+    font-size: 11px;
+    font-weight: normal;
+    font-style: italic;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-category {
+    background-color: #C7D6E6;
+    padding-left: 4px;
+    border-bottom: 1px dotted #A8B5C2;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-category a {
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-category a + a {
+    border-top-width: 0;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs a:last-child {
+    border-bottom-width: 0;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-header + a:hover,
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-header + a.active {
+    /* !important to override specificity of above box-shadow rule */
+    box-shadow: none !important;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-category a:last-child:hover,
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-category a:last-child.active {
+    box-shadow: 0 -1px #9FBAD6, 0 1px #9FBAD6;
+}
+
+
+/* Large windows get bigger headers, tabs, and footers */
+.mod-toolbox-rd .tb-window-large .tb-window-header {
+    line-height: 36px;
+    font-size: 14px;
+}
+.mod-toolbox-rd .tb-window-large .tb-window-tabs a {
+    padding: 7px;
+}
+.mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-header {
+    padding: 7px 0;
+}
+.mod-toolbox-rd .tb-window-large .tb-window-tabs-category {
+    padding-left: 7px;
+}
+.mod-toolbox-rd .tb-window-large .tb-window-footer {
+    height: 40px;
+}
+
 /* TODO: why? */
 .mod-toolbox-rd .tb-window-large a:not(.tb-comment-author):hover {
     color: #000 !important;
-}
-
-/* Horizontal tabs for stuff like the profile */
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    background: #c7d6e6;
-    /*
-     * just to be safe, though if the tabs need multiple lines you should
-     * probably not be using horizontal tabs
-     */
-    flex-wrap: wrap;
-}
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs a {
-    border-right: solid 1px #FFF;
-}
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs a + a {
-    border-top: 0;
-}
-.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs-wrapper {
-    /* No tabs on the left, so content gets full width */
-    width: 100%;
 }
 
 /* In-page notifications */

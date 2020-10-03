@@ -92,7 +92,7 @@
     font-style: italic;
 }
 
-.mod-toolbox-rd .tb-profile-overlay .tb-window-wrapper {
+.mod-toolbox-rd .tb-profile-overlay .tb-window.tb-window-large {
     max-width: 1350px;
 }
 

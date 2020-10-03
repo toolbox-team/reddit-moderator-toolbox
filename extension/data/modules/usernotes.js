@@ -338,7 +338,7 @@ function usernotes () {
 
                     footer: `
                         <div class="utagger-footer">
-                            <span class="tb-popup-error" style="display: none;"></span>
+                            <span class="tb-window-error" style="display: none;"></span>
                             <input type="button" class="utagger-save-user tb-action-button" id="utagger-save-user" value="Save for /r/${subreddit}">
                         </div>
                     `,
@@ -533,7 +533,7 @@ function usernotes () {
                 // User forgot note text!
                     $unote.addClass('error');
 
-                    const $error = $popup.find('.tb-popup-error');
+                    const $error = $popup.find('.tb-window-error');
                     $error.text('Note text is required');
                     $error.show();
 

@@ -8,7 +8,7 @@
 }
 
 /* Box layout */
-.mod-toolbox-rd .tb-popup.personal-notes-popup table {
+.mod-toolbox-rd .tb-window.personal-notes-popup table {
     height: 100%;
     position: relative; /* To help with absolute positioning of the sidebar */
 }
@@ -44,7 +44,7 @@
     overflow: hidden;
 }
 /* Hack to get background on the list */
-.mod-toolbox-rd .tb-popup.personal-notes-popup .tb-popup-content {
+.mod-toolbox-rd .tb-window.personal-notes-popup .tb-window-content {
     box-shadow: inset 175px 0 #C7D6E6;
     padding: 0 !important;
     height: 100%;

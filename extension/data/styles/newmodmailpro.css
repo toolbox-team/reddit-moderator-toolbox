@@ -87,7 +87,7 @@ html.tb-nightmode,
 
 /* new modmail activity
 */
-.new-modmail-activity-popup .tb-popup-content {
+.new-modmail-activity-popup .tb-window-content {
     padding: 0 !important;
 }
 

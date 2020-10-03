@@ -141,16 +141,16 @@
             .join('');
 
         $notificationDiv.prepend(`
-            <div class="tb-notification" data-id="${id}">
-                <div class="tb-notification-header">
-                    <div class="tb-notification-title">${title}</div>
+            <div class="tb-window tb-notification" data-id="${id}">
+                <div class="tb-window-header">
+                    <div class="tb-window-title">${title}</div>
                     <div class="buttons">
                         <a class="close">
                             <i class="tb-icons">${TBui.icons.close}</i>
                         </a>
                     </div>
                 </div>
-                <div class="tb-notification-content">${body}</div>
+                <div class="tb-window-content">${body}</div>
             </div>
         `);
     };
@@ -210,10 +210,10 @@
     }) {
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         const $popup = $(`
-            <div class="tb-popup ${cssClass}">
+            <div class="tb-window ${draggable ? 'tb-window-draggable' : ''} ${cssClass}">
                 ${meta ? `<div class="meta" style="display: none;">${meta}</div>` : ''}
-                <div class="tb-popup-header">
-                    <div class="tb-popup-title">${title}</div>
+                <div class="tb-window-header">
+                    <div class="tb-window-title">${title}</div>
                     <div class="buttons">
                         <a class="close" href="javascript:;">
                             <i class="tb-icons">${TBui.icons.close}</i>
@@ -224,10 +224,10 @@
         `);
         if (tabs.length === 1) {
             // We don't use template literals here as the content can be a jquery object.
-            $popup.append($('<div class="tb-popup-content"></div>').append(tabs[0].content));
-            $popup.append($('<div class="tb-popup-footer""></div>').append(tabs[0].footer));
+            $popup.append($('<div class="tb-window-content"></div>').append(tabs[0].content));
+            $popup.append($('<div class="tb-window-footer"></div>').append(tabs[0].footer));
         } else {
-            const $tabs = $('<div class="tb-popup-tabs"></div>');
+            const $tabs = $('<div class="tb-window-tabs"></div>');
             $popup.append($tabs);
 
             for (let i = 0; i < tabs.length; i++) {
@@ -248,10 +248,10 @@
 
                     // hide others
                     $tabs.find('a').removeClass('active');
-                    $popup.find('.tb-popup-tab').hide();
+                    $popup.find('.tb-window-tab').hide();
 
                     // show current
-                    $popup.find(`.tb-popup-tab.${tab.id}`).show();
+                    $popup.find(`.tb-window-tab.${tab.id}`).show();
                     $(this).addClass('active');
 
                     e.preventDefault();
@@ -265,9 +265,9 @@
                 $button.appendTo($tabs);
 
                 // We don't use template literals here as the content can be a jquery object.
-                const $tab = $(`<div class="tb-popup-tab ${tab.id}"></div>`);
-                $tab.append($('<div class="tb-popup-content"></div>').append(tab.content));
-                $tab.append($('<div class="tb-popup-footer""></div>').append(tab.footer));
+                const $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
+                $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
+                $tab.append($('<div class="tb-window-footer""></div>').append(tab.footer));
 
                 // default first tab is visible; hide others
                 if (i === 0) {
@@ -281,7 +281,7 @@
         }
 
         if (draggable) {
-            $popup.drag($popup.find('.tb-popup-header'));
+            $popup.drag($popup.find('.tb-window-header'));
             // Don't let people drag by the buttons, that gets confusing
             $popup.find('.buttons a').on('mousedown', e => e.stopPropagation());
         }
@@ -335,8 +335,8 @@
         $overlay.find('.tb-window-tabs a').removeClass('active');
         $tab.addClass('active');
 
-        $('.tb-window-wrapper .tb-window-tab').hide();
-        $(`.tb-window-wrapper .tb-window-tab.${tabName}`).show();
+        $('.tb-window .tb-window-tab').hide();
+        $(`.tb-window .tb-window-tab.${tabName}`).show();
     };
     // Window Overlay HTML generator
     TBui.overlay = function overlay (title, tabs, buttons, css_class, single_footer, details) {
@@ -347,7 +347,7 @@
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         const $overlay = $(`
 <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
-    <div class="tb-window-wrapper">
+    <div class="tb-window tb-window-large">
         <div class="tb-window-header">
             <div class="tb-window-title">${title}</div>
             <div class="buttons">
@@ -371,11 +371,11 @@
         // $overlay.on('click', '.buttons .close', function () {});
 
         if (tabs.length === 1) {
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append(single_footer ? single_footer : tabs[0].footer));
+            $overlay.find('.tb-window').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
+            $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(single_footer ? single_footer : tabs[0].footer));
         } else if (tabs.length > 1) {
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
+            $overlay.find('.tb-window').append($('<div class="tb-window-tabs"></div>'));
+            $overlay.find('.tb-window').append($('<div class="tb-window-tabs-wrapper"></div>'));
 
             for (let i = 0; i < tabs.length; i++) {
                 const tab = tabs[i];
@@ -430,7 +430,7 @@
                 $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
                 if (!single_footer) {
-                    $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
+                    $overlay.find('.tb-window').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
                     const $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
                     if (i === 0) {
@@ -449,13 +449,13 @@
                     $tab.hide();
                 }
 
-                $tab.appendTo($overlay.find('.tb-window-wrapper .tb-window-tabs-wrapper'));
+                $tab.appendTo($overlay.find('.tb-window .tb-window-tabs-wrapper'));
             }
         }
 
         // single footer for all tabs (as used in .tb-settings)
         if (single_footer) {
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append(single_footer));
+            $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(single_footer));
         }
 
         return $overlay;

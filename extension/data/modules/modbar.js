@@ -490,8 +490,8 @@ function modbar () {
             if ($this.data('module')) {
                 $tb_help_mains.data('module', $this.data('module'));
             }
-            $('.tb-personal-settings .tb-window-wrapper .tb-window-tab').hide();
-            $(`.tb-personal-settings .tb-window-wrapper .tb-window-tab.${module}`).show();
+            $('.tb-personal-settings .tb-window .tb-window-tab').hide();
+            $(`.tb-personal-settings .tb-window .tb-window-tab.${module}`).show();
         }
 
         function checkHash () {

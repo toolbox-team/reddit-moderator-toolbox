@@ -275,7 +275,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 ------------
     Overlay windows.
     TODO: Clean up css and remove duplicate code.
-    TODO: Merge code shared between overlays, windows, and notifications(?).
 ------------
 */
 
@@ -295,6 +294,18 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 
 .mod-toolbox-rd.tb-modbar-shown .tb-page-overlay {
     margin-bottom: 31px;
+}
+
+.mod-toolbox-rd .tb-page-overlay .tb-window {
+    position: relative;
+    top: 40px;
+    max-width: 1100px;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding: 0 !important;
+    background-color: #FFF;
+    border: 0;
+    margin-bottom: 150px;
 }
 
 /*
@@ -318,28 +329,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 .mod-toolbox-rd ul.inline-list li:after { content: ','; }
 .mod-toolbox-rd ul.inline-list li:last-child:after { content: ''; }
 .mod-toolbox-rd ul.inline-list li:nth-last-child(2):after { content: ', and';}
-
-.mod-toolbox-rd .tb-overlay-label {
-    width: auto;
-    padding: 40px 5px 5px 5px;
-    font-weight: bold;
-    text-shadow: 0 0 4px #FFF;
-    left: 0;
-    right: 0;
-    text-align: center;
-}
-
-.mod-toolbox-rd .tb-window.tb-window-large {
-    position: relative;
-    top: 40px;
-    max-width: 1100px;
-    margin-right: auto !important;
-    margin-left: auto !important;
-    padding: 0 !important;
-    background-color: #FFF;
-    border: 0;
-    margin-bottom: 150px;
-}
 
 .mod-toolbox-rd .tb-settings .tb-window {
     max-width: 845px;
@@ -1818,10 +1807,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 
 .mod-toolbox-rd span.tb-config-intro {
     max-width: 59em;
-}
-
-.mod-toolbox-rd .tb-window-tabs a {
-    cursor: pointer;
 }
 
 .mod-toolbox-rd #tb-removal-reasons-list,

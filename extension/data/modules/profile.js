@@ -633,7 +633,8 @@ function profilepro () {
                     false, // single overriding footer
                     {
                         user,
-                    }
+                    },
+                    false, // use horizontal tabs instead of vertical
                 ).appendTo('body');
 
                 $body.css('overflow', 'hidden');

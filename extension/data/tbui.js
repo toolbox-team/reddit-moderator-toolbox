@@ -339,7 +339,7 @@
         $(`.tb-window .tb-window-tab.${tabName}`).show();
     };
     // Window Overlay HTML generator
-    TBui.overlay = function overlay (title, tabs, buttons, css_class, single_footer, details) {
+    TBui.overlay = function overlay (title, tabs, buttons, css_class, single_footer, details, verticalTabs = true) {
         buttons = typeof buttons !== 'undefined' ? buttons : '';
         css_class = typeof css_class !== 'undefined' ? css_class : '';
         single_footer = typeof single_footer !== 'undefined' ? single_footer : false;
@@ -347,7 +347,7 @@
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         const $overlay = $(`
 <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
-    <div class="tb-window tb-window-large">
+    <div class="tb-window tb-window-large ${verticalTabs ? 'tb-window-vertical-tabs' : ''}">
         <div class="tb-window-header">
             <div class="tb-window-title">${title}</div>
             <div class="buttons">

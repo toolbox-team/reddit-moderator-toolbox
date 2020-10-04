@@ -164,7 +164,6 @@
                 "data/modules/removalreasons.js",
                 "data/modules/nukecomments.js",
                 "data/modules/trouble.js",
-                "data/modules/metricstab.js",
                 "data/modules/profile.js",
                 "data/modules/queue_overlay.js",
                 "data/modules/flyingsnoo.js",

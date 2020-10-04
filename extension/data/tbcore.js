@@ -967,7 +967,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 user,
                 author: user,
                 permalink,
-                permalink_newmodmail: permalink_newmodmail ? permalink_newmodmail : permalink,
+                permalink_newmodmail: permalink_newmodmail || permalink,
                 url: permalink,
                 domain,
                 id,

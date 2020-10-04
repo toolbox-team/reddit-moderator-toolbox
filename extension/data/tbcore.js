@@ -823,6 +823,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
             let subreddit,
                 permalink,
+                permalink_newmodmail,
                 domain,
                 id,
                 postID,
@@ -851,7 +852,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 const idMatch = browserUrl.match(idRegex);
                 // `idMatch` can be null when quickly navigating away (in which case `id` is inconsequential)
                 id = idMatch ? idMatch[1] : 'racey';
-                permalink = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
+
+                permalink_newmodmail = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
+
+                permalink = $body.find('.ThreadTitle__messageLink');
+                permalink = permalink.length ? permalink[0].href : permalink_newmodmail;
 
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.
                 // Macros look at the sidebar and other modules don't need the body.
@@ -962,6 +967,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 user,
                 author: user,
                 permalink,
+                permalink_newmodmail: permalink_newmodmail ? permalink_newmodmail : permalink,
                 url: permalink,
                 domain,
                 id,

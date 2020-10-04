@@ -480,7 +480,7 @@ function usernotes () {
             let link;
 
             if (TBCore.isNewModmail) {
-                link = TBCore.getThingInfo($thing).permalink;
+                link = TBCore.getThingInfo($thing).permalink_newmodmail;
                 createUserPopup(subreddit, user, link, disableLink, e);
             } else {
                 let thingID;

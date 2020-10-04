@@ -1,5 +1,8 @@
 'use strict';
 
+const MAX_BAN_REASON_LENGTH = 300;
+const MAX_BAN_MESSAGE_LENGTH = 1000;
+
 function modbutton () {
     const self = new TB.Module('Mod Button');
     self.shortname = 'ModButton';
@@ -200,8 +203,8 @@ function modbutton () {
                     <input type="checkbox" class="action-sub ${self.OTHER}-checkbox name="action-sub" value="${self.OTHER}">
                     <select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}"><option value="${self.OTHER}">(select subreddit)</option></select>
                 </div>
-                <div class="ban-note-container"><input id="ban-note" class="ban-note tb-input" type="text" placeholder="(ban note)" maxlength="300"></input><br>
-                <textarea name="ban-message" class="tb-input ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>
+                <div class="ban-note-container"><input id="ban-note" class="ban-note tb-input" type="text" placeholder="(ban note)" maxlength="${MAX_BAN_REASON_LENGTH}"></input><br>
+                <textarea name="ban-message" class="tb-input ban-message" placeholder="(ban message to user)" maxlength="${MAX_BAN_MESSAGE_LENGTH}"></textarea><br>
                 <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration tb-input" placeholder="time (days)">
                 </div>`,
                         footer: `
@@ -472,6 +475,13 @@ function modbutton () {
             const banMessage = $popup.find('textarea.ban-message').val();
 
             self.setting('lastAction', actionName);
+
+            if (banReason.length > MAX_BAN_REASON_LENGTH) {
+                return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);
+            }
+            if (banMessage.length > MAX_BAN_MESSAGE_LENGTH) {
+                return $status.text(`error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`);
+            }
 
             // Check dem values.
             if (!api) {

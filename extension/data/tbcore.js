@@ -1714,10 +1714,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     window.dispatchEvent(new CustomEvent('TBNewPage', {detail: contextObject}));
                 }, 500);
             }
-            requestAnimationFrame(watchPushState);
         }
 
-        watchPushState();
+        watchPushState(location.href);
+        window.addEventListener('tb-url-changed', watchPushState);
+
         // Watch for new things and send out events based on that.
         if ($('#header').length) {
             let newThingRunning = false;

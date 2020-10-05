@@ -1777,13 +1777,14 @@
         const $this = $(this);
         const thisState = $this.attr('data-state') || 'collapsed';
         const $selfText = $this.closest('.tb-submission').find('.tb-self-expando');
-        $selfText.toggle();
 
         if (thisState === 'collapsed') {
             $this.html(`<i class="tb-icons">${TBui.icons.remove}</i>`);
+            $selfText.css('display', 'block');
             $this.attr('data-state', 'expanded');
         } else {
             $this.html(`<i class="tb-icons">${TBui.icons.add}</i>`);
+            $selfText.css('display', '');
             $this.attr('data-state', 'collapsed');
         }
     });

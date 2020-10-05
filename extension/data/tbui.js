@@ -1726,16 +1726,13 @@
 
     $body.on('click', '.tb-comment-toggle', function () {
         const $this = $(this);
-        const thisState = $this.text();
         const $comment = $this.closest('.tb-comment');
-        $comment.find('.tb-comment-children').first().toggle();
-        $comment.find('.tb-comment-body').first().toggle();
-        $comment.find('.tb-comment-buttons').first().toggle();
-        $comment.find('.tb-comment-details').first().toggle();
 
-        if (thisState === '[–]') {
+        if ($this.text() === '[–]') {
+            $comment.find('> .tb-comment-entry > .tb-tagline ~ *').css('display', 'none');
             $this.text('[+]');
         } else {
+            $comment.find('> .tb-comment-entry > .tb-tagline ~ *').css('display', '');
             $this.text('[–]');
         }
     });

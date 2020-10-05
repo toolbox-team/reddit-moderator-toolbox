@@ -1580,13 +1580,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
         const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
 
-        // This function after being first called will watch for pushstate changes.
         // Once a change is detected it will abstract all the context information from url, update TBCore variables and emit all information in an event.
         // NOTE: this function is a work in progress, page types are added once needed. Currently supported pages where context are provided are:
         // NewModmail: listings, conversations, create
         // reddit frontpage: sorting
         // subreddits: listing including sorting, submissions, submissions with permalink
-        function watchPushState () {
+        function refreshUrlContext () {
             const samePage = locationHref === location.href;
             if (!samePage) {
                 const oldHref = locationHref;
@@ -1716,8 +1715,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         }
 
-        watchPushState(location.href);
-        window.addEventListener('tb-url-changed', watchPushState);
+        refreshUrlContext();
+        window.addEventListener('tb-url-changed', refreshUrlContext);
 
         // Watch for new things and send out events based on that.
         if ($('#header').length) {

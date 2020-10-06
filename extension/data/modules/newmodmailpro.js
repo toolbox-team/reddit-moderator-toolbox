@@ -140,7 +140,7 @@ function newmodmailpro () {
                 // Note: we can't use .submit() here since it will trigger
                 // the native browser submission instead of the React event listener.
                 const formElement = $body.find('.ThreadViewerReplyForm')[0];
-                formElement.dispatchEvent(new CustomEvent('submit'));
+                formElement.dispatchEvent(new Event('submit', { cancelable: false })); // cancelable: false is needed for FF
             };
 
             /**

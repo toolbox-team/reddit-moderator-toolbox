@@ -41,6 +41,13 @@ function oldReddit () {
             // Element is visible, we only want to handle it once. Stop observing.
             observer.unobserve(entry.target);
             const $thing = $(entry.target);
+
+            // If the element's parent is updated, sometimes it gets emitted again anyway.
+            // Check for existing containers and avoid adding duplicates.
+            if ($thing.find('> .entry > .tb-jsapi-container').length) {
+                return;
+            }
+
             const info = TBCore.getThingInfo($thing);
 
             requestAnimationFrame(() => {

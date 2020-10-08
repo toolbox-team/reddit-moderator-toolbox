@@ -1585,13 +1585,13 @@
 
         // Now add mod action buttons if applicable.
         if (canModComment) {
-            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
-                $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
-            }
-
             if (commentStatus === 'approved' || commentStatus === 'neutral') {
                 $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
                 <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
+            }
+
+            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
+                $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
             }
 
             if (commentStatus === 'removed' || commentStatus === 'spammed') {

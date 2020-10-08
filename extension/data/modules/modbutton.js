@@ -600,15 +600,16 @@ function modbutton () {
 
         // send a message to the user.
         $body.on('click', '.mod-popup .message-send', function () {
+            console.log('hi');
             let subject,
                 message;
             TB.ui.longLoadSpinner(true);
             const $popup = $(this).parents('.mod-popup'),
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
-                  $callbackSpan = $popup.find('.send_message #subreddit-message-callback'),
-                  $subredditMessageSubject = $popup.find('.send_message .subreddit-message-subject'),
-                  $subredditMessage = $popup.find('.send_message .subreddit-message');
+                  $callbackSpan = $popup.find('#subreddit-message-callback'),
+                  $subredditMessageSubject = $popup.find('.subreddit-message-subject'),
+                  $subredditMessage = $popup.find('.subreddit-message');
 
             if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
                 $callbackSpan.text('You forgot a subject or message');

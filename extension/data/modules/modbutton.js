@@ -600,7 +600,6 @@ function modbutton () {
 
         // send a message to the user.
         $body.on('click', '.mod-popup .message-send', function () {
-            console.log('hi');
             let subject,
                 message;
             TB.ui.longLoadSpinner(true);

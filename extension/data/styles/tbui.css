@@ -172,6 +172,15 @@
     width: 100%;
 }
 
+/* Pager for displaying paginated content */
+.mod-toolbox-rd .tb-pager .tb-pager-controls {
+    text-align: center;
+    margin-bottom: 5px;
+}
+.mod-toolbox-rd .tb-pager .tb-pager-control-active {
+    background-color: #B6C9DD;
+}
+
 /* In-page notifications */
 .mod-toolbox-rd #tb-notifications-wrapper {
     position: fixed;

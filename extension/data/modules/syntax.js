@@ -199,75 +199,88 @@ function syntax () {
                 }
             }
         }
+        // Are we on a wiki edit or create page?
+        const wikiRegex = /\/wiki\/(edit|create)/;
+        if (location.pathname.match(wikiRegex)) {
+            // Are we on a page from the list in the settings?
+            for (const page in wikiPages) {
+                if (Object.prototype.hasOwnProperty.call(wikiPages, page)) { // ESLint guard-for-in
+                    const pagePathRegex = new RegExp(`/wiki/(edit|create)/?${page}/?$`);
+                    if (location.pathname.match(pagePathRegex)) {
+                        // we've checked the current page is the edit page for one of the pages in the settings, replace the textarea with CodeMirror
 
         // Here we deal with pages other than the stylesheet, from the list in the settings.
         if (onWikiPage) {
-            let miscEditor;
-            const $editform = $('#editform');
             let defaultMode = 'default';
+                        let miscEditor;
+                        const $editform = $('#editform');
 
             if (wikiPages[onWikiPage] !== '') {
                 defaultMode = wikiPages[onWikiPage];
             }
 
-            // Class added to apply some specific css.
-            $body.addClass('mod-syntax');
+                        // Class added to apply some specific css.
+                        $body.addClass('mod-syntax');
 
-            // We also need to remove some stuff RES likes to add.
-            $body.find('.markdownEditor-wrapper, .RESBigEditorPop, .help-toggle').remove();
+                        // We also need to remove some stuff RES likes to add.
+                        $body.find('.markdownEditor-wrapper, .RESBigEditorPop, .help-toggle').remove();
 
-            // Theme selector, doesn't really belong here but gives people the opportunity to see how it looks with the css they want to edit.
-            $editform.prepend(this.themeSelect);
+                        // Theme selector, doesn't really belong here but gives people the opportunity to see how it looks with the css they want to edit.
+                        $editform.prepend(this.themeSelect);
 
-            $('#theme_selector').val(selectedTheme);
+                        $('#theme_selector').val(selectedTheme);
 
-            // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
-            $('#wiki_page_content').each((index, elem) => {
-                // Editor setup.
-                miscEditor = CodeMirror.fromTextArea(elem, {
                     mode: defaultMode,
-                    autoCloseBrackets: true,
-                    lineNumbers: true,
-                    theme: selectedTheme,
-                    indentUnit: 4,
-                    extraKeys: {
-                        'Ctrl-Alt-F': 'findPersistent',
-                        'Ctrl-/': 'toggleComment',
-                        'F11' (cm) {
-                            cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-                        },
-                        'Esc' (cm) {
-                            if (cm.getOption('fullScreen')) {
-                                cm.setOption('fullScreen', false);
-                            }
-                        },
-                        'Tab': betterTab,
-                        'Shift-Tab' (cm) {
-                            cm.indentSelection('subtract');
-                        },
-                    },
-                    lineWrapping: enableWordWrap,
-                });
+                        // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
+                        $('#wiki_page_content').each((index, elem) => {
+                            // Editor setup.
+                            miscEditor = CodeMirror.fromTextArea(elem, {
+                                autoCloseBrackets: true,
+                                lineNumbers: true,
+                                theme: selectedTheme,
+                                indentUnit: 4,
+                                extraKeys: {
+                                    'Ctrl-Alt-F': 'findPersistent',
+                                    'Ctrl-/': 'toggleComment',
+                                    'F11' (cm) {
+                                        cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+                                    },
+                                    'Esc' (cm) {
+                                        if (cm.getOption('fullScreen')) {
+                                            cm.setOption('fullScreen', false);
+                                        }
+                                    },
+                                    'Tab': betterTab,
+                                    'Shift-Tab' (cm) {
+                                        cm.indentSelection('subtract');
+                                    },
+                                },
+                                lineWrapping: enableWordWrap,
+                            });
 
-                $body.find('.CodeMirror.CodeMirror-wrap').prepend(keyboardShortcutsHelper);
-            });
+                            $body.find('.CodeMirror.CodeMirror-wrap').prepend(keyboardShortcutsHelper);
+                        });
 
-            // In order to make save button work we need to hijack and replace it.
-            $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
+                        // In order to make save button work we need to hijack and replace it.
+                        $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
 
-            // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
-            $body.delegate('.tb-syntax-button-save-wiki', 'click', () => {
-                miscEditor.save();
-                $('#wiki_save_button').click();
-            });
+                        // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
+                        $body.delegate('.tb-syntax-button-save-wiki', 'click', () => {
+                            miscEditor.save();
+                            $('#wiki_save_button').click();
+                        });
 
-            // Actually dealing with the theme dropdown is done here.
-            $body.on('change keydown', '#theme_selector', function () {
-                const thingy = $(this);
-                setTimeout(() => {
-                    miscEditor.setOption('theme', thingy.val());
-                }, 0);
-            });
+                        // Actually dealing with the theme dropdown is done here.
+                        $body.on('change keydown', '#theme_selector', function () {
+                            const thingy = $(this);
+                            setTimeout(() => {
+                                miscEditor.setOption('theme', thingy.val());
+                            }, 0);
+                        });
+                        break; // no need to keep checking once we've found we're on a listed page
+                    }
+                }
+            }
         }
     };
 

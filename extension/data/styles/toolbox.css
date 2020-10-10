@@ -547,7 +547,8 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     padding: 5px;
 }
 
-.mod-toolbox-rd .mod-popup .ban-note {
+.mod-toolbox-rd .mod-popup .ban-note,
+.mod-toolbox-rd .mod-popup .ban-message {
     margin-bottom: 3px;
 }
 
@@ -620,12 +621,11 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
 
 .mod-toolbox-rd .mod-popup .ban-message {
     width: calc(100% - 10px);
-    padding: 5px;
+    margin-top: 0;
 }
 
 .mod-toolbox-rd .mod-popup .ban-duration {
-    padding: 2px;
-    width: 82px;
+    width: 100px;
 }
 
 .mod-toolbox-rd .mod-popup .edit-subreddits {

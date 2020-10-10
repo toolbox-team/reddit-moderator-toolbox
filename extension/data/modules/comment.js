@@ -490,6 +490,15 @@ function comments () {
                 // Get the context
                 TBApi.getJSON(contextUrl, {raw_json: 1}).then(data => {
                     TBStorage.purifyObject(data);
+
+                    // data[1] is a listing containing comments
+                    // if there are no comments in the listing, the thing we're trying to get context for has been
+                    // removed/deleted and has no parents (if it had parents, the parents would still show up here)
+                    if (!data[1].data.children.length) {
+                        TBui.textFeedback('Content inaccessible; removed or deleted?', TBui.FEEDBACK_NEGATIVE);
+                        return;
+                    }
+
                     const commentOptions = {
                         parentLink: true,
                         contextLink: true,

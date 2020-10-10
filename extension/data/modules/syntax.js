@@ -184,33 +184,32 @@ function syntax () {
             });
         }
 
-        // Are we on a wiki page from the additional pages list?
-        const additionalWikiPagesArray = additionalWikiPages.split(',');
-        let additionalPagesCheck = false;
-        for (const page in additionalWikiPagesArray) {
-            if (Object.prototype.hasOwnProperty.call(additionalWikiPagesArray, page)) {
-                const pageRegex = new RegExp(`/wiki/(edit|create)/${page}/?$`);
-                if (location.pathname.match(pageRegex)) {
-                    additionalPagesCheck = true;
-                    break;
+        // Are we on a wiki page from the list in the settings?
+        let onWikiPage = false;
+        for (const page in wikiPages) {
+            if (Object.prototype.hasOwnProperty.call(wikiPages, page)) { // ESLint guard-for-in
+                const pagePathRegex = new RegExp(`/wiki/(edit|create)/?${page}/?$`);
+                if (location.pathname.match(pagePathRegex)) {
+                    onWikiPage = page;
+                    // javascript mode used for JSON files, edit name to match.
+                    if (wikiPages[onWikiPage].toLowerCase() === 'json') {
+                        wikiPages[onWikiPage] = 'javascript';
+                    }
+                    break; // no need to keep checking once we've found we're on a listed page
                 }
             }
         }
 
-        // Here we deal with automod and toolbox pages containing json.
-        if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)
-            || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)
-            || additionalPagesCheck) {
+        // Here we deal with pages other than the stylesheet, from the list in the settings.
+        if (onWikiPage) {
             let miscEditor;
             const $editform = $('#editform');
             let defaultMode = 'default';
 
-            if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)) {
-                defaultMode = 'text/x-yaml';
+            if (wikiPages[onWikiPage] !== '') {
+                defaultMode = wikiPages[onWikiPage];
             }
-            if (location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {
-                defaultMode = 'application/json';
-            }
+
             // Class added to apply some specific css.
             $body.addClass('mod-syntax');
 

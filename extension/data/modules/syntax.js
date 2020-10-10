@@ -12,15 +12,20 @@ function syntax () {
         default: true,
         title: 'Enable word wrap in editor',
     });
+    self.register_setting('wikiPages', {
+        type: 'map',
+        default: {
+            'config/automoderator': 'yaml',
+            'automoderator-schedule': 'yaml',
+            'toolbox': 'javascript',
+        },
+        labels: ['page', 'language'], // language is one of [css,javascript,markdown,yaml] - more can be added to libs/codemirror/mode - will detect "json" and convert to "javascript"
+        title: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, javascript, markdown, or yaml',
+    });
     self.register_setting('selectedTheme', {
         type: 'syntaxTheme',
         default: 'dracula',
         title: 'Syntax highlight theme selection',
-    });
-    self.register_setting('additionalWikiPages', {
-        type: 'text',
-        default: '',
-        title: 'Additional JSON or YAML wiki pages for bot configs, etc. (comma separated, no spaces)',
     });
 
     self.settings['enabled']['default'] = true; // on by default
@@ -81,7 +86,7 @@ function syntax () {
         const $body = $('body'),
               selectedTheme = this.setting('selectedTheme'),
               enableWordWrap = this.setting('enableWordWrap'),
-              additionalWikiPages = this.setting('additionalWikiPages');
+              wikiPages = this.setting('wikiPages');
 
         // This makes sure codemirror behaves and uses spaces instead of tabs.
         function betterTab (cm) {

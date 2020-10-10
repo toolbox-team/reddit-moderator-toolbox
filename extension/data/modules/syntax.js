@@ -215,7 +215,6 @@ function syntax () {
                             break;
                         default:
                             mimetype = 'text/markdown';
-                            wikiPages[page] = 'markdown';
                         }
 
                         // Class added to apply some specific css.

@@ -17,10 +17,10 @@ function syntax () {
         default: {
             'config/automoderator': 'yaml',
             'automoderator-schedule': 'yaml',
-            'toolbox': 'javascript',
+            'toolbox': 'json',
         },
-        labels: ['page', 'language'], // language is one of [css,javascript,markdown,yaml] - more can be added to libs/codemirror/mode - will detect "json" and convert to "javascript"
-        title: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, javascript, markdown, or yaml',
+        labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - more can be added to libs/codemirror/mode - will detect "json" and convert to "javascript"
+        title: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
     });
     self.register_setting('selectedTheme', {
         type: 'syntaxTheme',
@@ -184,21 +184,6 @@ function syntax () {
             });
         }
 
-        // Are we on a wiki page from the list in the settings?
-        let onWikiPage = false;
-        for (const page in wikiPages) {
-            if (Object.prototype.hasOwnProperty.call(wikiPages, page)) { // ESLint guard-for-in
-                const pagePathRegex = new RegExp(`/wiki/(edit|create)/?${page}/?$`);
-                if (location.pathname.match(pagePathRegex)) {
-                    onWikiPage = page;
-                    // javascript mode used for JSON files, edit name to match.
-                    if (wikiPages[onWikiPage].toLowerCase() === 'json') {
-                        wikiPages[onWikiPage] = 'javascript';
-                    }
-                    break; // no need to keep checking once we've found we're on a listed page
-                }
-            }
-        }
         // Are we on a wiki edit or create page?
         const wikiRegex = /\/wiki\/(edit|create)/;
         if (location.pathname.match(wikiRegex)) {
@@ -209,15 +194,29 @@ function syntax () {
                     if (location.pathname.match(pagePathRegex)) {
                         // we've checked the current page is the edit page for one of the pages in the settings, replace the textarea with CodeMirror
 
-        // Here we deal with pages other than the stylesheet, from the list in the settings.
-        if (onWikiPage) {
-            let defaultMode = 'default';
                         let miscEditor;
                         const $editform = $('#editform');
 
-            if (wikiPages[onWikiPage] !== '') {
-                defaultMode = wikiPages[onWikiPage];
-            }
+                        // let's get the type and convert it to the correct mimetype for codemirror
+                        let mimetype;
+                        switch (wikiPages[page].toLowerCase()) {
+                        case 'css':
+                            mimetype = 'text/css';
+                            break;
+                        case 'json':
+                            mimetype = 'application/json';
+                            break;
+                        case 'markdown':
+                        case 'md':
+                            mimetype = 'text/markdown';
+                            break;
+                        case 'yaml':
+                            mimetype = 'text/x-yaml';
+                            break;
+                        default:
+                            mimetype = 'text/markdown';
+                            wikiPages[page] = 'markdown';
+                        }
 
                         // Class added to apply some specific css.
                         $body.addClass('mod-syntax');
@@ -230,11 +229,11 @@ function syntax () {
 
                         $('#theme_selector').val(selectedTheme);
 
-                    mode: defaultMode,
                         // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
                         $('#wiki_page_content').each((index, elem) => {
                             // Editor setup.
                             miscEditor = CodeMirror.fromTextArea(elem, {
+                                mode: mimetype,
                                 autoCloseBrackets: true,
                                 lineNumbers: true,
                                 theme: selectedTheme,

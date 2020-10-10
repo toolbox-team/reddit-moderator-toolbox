@@ -22,7 +22,8 @@
         "tabs",
         "storage",
         "unlimitedStorage",
-        "notifications"
+        "notifications",
+        "webNavigation"
     ],
     "icons": {
         "16": "data/images/icon16.png",
@@ -39,7 +40,8 @@
             "data/background/handlers/cache.js",
             "data/background/handlers/modqueue.js",
             "data/background/handlers/globalmessage.js",
-            "data/background/handlers/notifications.js"
+            "data/background/handlers/notifications.js",
+            "data/background/handlers/url_changed.js"
         ],
         "persistent": true
     },

@@ -179,9 +179,23 @@ function syntax () {
             });
         }
 
+        // Are we on a wiki page from the additional pages list?
+        const additionalWikiPagesArray = additionalWikiPages.split(',');
+        let additionalPagesCheck = false;
+        for (const page in additionalWikiPagesArray) {
+            if (Object.prototype.hasOwnProperty.call(additionalWikiPagesArray, page)) {
+                const pageRegex = new RegExp(`/wiki/(edit|create)/${page}/?$`);
+                if (location.pathname.match(pageRegex)) {
+                    additionalPagesCheck = true;
+                    break;
+                }
+            }
+        }
+
         // Here we deal with automod and toolbox pages containing json.
         if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)
-            || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {
+            || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)
+            || additionalPagesCheck) {
             let miscEditor;
             const $editform = $('#editform');
             let defaultMode = 'default';

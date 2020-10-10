@@ -17,6 +17,11 @@ function syntax () {
         default: 'dracula',
         title: 'Syntax highlight theme selection',
     });
+    self.register_setting('additionalWikiPages', {
+        type: 'text',
+        default: '',
+        title: 'Additional JSON or YAML wiki pages for bot configs, etc. (comma separated, no spaces)',
+    });
 
     self.settings['enabled']['default'] = true; // on by default
 
@@ -75,7 +80,8 @@ function syntax () {
     self.init = function () {
         const $body = $('body'),
               selectedTheme = this.setting('selectedTheme'),
-              enableWordWrap = this.setting('enableWordWrap');
+              enableWordWrap = this.setting('enableWordWrap'),
+              additionalWikiPages = this.setting('additionalWikiPages');
 
         // This makes sure codemirror behaves and uses spaces instead of tabs.
         function betterTab (cm) {

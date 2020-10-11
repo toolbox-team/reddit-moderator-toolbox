@@ -12,6 +12,17 @@ function syntax () {
         default: true,
         title: 'Enable word wrap in editor',
     });
+    self.register_setting('wikiPages', {
+        type: 'map',
+        default: {
+            'config/automoderator': 'yaml',
+            'config/stylesheet': 'css',
+            'automoderator-schedule': 'yaml',
+            'toolbox': 'json',
+        },
+        labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - otherwise, defaults to markdown. md is also explicitly an alias of markdown
+        title: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
+    });
     self.register_setting('selectedTheme', {
         type: 'syntaxTheme',
         default: 'dracula',
@@ -75,7 +86,8 @@ function syntax () {
     self.init = function () {
         const $body = $('body'),
               selectedTheme = this.setting('selectedTheme'),
-              enableWordWrap = this.setting('enableWordWrap');
+              enableWordWrap = this.setting('enableWordWrap'),
+              wikiPages = this.setting('wikiPages');
 
         // This makes sure codemirror behaves and uses spaces instead of tabs.
         function betterTab (cm) {
@@ -173,77 +185,97 @@ function syntax () {
             });
         }
 
-        // Here we deal with automod and toolbox pages containing json.
-        if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)
-            || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {
-            let miscEditor;
-            const $editform = $('#editform');
-            let defaultMode = 'default';
+        // Are we on a wiki edit or create page?
+        const wikiRegex = /\/wiki\/(?:edit|create)\/?([a-z0-9-_/]*[a-z0-9-_])/,
+              wikiMatch = location.pathname.match(wikiRegex);
+        // Are we on a page from the list in the settings?
+        if (wikiMatch) {
+            const wikiPage = wikiMatch[1], // make sure wikiMatch exists before referencing it
+                  language = wikiPages[wikiPage];
+            if (language) {
+                // we've checked the current page is the edit page for one of the pages in the settings, replace the textarea with CodeMirror
+                let miscEditor;
+                const $editform = $('#editform');
 
-            if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)) {
-                defaultMode = 'text/x-yaml';
-            }
-            if (location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {
-                defaultMode = 'application/json';
-            }
-            // Class added to apply some specific css.
-            $body.addClass('mod-syntax');
+                // let's get the type and convert it to the correct mimetype for codemirror
+                let mimetype;
+                switch (wikiPages[wikiPage].toLowerCase()) {
+                case 'css':
+                    mimetype = 'text/css';
+                    break;
+                case 'json':
+                    mimetype = 'application/json';
+                    break;
+                case 'markdown':
+                case 'md':
+                    mimetype = 'text/markdown';
+                    break;
+                case 'yaml':
+                    mimetype = 'text/x-yaml';
+                    break;
+                default:
+                    mimetype = 'text/markdown';
+                }
 
-            // We also need to remove some stuff RES likes to add.
-            $body.find('.markdownEditor-wrapper, .RESBigEditorPop, .help-toggle').remove();
+                // Class added to apply some specific css.
+                $body.addClass('mod-syntax');
 
-            // Theme selector, doesn't really belong here but gives people the opportunity to see how it looks with the css they want to edit.
-            $editform.prepend(this.themeSelect);
+                // We also need to remove some stuff RES likes to add.
+                $body.find('.markdownEditor-wrapper, .RESBigEditorPop, .help-toggle').remove();
 
-            $('#theme_selector').val(selectedTheme);
+                // Theme selector, doesn't really belong here but gives people the opportunity to see how it looks with the css they want to edit.
+                $editform.prepend(this.themeSelect);
 
-            // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
-            $('#wiki_page_content').each((index, elem) => {
-                // Editor setup.
-                miscEditor = CodeMirror.fromTextArea(elem, {
-                    mode: defaultMode,
-                    autoCloseBrackets: true,
-                    lineNumbers: true,
-                    theme: selectedTheme,
-                    indentUnit: 4,
-                    extraKeys: {
-                        'Ctrl-Alt-F': 'findPersistent',
-                        'Ctrl-/': 'toggleComment',
-                        'F11' (cm) {
-                            cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+                $('#theme_selector').val(selectedTheme);
+
+                // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
+                $('#wiki_page_content').each((index, elem) => {
+                    // Editor setup.
+                    miscEditor = CodeMirror.fromTextArea(elem, {
+                        mode: mimetype,
+                        autoCloseBrackets: true,
+                        lineNumbers: true,
+                        theme: selectedTheme,
+                        indentUnit: 4,
+                        extraKeys: {
+                            'Ctrl-Alt-F': 'findPersistent',
+                            'Ctrl-/': 'toggleComment',
+                            'F11' (cm) {
+                                cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+                            },
+                            'Esc' (cm) {
+                                if (cm.getOption('fullScreen')) {
+                                    cm.setOption('fullScreen', false);
+                                }
+                            },
+                            'Tab': betterTab,
+                            'Shift-Tab' (cm) {
+                                cm.indentSelection('subtract');
+                            },
                         },
-                        'Esc' (cm) {
-                            if (cm.getOption('fullScreen')) {
-                                cm.setOption('fullScreen', false);
-                            }
-                        },
-                        'Tab': betterTab,
-                        'Shift-Tab' (cm) {
-                            cm.indentSelection('subtract');
-                        },
-                    },
-                    lineWrapping: enableWordWrap,
+                        lineWrapping: enableWordWrap,
+                    });
+
+                    $body.find('.CodeMirror.CodeMirror-wrap').prepend(keyboardShortcutsHelper);
                 });
 
-                $body.find('.CodeMirror.CodeMirror-wrap').prepend(keyboardShortcutsHelper);
-            });
+                // In order to make save button work we need to hijack and replace it.
+                $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
 
-            // In order to make save button work we need to hijack and replace it.
-            $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
+                // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
+                $body.delegate('.tb-syntax-button-save-wiki', 'click', () => {
+                    miscEditor.save();
+                    $('#wiki_save_button').click();
+                });
 
-            // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
-            $body.delegate('.tb-syntax-button-save-wiki', 'click', () => {
-                miscEditor.save();
-                $('#wiki_save_button').click();
-            });
-
-            // Actually dealing with the theme dropdown is done here.
-            $body.on('change keydown', '#theme_selector', function () {
-                const thingy = $(this);
-                setTimeout(() => {
-                    miscEditor.setOption('theme', thingy.val());
-                }, 0);
-            });
+                // Actually dealing with the theme dropdown is done here.
+                $body.on('change keydown', '#theme_selector', function () {
+                    const thingy = $(this);
+                    setTimeout(() => {
+                        miscEditor.setOption('theme', thingy.val());
+                    }, 0);
+                });
+            }
         }
     };
 

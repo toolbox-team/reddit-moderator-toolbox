@@ -494,40 +494,34 @@ function modbar () {
             $(`.tb-personal-settings .tb-window-wrapper .tb-window-tab.${module}`).show();
         }
 
-        function checkHash () {
-            if (window.location.hash) {
-                let module = TBHelpers.getHashParameter('tbsettings'),
-                    setting = TBHelpers.getHashParameter('setting');
-
+        window.addEventListener('TBHashParams', event => {
+            let module = event.detail.tbsettings;
+            if (module) {
+                let setting = event.detail.setting;
                 self.log(setting);
-                if (module) {
-                // prevent tbsetting URL hash from persisting on reload.
-                    history.pushState('', document.title, window.location.pathname);
+                module = module.toLowerCase();
 
-                    module = module.toLowerCase();
+                if (setting) {
+                    setting = setting.toLowerCase();
+                    const id = `#tb-${module}-${setting}`;
+                    let highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
 
-                    if (setting) {
-                        setting = setting.toLowerCase();
-                        const id = `#tb-${module}-${setting}`;
-                        let highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
+                    // this next line is to deal with legacy settings
+                    highlightedCSS += `${id}{background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
+                    highlightedCSS += `.tb-setting-link-${setting} {display: inline !important;}`;
 
-                        // this next line is to deal with legacy settings
-                        highlightedCSS += `${id}{background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
-                        highlightedCSS += `.tb-setting-link-${setting} {display: inline !important;}`;
-
-                        $('head').append(`<style type="text/css">${highlightedCSS}</style>`);
-                    }
-
-                    // Wait a sec for stuff to load.
-                    setTimeout(() => {
-                        TB.showSettings();
-                        switchTab(module);
-                    }, 1000);
+                    $('head').append(`<style type="text/css">${highlightedCSS}</style>`);
                 }
+
+                // Wait a sec for stuff to load.
+                setTimeout(() => {
+                    // prevent tbsetting URL hash from persisting on reload.
+                    history.pushState('', document.title, window.location.pathname);
+                    TB.showSettings();
+                    switchTab(module);
+                }, 500);
             }
-        }
-        checkHash();
-        setInterval(checkHash, 500);
+        });
 
         // change tabs
         $body.on('click', '.tb-window-tabs a:not(.active)', function () {

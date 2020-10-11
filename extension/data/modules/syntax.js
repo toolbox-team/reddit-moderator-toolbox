@@ -16,6 +16,7 @@ function syntax () {
         type: 'map',
         default: {
             'config/automoderator': 'yaml',
+            'config/stylesheet': 'css',
             'automoderator-schedule': 'yaml',
             'toolbox': 'json',
         },

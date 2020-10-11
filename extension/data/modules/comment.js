@@ -255,7 +255,7 @@ function comments () {
             self.initOldReddit();
         }
         // Do not open lightbox but go to full comment page.
-        if (commentsAsFullPage) {
+        if (commentsAsFullPage && !TBCore.isOldReddit && !TBCore.isNewModmail) {
             $body.on('click', 'a', function (event) {
                 const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
                 const $this = $(this);

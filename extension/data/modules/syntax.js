@@ -20,7 +20,7 @@ function syntax () {
             'automoderator-schedule': 'yaml',
             'toolbox': 'json',
         },
-        labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - more can be added to libs/codemirror/mode - will detect "json" and convert to "javascript"
+        labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - otherwise, defaults to markdown. md is also explicitly an alias of markdown
         title: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
     });
     self.register_setting('selectedTheme', {

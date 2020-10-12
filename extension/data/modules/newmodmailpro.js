@@ -9,7 +9,7 @@ function newmodmailpro () {
 
     self.register_setting('modmaillink', {
         type: 'selector',
-        values: ['All modmail', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
+        values: ['All modmail', 'Inbox', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
         default: 'all_modmail',
         title: 'Change the modmail link to open a different modmail view by default.',
     });
@@ -476,6 +476,10 @@ function newmodmailpro () {
             switch (modmailLink) {
             case 'all_modmail':
                 $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
+
+                break;
+            case 'inbox':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inbox`);
 
                 break;
             case 'new':

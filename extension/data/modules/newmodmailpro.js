@@ -394,7 +394,9 @@ function newmodmailpro () {
 
                 window.addEventListener('TBNewPage', event => {
                     if (event.detail.pageType === 'modmailConversation') {
-                        reasonClickable();
+                        setTimeout(() => {
+                            reasonClickable();
+                        }, 500);
                     }
                 });
             }

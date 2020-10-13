@@ -851,6 +851,21 @@ function profilepro () {
             }
             makeProfile(user, listing, options);
         });
+
+        window.addEventListener('TBHashParams', event => {
+            const listing = event.detail.tbprofile;
+            if (listing) {
+                const user = event.detail.user;
+
+                const options = {
+                    sort: event.detail.sort || 'new',
+                    renew: false,
+                };
+
+                makeProfile(user, listing, options);
+
+            }
+        });
     };
 }
 

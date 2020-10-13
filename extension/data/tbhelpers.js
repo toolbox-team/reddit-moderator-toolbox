@@ -623,24 +623,6 @@
     };
 
     /**
-     * Parses the URL hash as a query string and gets the value of a given key
-     * @function
-     * @param {string} key The key to get
-     * @returns {string} The value for that key
-     */
-    TBHelpers.getHashParameter = function (parameterKey) {
-        const hash = window.location.hash.substring(1);
-        const params = hash.split('&');
-        for (let i = 0; i < params.length; i++) {
-            const keyval = params[i].split('='),
-                  key = keyval[0].replace('?', '');
-            if (key === parameterKey) {
-                return keyval[1];
-            }
-        }
-    };
-
-    /**
      * Replaces {tokens} for the respective value in given content
      * @function
      * @param {object} info object with token name keys and token content values.

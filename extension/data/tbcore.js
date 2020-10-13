@@ -1563,6 +1563,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // Watch for locationHref changes and sent an event with details
         let locationHref;
+        let locationHash;
 
         // new modmail regex matches.
         const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
@@ -1580,12 +1581,37 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
         const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
 
+        // Once a change in the page hash is detected in toolbox format it will abstract the parms and send out an event.
+        function refreshHashContext () {
+            if (window.location.hash && window.location.hash !== locationHash) {
+                const locationHash = window.location.hash;
+                const hash = locationHash.substring(1);
+                // To make sure we only trigger on toolbox hashes we check that the first param starts with `tb`.
+                // This because `tbsettings` is already used for settings.
+                if (hash.startsWith('?tb')) {
+                    const paramObject = {};
+                    const params = hash.split('&');
+                    params.forEach(param => {
+                        const keyval = param.split('=');
+                        const key = keyval[0].replace('?', ''),
+                              val = keyval[1];
+                        paramObject[key] = val;
+                    });
+                    setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('TBHashParams', {detail: paramObject}));
+                    }, 500);
+                }
+            } else if (!window.location.hash) {
+                locationHash = null;
+            }
+        }
+
         // Once a change is detected it will abstract all the context information from url, update TBCore variables and emit all information in an event.
         // NOTE: this function is a work in progress, page types are added once needed. Currently supported pages where context are provided are:
         // NewModmail: listings, conversations, create
         // reddit frontpage: sorting
         // subreddits: listing including sorting, submissions, submissions with permalink
-        function refreshUrlContext () {
+        function refreshPathContext () {
             const samePage = locationHref === location.href;
             if (!samePage) {
                 const oldHref = locationHref;
@@ -1715,8 +1741,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         }
 
-        refreshUrlContext();
-        window.addEventListener('tb-url-changed', refreshUrlContext);
+        refreshPathContext();
+        refreshHashContext();
+        window.addEventListener('tb-url-changed', () => {
+            refreshPathContext();
+            refreshHashContext();
+        });
 
         // Watch for new things and send out events based on that.
         if ($('#header').length) {

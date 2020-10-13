@@ -138,6 +138,10 @@ function modbar () {
             newModmailUrl = `${newModmailBaseUrl}all`;
 
             break;
+        case 'inbox':
+            newModmailUrl = `${newModmailBaseUrl}inbox`;
+
+            break;
         case 'new':
             newModmailUrl = `${newModmailBaseUrl}new`;
 

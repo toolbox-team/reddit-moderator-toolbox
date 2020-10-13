@@ -1611,7 +1611,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         // NewModmail: listings, conversations, create
         // reddit frontpage: sorting
         // subreddits: listing including sorting, submissions, submissions with permalink
-        function refreshUrlContext () {
+        function refreshPathContext () {
             const samePage = locationHref === location.href;
             if (!samePage) {
                 const oldHref = locationHref;
@@ -1741,10 +1741,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         }
 
-        refreshUrlContext();
+        refreshPathContext();
         refreshHashContext();
         window.addEventListener('tb-url-changed', () => {
-            refreshUrlContext();
+            refreshPathContext();
             refreshHashContext();
         });
 

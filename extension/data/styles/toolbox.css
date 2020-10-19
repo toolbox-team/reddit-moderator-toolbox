@@ -65,8 +65,7 @@ body.mod-toolbox[toolbox-warning]::before {
 */
 
 /* Let's use verdana for toolbox stuff. Can't get used to the reddit font */
-.mod-toolbox-rd.mod-toolbox-extra .tb-popup,
-.mod-toolbox-rd.mod-toolbox-extra .tb-page-overlay,
+.mod-toolbox-rd.mod-toolbox-extra .tb-window,
 .mod-toolbox-rd #tb-bottombar,
 .mod-toolbox-rd #tb-context-menu,
 .mod-toolbox-rd #tb-notifications-wrapper,
@@ -276,7 +275,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 ------------
     Overlay windows.
     TODO: Clean up css and remove duplicate code.
-    TODO: Merge code shared between overlays, windows, and notifications(?).
 ------------
 */
 
@@ -296,6 +294,18 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 
 .mod-toolbox-rd.tb-modbar-shown .tb-page-overlay {
     margin-bottom: 31px;
+}
+
+.mod-toolbox-rd .tb-page-overlay .tb-window {
+    position: relative;
+    top: 40px;
+    max-width: 1100px;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding: 0 !important;
+    background-color: #FFF;
+    border: 0;
+    margin-bottom: 150px;
 }
 
 /*
@@ -320,33 +330,11 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 .mod-toolbox-rd ul.inline-list li:last-child:after { content: ''; }
 .mod-toolbox-rd ul.inline-list li:nth-last-child(2):after { content: ', and';}
 
-.mod-toolbox-rd .tb-overlay-label {
-    width: auto;
-    padding: 40px 5px 5px 5px;
-    font-weight: bold;
-    text-shadow: 0 0 4px #FFF;
-    left: 0;
-    right: 0;
-    text-align: center;
-}
-
-.mod-toolbox-rd .tb-window-wrapper {
-    position: relative;
-    top: 40px;
-    max-width: 1100px;
-    margin-right: auto !important;
-    margin-left: auto !important;
-    padding: 0 !important;
-    background-color: #FFF;
-    border: 0;
-    margin-bottom: 150px;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-wrapper {
+.mod-toolbox-rd .tb-settings .tb-window {
     max-width: 845px;
 }
 
-.mod-toolbox-rd .tb-window-wrapper-two {
+.mod-toolbox-rd .tb-window-two {
     position: relative;
     top: 60px;
     max-width: 1000px;
@@ -510,37 +498,17 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 ------------
 */
 
-.mod-toolbox-rd .tb-popup {
+.mod-toolbox-rd .tb-window {
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;
     border: 0;
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
+}
+
+.mod-toolbox-rd .tb-window.tb-window-draggable {
     position: absolute;
     z-index: 2147483645 !important;
-}
-
-.mod-toolbox-rd .tb-popup-tabs {
-    border-bottom: 1px solid #B6C9DD;
-    background-color: #C7D6E6;
-}
-
-.mod-toolbox-rd .tb-popup-tabs a {
-    background-color: #C7D6E6;
-    border-right: 1px dotted #A8B5C2;
-    display: inline-block;
-    padding: 4px;
-    cursor: pointer;
-}
-
-.mod-toolbox-rd .tb-popup-tabs a:hover,
-.mod-toolbox-rd .tb-popup-tabs a.active {
-    background-color: #9FBAD6;
-    border-right: 1px solid #9FBAD6;
-}
-.mod-toolbox-rd .tb-popup-tabs a:not(:first-child):hover,
-.mod-toolbox-rd .tb-popup-tabs a:not(:first-child).active {
-    box-shadow: -1px 0 #9FBAD6;
 }
 
 .mod-toolbox-rd .mod-popup .other-subs {
@@ -565,7 +533,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     width: initial !important;
 }
 
-.mod-toolbox-rd .tb-popup-error {
+.mod-toolbox-rd .tb-window-error {
     color: red;
 }
 
@@ -668,7 +636,7 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
     line-height: 20px;
 }
 
-.mod-toolbox-rd .tb-debug-window .tb-popup-content {
+.mod-toolbox-rd .tb-debug-window .tb-window-content {
     box-sizing: content-box;
 }
 
@@ -1472,7 +1440,7 @@ body.mod-toolbox-rd .tb-action-button:hover {
 
 /* link colors (for those themes that change all the link colors */
 body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
-body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
+body.mod-toolbox-rd .tb-window a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons):not(.tb-submitter):not(.tb-comment-author):not(.tb-submission-author),
 body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-bracket-button):not(.tb-icons) {
     color: #369;
 }
@@ -1686,11 +1654,11 @@ span.rate-limit-explain {
     height: 26px !important;
 }
 
-.mod-toolbox-rd .macro-popup .tb-popup-content {
+.mod-toolbox-rd .macro-popup .tb-window-content {
     margin-bottom: 30px;
 }
 
-.mod-toolbox-rd .macro-popup .tb-popup-footer {
+.mod-toolbox-rd .macro-popup .tb-window-footer {
     position: absolute;
     bottom: 0;
 }
@@ -1806,10 +1774,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     max-width: 59em;
 }
 
-.mod-toolbox-rd .tb-window-tabs a {
-    cursor: pointer;
-}
-
 .mod-toolbox-rd #tb-removal-reasons-list,
 .mod-toolbox-rd #tb-mod-macros-list {
     border-top: solid 2px gray;
@@ -1914,7 +1878,7 @@ Icons in the sidebar
 
 
 /* You're killing me, new Reddit... */
-.tb-window-wrapper b {
+.tb-window b {
     font-weight: bold;
 }
 
@@ -2026,9 +1990,8 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .tb-bracket-button,
 .res-nightmode .mod-toolbox-rd .tb-bracket-button:hover,
 .res-nightmode .mod-toolbox-rd .tb-action-table,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper,
+.res-nightmode .mod-toolbox-rd .tb-window,
 .res-nightmode .mod-toolbox-rd .reason-popup,
-.res-nightmode .mod-toolbox-rd .tb-popup,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-bottombar-hidden,
 .res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
@@ -2053,15 +2016,11 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 /* exceptions*/
 .res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button,
 .res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button:hover,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button:hover,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button:hover,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-button,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-action-button,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-bracket-button,
-.res-nightmode .mod-toolbox-rd .tb-popup .tb-bracket-button,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-table {
+.res-nightmode .mod-toolbox-rd .tb-window .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-action-button,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-window .tb-action-table {
     filter: invert(0%);
 }
 
@@ -2069,9 +2028,8 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .menuarea.modtools [for="modtab-threshold"],
 .res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
 .res-nightmode .mod-toolbox-rd .tb-feedback-text,
-.res-nightmode .mod-toolbox-rd .tb-window-wrapper,
+.res-nightmode .mod-toolbox-rd .tb-window,
 .res-nightmode .mod-toolbox-rd .reason-popup,
-.res-nightmode .mod-toolbox-rd .tb-popup,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
 .res-nightmode .mod-toolbox-rd .menuarea.modtools

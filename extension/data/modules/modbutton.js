@@ -289,8 +289,8 @@ function modbutton () {
             // Hide the flair tab and message tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
-                $popup.find('.tb-popup-tabs .user_flair').remove();
-                $popup.find('.tb-popup-tabs .send_message').remove();
+                $popup.find('.tb-window-tabs .user_flair').remove();
+                $popup.find('.tb-window-tabs .send_message').remove();
             }
 
             // get pre-definded ban message/note
@@ -333,7 +333,7 @@ function modbutton () {
 
                         $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
                         $popup.find('.ban-note').val(banned[i].note);
-                        $popup.find('.tb-popup-title').css('color', 'red');
+                        $popup.find('.tb-window-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
                         const logData = await TBApi.getJSON(`/r/${subreddit}/about/log/.json`, {
@@ -638,7 +638,7 @@ function modbutton () {
         });
 
         // Flair ALL THE THINGS
-        $body.on('click', '.tb-popup-tabs .user_flair', async function () {
+        $body.on('click', '.tb-window-tabs .user_flair', async function () {
             const $popup = $(this).parents('.mod-popup'),
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),

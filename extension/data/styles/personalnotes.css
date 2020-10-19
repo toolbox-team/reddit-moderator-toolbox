@@ -1,14 +1,14 @@
-.mod-toolbox-rd .personal-notes-popup {
+.mod-toolbox-rd .tb-window.tb-window-draggable.personal-notes-popup {
     left: 305px;
     bottom: 41px;
     display: block;
-    position: fixed;
+    position: fixed; /* overrides the default absolute positioning for draggable popups */
     /* Remove the max-width definition set for normal popups - we set our own max-width from the textarea */
     max-width: initial;
 }
 
 /* Box layout */
-.mod-toolbox-rd .tb-popup.personal-notes-popup table {
+.mod-toolbox-rd .tb-window.personal-notes-popup table {
     height: 100%;
     position: relative; /* To help with absolute positioning of the sidebar */
 }
@@ -44,7 +44,7 @@
     overflow: hidden;
 }
 /* Hack to get background on the list */
-.mod-toolbox-rd .tb-popup.personal-notes-popup .tb-popup-content {
+.mod-toolbox-rd .tb-window.personal-notes-popup .tb-window-content {
     box-shadow: inset 175px 0 #C7D6E6;
     padding: 0 !important;
     height: 100%;

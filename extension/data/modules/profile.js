@@ -880,7 +880,7 @@ function profilepro () {
         // Open profile bashed on hash params
         window.addEventListener('TBHashParams', event => {
             const listing = event.detail.tbprofile;
-            if (listing && listingTypes.includes(listing)) {
+            if (listingTypes.includes(listing)) {
                 let user;
                 // If we get a user from the params we go from there.
                 if (event.detail.user) {

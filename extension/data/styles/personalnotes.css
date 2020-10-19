@@ -1,8 +1,8 @@
-.mod-toolbox-rd .personal-notes-popup {
+.mod-toolbox-rd .tb-window.tb-window-draggable.personal-notes-popup {
     left: 305px;
     bottom: 41px;
     display: block;
-    position: fixed;
+    position: fixed; /* overrides the default absolute positioning for draggable popups */
     /* Remove the max-width definition set for normal popups - we set our own max-width from the textarea */
     max-width: initial;
 }

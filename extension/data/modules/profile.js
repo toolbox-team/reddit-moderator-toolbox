@@ -898,7 +898,7 @@ function profilepro () {
                 }
 
                 const options = {
-                    sort: event.detail.sort || 'new',
+                    sort: event.detail.sort,
                     renew: true,
                     searchSort: event.detail.sort ? true : false,
                     search: false,

@@ -159,7 +159,7 @@ function tbmodule () {
 
             coreSettings.forEach(({settingName, content, display}) => {
                 coreSettingsContent += `
-                <p id="tb-toolbox-${settingName}" style="${display}">
+                <p id="tb-toolbox-${settingName}" class="tb-settings-p" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
                     ${TBui.icons.tbSettingLink}
@@ -263,13 +263,13 @@ function tbmodule () {
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>
                     <span>© 2013-2020 toolbox development team. </span>
-                    <p>Licensed under the Apache License, Version 2.0 (the "License");
+                    <p class="tb-settings-p">Licensed under the Apache License, Version 2.0 (the "License");
                         <br> you may not use this file except in compliance with the License.
                         <br> You may obtain a copy of the License at </p>
-                    <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
-                    <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                    <p class="tb-settings-p"><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+                    <p class="tb-settings-p">Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>
-                    <p ${debugMode && !TBCore.devModeLock ? ' ' : 'style="display:none;" '}>
+                    <p class="tb-settings-p" ${debugMode && !TBCore.devModeLock ? ' ' : 'style="display:none;" '}>
                         <label><input type="checkbox" id="devMode" ${devMode ? 'checked' : ''}> DEVMODE: DON'T EVER ENABLE THIS!</label>
                     </p>`,
                 },
@@ -536,7 +536,7 @@ function tbmodule () {
                         const name = module.shortname.toLowerCase();
 
                         $setting = $(`
-                            <p id="tb-toggle_modules-${name}">
+                            <p id="tb-toggle_modules-${name}" class="tb-settings-p">
                                 <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ' checked="checked"' : ''}>${options.title}</label>
                                         <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
                                 <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
@@ -602,7 +602,7 @@ function tbmodule () {
                     moduleHasSettingTab = true;
 
                     // blank slate
-                    $setting = $(`<p ${displaySetting ? '' : 'style="display:none;"'}></p>`);
+                    $setting = $(`<p  class="tb-settings-p" ${displaySetting ? '' : 'style="display:none;"'}></p>`);
                     const title = options.title ? options.title : `(${setting})`;
                     let noWrap = false;
 
@@ -755,7 +755,7 @@ body {
 
                         $setting = $('<div>').attr('class', 'achievements');
                         $setting.append($('<h1>').text('Mod Achievements'));
-                        $setting.append($('<p>').text(`${unlocked} of ${total} unlocked`));
+                        $setting.append($('<p class="tb-settings-p">').text(`${unlocked} of ${total} unlocked`));
                         $setting.append('<br />');
 
                         let save = module.setting(setting);

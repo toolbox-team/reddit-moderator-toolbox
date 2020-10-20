@@ -406,7 +406,8 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     display: none;
 }
 
-.mod-toolbox-rd .tb-window-content p:not([class^="codemirror"]):not(.tb-comment-p) {
+/* tbsettings paragraph */
+.mod-toolbox-rd .tb-window-content p.tb-settings-p {
     padding-top: 6px !important;
     padding-bottom: 5px;
     padding-left: 10px;

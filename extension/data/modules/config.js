@@ -81,7 +81,7 @@ function tbconfig () {
                         title: 'edit automoderator config',
                         tooltip: 'Edit the automoderator config.',
                         content: `
-                <p>
+                <p class="tb-settings-p">
                     <a href="${TBCore.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
                 </p>
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>

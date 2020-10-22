@@ -46,6 +46,7 @@ function profilepro () {
         let filterModThings = false;
         let hideModActions = false;
         let cancelSearch = true;
+        const listingTypes = ['overview', 'submitted', 'comments'];
 
         const alwaysTbProfile = self.setting('alwaysTbProfile'),
               directProfileToLegacy = self.setting('directProfileToLegacy'),
@@ -592,6 +593,9 @@ function profilepro () {
             const renew = options.renew || false;
             const after = options.after || '';
             const subreddit = options.subreddit || '';
+            const content = options.content || '';
+            const search = options.search || false;
+            const searchSort = options.searchSort || false;
             TB.ui.longLoadSpinner(true);
 
             let $overlay = $body.find('.tb-profile-overlay');
@@ -699,30 +703,49 @@ function profilepro () {
             }
 
             TBui.switchOverlayTab('tb-profile-overlay', type);
-            const inputURL = `/user/${user}/${type}.json`;
-            TBApi.getJSON(inputURL, {
-                raw_json: 1,
-                after,
-                sort,
-                limit: 25,
-            }).then(data => {
-                TBStorage.purifyObject(data);
-                let after = false;
-                if (data.data.after) {
-                    after = data.data.after;
-                }
-                addToSiteTable(data.data.children, $siteTable, after, () => {
-                    TB.ui.longLoadSpinner(false);
-                    $options.show();
-                });
-            }).catch(error => {
-                self.error('Error fetching profile activity:', inputURL, error);
-                $('.tb-profile-overlay .tb-window-content').html(`
-                    <h1>No activity found</h1>
-                    <p>Reddit doesn't seem to have anything for this account. Try checking your subreddit's moderation log to find posts and comments from them.</p>
-                `);
+
+            if (search) {
+                const $subreddit = $options.find('.tb-searchuser .tb-subredditsearch'),
+                      $content = $options.find('.tb-searchuser .tb-contentsearch'),
+                      $searchSort = $options.find('.tb-searchuser .tb-search-sort'),
+                      $searchForm = $options.find('.tb-searchuser');
+
+                $subreddit.val(subreddit);
+                $content.val(content);
+                $searchSort.prop('checked', searchSort);
+
+                // Stop spinner to rpevent from duplicating.
                 TB.ui.longLoadSpinner(false);
-            });
+
+                // Show options and submit the search query.
+                $options.show();
+                $searchForm.submit();
+            } else {
+                const inputURL = `/user/${user}/${type}.json`;
+                TBApi.getJSON(inputURL, {
+                    raw_json: 1,
+                    after,
+                    sort,
+                    limit: 25,
+                }).then(data => {
+                    TBStorage.purifyObject(data);
+                    let after = false;
+                    if (data.data.after) {
+                        after = data.data.after;
+                    }
+                    addToSiteTable(data.data.children, $siteTable, after, () => {
+                        TB.ui.longLoadSpinner(false);
+                        $options.show();
+                    });
+                }).catch(error => {
+                    self.error('Error fetching profile activity:', inputURL, error);
+                    $('.tb-profile-overlay .tb-window-content').html(`
+                        <h1>No activity found</h1>
+                        <p>Reddit doesn't seem to have anything for this account. Try checking your subreddit's moderation log to find posts and comments from them.</p>
+                    `);
+                    TB.ui.longLoadSpinner(false);
+                });
+            }
         }
 
         $body.on('click', '.tb-load-more', function () {
@@ -783,8 +806,7 @@ function profilepro () {
         });
 
         window.addEventListener('TBNewPage', event => {
-            const popupTypes = ['comments', 'submitted', 'overview'];
-            if (event.detail.pageType === 'userProfile' && popupTypes.includes(event.detail.pageDetails.listing)) {
+            if (event.detail.pageType === 'userProfile' && listingTypes.includes(event.detail.pageDetails.listing)) {
                 const user = event.detail.pageDetails.user,
                       listing = event.detail.pageDetails.listing;
                 TBui.contextTrigger('tb-user-profile', {
@@ -798,7 +820,10 @@ function profilepro () {
                     },
                 });
                 if (alwaysTbProfile) {
-                    makeProfile(user, listing, {sort: 'new', renew: false});
+                    // Prevent `alwaysTbProfile` from opening if there are hash params for opening a profile.
+                    if (!event.detail.locationHref.includes('#?tbprofile')) {
+                        makeProfile(user, listing, {sort: 'new', renew: false});
+                    }
                 }
             } else {
                 TBui.contextTrigger('tb-user-profile', {addTrigger: false});
@@ -851,6 +876,47 @@ function profilepro () {
                 options.subreddit = subreddit;
             }
             makeProfile(user, listing, options);
+        });
+
+        // Open profile bashed on hash params
+        window.addEventListener('TBHashParams', event => {
+            const listing = event.detail.tbprofile;
+            if (listingTypes.includes(listing)) {
+                let user;
+                // If we get a user from the params we go from there.
+                if (event.detail.user) {
+                    user = event.detail.user;
+
+                // If not we check if we are on a profile page.
+                // We can safely check this object as tbNewPage logic is done before TBHashParams logic.
+                } else if (TBCore.pageDetails.pageType === 'userProfile') {
+                    user = TBCore.pageDetails.pageDetails.user;
+
+                // Finally we simply return if we have no username to work with.
+                } else {
+                    TB.ui.textFeedback('No user present in parameters and not on profile page.', TBui.FEEDBACK_NEGATIVE);
+                    return;
+                }
+
+                const options = {
+                    sort: event.detail.sort,
+                    renew: true,
+                    searchSort: event.detail.sort ? true : false,
+                    search: false,
+                };
+
+                if (event.detail.subreddit) {
+                    options.search = true;
+                    options.subreddit = event.detail.subreddit;
+                }
+
+                if (event.detail.content) {
+                    options.search = true;
+                    options.content = event.detail.content;
+                }
+
+                makeProfile(user, listing, options);
+            }
         });
     };
 }

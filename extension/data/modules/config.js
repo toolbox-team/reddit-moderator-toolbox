@@ -196,6 +196,7 @@ function tbconfig () {
                     </div>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
                     <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
+                    <select name="flair-id" id="flair-id-select"><option value="Select flair" disabled>Select a flair template</option></select>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />
                 </span>
@@ -296,6 +297,13 @@ function tbconfig () {
                 'tb-config', // class
                 false // single overriding footer
             ).appendTo('body');
+
+            // Getting the flair list for adding a new reason
+            TBApi.apiOauthGET(`/r/${subredditConfig}/api/link_flair_v2`).then(r => r.json()).then(res => {
+                const $flairList = $('#flair-id-select');
+                res.forEach(flair => $flairList.append(`<option value="${flair.id}">${flair.id}</option>`));
+            });
+
             $body.css('overflow', 'hidden');
         }
 
@@ -628,7 +636,8 @@ function tbconfig () {
                           removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts !== false ? 'checked' : '',
                           removalReasonRemoveComments = config.removalReasons.reasons[i].removeComments ? 'checked' : '',
                           removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
-                          removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
+                          removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '',
+                          removalReasonFlairID = config.removalReasons.reasons[i].flairID || [];
 
                     const removalReasonTemplate = `
                 <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
@@ -650,6 +659,8 @@ function tbconfig () {
                             </div>
                             <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
                             <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
+                            <input type="text" class="tb-input" name="flair-id" placeholder="flair template ID" value="{{removalReasonFlairID}}"/><br/>
+                            <select name="flair-id" id="flair-id-select"><option value="Select flair" disabled>Select a flair template</option></select>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />
                         </span>
@@ -667,6 +678,7 @@ function tbconfig () {
                         removalReasonRemoveComments,
                         removalReasonFlairText,
                         removalReasonFlairCSS,
+                        removalReasonFlairID,
                     });
 
                     const $removalReasonsList = $body.find('.edit_removal_reasons #tb-removal-reasons-list');

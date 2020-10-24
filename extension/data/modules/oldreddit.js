@@ -239,6 +239,7 @@ function oldReddit () {
     }
 
     self.init = function () {
+        profileResults('oldRedditInit', performance.now());
         // Looks like we are on old reddit. Activate!
         if (TBCore.isOldReddit) {
             setTimeout(() => {
@@ -247,7 +248,7 @@ function oldReddit () {
                 window.addEventListener('TBNewThings', () => {
                     thingCrawler();
                 });
-            }, 500);
+            }, 10);
         }
 
         if (TBCore.isNewModmail) {
@@ -274,9 +275,12 @@ function oldReddit () {
                 }
             });
         }
+        profileResults('oldRedditInitDone', performance.now());
     };
 }
 
 window.addEventListener('TBModuleLoaded', () => {
+    profileResults('oldRedditStart', performance.now());
     oldReddit();
+    profileResults('oldRedditDone', performance.now());
 });

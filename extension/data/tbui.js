@@ -672,7 +672,7 @@ function TBuiInitWrapper () {
                     $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${browser.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${TBCore.RandomFeedback}</span></span></div>`);
                     $body.append('<div id="tb-loading"></div>');
 
-                    const $randomFeedbackWindow = TBCore.$body.find('#tb-loading-stuff'),
+                    const $randomFeedbackWindow = $body.find('#tb-loading-stuff'),
                           randomFeedbackLeftMargin = $randomFeedbackWindow.outerWidth() / 2,
                           randomFeedbackTopMargin = $randomFeedbackWindow.outerHeight() / 2;
 
@@ -690,8 +690,8 @@ function TBuiInitWrapper () {
                     // if done and the only instance
                 } else if (!createOrDestroy && TBui.longLoadArray.length === 1) {
                     $('head').find('#tb-long-load-style').remove();
-                    TBCore.$body.find('#tb-loading').remove();
-                    TBCore.$body.find('#tb-loading-stuff').remove();
+                    $body.find('#tb-loading').remove();
+                    $body.find('#tb-loading-stuff').remove();
                     TBui.longLoadArray.pop();
 
                     // if done but other process still running
@@ -728,7 +728,7 @@ function TBuiInitWrapper () {
                     // if done and the only instance
                 } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length === 1) {
                     $('head').find('#tb-long-load-style-non-persistent').remove();
-                    TBCore.$body.find('#tb-loading-non-persistent').remove();
+                    $body.find('#tb-loading-non-persistent').remove();
                     TBui.longLoadArrayNonPersistent.pop();
 
                     // if done but other process still running

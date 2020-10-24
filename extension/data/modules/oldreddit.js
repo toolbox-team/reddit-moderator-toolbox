@@ -268,10 +268,16 @@ function oldReddit () {
 
             window.addEventListener('TBNewPage', event => {
                 if (event.detail.pageType === 'modmailConversation') {
-                    setTimeout(() => {
-                        newModmailSidebar();
-                        newModmailConversationAuthors();
-                    }, 500);
+                    // We want to show buttons as soone as possible.
+                    // New modmail loading times are less than reliable at times.
+                    // So we simply check multiple times in a row to show things as soon as possible.
+                    const timeoutArray = [50, 500, 1500];
+                    timeoutArray.forEach(timeout => {
+                        setTimeout(() => {
+                            newModmailSidebar();
+                            newModmailConversationAuthors();
+                        }, timeout);
+                    });
                 }
             });
         }

@@ -1217,7 +1217,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             }
 
-            function timer (count, $body, ratelimitRemaining) {
+            function timer (count, ratelimitRemaining) {
                 count -= 1;
                 if (count <= 0) {
                     $body.find('#ratelimit-counter').empty();
@@ -1248,7 +1248,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                             counter = 0;
 
                         counter = setInterval(() => {
-                            count = timer(count, $body, ratelimitRemaining);
+                            count = timer(count, ratelimitRemaining);
                             if (count <= 0) {
                                 clearInterval(counter);
                                 doChunk();

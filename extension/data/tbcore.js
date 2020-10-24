@@ -9,7 +9,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.logged = userDetails.data.name;
 
         TBCore.post_site = $('.redditname:not(.pagename) a:first').html(); // This may need to be changed to regex, if this is unreliable.
-        const $body = $body;
+        const $body = $('body');
         if (window.location.hostname === 'mod.reddit.com') {
             $body.addClass('mod-toolbox-new-modmail');
         }

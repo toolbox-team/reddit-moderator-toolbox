@@ -198,6 +198,10 @@ function tbconfig () {
                     </div>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
                     <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
+                    <select name="flair-id" id="flair-id-select" class="tb-action-button inline-button flair-picker">
+                        <option value="Select flair" disabled>Select a flair template</option>
+                        <option value="">None</option>
+                    </select>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />
                 </span>
@@ -620,11 +624,12 @@ function tbconfig () {
             // We should only append the flair templates to the dropdown if they're not
             // already there, otherwise they'll duplicate with every click of the edit icon.
             if ($dropdown[0].childElementCount <= 2) {
-                // Getting the default option for the reason so we can set the selected option
-                // in the dropdown.
-                const defaultOption = config.removalReasons.reasons[reasonNum].flairTemplateID || '';
+                // Getting the current flair template for the reason so we can set the `selected` attribute
+                // on one of the `<option>`s. When adding a new Removal Reason we don't have one
+                // selected yet, so this argument won't be provided.
+                const defaultOption = reasonNum ? config.removalReasons.reasons[reasonNum].flairTemplateID : '';
 
-                postFlairTemplates.forEach(flair => $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.id}</option>`));
+                postFlairTemplates.forEach(flair => $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`));
             }
         }
 
@@ -728,8 +733,8 @@ function tbconfig () {
                 });
             }
         }
-        // Mod macros are also nice to have!
 
+        // Mod macros are also nice to have!
         function modMacrosContent () {
             if (config.modMacros && config.modMacros.length > 0) {
                 $(config.modMacros).each((i, item) => {
@@ -1106,11 +1111,11 @@ function tbconfig () {
             $this.closest('tr.removal-reason').find('.removal-reason-edit').show();
 
             // Getting the flair dropdown
-            const $flairList = $this.closest('.removal-reason').find('#flair-id-select');
+            const $flairDropdown = $this.closest('.removal-reason').find('#flair-id-select');
 
             const reasonNum = $this.attr('data-reason');
 
-            addFlairTemplatesToDropdown($flairList, reasonNum);
+            addFlairTemplatesToDropdown($flairDropdown, reasonNum);
         });
 
         // cancel
@@ -1216,9 +1221,15 @@ function tbconfig () {
 
         // Adding a new reason
         $body.on('click', '#tb-add-removal-reason', function () {
-            // TODO
             $(this).hide();
-            $body.find('#tb-add-removal-reason-form').show();
+
+            const $addRemovalReasonForm = $('#tb-add-removal-reason-form');
+
+            $addRemovalReasonForm.show();
+
+            const $flairDropdown = $addRemovalReasonForm.find('select#flair-id-select');
+
+            addFlairTemplatesToDropdown($flairDropdown);
         });
 
         // Save new reason
@@ -1228,7 +1239,8 @@ function tbconfig () {
                   reasonRemovePosts = $body.find('#tb-add-removal-reason-form input[name=remove-posts]').is(':checked'),
                   reasonRemoveComments = $body.find('#tb-add-removal-reason-form input[name=remove-comments]').is(':checked'),
                   reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
-                  reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val();
+                  reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val(),
+                  reasonFlairTemplateID = $body.find('#tb-add-removal-reason-form select#flair-id-select').val();
             let editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
 
             editNote = `create new reason${editNote ? `, ${editNote}` : ''}`;
@@ -1237,6 +1249,7 @@ function tbconfig () {
                 text: escape(reasonText),
             };
 
+            reason.flairTemplateID = reasonFlairTemplateID;
             reason.flairText = reasonFlairText;
             reason.flairCSS = reasonFlairCSS;
             reason.removePosts = reasonRemovePosts;

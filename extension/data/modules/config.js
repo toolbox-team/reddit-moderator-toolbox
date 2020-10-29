@@ -611,6 +611,23 @@ function tbconfig () {
             return $list;
         }
 
+        async function addFlairTemplatesToDropdown ($dropdown, reasonNum) {
+            // Fetching the flair templates if not fetched already
+            if (!postFlairTemplates) {
+                postFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/link_flair_v2`).then(r => r.json());
+            }
+
+            // We should only append the flair templates to the dropdown if they're not
+            // already there, otherwise they'll duplicate with every click of the edit icon.
+            if ($dropdown[0].childElementCount <= 2) {
+                // Getting the default option for the reason so we can set the selected option
+                // in the dropdown.
+                const defaultOption = config.removalReasons.reasons[reasonNum].flairTemplateID || '';
+
+                postFlairTemplates.forEach(flair => $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.id}</option>`));
+            }
+        }
+
         // With this function we'll fetch the removal reasons for editing
         function removalReasonsContent () {
             if (config.removalReasons && config.removalReasons.reasons.length > 0) {
@@ -1082,31 +1099,18 @@ function tbconfig () {
         // Removal reasons interaction and related functions.
 
         // Showing the edit form for a removal reason
-        $body.on('click', '.removal-reasons-buttons .edit', async function () {
+        $body.on('click', '.removal-reasons-buttons .edit', function () {
             const $this = $(this);
 
             $this.closest('tr.removal-reason').find('.removal-reason-label').hide();
             $this.closest('tr.removal-reason').find('.removal-reason-edit').show();
 
-            // Fetching the flair templates if not fetched already
-            if (!postFlairTemplates) {
-                postFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/link_flair_v2`).then(r => r.json());
-            }
-
             // Getting the flair dropdown
             const $flairList = $this.closest('.removal-reason').find('#flair-id-select');
 
-            // We should only append the flair templates to the dropdown if they're not
-            // already there, otherwise they'll duplicate with every click of the edit icon.
-            if ($flairList[0].childElementCount <= 2) {
-                const reasonNum = $this.attr('data-reason');
+            const reasonNum = $this.attr('data-reason');
 
-                // Getting the default option for the reason so we can set the selected option
-                // in the dropdown.
-                const defaultOption = config.removalReasons.reasons[reasonNum].flairTemplateID || '';
-
-                postFlairTemplates.forEach(flair => $flairList.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.id}</option>`));
-            }
+            addFlairTemplatesToDropdown($flairList, reasonNum);
         });
 
         // cancel
@@ -1212,6 +1216,7 @@ function tbconfig () {
 
         // Adding a new reason
         $body.on('click', '#tb-add-removal-reason', function () {
+            // TODO
             $(this).hide();
             $body.find('#tb-add-removal-reason-form').show();
         });

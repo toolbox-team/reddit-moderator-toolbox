@@ -17,7 +17,9 @@ function tbconfig () {
               unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
         let config = TBCore.config,
             sortReasons = [],
-            subreddit;
+            subreddit,
+            postFlairTemplates;
+        // userFlairTemplates;
 
         // With the following function we will create the UI when we need it.
         // Create the window overlay.
@@ -196,7 +198,6 @@ function tbconfig () {
                     </div>
                     <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
                     <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
-                    <select name="flair-id" id="flair-id-select"><option value="Select flair" disabled>Select a flair template</option></select>
                     <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />
                 </span>
@@ -297,12 +298,6 @@ function tbconfig () {
                 'tb-config', // class
                 false // single overriding footer
             ).appendTo('body');
-
-            // Getting the flair list for adding a new reason
-            TBApi.apiOauthGET(`/r/${subredditConfig}/api/link_flair_v2`).then(r => r.json()).then(res => {
-                const $flairList = $('#flair-id-select');
-                res.forEach(flair => $flairList.append(`<option value="${flair.id}">${flair.id}</option>`));
-            });
 
             $body.css('overflow', 'hidden');
         }
@@ -659,8 +654,7 @@ function tbconfig () {
                             </div>
                             <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
                             <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
-                            <input type="text" class="tb-input" name="flair-id" placeholder="flair template ID" value="{{removalReasonFlairID}}"/><br/>
-                            <select name="flair-id" id="flair-id-select"><option value="Select flair" disabled>Select a flair template</option></select>
+                            <select name="flair-id" id="flair-id-select" class="tb-action-button inline-button flair-picker"><option value="Select flair" disabled>Select a flair template</option></select>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />
                         </span>
@@ -1085,11 +1079,26 @@ function tbconfig () {
         // Removal reasons interaction and related functions.
 
         // editing of reasons
-        $body.on('click', '.removal-reasons-buttons .edit', function () {
+        $body.on('click', '.removal-reasons-buttons .edit', async function () {
             const $this = $(this);
 
             $this.closest('tr.removal-reason').find('.removal-reason-label').hide();
             $this.closest('tr.removal-reason').find('.removal-reason-edit').show();
+
+            // Fetching the flair templates if not fetched already
+            if (!postFlairTemplates) {
+                console.log('fetched!');
+                postFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/link_flair_v2`).then(r => r.json());
+            }
+
+            // Getting the flair dropdown
+            const $flairList = $this.closest('.removal-reason').find('#flair-id-select');
+
+            // We should only append the flair templates to the dropdown if they're not
+            // already there, otherwise they'll duplicate with every click of the edit icon.
+            if ($flairList[0].childElementCount <= 1) {
+                postFlairTemplates.forEach(flair => $flairList.append(`<option value="${flair.id}">${flair.id}</option>`));
+            }
         });
 
         // cancel

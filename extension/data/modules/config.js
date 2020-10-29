@@ -654,7 +654,10 @@ function tbconfig () {
                             </div>
                             <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
                             <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
-                            <select name="flair-id" id="flair-id-select" class="tb-action-button inline-button flair-picker"><option value="Select flair" disabled>Select a flair template</option></select>
+                            <select name="flair-id" id="flair-id-select" class="tb-action-button inline-button flair-picker">
+                                <option value="Select flair" disabled>Select a flair template</option>
+                                <option value="">None</option>
+                            </select>
                             <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />
                         </span>
@@ -1078,7 +1081,7 @@ function tbconfig () {
 
         // Removal reasons interaction and related functions.
 
-        // editing of reasons
+        // Showing the edit form for a removal reason
         $body.on('click', '.removal-reasons-buttons .edit', async function () {
             const $this = $(this);
 
@@ -1087,7 +1090,6 @@ function tbconfig () {
 
             // Fetching the flair templates if not fetched already
             if (!postFlairTemplates) {
-                console.log('fetched!');
                 postFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/link_flair_v2`).then(r => r.json());
             }
 
@@ -1096,8 +1098,14 @@ function tbconfig () {
 
             // We should only append the flair templates to the dropdown if they're not
             // already there, otherwise they'll duplicate with every click of the edit icon.
-            if ($flairList[0].childElementCount <= 1) {
-                postFlairTemplates.forEach(flair => $flairList.append(`<option value="${flair.id}">${flair.id}</option>`));
+            if ($flairList[0].childElementCount <= 2) {
+                const reasonNum = $this.attr('data-reason');
+
+                // Getting the default option for the reason so we can set the selected option
+                // in the dropdown.
+                const defaultOption = config.removalReasons.reasons[reasonNum].flairTemplateID || '';
+
+                postFlairTemplates.forEach(flair => $flairList.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.id}</option>`));
             }
         });
 
@@ -1129,7 +1137,8 @@ function tbconfig () {
                   reasonRemovePosts = $removalContent.find('input[name=remove-posts]').is(':checked'),
                   reasonRemoveComments = $removalContent.find('input[name=remove-comments]').is(':checked'),
                   reasonFlairText = $removalContent.find('input[name=flair-text]').val(),
-                  reasonFlairCSS = $removalContent.find('input[name=flair-css]').val();
+                  reasonFlairCSS = $removalContent.find('input[name=flair-css]').val(),
+                  reasonFlairTemplateID = $removalContent.find('select[name=flair-id]').val();
             let editNote = $removalContent.find('input[name=edit-note]').val();
 
             if (!editNote) {
@@ -1144,6 +1153,7 @@ function tbconfig () {
             config.removalReasons.reasons[reasonsNum].removePosts = reasonRemovePosts;
             config.removalReasons.reasons[reasonsNum].removeComments = reasonRemoveComments;
             config.removalReasons.reasons[reasonsNum].title = reasonTitle;
+            config.removalReasons.reasons[reasonsNum].flairTemplateID = reasonFlairTemplateID;
 
             postToWiki('toolbox', config, editNote, true);
 

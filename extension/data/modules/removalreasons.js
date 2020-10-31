@@ -330,6 +330,7 @@ function removalreasons () {
                                 removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
                                 flairText: TBHelpers.htmlEncode(this.flairText),
                                 flairCSS: TBHelpers.htmlEncode(this.flairCSS),
+                                flairTemplateID: this.flairTemplateID === undefined ? '' : this.flairTemplateID,
                             });
                         });
 

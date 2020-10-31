@@ -535,6 +535,7 @@ function removalreasons () {
                             title: this.title,
                             flairText: this.flairText,
                             flairCSS: this.flairCSS,
+                            flairTemplateID: this.flairTemplateID,
                         });
 
                         if (this.title) {
@@ -685,7 +686,7 @@ function removalreasons () {
             // Get custom reason input
             const markdownReasons = [];
             const customInput = [];
-            let flairText = '', flairCSS = '';
+            let flairText = '', flairCSS = '', flairTemplateID = '';
 
             checked.closest('.selectable-reason').each(function () {
                 const $this = $(this);
@@ -705,6 +706,9 @@ function removalreasons () {
                 }
                 if ($this.data('flairCSS')) {
                     flairCSS += ` ${$this.data('flairCSS')}`;
+                }
+                if ($this.data('flairTemplateID')) {
+                    flairTemplateID = $this.data('flairTemplateID');
                 }
             });
 
@@ -772,7 +776,7 @@ function removalreasons () {
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
             if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
-                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS).catch(() => {
+                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS, flairTemplateID).catch(() => {
                     status.text(FLAIR_ERROR);
                 });
             }

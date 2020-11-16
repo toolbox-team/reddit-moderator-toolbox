@@ -144,19 +144,19 @@ function nukecomments () {
                 commentArray = TBHelpers.saneSort(commentArray);
                 const removalArrayLength = commentArray.length;
                 let removalCount = 0;
-                TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
+                Promise.all(commentArray.map(async comment => {
                     removalCount++;
                     TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
                     if (executionType === 'remove') {
-                        TBApi.removeThing(`t1_${comment}`).catch(() => {
+                        await TBApi.removeThing(`t1_${comment}`).catch(() => {
                             missedComments.push(comment);
                         });
-                    } else if (executionType === 'lock') {
-                        TBApi.lock(`t1_${comment}`).catch(() => {
+                    } else {
+                        await TBApi.lock(`t1_${comment}`).catch(() => {
                             missedComments.push(comment);
                         });
                     }
-                }, () => {
+                })).then(() => {
                     removalRunning = false;
                     TB.ui.longLoadSpinner(false);
                     $nukeFeedback.text(`Done ${executionType === 'remove' ? 'removing' : 'locking'} comments.`);

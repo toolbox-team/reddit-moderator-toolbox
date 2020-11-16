@@ -555,46 +555,42 @@ function modbutton () {
 
                 TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
 
-                TBCore.forEachChunkedRateLimit(
-                    subs, 20, subreddit => {
-                        TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
+                Promise.all(subs.map(async subreddit => {
+                    TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        self.log(`banning from: ${subreddit}`);
-                        if (settingState) {
-                            TBApi.friendUser({
-                                user,
-                                action,
-                                subreddit,
-                                banReason,
-                                banMessage,
-                                banDuration,
-                                banContext,
-                            }).then(response => {
-                                if (response.json.errors.length) {
-                                    throw new Error('There were one or more errors banning the user');
-                                }
-                            }).catch(() => {
-                                // catches the above `errors.length` condition as well as network errors
-                                self.log('missed one');
-                                failedSubs.push(subreddit);
-                            });
-                        } else {
-                            TBApi.unfriendUser(user, action, subreddit).catch(() => {
-                                // only catches network errors because unfriend is weird
-                                self.log('missed one');
-                                failedSubs.push(subreddit);
-                            });
-                        }
-                    },
-
-                    () => {
-                        TB.ui.longLoadSpinner(false);
-
-                        window.setTimeout(() => {
-                            completeCheck(failedSubs);
-                        }, 2000);
+                    self.log(`banning from: ${subreddit}`);
+                    if (settingState) {
+                        await TBApi.friendUser({
+                            user,
+                            action,
+                            subreddit,
+                            banReason,
+                            banMessage,
+                            banDuration,
+                            banContext,
+                        }).then(response => {
+                            if (response.json.errors.length) {
+                                throw new Error('There were one or more errors banning the user');
+                            }
+                        }).catch(() => {
+                            // catches the above `errors.length` condition as well as network errors
+                            self.log('missed one');
+                            failedSubs.push(subreddit);
+                        });
+                    } else {
+                        await TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                            // only catches network errors because unfriend is weird
+                            self.log('missed one');
+                            failedSubs.push(subreddit);
+                        });
                     }
-                );
+                })).then(() => {
+                    TB.ui.longLoadSpinner(false);
+
+                    window.setTimeout(() => {
+                        completeCheck(failedSubs);
+                    }, 2000);
+                });
             }
         });
 

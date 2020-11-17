@@ -131,6 +131,7 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
         credentials: 'include', // required for cookies to be sent
         redirect: 'error', // prevents strange reddit API shenanigans
         method,
+        cache: 'no-store',
     };
 
     // Post requests need their body to be in formdata format

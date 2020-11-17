@@ -599,7 +599,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             if (showClose) {
                 $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
             }
-            $noteDiv.appendTobody;
+            $noteDiv.appendTo($body);
 
             window.addEventListener('tbSingleSettingUpdate', event => {
                 const settingDetail = event.detail;

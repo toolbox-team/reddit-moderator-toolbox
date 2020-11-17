@@ -1621,4 +1621,6 @@ function tbconfig () {
 
 window.addEventListener('TBModuleLoaded', () => {
     tbconfig();
+}, {
+    once: true,
 });

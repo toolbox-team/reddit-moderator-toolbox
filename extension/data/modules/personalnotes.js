@@ -295,4 +295,6 @@ function personalnotes () {
 
 window.addEventListener('TBModuleLoaded', () => {
     personalnotes();
+}, {
+    once: true,
 });

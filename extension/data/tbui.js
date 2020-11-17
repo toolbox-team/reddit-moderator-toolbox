@@ -23,6 +23,8 @@ function TBuiInitWrapper () {
             contextMenuLocation = TBStorage.getSetting('GenSettings', 'contextMenuLocation', 'left');
             contextMenuAttention = TBStorage.getSetting('GenSettings', 'contextMenuAttention', 'open');
             contextMenuClick = TBStorage.getSetting('GenSettings', 'contextMenuClick', false);
+        }, {
+            once: true,
         });
 
         /**

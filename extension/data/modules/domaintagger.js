@@ -314,4 +314,6 @@ function domaintagger () {
 
 window.addEventListener('TBModuleLoaded', () => {
     domaintagger();
+}, {
+    once: true,
 });

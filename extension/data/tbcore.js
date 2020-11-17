@@ -1875,5 +1875,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         logger.log('core utils loaded');
         const event = new CustomEvent('TBCoreLoaded');
         window.dispatchEvent(event);
+    }, {
+        once: true,
     });
 })();

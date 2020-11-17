@@ -554,4 +554,6 @@ function modmacros () {
 
 window.addEventListener('TBModuleLoaded', () => {
     modmacros();
+}, {
+    once: true,
 });

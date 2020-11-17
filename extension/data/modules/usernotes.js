@@ -1487,4 +1487,6 @@ function usernotes () {
 
 window.addEventListener('TBModuleLoaded', () => {
     usernotes();
+}, {
+    once: true,
 });

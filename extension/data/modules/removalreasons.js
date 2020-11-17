@@ -938,4 +938,6 @@ function removalreasons () {
 
 window.addEventListener('TBModuleLoaded', () => {
     removalreasons();
+}, {
+    once: true,
 });

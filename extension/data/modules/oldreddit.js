@@ -289,4 +289,6 @@ window.addEventListener('TBModuleLoaded', () => {
     profileResults('oldRedditStart', performance.now());
     oldReddit();
     profileResults('oldRedditDone', performance.now());
+}, {
+    once: true,
 });

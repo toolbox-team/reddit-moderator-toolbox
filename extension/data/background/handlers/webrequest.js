@@ -100,6 +100,9 @@ function queryString (parameters) {
     return `?${kvStrings.join('&')}`;
 }
 
+// Ratelimiter for all oauth.reddit.com requests
+const oauthRatelimiter = new Ratelimiter();
+
 /**
  * Sends a generic HTTP request.
  * @function
@@ -158,7 +161,12 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
     // Perform the request
     let response;
     try {
-        response = await fetch(url, options);
+        // Only oauth.reddit.com sends ratelimit headers :(
+        if (oauth) {
+            response = await oauthRatelimiter.request(url, options);
+        } else {
+            response = await fetch(url, options);
+        }
     } catch (error) {
         console.error('Fetch request failed:', error);
         throw error;

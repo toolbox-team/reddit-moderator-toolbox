@@ -186,7 +186,7 @@ function tbconfig () {
                         content: `
                 <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new removal reason</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
-                <span id="tb-add-removal-reason-form">
+                <span id="tb-add-removal-reason-form" class="tb-removal-reason-field">
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
                     <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
                     <div>
@@ -666,7 +666,7 @@ function tbconfig () {
                     </td>
                     <td class="removal-reasons-content" data-reason="{{i}}">
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
-                        <span class="removal-reason-edit">
+                        <span class="removal-reason-edit tb-removal-reason-field">
                             <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
                             <textarea class="tb-input edit-area">{{removalReasonText}}</textarea><br/>
                             <div>
@@ -1239,8 +1239,8 @@ function tbconfig () {
             const $this = $(this);
             const selectedFlairID = $this.val();
 
-            const $flairText = $this.parents('#tb-add-removal-reason-form').find('input.tb-input[name="flair-text"]');
-            const $flairCSS = $this.parents('#tb-add-removal-reason-form').find('input.tb-input[name="flair-css"]');
+            const $flairText = $this.parents('.tb-removal-reason-field').find('input.tb-input[name="flair-text"]');
+            const $flairCSS = $this.parents('.tb-removal-reason-field').find('input.tb-input[name="flair-css"]');
 
             const flairTemplate = postFlairTemplates.find(flair => flair.id === selectedFlairID);
 

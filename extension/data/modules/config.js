@@ -615,7 +615,7 @@ function tbconfig () {
             return $list;
         }
 
-        async function addFlairTemplatesToDropdown ($dropdown, reasonNum) {
+        async function addFlairTemplatesToDropdown ($dropdown, $flairText, $flairClass, reasonNum) {
             // Fetching the flair templates if not fetched already
             if (!postFlairTemplates) {
                 postFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/link_flair_v2`).then(r => r.json());
@@ -629,7 +629,9 @@ function tbconfig () {
                 // selected yet, so this argument won't be provided.
                 const defaultOption = reasonNum ? config.removalReasons.reasons[reasonNum].flairTemplateID : '';
 
-                postFlairTemplates.forEach(flair => $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`));
+                postFlairTemplates.forEach(flair => {
+                    $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`);
+                });
             }
         }
 
@@ -1230,6 +1232,20 @@ function tbconfig () {
             const $flairDropdown = $addRemovalReasonForm.find('select#flair-id-select');
 
             addFlairTemplatesToDropdown($flairDropdown);
+        });
+
+        // Watching for changes in the flair template dropdown and assigning the flair text and class
+        $body.on('change', '#flair-id-select', function () {
+            const $this = $(this);
+            const selectedFlairID = $this.val();
+
+            const $flairText = $this.parents('#tb-add-removal-reason-form').find('input.tb-input[name="flair-text"]');
+            const $flairCSS = $this.parents('#tb-add-removal-reason-form').find('input.tb-input[name="flair-css"]');
+
+            const flairTemplate = postFlairTemplates.find(flair => flair.id === selectedFlairID);
+
+            $flairText.val(flairTemplate.text);
+            $flairCSS.val(flairTemplate.css_class);
         });
 
         // Save new reason

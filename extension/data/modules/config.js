@@ -19,7 +19,6 @@ function tbconfig () {
             sortReasons = [],
             subreddit,
             postFlairTemplates;
-        // userFlairTemplates;
 
         // With the following function we will create the UI when we need it.
         // Create the window overlay.
@@ -615,7 +614,7 @@ function tbconfig () {
             return $list;
         }
 
-        async function addFlairTemplatesToDropdown ($dropdown, $flairText, $flairClass, reasonNum) {
+        async function addFlairTemplatesToDropdown ($dropdown, reasonNum) {
             // Fetching the flair templates if not fetched already
             if (!postFlairTemplates) {
                 postFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/link_flair_v2`).then(r => r.json());

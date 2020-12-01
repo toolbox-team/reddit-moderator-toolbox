@@ -660,7 +660,7 @@ function modbutton () {
 
             const userFlairInfo = await TBApi.apiOauthPOST(`/r/${subreddit}/api/flairselector`, {name: user}).then(r => r.json());
             userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
-            if (!userFlairInfo || !userFlairInfo.current) {
+            if (!userFlairInfo.current) {
                 return;
             }
 

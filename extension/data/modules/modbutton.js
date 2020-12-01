@@ -142,6 +142,8 @@ function modbutton () {
               showglobal = self.setting('globalButton'),
               excludeGlobal = self.setting('excludeGlobal');
 
+        let userFlairTemplates; // we need those in 2 functions and I don't think fetching twice is a good idea
+
         self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
         TBCore.getModSubs(() => {
@@ -656,17 +658,32 @@ function modbutton () {
                 return;
             }
 
-            const userFlairInfo = await TBApi.getJSON(`/r/${subreddit}/api/flairlist.json?name=${user}`);
-            const userFlairTemplateIDs = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
-            if (!userFlairInfo || !userFlairInfo.users || userFlairInfo.users.length < 1) {
+            const userFlairInfo = await TBApi.apiOauthPOST(`/r/${subreddit}/api/flairselector`, {name: user}).then(r => r.json());
+            userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
+            if (!userFlairInfo || !userFlairInfo.current) {
                 return;
             }
 
             TBStorage.purifyObject(userFlairInfo);
-            $textinput.val(userFlairInfo.users[0].flair_text);
-            $classinput.val(userFlairInfo.users[0].flair_css_class);
+            $textinput.val(userFlairInfo.current.flair_text);
+            $classinput.val(userFlairInfo.current.flair_css_class);
 
-            userFlairTemplateIDs.forEach(flair => $flairDropdown.append(`<option value="${flair.id}">${flair.text}</option>`));
+            userFlairTemplates.forEach(flair => $flairDropdown.append(`
+                <option value="${flair.id}" ${userFlairInfo.current.flair_template_id === flair.id ? 'selected' : ''}>
+                    ${flair.text}
+                </option>
+            `));
+        });
+
+        // changing the text and css class when dropdown selection changes
+        $body.on('change', '#flair-template-id-select', function () {
+            const $this = $(this);
+            const $textInput = $this.parents('.tb-popup-content').find('.flair-text'),
+                  $cssInput = $this.parents('tb-popup-content').find('.flair-css');
+
+            const selectedFlairTemplate = userFlairTemplates.find(flair => flair.id === $this.val());
+            $textInput.val(selectedFlairTemplate.text || '');
+            $cssInput.val(selectedFlairTemplate.css_class || '');
         });
 
         // Edit save button clicked.

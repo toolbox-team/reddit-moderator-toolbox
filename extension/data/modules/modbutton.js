@@ -225,7 +225,13 @@ function modbutton () {
                         tooltip: 'Edit User Flair.',
                         content: `
                     <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text tb-input" type="text"></input></p>
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>`,
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>
+                    <p style="clear:both;" class="mod-popup-flair-input">
+                        <label for="flair-template-id" class="mod-popup-flair-label">Template:</label>
+                        <select style="text-overflow: ellipsis; width: 150px;" id="flair-template-id-select" class="tb-action-button">
+                            <option value="">None</option>
+                        </select>
+                    </p>`,
                         footer: `
                 <span class="status error left"></span>
                 <button class="flair-save tb-action-button">Save Flair</button>`,
@@ -643,19 +649,24 @@ function modbutton () {
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
                   $textinput = $popup.find('.flair-text'),
-                  $classinput = $popup.find('.flair-class');
+                  $classinput = $popup.find('.flair-class'),
+                  $flairDropdown = $popup.find('#flair-template-id-select');
 
             if (!user || !subreddit) {
                 return;
             }
 
-            const resp = await TBApi.getJSON(`/r/${subreddit}/api/flairlist.json?name=${user}`);
-            if (!resp || !resp.users || resp.users.length < 1) {
+            const userFlairInfo = await TBApi.getJSON(`/r/${subreddit}/api/flairlist.json?name=${user}`);
+            const userFlairTemplateIDs = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
+            if (!userFlairInfo || !userFlairInfo.users || userFlairInfo.users.length < 1) {
                 return;
             }
-            TBStorage.purifyObject(resp);
-            $textinput.val(resp.users[0].flair_text);
-            $classinput.val(resp.users[0].flair_css_class);
+
+            TBStorage.purifyObject(userFlairInfo);
+            $textinput.val(userFlairInfo.users[0].flair_text);
+            $classinput.val(userFlairInfo.users[0].flair_css_class);
+
+            userFlairTemplateIDs.forEach(flair => $flairDropdown.append(`<option value="${flair.id}">${flair.text}</option>`));
         });
 
         // Edit save button clicked.
@@ -665,11 +676,12 @@ function modbutton () {
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
                   text = $popup.find('.flair-text').val(),
-                  css_class = $popup.find('.flair-class').val();
+                  css_class = $popup.find('.flair-class').val(),
+                  templateID = $popup.find('#flair-template-id-select').val();
 
             TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 
-            TBApi.flairUser(user, subreddit, text, css_class).then(() => {
+            TBApi.flairUser(user, subreddit, text, css_class, templateID).then(() => {
                 TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
             }).catch(error => {
                 self.log(error.responseText);

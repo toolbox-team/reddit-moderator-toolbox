@@ -152,7 +152,7 @@ function historybutton () {
                                 <label class="submission-count"></label> submissions
                                 <br>
                                 <span class="tb-history-comment-stats" style="display:none">
-                                <label class="comment-count"></label> comments of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
+                                <label class="comment-count"></label> comments, of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
                                 </span>
                                 </div>
                                 <div class="history-table-wrapper">

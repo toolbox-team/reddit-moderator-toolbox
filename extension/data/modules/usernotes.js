@@ -167,37 +167,40 @@ function usernotes () {
             }
         }
 
-        function processSub (subreddit, customThings) {
+        async function processSub (subreddit, customThings) {
             if (!subreddit) {
+                self.warn('Tried to process falsy subreddit, ignoring:', subreddit);
                 return;
             }
 
-            self.log(`Processing sub: ${subreddit}`);
-            self.getUserNotes(subreddit, (status, notes) => {
-                self.log(`Usernotes retrieved for ${subreddit}: status=${status}`);
-                if (!status) {
-                    return;
-                }
-                if (!isNotesValidVersion(notes)) {
+            let notes;
+            try {
+                notes = await self.getUserNotes(subreddit);
+            } catch (error) {
+                self.warn('Error reading usernotes for subreddit ${subreddit}:', error);
+                return;
+            }
+
+            self.log(`Usernotes retrieved for ${subreddit}: status=${status}`);
+            if (!isNotesValidVersion(notes)) {
                 // Remove the option to add notes
-                    $(`.add-usernote-${subreddit}`).remove();
+                $(`.add-usernote-${subreddit}`).remove();
 
-                    // Alert the user
-                    const msg = notes.ver > TBCore.notesMaxSchema ?
-                        `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.` :
-                        `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
+                // Alert the user
+                const msg = notes.ver > TBCore.notesMaxSchema ?
+                    `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.` :
+                    `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
 
-                    TBCore.alert(msg, clicked => {
-                        if (clicked) {
-                            window.open(notes.ver > TBCore.notesMaxSchema ? '/r/toolbox/wiki/get' :
-                                `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`);
-                        }
-                    });
-                }
-
-                self.getSubredditColors(subreddit).then(colors => {
-                    setNotes(notes, subreddit, colors, customThings);
+                TBCore.alert(msg, clicked => {
+                    if (clicked) {
+                        window.open(notes.ver > TBCore.notesMaxSchema ? '/r/toolbox/wiki/get' :
+                            `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`);
+                    }
                 });
+            }
+
+            self.getSubredditColors(subreddit).then(colors => {
+                setNotes(notes, subreddit, colors, customThings);
             });
         }
 
@@ -358,7 +361,7 @@ function usernotes () {
             $appendTo.append($popup);
 
             // Generate dynamic parts of dialog and show
-            self.getSubredditColors(subreddit).then(colors => {
+            self.getSubredditColors(subreddit).then(async colors => {
                 self.log('Adding colors to dialog');
 
                 // Create type/color selections
@@ -396,55 +399,58 @@ function usernotes () {
 
                 // Add notes
                 self.log('Adding notes to dialog');
-                self.getUserNotes(subreddit, (status, notes) => {
-                    if (!status) {
-                        return;
-                    }
+                let notes;
+                try {
+                    notes = await self.getUserNotes(subreddit);
+                } catch (error) {
+                    self.warn('Error reading usernotes for subreddit ${subreddit}:', error);
+                    return;
+                }
+                const u = getUser(notes.users, user);
 
-                    const u = getUser(notes.users, user);
-                    // User has notes
-                    if (u !== undefined && u.notes.length > 0) {
+                // User has notes
+                if (u !== undefined && u.notes.length > 0) {
                     // FIXME: not selecting previous type
-                        $popup.find(`.utagger-type .type-input-${u.notes[0].type}`).prop('checked', true);
+                    $popup.find(`.utagger-type .type-input-${u.notes[0].type}`).prop('checked', true);
 
-                        u.notes.forEach((note, i) => {
+                    u.notes.forEach((note, i) => {
                         // if (!note.type) {
                         //    note.type = 'none';
                         // }
 
-                            self.log(`  Type: ${note.type}`);
-                            const info = self._findSubredditColor(colors, note.type);
-                            self.log(info);
+                        self.log(`  Type: ${note.type}`);
+                        const info = self._findSubredditColor(colors, note.type);
+                        self.log(info);
 
-                            // TODO: probably shouldn't rely on time truncated to seconds as a note ID; inaccurate.
-                            // The ID of a note is set to its time when the dialog is generated. As of schema v5,
-                            // times are truncated to second accuracy. This means newly-added notes that have yet
-                            // to be saved — and therefore still retain millisecond accuracy — may not be considered
-                            // equal to saved versions if compared. This caused problems when deleting new notes,
-                            // which searches a saved version based on ID.
-                            const noteId = Math.trunc(note.time / 1000) * 1000,
-                                  noteString = TBHelpers.htmlEncode(note.note),
-                                  timeString = new Date(note.time).toLocaleString();
+                        // TODO: probably shouldn't rely on time truncated to seconds as a note ID; inaccurate.
+                        // The ID of a note is set to its time when the dialog is generated. As of schema v5,
+                        // times are truncated to second accuracy. This means newly-added notes that have yet
+                        // to be saved — and therefore still retain millisecond accuracy — may not be considered
+                        // equal to saved versions if compared. This caused problems when deleting new notes,
+                        // which searches a saved version based on ID.
+                        const noteId = Math.trunc(note.time / 1000) * 1000,
+                              noteString = TBHelpers.htmlEncode(note.note),
+                              timeString = new Date(note.time).toLocaleString();
 
-                            // Construct some elements separately
-                            let timeDiv;
+                        // Construct some elements separately
+                        let timeDiv;
 
-                            if (note.link) {
-                                if (TBCore.isNewModmail && !note.link.startsWith('https://mod.reddit.com')) {
-                                    note.link = `https://www.reddit.com${note.link}`;
-                                }
-                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${note.link}">${timeString}</a></div>`;
-                            } else {
-                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
+                        if (note.link) {
+                            if (TBCore.isNewModmail && !note.link.startsWith('https://mod.reddit.com')) {
+                                note.link = `https://www.reddit.com${note.link}`;
                             }
+                            timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${note.link}">${timeString}</a></div>`;
+                        } else {
+                            timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
+                        }
 
-                            let typeSpan = '';
-                            if (info && info.text) {
-                                typeSpan = `<span class="note-type" style="color: ${info.color}">[${TBHelpers.htmlEncode(info.text)}]</span>`;
-                            }
+                        let typeSpan = '';
+                        if (info && info.text) {
+                            typeSpan = `<span class="note-type" style="color: ${info.color}">[${TBHelpers.htmlEncode(info.text)}]</span>`;
+                        }
 
-                            // Add note to list
-                            $noteList.append(`
+                        // Add note to list
+                        $noteList.append(`
                             <tr class="utagger-note">
                                 <td class="utagger-notes-td1">
                                     <div class="utagger-mod">${note.mod}</div>
@@ -456,13 +462,12 @@ function usernotes () {
                                 </td>
                                 <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${TBui.icons.delete}</i></td>
                             </tr>
-                            `);
-                        });
-                    } else {
-                        // No notes on user
-                        $popup.find('#utagger-user-note-input').focus();
-                    }
-                });
+                        `);
+                    });
+                } else {
+                    // No notes on user
+                    $popup.find('#utagger-user-note-input').focus();
+                }
             });
         }
 
@@ -508,7 +513,7 @@ function usernotes () {
         });
 
         // Save or delete button clicked
-        $body.on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
+        $body.on('click', '.utagger-save-user, .utagger-remove-note', async function (e) {
             self.log('Save or delete pressed');
             const $popup = $(this).closest('.utagger-popup'),
                   $unote = $popup.find('.utagger-user-note'),
@@ -567,94 +572,90 @@ function usernotes () {
 
             TBui.textFeedback(`${deleteNote ? 'Removing' : 'Adding'} user note...`, TBui.FEEDBACK_NEUTRAL);
 
-            self.getUserNotes(subreddit, (success, notes, pageError) => {
-            // Only page errors git different treatment.
-                if (!success && pageError) {
-                    self.log('  Page error');
-                    switch (pageError) {
-                    case TBCore.WIKI_PAGE_UNKNOWN:
-                        break;
-                    case TBCore.NO_WIKI_PAGE:
-                        notes = noteSkel;
-                        notes.users[user] = userNotes;
-                        self.saveUserNotes(subreddit, notes, 'create usernotes config', succ => {
-                            if (succ) {
-                                run();
-                            }
-                        });
-                        break;
-                    }
-                    return;
-                }
-
-                let saveMsg;
-                if (notes) {
-                    if (notes.corrupted) {
-                        TBCore.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
-                    }
-
-                    const u = getUser(notes.users, user);
-
-                    // User already has notes
-                    if (u !== undefined) {
-                        self.log('User exists');
-
-                        // Delete note
-                        if (deleteNote) {
-                            self.log('Deleting note');
-                            self.log(`  ${noteId}`);
-
-                            self.log('Removing note from:');
-                            self.log(u.notes);
-                            for (let n = 0; n < u.notes.length; n++) {
-                                note = u.notes[n];
-                                self.log(`  ${note.time}`);
-
-                                if (note.time.toString() === noteId) {
-                                    self.log(`  Note found: ${noteId}`);
-                                    u.notes.splice(n, 1);
-                                    self.log(u.notes);
-                                    break;
-                                }
-                            }
-
-                            if (u.notes.length < 1) {
-                                self.log('Removing user (is empty)');
-                                delete notes.users[user];
-                            }
-
-                            saveMsg = `delete note ${noteId} on user ${user}`;
-                        } else {
-                            // Add note
-                            self.log('Adding note');
-
-                            u.notes.unshift(note);
-                            saveMsg = `create new note on user ${user}`;
-                        }
-                    } else if (u === undefined && !deleteNote) {
-                        // New user
-                        notes.users[user] = userNotes;
-                        saveMsg = `create new note on new user ${user}`;
-                    }
-                } else {
-                    self.log('  Creating new user');
-
-                    // create new notes object
+            let notes;
+            try {
+                notes = await self.getUserNotes(subreddit, true);
+            } catch (error) {
+                // If getting usernotes failed because the page doesn't exist, create it
+                if (error.message === TBCore.NO_WIKI_PAGE) {
                     notes = noteSkel;
                     notes.users[user] = userNotes;
-                    saveMsg = `create new notes object, add new note on user ${user}`;
-                }
-
-                // Save notes if a message was set (the only case it isn't is if notes are corrupt)
-                if (saveMsg) {
-                    self.log('Saving notes');
-                    self.saveUserNotes(subreddit, notes, saveMsg, succ => {
+                    self.saveUserNotes(subreddit, notes, 'create usernotes config', succ => {
                         if (succ) {
                             run();
                         }
                     });
                 }
-            }, true);
+                return;
+            }
+
+            let saveMsg;
+            if (notes) {
+                if (notes.corrupted) {
+                    TBCore.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
+                }
+
+                const u = getUser(notes.users, user);
+
+                // User already has notes
+                if (u !== undefined) {
+                    self.log('User exists');
+
+                    // Delete note
+                    if (deleteNote) {
+                        self.log('Deleting note');
+                        self.log(`  ${noteId}`);
+
+                        self.log('Removing note from:');
+                        self.log(u.notes);
+                        for (let n = 0; n < u.notes.length; n++) {
+                            note = u.notes[n];
+                            self.log(`  ${note.time}`);
+
+                            if (note.time.toString() === noteId) {
+                                self.log(`  Note found: ${noteId}`);
+                                u.notes.splice(n, 1);
+                                self.log(u.notes);
+                                break;
+                            }
+                        }
+
+                        if (u.notes.length < 1) {
+                            self.log('Removing user (is empty)');
+                            delete notes.users[user];
+                        }
+
+                        saveMsg = `delete note ${noteId} on user ${user}`;
+                    } else {
+                        // Add note
+                        self.log('Adding note');
+
+                        u.notes.unshift(note);
+                        saveMsg = `create new note on user ${user}`;
+                    }
+                } else if (u === undefined && !deleteNote) {
+                    // New user
+                    notes.users[user] = userNotes;
+                    saveMsg = `create new note on new user ${user}`;
+                }
+            } else {
+                self.log('  Creating new user');
+
+                // create new notes object
+                notes = noteSkel;
+                notes.users[user] = userNotes;
+                saveMsg = `create new notes object, add new note on user ${user}`;
+            }
+
+            // Save notes if a message was set (the only case it isn't is if notes are corrupt)
+            if (saveMsg) {
+                self.log('Saving notes');
+                self.saveUserNotes(subreddit, notes, saveMsg, succ => {
+                    if (succ) {
+                        run();
+                    }
+                });
+            }
         });
 
         // Enter key pressed when adding new note
@@ -904,16 +905,7 @@ function usernotes () {
             // Grab the usernotes data
             let notes;
             try {
-                // TODO: convert original function to promise
-                notes = await new Promise((resolve, reject) => {
-                    self.getUserNotes(sub, (success, notes) => {
-                        if (!success) {
-                            reject();
-                        } else {
-                            resolve(notes);
-                        }
-                    });
-                });
+                notes = await self.getUserNotes(sub);
                 // TBui.pagerForItems can't handle an empty array yet, so just return early if there's nothing to display
                 if (!Object.keys(notes.users).length) {
                     throw new Error('No users found');
@@ -1109,69 +1101,55 @@ function usernotes () {
     };
 
     // Get usernotes from wiki
-    self.getUserNotes = function (subreddit, callback, forceSkipCache) {
+    self.getUserNotes = async function (subreddit, forceSkipCache) {
         self.log(`Getting usernotes (sub=${subreddit})`);
 
-        if (!callback) {
-            return;
-        }
         if (!subreddit) {
-            return returnFalse();
+            throw new Error('No subreddit provided');
         }
 
         // Check cache (if not skipped)
         if (!forceSkipCache) {
             if (TBCore.noteCache[subreddit] !== undefined) {
                 self.log('notes found in cache');
-                callback(true, TBCore.noteCache[subreddit], subreddit);
-                return;
+                return TBCore.noteCache[subreddit];
             }
 
             if (TBCore.noNotes.indexOf(subreddit) !== -1) {
                 self.log('found in NoNotes cache');
-                returnFalse();
-                return;
+                throw new Error('found in noNotes cache');
             }
         }
 
         // Read notes from wiki page
-        TBApi.readFromWiki(subreddit, 'usernotes', true).then(resp => {
+        const resp = await TBApi.readFromWiki(subreddit, 'usernotes', true);
         // Errors when reading notes
-        // // These errors are bad
-            if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
-                self.log('Usernotes read error: WIKI_PAGE_UNKNOWN');
-                returnFalse(TBCore.WIKI_PAGE_UNKNOWN);
-                return;
-            }
-            if (resp === TBCore.NO_WIKI_PAGE) {
-                TBCore.updateCache('noNotes', subreddit, false);
-                self.log('Usernotes read error: NO_WIKI_PAGE');
-                returnFalse(TBCore.NO_WIKI_PAGE);
-                return;
-            }
-            // // No notes exist in wiki page
-            if (resp.length < 1) {
-                TBCore.updateCache('noNotes', subreddit, false);
-                self.log('Usernotes read error: wiki empty');
-                returnFalse();
-                return;
-            }
-
-            TBStorage.purifyObject(resp);
-            // Success
-            self.log('We have notes!');
-            const notes = convertNotes(resp, subreddit);
-
-            // We have notes, cache them and return them.
-            TBCore.updateCache('noteCache', notes, subreddit);
-            if (callback) {
-                callback(true, notes, subreddit);
-            }
-        });
-
-        function returnFalse (pageError) {
-            callback(false, null, pageError);
+        // These errors are bad
+        if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
+            throw new Error(TBCore.WIKI_PAGE_UNKNOWN);
         }
+        if (resp === TBCore.NO_WIKI_PAGE) {
+            TBCore.updateCache('noNotes', subreddit, false);
+            throw new Error(TBCore.NO_WIKI_PAGE);
+        }
+        // // No notes exist in wiki page
+        if (resp.length < 1) {
+            TBCore.updateCache('noNotes', subreddit, false);
+            self.log('Usernotes read error: wiki empty');
+            throw new Error('wiki empty');
+        }
+
+        TBStorage.purifyObject(resp);
+        // Success
+        self.log('We have notes!');
+        const notes = convertNotes(resp, subreddit);
+        if (!notes) {
+            throw new Error('usernotes schema too old to be understood');
+        }
+
+        // We have notes, cache them and return them.
+        TBCore.updateCache('noteCache', notes, subreddit);
+        return notes;
 
         // Inflate notes from the database, converting between versions if necessary.
         function convertNotes (notes, sub) {
@@ -1207,7 +1185,7 @@ function usernotes () {
 
                 return notes;
             } else {
-                returnFalse();
+                return null;
             }
 
             // Utilities

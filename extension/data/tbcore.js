@@ -795,20 +795,15 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         });
 
-        TBCore.modSubCheck = function (callback) {
-            TBCore.getModSubs(() => {
-                const subCount = TBCore.mySubsData.length;
-                let subscriberCount = 0;
-                TBCore.mySubsData.forEach(subreddit => {
-                    subscriberCount += subreddit.subscribers;
-                });
-                subscriberCount -= subCount;
-                if (subscriberCount > 25) {
-                    return callback(true);
-                } else {
-                    return callback(false);
-                }
+        TBCore.modSubCheck = async function () {
+            await TBCore.getModSubs();
+            const subCount = TBCore.mySubsData.length;
+            let subscriberCount = 0;
+            TBCore.mySubsData.forEach(subreddit => {
+                subscriberCount += subreddit.subscribers;
             });
+            subscriberCount -= subCount;
+            return subscriberCount > 25;
         };
 
         TBCore.getThingInfo = function (sender, modCheck) {

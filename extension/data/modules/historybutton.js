@@ -105,36 +105,38 @@ function historybutton () {
     /**
      * Initiate the module
      */
-    self.init = function () {
+    self.init = async function () {
         self.log('init');
         const $body = $('body');
-        TBCore.modSubCheck(modSubCheck => {
-            self.log(`mscheck: ${modSubCheck}`);
-            if (modSubCheck) {
-                self.log('passed');
+        if (!await TBCore.modSubCheck()) {
+            self.log('mscheck failed');
+            return;
+        }
 
-                self.runJsAPI();
+        self.log('mscheck passed');
 
-                $body.on('click', '.user-history-button, #tb-user-history', function (event) {
-                    const $this = $(this);
-                    const $target = $(event.currentTarget);
-                    const author = $target.attr('data-author');
-                    const thisSubreddit = $target.attr('data-subreddit');
+        self.runJsAPI();
 
-                    const positions = TBui.drawPosition(event);
+        $body.on('click', '.user-history-button, #tb-user-history', function (event) {
+            const $this = $(this);
+            const $target = $(event.currentTarget);
+            const author = $target.attr('data-author');
+            const thisSubreddit = $target.attr('data-subreddit');
 
-                    const subreddits = {submissions: {}, comments: {}},
-                          counters = {submissions: 0, comments: 0, commentsOP: 0},
-                          accounts = {},
-                          subredditList = [],
-                          domainList = [],
-                          commentSubredditList = [],
+            const positions = TBui.drawPosition(event);
 
-                          gettingUserData = true,
-                          domains = [],
-                          domainslist = [],
+            const subreddits = {submissions: {}, comments: {}},
+                  counters = {submissions: 0, comments: 0, commentsOP: 0},
+                  accounts = {},
+                  subredditList = [],
+                  domainList = [],
+                  commentSubredditList = [],
 
-                          popupContent = `
+                  gettingUserData = true,
+                  domains = [],
+                  domainslist = [],
+
+                  popupContent = `
                             <div>
                                 <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
                                 <span class="karma" />
@@ -221,70 +223,68 @@ function historybutton () {
                             </div>
                         `;
 
-                    const $overlay = $this.closest('.tb-page-overlay');
-                    let $appendTo;
-                    if ($overlay.length) {
-                        $appendTo = $overlay;
-                    } else {
-                        $appendTo = $('body');
-                    }
+            const $overlay = $this.closest('.tb-page-overlay');
+            let $appendTo;
+            if ($overlay.length) {
+                $appendTo = $overlay;
+            } else {
+                $appendTo = $('body');
+            }
 
-                    const $popup = TB.ui.popup({
-                        title: 'History Button',
-                        tabs: [
-                            {
-                                title: 'Tab1',
-                                tooltip: 'Tooltip shown when hovering tab.',
-                                content: popupContent,
-                                footer: '',
-                            },
-                        ],
-                        cssClass: 'history-button-popup',
-                        draggable: true,
-                    }).appendTo($appendTo)
-                        .css({
-                            left: positions.leftPosition,
-                            top: positions.topPosition,
-                            display: 'block',
-                        });
-
-                    self.fetched[author] = {
-                        popup: $popup,
-                        subreddits,
-                        counters,
-                        accounts,
-                        subredditList,
-                        domainList,
-                        commentSubredditList,
-                        author,
-                        gettingUserData,
-                        domains,
-                        domainslist,
-                    };
-
-                    $popup.on('click', '.close', () => {
-                        if (!$overlay.length) {
-                            $popup.hide();
-                        } else {
-                            $popup.remove();
-                        }
-                    });
-
-                    self.showAuthorInformation(author);
-                    self.populateSubmissionHistory('', author, thisSubreddit);
-
-                    $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
-                    $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
-                    $popup.on('click.comment-report', '.comment-report', function () {
-                        $(this).hide();
-                        $popup.off('click.comment-report');
-                        self.populateCommentHistory('', author, thisSubreddit);
-                    });
-
-                    if (self.setting('alwaysComments')) {
-                        $popup.find('.comment-report').click();
-                    }
+            const $popup = TB.ui.popup({
+                title: 'History Button',
+                tabs: [
+                    {
+                        title: 'Tab1',
+                        tooltip: 'Tooltip shown when hovering tab.',
+                        content: popupContent,
+                        footer: '',
+                    },
+                ],
+                cssClass: 'history-button-popup',
+                draggable: true,
+            }).appendTo($appendTo)
+                .css({
+                    left: positions.leftPosition,
+                    top: positions.topPosition,
+                    display: 'block',
                 });
+
+            self.fetched[author] = {
+                popup: $popup,
+                subreddits,
+                counters,
+                accounts,
+                subredditList,
+                domainList,
+                commentSubredditList,
+                author,
+                gettingUserData,
+                domains,
+                domainslist,
+            };
+
+            $popup.on('click', '.close', () => {
+                if (!$overlay.length) {
+                    $popup.hide();
+                } else {
+                    $popup.remove();
+                }
+            });
+
+            self.showAuthorInformation(author);
+            self.populateSubmissionHistory('', author, thisSubreddit);
+
+            $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
+            $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
+            $popup.on('click.comment-report', '.comment-report', function () {
+                $(this).hide();
+                $popup.off('click.comment-report');
+                self.populateCommentHistory('', author, thisSubreddit);
+            });
+
+            if (self.setting('alwaysComments')) {
+                $popup.find('.comment-report').click();
             }
         });
     };

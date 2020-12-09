@@ -803,7 +803,7 @@ function profilepro () {
             makeProfile(user, listing, {sort: 'new'});
         });
 
-        window.addEventListener('TBNewPage', async event => {
+        window.addEventListener('TBNewPage', event => {
             if (event.detail.pageType === 'userProfile' && listingTypes.includes(event.detail.pageDetails.listing)) {
                 const user = event.detail.pageDetails.user,
                       listing = event.detail.pageDetails.listing;
@@ -829,7 +829,7 @@ function profilepro () {
         });
 
         if (profileButtonEnabled) {
-            TB.listener.on('author', e => {
+            TB.listener.on('author', async e => {
                 const $target = $(e.target);
 
                 if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {

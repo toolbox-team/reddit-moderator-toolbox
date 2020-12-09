@@ -707,17 +707,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         };
 
-        TBCore.getModSubs = function (callback) {
+        TBCore.getModSubs = () => new Promise(callback => {
             logger.log('getting mod subs');
             // If it has been more than ten minutes, refresh mod cache.
             if (TBCore.mySubs.length < 1 || TBCore.mySubsData.length < 1) {
-            // time to refresh
+                // time to refresh
                 if (gettingModSubs) {
-                // we're already fetching a new list, so enqueue the callback
+                    // we're already fetching a new list, so enqueue the callback
                     logger.log('Enqueueing getModSubs callback');
                     getModSubsCallbacks.push(callback);
                 } else {
-                // start the process
+                    // start the process
                     logger.log('getting new subs.');
 
                     gettingModSubs = true;
@@ -726,7 +726,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     getSubs(modMineURL);
                 }
             } else {
-            // run callback on cached sublist
+                // run callback on cached sublist
                 TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
                 TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
                 // Go!
@@ -793,7 +793,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     gettingModSubs = false;
                 }
             }
-        };
+        });
 
         TBCore.modSubCheck = function (callback) {
             TBCore.getModSubs(() => {

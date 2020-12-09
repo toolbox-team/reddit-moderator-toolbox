@@ -22,7 +22,7 @@ function domaintagger () {
 
         $body.addClass(`tb-dt-type-${tagType}`);
 
-        TBCore.getModSubs(() => {
+        TBCore.getModSubs().then(() => {
             self.log('run called from getModSubs');
             self.log(TBCore.mySubs);
             run(true);

@@ -105,18 +105,17 @@ function profilepro () {
          * @function filterModdable
          * @param {boolean} hide determines if items should be shown or hidden.
          */
-        function filterModdable (hide) {
+        async function filterModdable (hide) {
             const $things = $('.tb-thing');
             if (hide) {
-                TBCore.getModSubs(() => {
-                    TBCore.forEachChunkedDynamic($things, thing => {
-                        const $thing = $(thing);
-                        const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
-                        if (!TBCore.mySubs.includes(subreddit)) {
-                            $thing.addClass('tb-mod-filtered');
-                        }
-                    }, {framerate: 40});
-                });
+                await TBCore.getModSubs();
+                TBCore.forEachChunkedDynamic($things, thing => {
+                    const $thing = $(thing);
+                    const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
+                    if (!TBCore.mySubs.includes(subreddit)) {
+                        $thing.addClass('tb-mod-filtered');
+                    }
+                }, {framerate: 40});
             } else {
                 TBCore.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
@@ -545,12 +544,11 @@ function profilepro () {
             });
         }
 
-        function initSearchSuggestion (subreddit) {
+        async function initSearchSuggestion (subreddit) {
             if (!$body.find('#tb-search-suggest').length) {
                 $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-                TBCore.getModSubs(() => {
-                    populateSearchSuggestion(subreddit);
-                });
+                await TBCore.getModSubs();
+                populateSearchSuggestion(subreddit);
             }
 
             $body.on('focus', '.tb-subredditsearch', function () {
@@ -805,7 +803,7 @@ function profilepro () {
             makeProfile(user, listing, {sort: 'new'});
         });
 
-        window.addEventListener('TBNewPage', event => {
+        window.addEventListener('TBNewPage', async event => {
             if (event.detail.pageType === 'userProfile' && listingTypes.includes(event.detail.pageDetails.listing)) {
                 const user = event.detail.pageDetails.user,
                       listing = event.detail.pageDetails.listing;
@@ -837,28 +835,26 @@ function profilepro () {
                 if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {
                     const author = e.detail.data.author;
                     const subreddit = e.detail.data.subreddit.name;
-                    TBCore.getModSubs(() => {
-                        if (TBCore.modsSub(subreddit)) {
-                            const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
-                            requestAnimationFrame(() => {
-                                $target.append(profileButton);
-                            });
-                        }
-                    });
+                    await TBCore.getModSubs();
+                    if (TBCore.modsSub(subreddit)) {
+                        const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
+                        requestAnimationFrame(() => {
+                            $target.append(profileButton);
+                        });
+                    }
                 }
             });
 
-            TB.listener.on('userHovercard', e => {
+            TB.listener.on('userHovercard', async e => {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.user.username;
 
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
-                        $target.append(profileButton);
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
+                    $target.append(profileButton);
+                }
             });
         }
 

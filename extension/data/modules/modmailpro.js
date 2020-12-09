@@ -998,7 +998,7 @@ function modmailpro () {
         }
     };
 
-    self.mailDropDowns = function () {
+    self.mailDropDowns = async function () {
         const COMPOSE = 'compose-message',
               SWITCH = 'switch-modmail',
               composeURL = '/message/compose?to=%2Fr%2F',
@@ -1006,9 +1006,8 @@ function modmailpro () {
               $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
               $mmpMenu = $('.mmp-menu');
 
-        TBCore.getModSubs(() => {
-            populateDropDowns();
-        });
+        await TBCore.getModSubs();
+        populateDropDowns();
 
         function populateDropDowns () {
             $mmpMenu.append($composeSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));

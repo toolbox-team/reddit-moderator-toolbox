@@ -810,120 +810,119 @@ function removalreasons () {
             }
 
             // Function to send PM and comment
-            function sendRemovalMessage (logLink) {
-                TBCore.getModSubs(() => {
-                    // If there is no message to send, don't send one.
-                    if (reasonlength < 1) {
-                        if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
+            async function sendRemovalMessage (logLink) {
+                await TBCore.getModSubs();
+                // If there is no message to send, don't send one.
+                if (reasonlength < 1) {
+                    if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
                         // We'll flair only flair, we are done here.
-                            return removePopup(popup);
+                        return removePopup(popup);
+                    } else {
+                        return status.text(NO_REASON_ERROR);
+                    }
+                }
+
+                // Check if a valid notification type is selected
+                if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
+                    popup.find('#buttons').addClass('error-highlight');
+                    return status.text(NO_REPLY_TYPE_ERROR);
+                }
+
+                // Finalize the reason with optional log post link
+                if (typeof logLink !== 'undefined') {
+                    reason = reason.replace('{loglink}', logLink);
+                }
+
+                const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
+                      notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
+                      notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
+                      notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
+
+                // Reply to submission/comment
+                if (notifyByReply) {
+                    self.log('Sending removal message by comment reply.');
+                    TBApi.postComment(data.fullname, reason).then(response => {
+                        if (response.json.errors.length > 0) {
+                            status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                         } else {
-                            return status.text(NO_REASON_ERROR);
-                        }
-                    }
-
-                    // Check if a valid notification type is selected
-                    if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
-                        popup.find('#buttons').addClass('error-highlight');
-                        return status.text(NO_REPLY_TYPE_ERROR);
-                    }
-
-                    // Finalize the reason with optional log post link
-                    if (typeof logLink !== 'undefined') {
-                        reason = reason.replace('{loglink}', logLink);
-                    }
-
-                    const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
-                          notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
-                          notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
-                          notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
-
-                    // Reply to submission/comment
-                    if (notifyByReply) {
-                        self.log('Sending removal message by comment reply.');
-                        TBApi.postComment(data.fullname, reason).then(response => {
-                            if (response.json.errors.length > 0) {
-                                status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
-                            } else {
-                                // Distinguish the new reply, stickying if necessary
-                                TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                                    if (notifyByNewModmail) {
-                                        sendNewModmail();
-                                    } else if (notifyByPM) {
-                                        sendPM();
-                                    } else {
-                                        removePopup(popup);
-                                    }
-                                }).catch(() => {
-                                    status.text(DISTINGUISH_ERROR);
-                                });
-
-                                // Also lock the thread if requested
-                                if (actionLockThread) {
-                                    self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBApi.lock(data.fullname).then(() => {
-                                        removePopup(popup);
-                                    }).catch(() => {
-                                        status.text(LOCK_POST_ERROR);
-                                    });
-                                }
-                                if (actionLockComment) {
-                                    const commentId = response.json.data.things[0].data.id;
-                                    self.log(`Fullname of reply: ${commentId}`);
-                                    TBApi.lock(commentId).then(() => {
-                                        removePopup(popup);
-                                    }).catch(() => {
-                                        status.text(LOCK_COMMENT_ERROR);
-                                    });
-                                }
-                            }
-                        }).catch(() => {
-                            status.text(REPLY_ERROR);
-                        });
-                    } else if (notifyByNewModmail) {
-                        sendNewModmail();
-                    } else if (notifyByPM) {
-                        sendPM();
-                    }
-
-                    // Send PM the user
-                    function sendPM () {
-                        const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
-
-                        self.log('Sending removal message by PM');
-                        TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
-                            removePopup(popup);
-                        }).catch(() => {
-                            status.text(PM_ERROR);
-                        });
-                    }
-
-                    function sendNewModmail () {
-                        const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
-
-                        self.log('Sending removal message by New Modmail');
-                        TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
-                            res.json().then(data => {
-                                const id = data.conversation.id;
-                                // isInternal means mod conversation - can't archive that
-                                const isInternal = data.conversation.isInternal;
-                                if (autoArchive && !isInternal) {
-                                    TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
-                                        removePopup(popup);
-                                    });
+                            // Distinguish the new reply, stickying if necessary
+                            TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
+                                if (notifyByNewModmail) {
+                                    sendNewModmail();
+                                } else if (notifyByPM) {
+                                    sendPM();
                                 } else {
                                     removePopup(popup);
                                 }
                             }).catch(() => {
-                                status.text(MODMAIL_ARCHIVE_ERROR);
-                                // Disable Send button as we already sent modmail successfully - avoids multiple modmails
-                                $('.save.tb-action-button').prop('disabled', true);
+                                status.text(DISTINGUISH_ERROR);
                             });
+
+                            // Also lock the thread if requested
+                            if (actionLockThread) {
+                                self.log(`Fullname of this link: ${data.fullname}`);
+                                TBApi.lock(data.fullname).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_POST_ERROR);
+                                });
+                            }
+                            if (actionLockComment) {
+                                const commentId = response.json.data.things[0].data.id;
+                                self.log(`Fullname of reply: ${commentId}`);
+                                TBApi.lock(commentId).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_COMMENT_ERROR);
+                                });
+                            }
+                        }
+                    }).catch(() => {
+                        status.text(REPLY_ERROR);
+                    });
+                } else if (notifyByNewModmail) {
+                    sendNewModmail();
+                } else if (notifyByPM) {
+                    sendPM();
+                }
+
+                // Send PM the user
+                function sendPM () {
+                    const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
+
+                    self.log('Sending removal message by PM');
+                    TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
+                        removePopup(popup);
+                    }).catch(() => {
+                        status.text(PM_ERROR);
+                    });
+                }
+
+                function sendNewModmail () {
+                    const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
+
+                    self.log('Sending removal message by New Modmail');
+                    TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
+                        res.json().then(data => {
+                            const id = data.conversation.id;
+                            // isInternal means mod conversation - can't archive that
+                            const isInternal = data.conversation.isInternal;
+                            if (autoArchive && !isInternal) {
+                                TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                                    removePopup(popup);
+                                });
+                            } else {
+                                removePopup(popup);
+                            }
                         }).catch(() => {
-                            status.text(MODMAIL_ERROR);
+                            status.text(MODMAIL_ARCHIVE_ERROR);
+                            // Disable Send button as we already sent modmail successfully - avoids multiple modmails
+                            $('.save.tb-action-button').prop('disabled', true);
                         });
-                    }
-                });
+                    }).catch(() => {
+                        status.text(MODMAIL_ERROR);
+                    });
+                }
             }
         });
 

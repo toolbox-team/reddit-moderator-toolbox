@@ -92,7 +92,7 @@ function modmacros () {
         }
 
         if (TBCore.isOldReddit) {
-            TBCore.getModSubs(() => {
+            TBCore.getModSubs().then(() => {
                 if (TBCore.post_site && TBCore.mySubs.includes(TBCore.post_site)) {
                     self.log('getting config');
                     getConfig(TBCore.post_site, (success, config) => {
@@ -194,56 +194,54 @@ function modmacros () {
         }
 
         if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
-            $('body').on('click', 'button:contains("Reply")', function () {
+            $('body').on('click', 'button:contains("Reply")', async function () {
                 const $this = $(this);
                 const $comment = $this.closest('.Comment');
                 const commentDetails = $comment.find('.tb-frontend-container[data-tb-type="comment"]').data('tb-details');
                 const subreddit = commentDetails.data.subreddit.name;
                 const thingID = commentDetails.data.id;
 
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        getConfig(subreddit, (success, config) => {
-                            // if we're a mod, add macros to top level reply button.
-                            if (success && config.length > 0) {
-                                const $macro = $(`
-                                        <select class="tb-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="${thingID}">
-                                            <option value=${MACROS}>macros</option>
-                                        </select>
-                                `).appendTo($comment);
-                                $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
-                                    $macro.remove();
-                                });
-                                populateSelect('.tb-macro-select', subreddit, config, 'comment');
-                            }
-                        });
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    getConfig(subreddit, (success, config) => {
+                        // if we're a mod, add macros to top level reply button.
+                        if (success && config.length > 0) {
+                            const $macro = $(`
+                                    <select class="tb-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="${thingID}">
+                                        <option value=${MACROS}>macros</option>
+                                    </select>
+                            `).appendTo($comment);
+                            $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
+                                $macro.remove();
+                            });
+                            populateSelect('.tb-macro-select', subreddit, config, 'comment');
+                        }
+                    });
+                }
             });
         }
 
-        window.addEventListener('TBNewPage', event => {
+        window.addEventListener('TBNewPage', async event => {
             if (event.detail.pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.pageDetails.subreddit;
 
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        getConfig(subreddit, (success, config) => {
-                            // if we're a mod, add macros to top level reply button.
-                            if (success && config.length > 0) {
-                                $body.find('span:contains("Comment as")').closest('div').after(`
-                                    <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
-                                        <option value=${MACROS}>macros</option>
-                                    </select>
-                                    `);
-                                populateSelect('.tb-top-macro-select', subreddit, config, 'post');
-                            }
-                        });
-                    } else {
-                        // Remove all macros
-                        $body.find('.tb-macro-select').remove();
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    getConfig(subreddit, (success, config) => {
+                        // if we're a mod, add macros to top level reply button.
+                        if (success && config.length > 0) {
+                            $body.find('span:contains("Comment as")').closest('div').after(`
+                                <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
+                                    <option value=${MACROS}>macros</option>
+                                </select>
+                                `);
+                            populateSelect('.tb-top-macro-select', subreddit, config, 'post');
+                        }
+                    });
+                } else {
+                    // Remove all macros
+                    $body.find('.tb-macro-select').remove();
+                }
             } else {
                 // Remove all macros
                 $body.find('.tb-macro-select').remove();

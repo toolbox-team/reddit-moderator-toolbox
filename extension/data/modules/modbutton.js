@@ -144,7 +144,7 @@ function modbutton () {
 
         self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
-        TBCore.getModSubs(() => {
+        TBCore.getModSubs().then(() => {
         // it's Go Time™!
             self.runRedesign();
         });

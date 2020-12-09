@@ -46,7 +46,7 @@ function usernotes () {
               showDate = self.setting('showDate');
         let firstRun = true;
 
-        TBCore.getModSubs(() => {
+        TBCore.getModSubs().then(() => {
             self.log('Got mod subs');
             self.log(TBCore.mySubs);
             run();
@@ -98,7 +98,7 @@ function usernotes () {
             const onlyshowInhover = self.setting('onlyshowInhover');
 
             // event based handling of author elements.
-            TB.listener.on('author', e => {
+            TB.listener.on('author', async e => {
                 const $target = $(e.target);
                 if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                     const subreddit = e.detail.data.subreddit.name;
@@ -107,18 +107,17 @@ function usernotes () {
                     $target.attr('data-subreddit', subreddit);
                     $target.attr('data-author', author);
 
-                    TBCore.getModSubs(() => {
-                        if (TBCore.modsSub(subreddit)) {
-                            attachNoteTag($target, subreddit, author);
-                            foundSubreddit(subreddit);
-                            queueProcessSub(subreddit, $target);
-                        }
-                    });
+                    await TBCore.getModSubs();
+                    if (TBCore.modsSub(subreddit)) {
+                        attachNoteTag($target, subreddit, author);
+                        foundSubreddit(subreddit);
+                        queueProcessSub(subreddit, $target);
+                    }
                 }
             });
 
             // event based handling of author elements.
-            TB.listener.on('userHovercard', e => {
+            TB.listener.on('userHovercard', async e => {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.user.username;
@@ -126,15 +125,14 @@ function usernotes () {
                 $target.attr('data-subreddit', subreddit);
                 $target.attr('data-author', author);
 
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        attachNoteTag($target, subreddit, author, {
-                            customText: 'Usernotes',
-                        });
-                        foundSubreddit(subreddit);
-                        queueProcessSub(subreddit, $target);
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    attachNoteTag($target, subreddit, author, {
+                        customText: 'Usernotes',
+                    });
+                    foundSubreddit(subreddit);
+                    queueProcessSub(subreddit, $target);
+                }
             });
         }
 
@@ -675,25 +673,24 @@ function usernotes () {
 
         // Register context hook for opening the manager
         if (showLink) {
-            window.addEventListener('TBNewPage', event => {
+            window.addEventListener('TBNewPage', async event => {
                 if (event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
 
-                    TBCore.getModSubs(() => {
-                        if (TBCore.modsSub(subreddit)) {
-                            TBui.contextTrigger('tb-un-config-link', {
-                                addTrigger: true,
-                                triggerText: 'edit usernotes',
-                                triggerIcon: TBui.icons.usernote,
-                                title: `edit usernotes for /r/${subreddit}`,
-                                dataAttributes: {
-                                    subreddit,
-                                },
-                            });
-                        } else {
-                            TBui.contextTrigger('tb-un-config-link', {addTrigger: false});
-                        }
-                    });
+                    await TBCore.getModSubs();
+                    if (TBCore.modsSub(subreddit)) {
+                        TBui.contextTrigger('tb-un-config-link', {
+                            addTrigger: true,
+                            triggerText: 'edit usernotes',
+                            triggerIcon: TBui.icons.usernote,
+                            title: `edit usernotes for /r/${subreddit}`,
+                            dataAttributes: {
+                                subreddit,
+                            },
+                        });
+                    } else {
+                        TBui.contextTrigger('tb-un-config-link', {addTrigger: false});
+                    }
                 } else {
                     TBui.contextTrigger('tb-un-config-link', {addTrigger: false});
                 }

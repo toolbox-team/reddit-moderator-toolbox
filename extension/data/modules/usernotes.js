@@ -578,13 +578,14 @@ function usernotes () {
             } catch (error) {
                 // If getting usernotes failed because the page doesn't exist, create it
                 if (error.message === TBCore.NO_WIKI_PAGE) {
+                    self.log('usernotes page did not exist, creating it');
                     notes = noteSkel;
                     notes.users[user] = userNotes;
-                    self.saveUserNotes(subreddit, notes, 'create usernotes config', succ => {
-                        if (succ) {
-                            run();
-                        }
+                    self.saveUserNotes(subreddit, notes, 'create usernotes config').then(run).catch(error => {
+                        self.error('Error saving usernotes', error);
                     });
+                } else {
+                    self.warn('Failed to get usernotes:', error);
                 }
                 return;
             }
@@ -650,11 +651,7 @@ function usernotes () {
             // Save notes if a message was set (the only case it isn't is if notes are corrupt)
             if (saveMsg) {
                 self.log('Saving notes');
-                self.saveUserNotes(subreddit, notes, saveMsg, succ => {
-                    if (succ) {
-                        run();
-                    }
-                });
+                self.saveUserNotes(subreddit, notes, saveMsg).then(run);
             }
         });
 
@@ -829,9 +826,9 @@ function usernotes () {
                         return;
                     }
                     subUsenotes.users = users;
-                    self.saveUserNotes(sub, subUsenotes, `prune: ${pruneReasons.join(', ')}`, () => {
-                        window.location.reload();
-                    });
+                    // TODO: don't swallow errors
+                    await self.saveUserNotes(sub, subUsenotes, `prune: ${pruneReasons.join(', ')}`).catch(() => {});
+                    window.location.reload();
                 });
 
                 $popup.on('click', '.close', () => {
@@ -863,7 +860,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.find('.tb-un-delete').on('click', function () {
+            $body.find('.tb-un-delete').on('click', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -873,14 +870,15 @@ function usernotes () {
                     self.log(`deleting notes for ${user}`);
                     delete subUsenotes.users[user];
                     TBCore.updateCache('noteCache', subUsenotes, sub);
-                    self.saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`);
+                    // TODO: don't swallow errors
+                    await self.saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`).catch(() => {});
                     $userSpan.parent().remove();
                     TB.ui.textFeedback(`Deleted all notes for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
                 }
             });
 
             // Delete individual notes for user.
-            $body.find('.tb-un-notedelete').on('click', function () {
+            $body.find('.tb-un-notedelete').on('click', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),
@@ -889,7 +887,8 @@ function usernotes () {
                 self.log(`deleting note for ${user}`);
                 subUsenotes.users[user].notes.splice(note, 1);
                 TBCore.updateCache('noteCache', subUsenotes, sub);
-                self.saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`);
+                // TODO: don't swallow errors
+                await self.saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`).catch(() => {});
                 $noteSpan.remove();
                 TB.ui.textFeedback(`Deleted note for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
             });
@@ -1168,16 +1167,18 @@ function usernotes () {
 
                     TBCore.alert(
                         `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBCore.notesSchema}.`,
-                        clicked => {
+                        async clicked => {
                             if (clicked) {
                             // Upgrade notes
-                                self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`, succ => {
-                                    if (succ) {
-                                        TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
-                                        TBCore.clearCache();
-                                        window.location.reload();
-                                    }
-                                });
+                                try {
+                                    await self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`);
+                                    TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
+                                    TBCore.clearCache();
+                                    window.location.reload();
+                                } catch (error) {
+                                    // TODO: do something with this
+                                    self.error('saving notes after upgrading schema:', error);
+                                }
                             }
                         }
                     );
@@ -1240,7 +1241,7 @@ function usernotes () {
     };
 
     // Save usernotes to wiki
-    self.saveUserNotes = function (sub, notes, reason, callback) {
+    self.saveUserNotes = async function (sub, notes, reason) {
         TBui.textFeedback('Saving user notes...', TBui.FEEDBACK_NEUTRAL);
 
         // Upgrade usernotes if only upgrading
@@ -1255,28 +1256,23 @@ function usernotes () {
         notes = deconvertNotes(notes);
 
         // Write to wiki page
-        self.log('Saving usernotes to wiki...');
-        TBApi.postToWiki('usernotes', sub, notes, reason, true, false).then(() => {
-            self.log('Success!');
+        try {
+            await TBApi.postToWiki('usernotes', sub, notes, reason, true, false);
             TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
-            if (callback) {
-                callback(true);
-            }
-        }).catch(jqXHR => {
-            self.log(`Failure: ${jqXHR.status}`);
+            return;
+        } catch (error) {
+            self.error('Failure saving usernotes to wiki:', error);
             let reason;
-            if (jqXHR.status === 413) {
+            if (error.response && error.response.status === 413) {
                 reason = 'usernotes full';
             } else {
-                reason = jqXHR.responseText;
+                reason = await error.response.text();
             }
             self.log(`  ${reason}`);
 
             TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
-            if (callback) {
-                callback(false);
-            }
-        });
+            throw error;
+        }
 
         // Deconvert notes to wiki format based on version (note: deconversion is actually conversion in the opposite direction)
         function deconvertNotes (notes) {

@@ -1389,12 +1389,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             if (!URL) {
-                callback(null);
+                return callback(null);
             }
 
             TBApi.getJSON(URL).then(resp => {
                 if (!resp) {
-                    callback(null);
+                    return callback(null);
                 }
                 resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
                 const $sitetable = $(resp).find('#siteTable');

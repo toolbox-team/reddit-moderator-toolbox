@@ -296,7 +296,7 @@ function modbutton () {
             // get pre-definded ban message/note
             if (subreddit) {
                 self.log('getting ban macros');
-                TBCore.getConfig(subreddit, config => {
+                TBCore.getConfig(subreddit).then(config => {
                     if (!config || !config.banMacros) {
                         return;
                     }

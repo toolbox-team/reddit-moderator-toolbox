@@ -1456,9 +1456,7 @@ function usernotes () {
     self.getSubredditColors = async function (subreddit) {
         self.log(`Getting subreddit colors for /r/${subreddit}`);
         // TODO: convert original function to promise
-        const config = await new Promise(resolve => {
-            TBCore.getConfig(subreddit, resolve);
-        });
+        const config = await TBCore.getConfig(subreddit);
 
         if (config && config.usernoteColors && config.usernoteColors.length > 0) {
             self.log(`  Config retrieved for /r/${subreddit}`);

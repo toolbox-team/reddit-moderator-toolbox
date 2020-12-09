@@ -100,14 +100,13 @@ function domaintagger () {
             }
         }
 
-        function processSubreddit (sub, things) {
+        async function processSubreddit (sub, things) {
             self.log(`  Processing subreddit: /r/${sub}`);
-            TBCore.getConfig(sub, config => {
-                self.log(`    Config retrieved for /r/${sub}`);
-                if (config && config.domainTags && config.domainTags.length > 0) {
-                    setTags(config.domainTags, things);
-                }
-            });
+            const config = await TBCore.getConfig(sub);
+            self.log(`    Config retrieved for /r/${sub}`);
+            if (config && config.domainTags && config.domainTags.length > 0) {
+                setTags(config.domainTags, things);
+            }
         }
 
         function setTags (domainTags, things) {

@@ -1432,27 +1432,26 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             return TBCore.configCache[sub] !== undefined;
         };
 
-        TBCore.getConfig = function (sub, callback) {
+        TBCore.getConfig = async function (sub) {
             if (TBCore.hasNoConfig(sub)) {
-                callback(false, sub);
-            } else if (TBCore.hasConfig(sub)) {
-                callback(TBCore.configCache[sub], sub);
+                return false;
+            }
+            if (TBCore.hasConfig(sub)) {
+                return TBCore.configCache[sub];
+            }
+            const resp = await TBApi.readFromWiki(sub, 'toolbox', true);
+            if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
+                // Complete and utter failure
+                return false;
+            } else if (resp === TBCore.NO_WIKI_PAGE) {
+                // Subreddit not configured yet
+                TBCore.updateCache('noConfig', sub, false);
+                return false;
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
-                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
-                        // Complete and utter failure
-                        callback(false, sub);
-                    } else if (resp === TBCore.NO_WIKI_PAGE) {
-                        // Subreddit not configured yet
-                        TBCore.updateCache('noConfig', sub, false);
-                        callback(false, sub);
-                    } else {
-                        // It works!
-                        TBStorage.purifyObject(resp);
-                        TBCore.updateCache('configCache', resp, sub);
-                        callback(resp, sub);
-                    }
-                });
+                // It works!
+                TBStorage.purifyObject(resp);
+                TBCore.updateCache('configCache', resp, sub);
+                return resp;
             }
         };
 

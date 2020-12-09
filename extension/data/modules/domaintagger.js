@@ -200,7 +200,7 @@ function domaintagger () {
                   currentColor = TBHelpers.colorNameToHex($domain.data('color') || '#cee3f8db'),
                   $thing = $this.closest('.thing'),
                   domain = getThingDomain($thing),
-                  subreddit = TBHelpers.cleanSubredditName($thing.data('subreddit'));
+                  subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
 
             function createPopup () {
                 const $popupContent = $('<div>').addClass('dt-popup-content').append($('<span>').addClass('dt-popup-color-content').append($('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)).append($('<input>').prop('type', 'color').addClass('domain-color').val(currentColor))).append($('<p>').text('This will tag the domain as shown.')).append($('<p>').text('Ex: i.imgur.com is not imgur.com'));
@@ -234,7 +234,7 @@ function domaintagger () {
 
         $body.on('click', '.save-domain', function () {
             const $popup = $(this).closest('.dtagger-popup'),
-                  subreddit = $popup.find('.domain-name').data('subreddit');
+                  subreddit = $popup.find('.domain-name').attr('data-subreddit');
 
             const domainTag = {
                 name: $popup.find('.domain-name').val(),

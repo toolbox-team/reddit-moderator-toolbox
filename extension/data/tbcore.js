@@ -1346,35 +1346,32 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
         };
 
-        TBCore.importSettings = function (subreddit, callback) {
-            TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
-                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
-                    logger.log('Error loading wiki page');
-                    return;
+        TBCore.importSettings = async function (subreddit) {
+            const resp = await TBApi.readFromWiki(subreddit, 'tbsettings', true);
+            if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
+                logger.log('Error loading wiki page');
+                return;
+            }
+            TBStorage.purifyObject(resp);
+            if (resp['Utils.lastversion'] < 300) {
+                TBui.textFeedback('Cannot import from a toolbox version under 3.0');
+                logger.log('Cannot import from a toolbox version under 3.0');
+                return;
+            }
+
+            const doNotImport = [
+                'oldreddit.enabled',
+            ];
+
+            Object.entries(resp).forEach(([fullKey, value]) => {
+                const key = fullKey.split('.');
+
+                // Do not import certain legacy settings.
+                if (doNotImport.includes(fullKey)) {
+                    logger.log(`Skipping ${fullKey} import`);
+                } else {
+                    TBStorage.setSetting(key[0], key[1], value, false);
                 }
-                TBStorage.purifyObject(resp);
-                if (resp['Utils.lastversion'] < 300) {
-                    TBui.textFeedback('Cannot import from a toolbox version under 3.0');
-                    logger.log('Cannot import from a toolbox version under 3.0');
-                    return;
-                }
-
-                const doNotImport = [
-                    'oldreddit.enabled',
-                ];
-
-                Object.entries(resp).forEach(([fullKey, value]) => {
-                    const key = fullKey.split('.');
-
-                    // Do not import certain legacy settings.
-                    if (doNotImport.includes(fullKey)) {
-                        logger.log(`Skipping ${fullKey} import`);
-                    } else {
-                        TBStorage.setSetting(key[0], key[1], value, false);
-                    }
-                });
-
-                callback();
             });
         };
 

@@ -1858,30 +1858,33 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 (function () {
     const logger = TBLog('TBCore init');
     // wait for storage
-    function getModSubs (after, callback) {
+    async function getModSubs (after) {
         let modSubs = [];
-        TBApi.getJSON('/subreddits/mine/moderator.json', {
-            after,
-            limit: 100,
-        }).then(json => {
+        try {
+            const json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
+                after,
+                limit: 100,
+            });
             TBStorage.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
 
             if (json.data.after) {
-                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
+                const subs = await getModSubs(json.data.after);
+                return modSubs.concat(subs);
             } else {
-                return callback(modSubs);
+                return modSubs;
             }
-        }).catch(error => {
+        } catch (error) {
             logger.log('getModSubs failed', error);
             if (error.response && error.response.status === 504) {
                 logger.log('504 Timeout retrying request');
-                getModSubs(after, subs => callback(modSubs.concat(subs)));
+                const subs = await getModSubs(after);
+                return modSubs.concat(subs);
             } else {
                 modSubs = [];
-                return callback(modSubs);
+                return modSubs;
             }
-        });
+        }
     }
 
     function getUserDetails (tries = 0) {
@@ -1903,7 +1906,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     function modsubInit (cacheDetails, userDetails) {
         if (cacheDetails.moderatedSubs.length === 0) {
             logger.log('No modsubs in cache, getting mod subs before initalizing');
-            getModSubs(null, subs => {
+            getModSubs(null).then(subs => {
                 initwrapper({
                     userDetails,
                     newModSubs: subs,

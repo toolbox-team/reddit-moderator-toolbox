@@ -269,8 +269,7 @@ function modbar () {
         if (enableModSubs) {
             $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
-            let subList = '',
-                livefilterCount;
+            let subList = '';
             const configEnabled = TB.storage.getSetting('TBConfig', 'enabled', false),
                   usernotesEnabled = TB.storage.getSetting('UserNotes', 'enabled', false),
                   subredditColorSalt = self.setting('subredditColorSalt');
@@ -295,12 +294,11 @@ function modbar () {
                     </tr>
                 `;
             });
-            livefilterCount = TBCore.mySubs.length;
 
             const modSubsPopupContent = `
             <div id="tb-my-subreddits">
                 <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-                <span class="tb-livefilter-count">${livefilterCount}</span>
+                <span class="tb-livefilter-count">${TBCore.mySubs.length}</span>
                 <br>
                 <table id="tb-my-subreddit-list">${subList}</table>
             </div>

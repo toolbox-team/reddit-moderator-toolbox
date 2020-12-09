@@ -1105,7 +1105,7 @@ function usernotes () {
             self.printProfiles();
         });
 
-        $body.on('click', '.tb-un-editor > .tb-window-wrapper > .tb-window-header .close', () => {
+        $body.on('click', '.tb-un-editor .tb-window-header .close', () => {
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
         });

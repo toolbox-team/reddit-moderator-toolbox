@@ -1263,7 +1263,9 @@ function usernotes () {
         } catch (error) {
             self.error('Failure saving usernotes to wiki:', error);
             let reason;
-            if (error.response && error.response.status === 413) {
+            if (!error.response) {
+                reason = 'network error';
+            } else if (error.response.status === 413) {
                 reason = 'usernotes full';
             } else {
                 reason = await error.response.text();

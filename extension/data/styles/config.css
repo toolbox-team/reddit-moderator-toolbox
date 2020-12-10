@@ -83,3 +83,7 @@ tr.removal-reason:last-of-type a.tb-sort-down {
 .mod-toolbox-rd .tb-macro-context {
     margin-top: 8px;
 }
+
+.mod-toolbox-rd .flair-picker {
+    margin-left: 2px;
+}

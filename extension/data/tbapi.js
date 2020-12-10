@@ -320,11 +320,12 @@
      * @param {string} cssClass The flair's CSS class
      * @returns {Promise}
      */
-    TBApi.flairPost = (postLink, subreddit, text, cssClass) => TBApi.post('/api/flair', {
+    TBApi.flairPost = (postLink, subreddit, text, cssClass, templateID) => TBApi.post('/api/selectflair', {
         api_type: 'json',
         link: postLink,
         text,
         css_class: cssClass,
+        flair_template_id: templateID,
         r: subreddit,
         uh: TBCore.modhash,
     });
@@ -338,12 +339,13 @@
      * @param {string} cssClass The flair's CSS class
      * @returns {Promise}
      */
-    TBApi.flairUser = (user, subreddit, text, cssClass) => TBApi.post('/api/flair', {
+    TBApi.flairUser = (user, subreddit, text, cssClass, templateID) => TBApi.post('/api/selectflair', {
         api_type: 'json',
         name: user,
         r: subreddit,
         text,
         css_class: cssClass,
+        flair_template_id: templateID,
         uh: TBCore.modhash,
     });
 

@@ -622,16 +622,17 @@ function tbconfig () {
 
             // We should only append the flair templates to the dropdown if they're not
             // already there, otherwise they'll duplicate with every click of the edit icon.
-            if ($dropdown[0].childElementCount <= 2) {
-                // Getting the current flair template for the reason so we can set the `selected` attribute
-                // on one of the `<option>`s. When adding a new Removal Reason we don't have one
-                // selected yet, so this argument won't be provided.
-                const defaultOption = reasonNum ? config.removalReasons.reasons[reasonNum].flairTemplateID : '';
-
-                postFlairTemplates.forEach(flair => {
-                    $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`);
-                });
+            if ($dropdown[0].childElementCount > 2) {
+                return;
             }
+            // Getting the current flair template for the reason so we can set the `selected` attribute
+            // on one of the `<option>`s. When adding a new Removal Reason we don't have one
+            // selected yet, so this argument won't be provided.
+            const defaultOption = reasonNum ? config.removalReasons.reasons[reasonNum].flairTemplateID : '';
+
+            postFlairTemplates.forEach(flair => {
+                $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`);
+            });
         }
 
         // With this function we'll fetch the removal reasons for editing

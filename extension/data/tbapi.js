@@ -339,7 +339,7 @@
      * @param {string} cssClass The flair's CSS class
      * @returns {Promise}
      */
-    TBApi.flairUser = (user, subreddit, text, cssClass, templateID = '') => TBApi.post('/api/selectflair', {
+    TBApi.flairUser = (user, subreddit, text, cssClass, templateID) => TBApi.post('/api/selectflair', {
         api_type: 'json',
         name: user,
         r: subreddit,

@@ -849,7 +849,7 @@ function usernotes () {
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', async function () {
+            $body.on('click', '.tb-un-refresh', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent().find('.user');
@@ -865,7 +865,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.find('.tb-un-delete').on('click', function () {
+            $body.on('click', '.tb-un-delete', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -882,7 +882,7 @@ function usernotes () {
             });
 
             // Delete individual notes for user.
-            $body.find('.tb-un-notedelete').on('click', function () {
+            $body.on('click', '.tb-un-notedelete', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),
@@ -1105,7 +1105,7 @@ function usernotes () {
             self.printProfiles();
         });
 
-        $body.on('click', '.tb-un-editor > .tb-window-wrapper > .tb-window-header .close', () => {
+        $body.on('click', '.tb-un-editor .tb-window-header .close', () => {
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
         });

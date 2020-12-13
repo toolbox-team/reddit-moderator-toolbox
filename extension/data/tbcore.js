@@ -288,10 +288,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.setCache('Utils', cacheName, TBCore[cacheName]);
         };
 
-        if (!TBCore.debugMode) {
-            TBLog.filterType('debug');
-        }
-
         // Update cache vars as needed.
         if (newLogin) {
             logger.log('Account changed');

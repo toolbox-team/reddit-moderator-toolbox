@@ -3,39 +3,30 @@
 (function () {
     /** @module TBLog */
 
-    // The various log types by name, and their colors applied via CSS
+    // Settings for each log type, by name
     const logTypes = {
         debug: {
             color: '#fff',
             background: '#387fa780',
+            func: console.debug,
         },
         info: {
             color: '#fff',
             background: '#38a76280',
+            func: console.info,
         },
         warn: {
             color: '#fff',
             background: '#ce821a80',
             text: 'warning',
+            func: console.warn,
         },
         error: {
             color: '#fff',
             background: '#eb394180',
+            func: console.error,
         },
     };
-
-    // Objects recording which callers and log types are being filtered
-    const filteredTypes = {};
-    const filteredCallers = {};
-
-    /**
-     * Generates a short timestamp for the current time. Strips unneeded info
-     * from the ISO format.
-     * @private
-     */
-    function timestamp () {
-        return new Date().toISOString().replace('T', ' ').replace(/Z|\..*/, '');
-    }
 
     /**
      * Executes a log of a given type.
@@ -57,26 +48,18 @@
             // Should be a string
             callerName = this;
         }
-        // If the caller or log type is filtered, do nothing
-        if (filteredTypes[type] || filteredCallers[callerName]) {
-            return;
-        }
         // Get the appropriate styles for this log type, and send the message
-        const {color, background, text} = logTypes[type];
-        console.groupCollapsed(
+        const {color, background, text, func} = logTypes[type];
+        func(
             // First part of the message line
-            `%c${timestamp()} %c[${callerName}] %c${text || type}`,
-            // Timestamp style
-            'font-weight: normal',
+            `tb: %c[${callerName}] %c${text || type}`,
             // Caller style
             'font-weight: bold',
-            // Dtyles for the type name
+            // Styles for the type name
             `color: ${color}; background: ${background}; padding: 0 3px; border-radius: 3px`,
             // The rest of the arguments are passed through unmodified
             ...args
         );
-        console.trace();
-        console.groupEnd();
     }
 
     /**
@@ -104,16 +87,11 @@
     // default logger instance
     Object.assign(TBLog, TBLog());
 
-    // Properties to allow for manipulation of filtered callers/types
-    TBLog.filteredCallers = filteredCallers;
-    TBLog.filteredTypes = filteredTypes;
-
-    // Methods to make filtering and unfiltering easier
-    TBLog.filterType = type => filteredTypes[type] = true;
-    TBLog.unfilterType = type => delete filteredTypes[type];
-    TBLog.filterCaller = caller => filteredCallers[caller] = true;
-    TBLog.unfilterCaller = caller => delete filteredCallers[caller];
-
     // Huzzah!
     window.TBLog = TBLog;
 })();
+
+TBLog.debug('test');
+TBLog.info('test');
+TBLog.warn('test');
+TBLog.error('test');

@@ -59,7 +59,7 @@ function oldReddit () {
                 $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
-                if (!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
+                if (!$jsApiThingPlaceholder.length) {
                     return;
                 }
 
@@ -82,7 +82,7 @@ function oldReddit () {
                         dispatchApiEvent(jsApiThingPlaceholder, detailObject);
                     }
                     // We don't want to send events for things already handled.
-                    if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                    if (info.author && !$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
                         const detailObject = {
                             type: 'TBpostAuthor',
                             data: {
@@ -124,7 +124,7 @@ function oldReddit () {
                     }
                     // Author
                     // We don't want to send events for things already handled.
-                    if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                    if (info.author && !$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
                         const detailObject = {
                             type: 'TBcommentAuthor',
                             data: {

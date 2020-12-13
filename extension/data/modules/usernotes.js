@@ -103,6 +103,10 @@ function usernotes () {
                 if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                     const subreddit = e.detail.data.subreddit.name;
                     const author = e.detail.data.author;
+                    if (author === '[deleted]') {
+                        return;
+                    }
+
                     $target.addClass('ut-thing');
                     $target.attr('data-subreddit', subreddit);
                     $target.attr('data-author', author);

@@ -68,6 +68,10 @@ function modbutton () {
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;
 
+                if (author === '[deleted]') {
+                    return;
+                }
+
                 let parentID;
                 if (e.detail.data.comment) {
                     parentID = e.detail.data.comment.id;

@@ -1158,8 +1158,16 @@
                     </div>
                     ${submissionIsSelf && submissionSelfTextHTML ? `<div class="tb-self-expando-button"><i class="tb-icons">${TBui.icons.add}</i></div>` : ''}
                     <div class="tb-tagline">
-                        submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
-                        <span class="tb-jsapi-author-container"></span> to <a href="${TBCore.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
+                        submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
+                        ${submissionEdited ? editedHtml : ''}
+                        by ${submissionAuthor === '[deleted]' ? `
+                            <span>[deleted]</span>
+                        ` : `
+                            <a href="${TBCore.link(`/user/${submissionAuthor}`)}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a>
+                        `}
+                        <span class="tb-userattrs">${authorAttributes}</span>
+                        <span class="tb-jsapi-author-container"></span>
+                        to <a href="${TBCore.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
                         ${submissionPinned ? '- <span class="tb-pinned-tagline" title="pinned to this user\'s profile">pinned</span>' : ''}
                         ${submissionGildings.gid_1 ? `- <span class="tb-award-silver">silver x${submissionGildings.gid_1}</span>` : ''}
                         ${submissionGildings.gid_2 ? `- <span class="tb-award-gold">gold x${submissionGildings.gid_2}</span>` : ''}
@@ -1371,7 +1379,11 @@
             parentHtml = `
             <div class="tb-parent">
                 <a class="tb-link-title" href="${linkUrl}">${linkTitle}</a>
-                by <a class="tb-link-author" href="${TBCore.link(`/user/${linkAuthor}`)}">${linkAuthor}</a> in <a class="subreddit hover" href="${TBCore.link(`/r/${commentSubreddit}/`)}">${commentSubreddit}</a>
+                by ${linkAuthor === '[deleted]' ? `
+                    <span>[deleted]</span>
+                ` : `
+                    <a class="tb-link-author" href="${TBCore.link(`/user/${linkAuthor}`)}">${linkAuthor}</a>
+                `} in <a class="subreddit hover" href="${TBCore.link(`/r/${commentSubreddit}/`)}">${commentSubreddit}</a>
             </div>
             `;
         }
@@ -1480,7 +1492,11 @@
                     ${commentOptions.overviewData ? parentHtml : ''}
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
-                        <a class="tb-comment-author ${authorStatus}" href="${TBCore.link(`/user/${commentAuthor}`)}">${commentAuthor}</a>
+                        ${commentAuthor === '[deleted]' ? `
+                            <span>[deleted]</span>
+                        ` : `
+                            <a class="tb-comment-author ${authorStatus}" href="${TBCore.link(`/user/${commentAuthor}`)}">${commentAuthor}</a>
+                        `}
                         ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
                         ${authorAttributes.length ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
                         <span class="tb-jsapi-author-container"></span>

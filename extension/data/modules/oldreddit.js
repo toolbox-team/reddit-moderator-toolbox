@@ -54,7 +54,7 @@ function oldReddit () {
                 const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
                 $jsApiThingPlaceholder.append('<span data-name="toolbox">');
                 const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
-                $thing.find('.entry:first .author:first').after('<span class="tb-jsapi-author-container"></span>');
+                $thing.find('.entry:first .author:first, .entry:first .tagline:first > span:contains("[deleted]")').after('<span class="tb-jsapi-author-container"></span>');
                 const $jsApiPlaceholderAuthor = $thing.find('.tb-jsapi-author-container');
                 $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
@@ -82,7 +82,7 @@ function oldReddit () {
                         dispatchApiEvent(jsApiThingPlaceholder, detailObject);
                     }
                     // We don't want to send events for things already handled.
-                    if (info.author && !$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                    if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
                         const detailObject = {
                             type: 'TBpostAuthor',
                             data: {
@@ -96,7 +96,6 @@ function oldReddit () {
                                 },
                             },
                         };
-
                         dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
                     }
                 }
@@ -124,7 +123,7 @@ function oldReddit () {
                     }
                     // Author
                     // We don't want to send events for things already handled.
-                    if (info.author && !$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                    if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
                         const detailObject = {
                             type: 'TBcommentAuthor',
                             data: {
@@ -223,7 +222,7 @@ function oldReddit () {
                         type: 'TBuserHovercard',
                         data: {
                             user: {
-                                username: info.user,
+                                username: info.user || '[deleted]',
                             },
                             contextID: info.id,
                             subreddit: {

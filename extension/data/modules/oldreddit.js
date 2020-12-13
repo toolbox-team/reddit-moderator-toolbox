@@ -68,7 +68,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBpost',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 id: info.id,
                                 isRemoved: info.ham || info.spam,
                                 permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
@@ -86,7 +86,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBpostAuthor',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 post: {
                                     id: info.id,
                                 },
@@ -106,7 +106,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBcommentOldReddit',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 post: {
                                     id: info.postID,
                                 },
@@ -127,7 +127,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBcommentAuthor',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 post: {
                                     id: info.postID,
                                 },

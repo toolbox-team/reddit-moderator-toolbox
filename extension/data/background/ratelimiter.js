@@ -89,11 +89,10 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
             response = await requestPromise;
         } catch (error) {
             // If the request rejects, we don't update the ratelimit
-            reject(error);
+            return reject(error);
+        } finally {
             this.requestsInFlight.delete(requestPromise);
-            return;
         }
-        this.requestsInFlight.delete(requestPromise);
 
         // Update our information based on response headers
         if (!response.headers.has('x-ratelimit-remaining')) {

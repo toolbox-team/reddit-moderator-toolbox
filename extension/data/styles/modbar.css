@@ -366,8 +366,9 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     word-wrap: break-word;
 }
 
-.mod-toolbox-rd span.tb-settings-display {
+.mod-toolbox-rd .tb-edit-settings {
     max-width: 59em;
+    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
 }
 
 

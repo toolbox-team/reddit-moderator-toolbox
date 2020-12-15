@@ -313,21 +313,8 @@ function tbmodule () {
                 window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
-            $settingsDialog.on('click', '.buttons .close', e => {
-                // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
-                // We also encapsulate the handler to the injected content, so we don't have to worry about selector overlap between multiple open dialogs.
-
-                // "event.delegateTarget" always refers to the element that .on() is bound to, e.g. $settingsDialog
-                // "this" always refers to the element matched by the selector, e.g. '.buttons .close'
-                // "element.target" always refers to the clicked element, e.g. also '.buttons .close'
-
-                // NOTE: "this" is not always the same element as "event.target", e.g. when the clicked element is a descendant of the selector
-                // So, we had '.buttons' for our selector, and clicked on '.close' (a descendant of '.buttons'), then:
-                //  - "this" would be '.buttons' and
-                //  - "element.target" would be '.buttons .close'
-                const settingsDialog = e.delegateTarget;
-
-                $(settingsDialog).remove();
+            $settingsDialog.on('click', '> .tb-window .buttons .close', () => {
+                $settingsDialog.remove();
                 // Settings can go on top of other overlays.
                 if (!$('body').find('.tb-page-overlay').length) {
                     $('body').css('overflow', 'auto');
@@ -426,40 +413,39 @@ function tbmodule () {
             });
 
             $settingsDialog.on('click', '#showRawSettings', () => {
-                const $viewSettings = TB.ui.overlay(
-                    'toolbox raw setting display',
-                    [
+                // Don't show multiple popups at once
+                if ($('.tb-raw-settings').length) {
+                    return;
+                }
+
+                const $viewSettings = TBui.popup({
+                    title: 'toolbox raw setting display',
+                    tabs: [
                         {
                             title: '',
                             tooltip: '',
                             content: `
-                <span class="tb-settings-display">
-                <textarea class="tb-input edit-settings" rows="20" cols="20"></textarea>
-                </br>
-                </span>
-                `,
+                                <textarea class="tb-input tb-edit-settings" rows="20" cols="60" readonly></textarea>
+                            `,
                             footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">',
                         },
                     ],
-                    '', // meta
-                    'tb-raw-settings'
-                ).appendTo('body');
-                $body.css('overflow', 'hidden');
+                    cssClass: 'tb-raw-settings',
+                }).appendTo($settingsDialog);
 
-                const $editSettings = $('.edit-settings');
+                const $editSettings = $('.tb-edit-settings');
 
-                TB.storage.getSettingsObject(sObject => {
-                    $editSettings.val(JSON.stringify(sObject, null, 2));
+                TB.storage.getSettings().then(settings => {
+                    $editSettings.val(JSON.stringify(settings, null, 2));
                 });
 
-                $viewSettings.on('click', '.anonymize-settings', () => {
-                    TB.storage.getAnonymizedSettingsObject(sObject => {
-                        $editSettings.val(JSON.stringify(sObject, null, 2));
-                    });
+                $viewSettings.on('click', '.anonymize-settings', async () => {
+                    const anonymizedSettings = await TB.storage.getAnonymizedSettings();
+                    $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
                 });
 
                 $viewSettings.on('click', '.close', () => {
-                    $viewSettings.remove(); // should we have some confirmation dialog here?
+                    $viewSettings.remove();
                 });
             });
 

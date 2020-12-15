@@ -90,8 +90,3 @@
     // Huzzah!
     window.TBLog = TBLog;
 })();
-
-TBLog.debug('test');
-TBLog.info('test');
-TBLog.warn('test');
-TBLog.error('test');

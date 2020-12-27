@@ -688,17 +688,15 @@
         uh: TBCore.modhash,
     }).then(response => {
         TBStorage.purifyObject(response);
-        if (typeof callback !== 'undefined') {
-            const data = response[0].data.children[0].data;
+        const data = response[0].data.children[0].data;
 
-            if (!data) {
-                throw 'No reports returned';
-            }
-
-            return {
-                user_reports: data.user_reports,
-                mod_reports: data.mod_reports,
-            };
+        if (!data) {
+            throw 'No reports returned';
         }
+
+        return {
+            user_reports: data.user_reports,
+            mod_reports: data.mod_reports,
+        };
     });
 })(window.TBApi = window.TBApi || {});

@@ -187,11 +187,11 @@ function usernotes () {
                 $(`.add-usernote-${subreddit}`).remove();
 
                 // Alert the user
-                const msg = notes.ver > TBCore.notesMaxSchema ?
+                const message = notes.ver > TBCore.notesMaxSchema ?
                     `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.` :
                     `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
 
-                TBCore.alert(msg, clicked => {
+                TBCore.alert({message}).then(clicked => {
                     if (clicked) {
                         window.open(notes.ver > TBCore.notesMaxSchema ? '/r/toolbox/wiki/get' :
                             `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`);
@@ -593,7 +593,9 @@ function usernotes () {
             let saveMsg;
             if (notes) {
                 if (notes.corrupted) {
-                    TBCore.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
+                    TBCore.alert({
+                        message: 'toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.',
+                    });
                 }
 
                 const u = getUser(notes.users, user);
@@ -1165,23 +1167,22 @@ function usernotes () {
                 if (notes.ver <= TBCore.notesDeprecatedSchema) {
                     self.log(`Found deprecated notes in ${subreddit}: S${notes.ver}`);
 
-                    TBCore.alert(
-                        `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBCore.notesSchema}.`,
-                        async clicked => {
-                            if (clicked) {
+                    TBCore.alert({
+                        message: `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBCore.notesSchema}.`,
+                    }).then(async clicked => {
+                        if (clicked) {
                             // Upgrade notes
-                                try {
-                                    await self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`);
-                                    TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
-                                    TBCore.clearCache();
-                                    window.location.reload();
-                                } catch (error) {
-                                    // TODO: do something with this
-                                    self.error('saving notes after upgrading schema:', error);
-                                }
+                            try {
+                                await self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`);
+                                TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
+                                TBCore.clearCache();
+                                window.location.reload();
+                            } catch (error) {
+                                // TODO: do something with this
+                                self.error('saving notes after upgrading schema:', error);
                             }
                         }
-                    );
+                    });
                 }
 
                 return notes;

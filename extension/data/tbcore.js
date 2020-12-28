@@ -593,10 +593,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * @param {string} options.message The text of the alert
          * @param {number} options.noteID The ID of the note we're displaying
          * @param {boolean} options.showClose Whether to show a close button
-         * @param {callback} callback callback function
-         * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
+         * @returns {Promise<boolean>} Resolves when the alert is closed. Value
+         * will be `true` if the alert was clicked, `false` if the close button
+         * was clicked or if it was closed for another reason.
          */
-        TBCore.alert = function ({message, noteID, showClose}, callback) {
+        TBCore.alert = ({message, noteID, showClose}) => new Promise(resolve => {
             const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
                 $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
@@ -608,7 +609,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (settingDetail.module === SETTINGS_NAME && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
                     seenNotes = settingDetail.value;
                     $noteDiv.remove();
-                    callback(false);
+                    resolve(false);
                     return;
                 }
             });
@@ -616,12 +617,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             $noteDiv.click(e => {
                 $noteDiv.remove();
                 if (e.target.className === 'note-close') {
-                    callback(false);
+                    resolve(false);
                     return;
                 }
-                callback(true);
+                resolve(true);
             });
-        };
+        });
 
         TBCore.showNote = function (note) {
             if (!note.id || !note.text) {
@@ -634,7 +635,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         message: note.text,
                         noteID: note.id,
                         showClose: false,
-                    }, resp => {
+                    }).then(resp => {
                         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
                             seenNotes.push(note.id);
                             TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);

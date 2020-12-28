@@ -447,7 +447,7 @@ function modbutton () {
                     };
                     openModPopup(event, info);
                 } else {
-                    TBCore.getApiThingInfo(id, subreddit, true, info => {
+                    TBCore.getApiThingInfo(id, subreddit, true).then(info => {
                         openModPopup(event, info);
                     });
                 }

@@ -528,15 +528,14 @@ function modmacros () {
 
             self.log(info);
 
-            getConfig(sub, (success, config) => {
+            getConfig(sub, async (success, config) => {
                 if (success && config.length > 0) {
                     const macro = config[index];
 
                     if (thingID) {
-                        TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
-                            $this.attr('id', `macro-dropdown-${thinginfo.id}`);
-                            editMacro($this, thinginfo, macro, topLevel);
-                        });
+                        const thinginfo = await TBCore.getApiThingInfo(thingID, sub, false);
+                        $this.attr('id', `macro-dropdown-${thinginfo.id}`);
+                        editMacro($this, thinginfo, macro, topLevel);
                     } else {
                         // add unique id to the dropdown
                         $this.attr('id', `macro-dropdown-${info.id}`);

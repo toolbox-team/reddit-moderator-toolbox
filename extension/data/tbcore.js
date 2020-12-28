@@ -1019,7 +1019,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             return found;
         }
 
-        TBCore.getApiThingInfo = function (id, subreddit, modCheck, callback) {
+        TBCore.getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve => {
             if (id.startsWith('t4_')) {
                 const shortID = id.substr(3);
                 TBApi.getJSON(`/message/messages/${shortID}.json`).then(response => {
@@ -1062,7 +1062,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         mod: TBCore.logged,
                     };
 
-                    callback(info);
+                    resolve(info);
                 });
             } else {
                 const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
@@ -1128,10 +1128,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBCore.logged,
                     };
-                    callback(info);
+                    resolve(info);
                 });
             }
-        };
+        });
 
         // Prevent page lock while parsing things.  (stolen from RES)
         TBCore.forEachChunked = function (array, chunkSize, delay, call, complete, start) {

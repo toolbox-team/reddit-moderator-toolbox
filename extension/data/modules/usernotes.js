@@ -472,7 +472,7 @@ function usernotes () {
         }
 
         // Click to open dialog
-        $body.on('click', '#add-user-tag', e => {
+        $body.on('click', '#add-user-tag', async e => {
             const $target = $(e.target);
             const $thing = $target.closest('.ut-thing');
             const $button = $thing.find('#add-user-tag');
@@ -500,10 +500,9 @@ function usernotes () {
                     thingID = thingDetails.data.post.id;
                 }
 
-                TBCore.getApiThingInfo(thingID, subreddit, true, info => {
-                    link = info.permalink;
-                    createUserPopup(subreddit, user, link, disableLink, e);
-                });
+                const info = await TBCore.getApiThingInfo(thingID, subreddit, true);
+                link = info.permalink;
+                createUserPopup(subreddit, user, link, disableLink, e);
             }
         });
 

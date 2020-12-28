@@ -416,11 +416,10 @@ function tbmodule () {
                     });
                 } else {
                     TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
-                    TBCore.exportSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                        TBCore.clearCache();
-                        window.location.reload();
-                    });
+                    await TBCore.exportSettings(sub);
+                    self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                    TBCore.clearCache();
+                    window.location.reload();
                 }
             });
 

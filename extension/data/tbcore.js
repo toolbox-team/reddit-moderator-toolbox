@@ -1329,7 +1329,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         // Import export methods
-        TBCore.exportSettings = function (subreddit, callback) {
+        TBCore.exportSettings = async function (subreddit) {
             const settingsObject = {};
             $(TBStorage.settings).each(function () {
                 if (this === 'Storage.settings') {
@@ -1344,7 +1344,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
+            await TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false);
         };
 
         TBCore.importSettings = async function (subreddit) {

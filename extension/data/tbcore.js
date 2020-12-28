@@ -1376,29 +1376,24 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         };
 
-        TBCore.addToSiteTable = function (URL, callback) {
-            if (!callback) {
-                return;
-            }
-
+        TBCore.addToSiteTable = async function (URL) {
             if (!URL) {
-                return callback(null);
+                return null;
             }
 
-            TBApi.getJSON(URL).then(resp => {
-                if (!resp) {
-                    return callback(null);
-                }
-                resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
-                const $sitetable = $(resp).find('#siteTable');
-                $sitetable.find('.nextprev').remove();
+            let resp = await TBApi.getJSON(URL);
+            if (!resp) {
+                return null;
+            }
+            resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
+            const $sitetable = $(resp).find('#siteTable');
+            $sitetable.find('.nextprev').remove();
 
-                if ($sitetable.length) {
-                    callback($sitetable);
-                } else {
-                    callback(null);
-                }
-            });
+            if ($sitetable.length) {
+                return $sitetable;
+            } else {
+                return null;
+            }
         };
 
         // Cache manipulation

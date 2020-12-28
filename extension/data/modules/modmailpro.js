@@ -985,7 +985,7 @@ function modmailpro () {
             TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
             self.log(`real time a gogo: ${limit}`);
-            TBCore.addToSiteTable(updateURL + String(limit), resp => {
+            TBCore.addToSiteTable(updateURL + String(limit)).then(resp => {
                 if (!resp) {
                     return;
                 }

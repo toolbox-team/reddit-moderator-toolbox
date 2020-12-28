@@ -708,7 +708,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         };
 
-        TBCore.getModSubs = () => new Promise(callback => {
+        TBCore.getModSubs = () => new Promise(resolve => {
             logger.log('getting mod subs');
             // If it has been more than ten minutes, refresh mod cache.
             if (TBCore.mySubs.length < 1 || TBCore.mySubsData.length < 1) {
@@ -716,7 +716,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (gettingModSubs) {
                     // we're already fetching a new list, so enqueue the callback
                     logger.log('Enqueueing getModSubs callback');
-                    getModSubsCallbacks.push(callback);
+                    getModSubsCallbacks.push(resolve);
                 } else {
                     // start the process
                     logger.log('getting new subs.');
@@ -731,7 +731,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
                 TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
                 // Go!
-                callback();
+                resolve();
             }
 
             function getSubs (URL) {
@@ -781,7 +781,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
                     TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
 
-                    callback();
+                    resolve();
                     // no idea what the following shit is.
                     // Go!
                     while (getModSubsCallbacks.length > 0) {

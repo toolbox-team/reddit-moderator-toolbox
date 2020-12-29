@@ -613,7 +613,7 @@
             const response = await TBApi.post('/api/compose', {
                 from_sr: subreddit,
                 subject: subject.substr(0, 99),
-                text: message,
+                text: message.substr(0, 10000),
                 to: user,
                 uh: TBCore.modhash,
                 api_type: 'json',

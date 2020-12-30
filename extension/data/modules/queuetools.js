@@ -1408,7 +1408,8 @@ Action reason: ${value.data.details}
                 }
 
                 // If we don't mod this subreddit, do nothing
-                if (!TBCore.modsSub(redditEvent.detail.data.subreddit.name)) {
+                const subreddit = redditEvent.detail.data.subreddit.name;
+                if (!TBCore.modsSub(subreddit)) {
                     return;
                 }
 

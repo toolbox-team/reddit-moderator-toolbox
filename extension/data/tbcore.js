@@ -1131,6 +1131,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
                         wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBCore.logged,
+                        userReports: data.children[0].data.user_reports,
+                        modReports: data.children[0].data.mod_reports,
+                        reportsIgnored: data.children[0].data.ignore_reports,
                     };
                     callback(info);
                 });

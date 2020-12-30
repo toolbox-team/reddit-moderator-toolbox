@@ -44,6 +44,13 @@ function queuetools () {
         hidden: !self.setting('subredditColor'),
     });
 
+    self.register_setting('showReportReasons', {
+        type: 'boolean',
+        default: false,
+        beta: false,
+        title: 'Add button to show reports on posts with ignored reports.',
+    });
+
     //
     // Old reddit specific settings go below.
     //
@@ -115,14 +122,6 @@ function queuetools () {
         type: 'list',
         default: ['AutoModerator'],
         title: `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
-        oldReddit: true,
-    });
-
-    self.register_setting('showReportReasons', {
-        type: 'boolean',
-        default: false,
-        beta: true,
-        title: 'Add button to show reports on posts with ignored reports.',
         oldReddit: true,
     });
 
@@ -238,40 +237,6 @@ function queuetools () {
                 highlightedMatches();
             }
         });
-
-        if (showReportReasons && TBCore.isCommentsPage) {
-            const $ignoreReports = $('[data-event-action="unignorereports"]:first');
-            if ($ignoreReports.length > 0) {
-                let showing = false;
-                const $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
-                      reportHTML = `
-                            <ul class="report-reasons rounded" style="display: none">
-                                <li class="report-reason-title">user reports:</li>
-                            </ul>`;
-
-                $('#siteTable').find('.flat-list:first').append(reportHTML);
-
-                $ignoreReports.before($showReasons);
-
-                $body.on('click', '.tb-show-reasons', () => {
-                    if (showing) {
-                        return;
-                    }
-                    showing = !showing;
-
-                    TBApi.getReportReasons(window.location.href).then(reports => {
-                        self.log(reports.user_reports);
-                        self.log(reports.mod_reports);
-                        const $reportReasons = $('.report-reasons');
-
-                        reports.user_reports.forEach(report => {
-                            $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
-                        });
-                        $reportReasons.show();
-                    });
-                });
-            }
-        }
 
         // Add modtools buttons to page.
         function addModtools () {
@@ -1200,6 +1165,7 @@ Action reason: ${value.data.details}
         // Cached data
         const showActionReason = self.setting('showActionReason'),
               expandActionReasonQueue = self.setting('expandActionReasonQueue'),
+              showReportReasons = self.setting('showReportReasons'),
               queueCreature = self.setting('queueCreature');
         // expandReports = self.setting('expandReports');
 
@@ -1431,6 +1397,67 @@ Action reason: ${value.data.details}
                     $this.text('hide recent actions');
                 }
             });
+        }
+
+        // Show button for previous reports
+        if (showReportReasons) {
+            const addShowReportsButton = async event => {
+                const subreddit = event.detail.data.subreddit.name;
+                if (!TBCore.modsSub(subreddit)) {
+                    return;
+                }
+
+                const {id, author} = event.detail.data;
+                const {reportsIgnored, userReports, modReports} = await new Promise(resolve => TBCore.getApiThingInfo(id, subreddit, false, resolve));
+                if (!reportsIgnored) {
+                    return;
+                }
+
+                const $target = $(event.target);
+                const $button = document.createElement('a');
+                $button.classList.add('tb-bracket-button');
+                $button.textContent = 'reports';
+                $button.addEventListener('click', clickEvent => {
+                    const reportList = document.createElement('div');
+                    if (modReports.length) {
+                        const modReportList = document.createElement('ul');
+                        for (const [text, count] of modReports) {
+                            const li = document.createElement('li');
+                            li.textContent = `${count}: ${text}`;
+                            modReportList.append(li);
+                        }
+                        reportList.append('mod reports:', modReportList);
+                    }
+                    if (userReports.length) {
+                        const userReportList = document.createElement('ul');
+                        for (const [text, author] of userReports) {
+                            const li = document.createElement('li');
+                            li.textContent = `${author}: ${text}`;
+                            userReportList.append(li);
+                        }
+                        reportList.append('user reports:', userReportList);
+                    }
+
+                    const {topPosition, leftPosition} = TBui.drawPosition(clickEvent);
+                    const $popup = TBui.popup({
+                        title: `Ignored reports on ${author}'s ${clickEvent.type.includes('comment') ? 'comment' : 'post'}`,
+                        tabs: [{
+                            content: reportList,
+                        }],
+                        draggable: true,
+                    }).css({
+                        top: topPosition,
+                        left: leftPosition,
+                    }).appendTo(document.querySelector('.tb-page-overlay') || 'body');
+                    $popup.on('click', '.close', () => {
+                        $popup.remove();
+                    });
+                });
+
+                $target.append($button);
+            };
+            TB.listener.on('post', addShowReportsButton);
+            TB.listener.on('comment', addShowReportsButton);
         }
     }; // queueTools.init()
 

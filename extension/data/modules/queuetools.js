@@ -1398,25 +1398,33 @@ Action reason: ${value.data.details}
             });
         }
 
-        // Show button for previous reports
+        // Show button for previous ignored reports
         if (showReportReasons) {
-            const addShowReportsButton = async event => {
-                const subreddit = event.detail.data.subreddit.name;
-                if (!TBCore.modsSub(subreddit)) {
+            // One function handles both posts and comments
+            const addShowReportsButton = async redditEvent => {
+                // Toolbox-generated things already display ignored reports
+                if (['TBpost', 'TBcomment'].includes(redditEvent.detail.type)) {
                     return;
                 }
 
-                const {id, author} = event.detail.data;
+                // If we don't mod this subreddit, do nothing
+                if (!TBCore.modsSub(redditEvent.detail.data.subreddit.name)) {
+                    return;
+                }
+
+                // Fetch reports; if reports aren't ignored, do nothing
+                const {id, author} = redditEvent.detail.data;
                 const {reportsIgnored, userReports, modReports} = await new Promise(resolve => TBCore.getApiThingInfo(id, subreddit, false, resolve));
                 if (!reportsIgnored) {
                     return;
                 }
 
-                const $target = $(event.target);
+                // Create the button and add its event listener
                 const $button = document.createElement('a');
                 $button.classList.add('tb-bracket-button');
                 $button.textContent = 'reports';
                 $button.addEventListener('click', clickEvent => {
+                    // Construct the list of reports
                     const reportList = document.createElement('div');
                     if (modReports.length) {
                         const modReportList = document.createElement('ul');
@@ -1437,6 +1445,7 @@ Action reason: ${value.data.details}
                         reportList.append('user reports:', userReportList);
                     }
 
+                    // Display reports in a popup
                     const {topPosition, leftPosition} = TBui.drawPosition(clickEvent);
                     const $popup = TBui.popup({
                         title: `Ignored reports on ${author}'s ${clickEvent.type.includes('comment') ? 'comment' : 'post'}`,
@@ -1453,7 +1462,7 @@ Action reason: ${value.data.details}
                     });
                 });
 
-                $target.append($button);
+                redditEvent.target.appendChild($button);
             };
             TB.listener.on('post', addShowReportsButton);
             TB.listener.on('comment', addShowReportsButton);

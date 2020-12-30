@@ -154,7 +154,6 @@ function queuetools () {
               subredditColor = self.setting('subredditColor'),
               subredditColorSalt = self.setting('subredditColorSalt'),
               queueCreature = self.setting('queueCreature'),
-              showReportReasons = self.setting('showReportReasons'),
               highlightAutomodMatches = self.setting('highlightAutomodMatches'),
               groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 

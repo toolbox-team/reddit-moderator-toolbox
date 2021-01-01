@@ -273,7 +273,7 @@
      */
     TBHelpers.timeConverterRead = function (UNIX_timestamp) {
         const a = new Date(UNIX_timestamp * 1000);
-        const year = a.getFullYear();
+        const year = a.getUTCFullYear();
         const month = `0${a.getUTCMonth() + 1}`.slice(-2);
         const date = `0${a.getUTCDate()}`.slice(-2);
         const hour = `0${a.getUTCHours()}`.slice(-2);

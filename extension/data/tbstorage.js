@@ -116,10 +116,7 @@ function storagewrapper () {
 
         TBStorage.purifyObject = purifyObject;
 
-        TBStorage.getAnonymizedSettingsObject = function (callback) {
-            if (!callback) {
-                return;
-            }
+        TBStorage.getAnonymizedSettings = () => new Promise(resolve => {
             settingsToObject(sObject => {
                 // settings we delete
                 delete sObject['Toolbox.Achievements.lastSeen'];
@@ -167,7 +164,7 @@ function storagewrapper () {
                 sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(sObject['Toolbox.QueueTools.subredditColorSalt']);
                 sObject['Toolbox.Utils.settingSub'] = undefindedOrTrue(sObject['Toolbox.Utils.settingSub']);
 
-                callback(sObject);
+                resolve(sObject);
 
                 function undefindedOrLength (setting) {
                     return setting === undefined ? 0 : setting.length;
@@ -182,7 +179,7 @@ function storagewrapper () {
                     }
                 }
             });
-        };
+        });
 
         TBStorage.clearCache = async function () {
             await clearCache();
@@ -374,6 +371,9 @@ function storagewrapper () {
 
             callback(settingsObject);
         }
+
+        // TODO: convert original function to promise
+        TBStorage.getSettings = () => new Promise(resolve => settingsToObject(resolve));
 
         function saveSettingsToBrowser () {
             settingsToObject(sObject => {

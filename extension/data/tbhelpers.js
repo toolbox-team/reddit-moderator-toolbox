@@ -145,23 +145,6 @@
     };
 
     /**
-     * convert unix epoch timestamps to ISO format
-     * @function
-     * @param {integer} UNIX_timestamp Unix timestamp
-     * @returns {string} ISO formatted time
-     */
-    TBHelpers.timeConverterISO = function (UNIX_timestamp) {
-        const a = new Date(UNIX_timestamp * 1000);
-        const year = a.getFullYear();
-        const month = `0${a.getUTCMonth() + 1}`.slice(-2);
-        const date = `0${a.getUTCDate()}`.slice(-2);
-        const hour = `0${a.getUTCHours()}`.slice(-2);
-        const min = `0${a.getUTCMinutes()}`.slice(-2);
-        const sec = `0${a.getUTCSeconds()}`.slice(-2);
-        return `${year}-${month}-${date}T${hour}:${min}:${sec}Z`;
-    };
-
-    /**
      * Returns the difference between days in nice format like "1 year"
      * @function
      * @param {Date} origdate

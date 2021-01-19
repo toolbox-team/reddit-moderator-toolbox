@@ -970,9 +970,8 @@ function usernotes () {
                 Object.entries(user.notes).forEach(([key, val]) => {
                     const color = self._findSubredditColor(colors, val.type);
 
-                    const timeUTC = Math.round(val.time / 1000),
-                          timeISO = TBHelpers.timeConverterISO(timeUTC),
-                          timeHuman = TBHelpers.timeConverterRead(timeUTC);
+                    const timeISO = new Date(val.time).toISOString(),
+                          timeHuman = TBHelpers.timeConverterRead(val.time / 1000);
 
                     const $note = $(`
                         <div class="tb-un-note-details">

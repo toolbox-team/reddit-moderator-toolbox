@@ -1369,7 +1369,7 @@ Action reason: ${value.data.details}
                                 const action = value.action;
                                 const details = value.details;
                                 const createdUTC = TBHelpers.timeConverterRead(value.created_utc);
-                                const createdTimeAgo = TBHelpers.timeConverterISO(value.created_utc);
+                                const createdTimeAgo = new Date(value.created_utc * 1000).toISOString();
 
                                 const actionHTML = `
                                 <tr>

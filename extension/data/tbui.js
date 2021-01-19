@@ -1066,7 +1066,7 @@
 
         // Format the submission datetime nicely
         const submissionReadableCreatedUTC = TBHelpers.timeConverterRead(submissionCreatedUTC),
-              createdTimeAgo = TBHelpers.timeConverterISO(submissionCreatedUTC);
+              createdTimeAgo = new Date(submissionCreatedUTC * 1000).toISOString();
 
         // vote status
         let voteState = 'neutral';
@@ -1139,7 +1139,7 @@
         let editedHtml;
         if (submissionEdited) {
             const submissionReadableEdited = TBHelpers.timeConverterRead(submissionEdited),
-                  editedTimeAgo = TBHelpers.timeConverterISO(submissionEdited);
+                  editedTimeAgo = new Date(submissionEdited * 1000).toISOString();
             editedHtml = `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
@@ -1390,7 +1390,7 @@
 
         // Format the comment datetime nicely
         const commentReadableCreatedUTC = TBHelpers.timeConverterRead(commentCreatedUTC),
-              createdTimeAgo = TBHelpers.timeConverterISO(commentCreatedUTC);
+              createdTimeAgo = new Date(commentCreatedUTC * 1000).toISOString();
 
         // If we want the permalink of the parent thread we simply remove the comment id from the comment permalink..
         const commentThreadPermalink = TBHelpers.removeLastDirectoryPartOf(commentPermalink);
@@ -1472,7 +1472,7 @@
         let editedHtml;
         if (commentEdited) {
             const commentReadableEdited = TBHelpers.timeConverterRead(commentEdited),
-                  editedTimeAgo = TBHelpers.timeConverterISO(commentEdited);
+                  editedTimeAgo = new Date(commentEdited * 1000).toISOString();
             editedHtml = `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 

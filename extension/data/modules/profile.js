@@ -324,7 +324,7 @@ function profilepro () {
                       displayName = data.data.subreddit.title,
                       publicDescription = data.data.subreddit.public_description;
                 const readableCreatedUTC = TBHelpers.timeConverterRead(userCreated),
-                      createdTimeAgo = TBHelpers.timeConverterISO(userCreated);
+                      createdTimeAgo = new Date(userCreated * 1000).toISOString();
 
                 const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}

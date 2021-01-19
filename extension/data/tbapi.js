@@ -290,14 +290,9 @@
         // Fetch ban info for just this one user
         const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
         TBStorage.purifyObject(data);
-        const banned = data.data.children;
-
-        // If it's over or under exactly one item they are not banned or that is not their full name.
-        if (banned.length !== 1) {
-            return null;
-        }
-
-        return banned[0];
+        // This API sometimes returns weird things if the user isn't banned, so we use .find()
+        // to ensure `null` is returned if we don't get information about the right user
+        return data.data.children.find(ban => ban.name.toLowerCase() === user.toLowerCase());
     };
 
     /**

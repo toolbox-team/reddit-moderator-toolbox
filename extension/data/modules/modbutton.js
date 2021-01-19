@@ -326,25 +326,18 @@ function modbutton () {
 
             // only works if we're a mod of the sub in question
             if (subreddit) {
-                let user_fullname = ''; // type t2_xxx
-
                 // Show if current user is banned, and why. - thanks /u/LowSociety
-                // TODO: Display *when* they were banned, along with ban note. #194
-                // TODO: Use TBApi.getBanState()
-                const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
-                TBStorage.purifyObject(data);
-                const banned = data.data.children;
-                for (let i = 0; i < banned.length; i++) {
-                    if (banned[i].name.toLowerCase() === user.toLowerCase()) {
-                        user_fullname = banned[i].id; // we need this to extract data from the modlog
-
-                        const timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
+                try {
+                    const banInfo = await TBApi.getBanState(subreddit, user);
+                    if (banInfo) {
+                        const user_fullname = banInfo.id; // we need this to extract data from the modlog
+                        const timestamp = new Date(banInfo.date * 1000); // seconds to milliseconds
 
                         $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
                         $popup.find('.current-sub .already-banned').append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
 
                         $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
-                        $popup.find('.ban-note').val(banned[i].note);
+                        $popup.find('.ban-note').val(banInfo.note);
                         $popup.find('.tb-window-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
@@ -360,8 +353,10 @@ function modbutton () {
                                 break;
                             }
                         }
-                        break;
                     }
+                } catch (error) {
+                    // We don't have permission to check the user's ban information
+                    self.warn(`Error looking up ban information for ${user}:`, error);
                 }
             }
 

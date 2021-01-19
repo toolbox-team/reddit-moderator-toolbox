@@ -327,11 +327,8 @@ function modbutton () {
             // only works if we're a mod of the sub in question
             if (subreddit) {
                 // Show if current user is banned, and why. - thanks /u/LowSociety
-                // TODO: Use TBApi.getBanState()
                 try {
-                    const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
-                    TBStorage.purifyObject(data);
-                    const banInfo = data.data.children.find(ban => ban.name.toLowerCase() === user.toLowerCase());
+                    const banInfo = await TBApi.getBanState(subreddit, user);
                     if (banInfo) {
                         const user_fullname = banInfo.id; // we need this to extract data from the modlog
                         const timestamp = new Date(banInfo.date * 1000); // seconds to milliseconds

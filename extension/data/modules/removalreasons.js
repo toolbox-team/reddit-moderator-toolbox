@@ -816,7 +816,7 @@ function removalreasons () {
 
             // Function to send PM and comment
             function sendRemovalMessage (logLink) {
-                TBCore.getModSubs(() => {
+                TBCore.getModSubs(async () => {
                     // If there is no message to send, don't send one.
                     if (reasonlength < 1) {
                         if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
@@ -836,6 +836,17 @@ function removalreasons () {
                     // Finalize the reason with optional log post link
                     if (typeof logLink !== 'undefined') {
                         reason = reason.replace('{loglink}', logLink);
+                    }
+
+                    // Lock thread if requested
+                    if (actionLockThread) {
+                        self.log(`Fullname of this link: ${data.fullname}`);
+                        try {
+                            await TBApi.lock(data.fullname);
+                        } catch (error) {
+                            self.error(`error locking ${data.fullname}:`, error);
+                            return status.text(LOCK_POST_ERROR);
+                        }
                     }
 
                     const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
@@ -863,15 +874,7 @@ function removalreasons () {
                                     status.text(DISTINGUISH_ERROR);
                                 });
 
-                                // Also lock the thread if requested
-                                if (actionLockThread) {
-                                    self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBApi.lock(data.fullname).then(() => {
-                                        removePopup(popup);
-                                    }).catch(() => {
-                                        status.text(LOCK_POST_ERROR);
-                                    });
-                                }
+                                // Lock reply if requested
                                 if (actionLockComment) {
                                     const commentId = response.json.data.things[0].data.id;
                                     self.log(`Fullname of reply: ${commentId}`);

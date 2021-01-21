@@ -447,7 +447,7 @@ function removalreasons () {
                             <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
                             <ul>
                                 <li>
-                                    <input ${forced ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
+                                    <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky && data.kind === 'submission' ? 'checked' : ''}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
                                 <li>
                                     <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
@@ -472,7 +472,7 @@ function removalreasons () {
                             <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
                         </li>
                         <li>
-                            <input ${forced ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                            <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread && data.kind === 'submission' ? 'checked' : ''}/><label for="type-action-lock-thread">Lock the removed thread.</label>
                         </li>
                     </ul>
                     </div>

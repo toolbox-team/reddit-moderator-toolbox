@@ -103,6 +103,10 @@ function usernotes () {
                 if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                     const subreddit = e.detail.data.subreddit.name;
                     const author = e.detail.data.author;
+                    if (author === '[deleted]') {
+                        return;
+                    }
+
                     $target.addClass('ut-thing');
                     $target.attr('data-subreddit', subreddit);
                     $target.attr('data-author', author);
@@ -845,7 +849,7 @@ function usernotes () {
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', async function () {
+            $body.on('click', '.tb-un-refresh', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent().find('.user');
@@ -861,7 +865,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.find('.tb-un-delete').on('click', async function () {
+            $body.on('click', '.tb-un-delete', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -879,7 +883,7 @@ function usernotes () {
             });
 
             // Delete individual notes for user.
-            $body.find('.tb-un-notedelete').on('click', async function () {
+            $body.on('click', '.tb-un-notedelete', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),
@@ -955,9 +959,8 @@ function usernotes () {
                 Object.entries(user.notes).forEach(([key, val]) => {
                     const color = self._findSubredditColor(colors, val.type);
 
-                    const timeUTC = Math.round(val.time / 1000),
-                          timeISO = TBHelpers.timeConverterISO(timeUTC),
-                          timeHuman = TBHelpers.timeConverterRead(timeUTC);
+                    const timeISO = new Date(val.time).toISOString(),
+                          timeHuman = TBHelpers.timeConverterRead(val.time / 1000);
 
                     const $note = $(`
                         <div class="tb-un-note-details">
@@ -1094,7 +1097,7 @@ function usernotes () {
             self.printProfiles();
         });
 
-        $body.on('click', '.tb-un-editor > .tb-window-wrapper > .tb-window-header .close', () => {
+        $body.on('click', '.tb-un-editor .tb-window-header .close', () => {
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
         });

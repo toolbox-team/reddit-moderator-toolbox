@@ -74,6 +74,11 @@ function historybutton () {
             }
             const author = e.detail.data.author,
                   subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
+
+            if (author === '[deleted]') {
+                return;
+            }
+
             self.attachHistoryButton($target, author, subreddit);
         });
 

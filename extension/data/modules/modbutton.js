@@ -68,6 +68,10 @@ function modbutton () {
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;
 
+                if (author === '[deleted]') {
+                    return;
+                }
+
                 let parentID;
                 if (e.detail.data.comment) {
                     parentID = e.detail.data.comment.id;
@@ -141,6 +145,8 @@ function modbutton () {
         const rememberLastAction = self.setting('rememberLastAction'),
               showglobal = self.setting('globalButton'),
               excludeGlobal = self.setting('excludeGlobal');
+
+        let userFlairTemplates; // we need those in 2 functions and I don't think fetching twice is a good idea
 
         self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
@@ -225,7 +231,13 @@ function modbutton () {
                         tooltip: 'Edit User Flair.',
                         content: `
                     <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text tb-input" type="text"></input></p>
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>`,
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>
+                    <p style="clear:both;" class="mod-popup-flair-input">
+                        <label for="flair-template-id" class="mod-popup-flair-label">Template:</label>
+                        <select style="text-overflow: ellipsis; width: 150px;" id="flair-template-id-select" class="tb-action-button">
+                            <option value="">None</option>
+                        </select>
+                    </p>`,
                         footer: `
                 <span class="status error left"></span>
                 <button class="flair-save tb-action-button">Save Flair</button>`,
@@ -314,25 +326,18 @@ function modbutton () {
 
             // only works if we're a mod of the sub in question
             if (subreddit) {
-                let user_fullname = ''; // type t2_xxx
-
                 // Show if current user is banned, and why. - thanks /u/LowSociety
-                // TODO: Display *when* they were banned, along with ban note. #194
-                // TODO: Use TBApi.getBanState()
-                const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
-                TBStorage.purifyObject(data);
-                const banned = data.data.children;
-                for (let i = 0; i < banned.length; i++) {
-                    if (banned[i].name.toLowerCase() === user.toLowerCase()) {
-                        user_fullname = banned[i].id; // we need this to extract data from the modlog
-
-                        const timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
+                try {
+                    const banInfo = await TBApi.getBanState(subreddit, user);
+                    if (banInfo) {
+                        const user_fullname = banInfo.id; // we need this to extract data from the modlog
+                        const timestamp = new Date(banInfo.date * 1000); // seconds to milliseconds
 
                         $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
                         $popup.find('.current-sub .already-banned').append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
 
                         $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
-                        $popup.find('.ban-note').val(banned[i].note);
+                        $popup.find('.ban-note').val(banInfo.note);
                         $popup.find('.tb-window-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
@@ -348,8 +353,10 @@ function modbutton () {
                                 break;
                             }
                         }
-                        break;
                     }
+                } catch (error) {
+                    // We don't have permission to check the user's ban information
+                    self.warn(`Error looking up ban information for ${user}:`, error);
                 }
             }
 
@@ -643,19 +650,39 @@ function modbutton () {
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
                   $textinput = $popup.find('.flair-text'),
-                  $classinput = $popup.find('.flair-class');
+                  $classinput = $popup.find('.flair-class'),
+                  $flairDropdown = $popup.find('#flair-template-id-select');
 
             if (!user || !subreddit) {
                 return;
             }
 
-            const resp = await TBApi.getJSON(`/r/${subreddit}/api/flairlist.json?name=${user}`);
-            if (!resp || !resp.users || resp.users.length < 1) {
+            const userFlairInfo = await TBApi.apiOauthPOST(`/r/${subreddit}/api/flairselector`, {name: user}).then(r => r.json());
+            userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
+            if (!userFlairInfo.current) {
                 return;
             }
-            TBStorage.purifyObject(resp);
-            $textinput.val(resp.users[0].flair_text);
-            $classinput.val(resp.users[0].flair_css_class);
+
+            TBStorage.purifyObject(userFlairInfo);
+            $textinput.val(userFlairInfo.current.flair_text);
+            $classinput.val(userFlairInfo.current.flair_css_class);
+
+            userFlairTemplates.forEach(flair => $flairDropdown.append(`
+                <option value="${flair.id}" ${userFlairInfo.current.flair_template_id === flair.id ? 'selected' : ''}>
+                    ${flair.text}
+                </option>
+            `));
+        });
+
+        // changing the text and css class when dropdown selection changes
+        $body.on('change', '#flair-template-id-select', function () {
+            const $this = $(this);
+            const $textInput = $this.parents('.tb-popup-content').find('.flair-text'),
+                  $cssInput = $this.parents('tb-popup-content').find('.flair-css');
+
+            const selectedFlairTemplate = userFlairTemplates.find(flair => flair.id === $this.val());
+            $textInput.val(selectedFlairTemplate.text || '');
+            $cssInput.val(selectedFlairTemplate.css_class || '');
         });
 
         // Edit save button clicked.
@@ -665,11 +692,12 @@ function modbutton () {
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
                   text = $popup.find('.flair-text').val(),
-                  css_class = $popup.find('.flair-class').val();
+                  css_class = $popup.find('.flair-class').val(),
+                  templateID = $popup.find('#flair-template-id-select').val();
 
             TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 
-            TBApi.flairUser(user, subreddit, text, css_class).then(() => {
+            TBApi.flairUser(user, subreddit, text, css_class, templateID).then(() => {
                 TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
             }).catch(error => {
                 self.log(error.responseText);

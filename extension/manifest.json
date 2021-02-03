@@ -87,7 +87,8 @@
                 "data/libs/codemirror/mode/yaml.js",
                 "data/libs/codemirror/mode/javascript.js",
                 "data/libs/pako.js",
-                "data/libs/tinycolor.js"
+                "data/libs/tinycolor.js",
+                "data/libs/yaml.js"
             ]
         },
         {
@@ -164,6 +165,7 @@
                 "data/modules/personalnotes.js",
                 "data/modules/historybutton.js",
                 "data/modules/removalreasons.js",
+                "data/modules/newremovalreasons.js",
                 "data/modules/nukecomments.js",
                 "data/modules/trouble.js",
                 "data/modules/profile.js",

@@ -50,6 +50,12 @@ function oldReddit () {
 
             const info = TBCore.getThingInfo($thing);
 
+            let modReports = [];
+            const $reportsEl = $thing.find("ul.report-reasons");
+            if ($reportsEl.length) {
+                modReports = $reportsEl.find("li.mod-report").map((_, x) => x.textContent.trim()).toArray();
+            }
+
             requestAnimationFrame(() => {
                 const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
                 $jsApiThingPlaceholder.append('<span data-name="toolbox">');
@@ -76,6 +82,7 @@ function oldReddit () {
                                     name: info.subreddit,
                                     type: info.subredditType,
                                 },
+                                modReports,
                             },
                         };
 
@@ -116,6 +123,7 @@ function oldReddit () {
                                     name: info.subreddit,
                                     type: info.subredditType,
                                 },
+                                modReports
                             },
                         };
 

@@ -226,6 +226,18 @@ function tbconfig () {
                         footer: '<input class="save-removal-sorting tb-action-button" type="button" value="Save removal reasons order">',
                     },
                     {
+                        title: 'edit suggested removal reasons',
+                        tooltip: 'Set up automatically suggested removal reasons for specific automoderator rules.',
+                        content: `
+                <p>
+                    Toolbox can suggest a removal reason based on your configured automoderator rules. It will attempt to extract all the valid report reasons
+                    from your automoderator config, then add a button to instantly confirm the removal for posts that have a matching report attached.
+                </p>
+                <div id="tb-magic-removal-reasons-list">
+                </div>  
+                `
+                    },
+                    {
                         title: 'edit mod macros',
                         tooltip: 'Edit and add your mod macros here.',
                         content: `
@@ -733,6 +745,126 @@ function tbconfig () {
 
                     $removalReasonsList.append(removalReasonTemplateHTML);
                 });
+            }
+        }
+
+        // magic suggested removal reasons, neat
+        function magicRemovalReasonsEditContent (automodReasons, configuredRemovalReasons) {
+            const currentReasons = config.suggestedRemovalReasons || {};
+            config.suggestedRemovalReasons = currentReasons;
+            const $removalReasonsList = $body.find("#tb-magic-removal-reasons-list");
+
+            $removalReasonsList.empty();
+
+            for (const reason of automodReasons) {                
+                const $el = $(/* html */`
+                    <div class="magic-removal-reason">
+                        <td>
+                            <div class="magic-removal-reason-title">
+                                <div class="left">
+                                    Items reported with "<code>${reason.reason}</code>"
+                                </div>
+
+                                <div class="right">
+                                    <a href="javascript:;" id="tb-toggle-automod-source" class="tb-general-button">
+                                        <i class="tb-icons">${TBui.icons.dotMenu}</i> Show AutoModerator rule
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="automod-source" style="display: none">
+                                <b>AutoModerator rule:</b>
+                                <pre><code>${reason.snippet}</code></pre>
+                            </div>
+
+                            <div class="magic-removal-reason-content">
+
+                            </div>
+                        </td>
+                    </div>
+                `);
+
+                const $toggleButton = $el.find("#tb-toggle-automod-source");
+                const $toggleContent = $el.find(".automod-source");
+                const $content = $el.find(".magic-removal-reason-content");
+
+                function renderContent() {
+                    const removal = currentReasons[reason.reasonRegex];
+
+                    if (!removal) {
+                        $content.html(/* html */`
+                            <p>No suggested removal reason configured.</p>
+                            <input class="set-magic-removal-reason tb-action-button" type="button" value="Configure suggested removal reason">
+                        `);
+                    } else {
+                        let actions = [];
+                        if (removal.comment) actions.push("leave a removal comment");
+                        if (removal.dm) actions.push("send a removal DM");
+                        if (removal.logSubmission) actions.push("log the removed submission to /r/" + removal.logSubmission.subreddit);
+
+                        $content.html(/* html */`
+                            <p>A suggested removal reason is configured to ${actions.join(", ")}.</p>
+                            <input class="view-magic-removal-reason tb-action-button" type="button" value="View removal message">
+                            <input class="set-magic-removal-reason tb-action-button" type="button" value="Update suggested removal reason">
+                            <input class="remove-magic-removal-reason tb-action-button" type="button" value="Remove suggested removal reason">
+                        `);
+                    }
+                }
+
+                $el.on("click", ".set-magic-removal-reason", async () => {
+                    // TODO
+                    try {
+                        const selected = await window.promptRemovalReason(
+                            configuredRemovalReasons,
+                            "Removal reasons for /r/" + subreddit + ":",
+                            `Select the removal reason to be suggested for posts reported with <code>${reason.reason}</code>:`,
+                            "all"
+                        );
+
+                        if (!selected) return;
+
+                        currentReasons[reason.reasonRegex] = selected;
+
+                        postToWiki('toolbox', config, 'added suggested removal reason', true);
+
+                        renderContent();
+                    } catch {
+                        // nothing selected
+                        return;
+                    }
+                });
+
+                $el.on("click", ".view-magic-removal-reason", async () => {
+                    const removal = currentReasons[reason.reasonRegex];
+                    const message = removal.comment ? removal.comment.content : removal.dm.content; 
+
+                    // todo: ui?
+                    prompt("Suggested Removal Reason Content", message);
+                });
+
+                $el.on("click", ".remove-magic-removal-reason", async () => {
+                    delete currentReasons[reason.reasonRegex];
+
+                    postToWiki('toolbox', config, 'removed suggested removal reason', true);
+
+                    renderContent();
+                });
+
+                renderContent();
+
+                $toggleButton.on("click", e => {
+                    e.preventDefault();
+
+                    if ($toggleContent.is(":visible")) {
+                        $toggleContent.hide();
+                        $toggleButton.html(`<i class="tb-icons">${TBui.icons.dotMenu}</i> Show AutoModerator rule`);
+                    } else {
+                        $toggleContent.show();
+                        $toggleButton.html(`<i class="tb-icons">${TBui.icons.close}</i> Hide AutoModerator rule`);
+                    }
+                });
+
+                $removalReasonsList.append($el);
             }
         }
 
@@ -1386,6 +1518,36 @@ function tbconfig () {
             // The tricky part with that is that we only want to do that when the new order is saved, not before that happens.
             $body.find('#tb-removal-reasons-list').empty();
             $body.find('.tb-window-tabs .edit_removal_reasons').removeClass('content-populated');
+        });
+
+        // magic removal reasons clicked
+        $body.on('click', '.tb-window-tabs .edit_suggested_removal_reasons', async function () {
+            const $this = $(this);
+            $body.find('#tb-magic-removal-reasons-list').empty().text("Loading...");
+
+            // load the automoderator contents so we can determine removal reasons
+            let automodContents = await TBApi.readFromWiki(subreddit, "config/automoderator");
+            if (automodContents === TBCore.WIKI_PAGE_UNKNOWN || automodContents === TBCore.NO_WIKI_PAGE) {
+                automodContents = "";
+            }
+
+            // update config if needed
+            if ($body.hasClass('toolbox-wiki-edited')) {
+                await TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
+                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
+                        return;
+                    }
+
+                    config = resp;
+                });
+            }
+
+            // load removal reasons
+            const reasons = await TBHelpers.getRemovalReasonsSettings(subreddit);
+
+            magicRemovalReasonsEditContent(TBHelpers.parseAutomodReasons(automodContents), reasons);
+
+            $this.addClass('content-populated');
         });
 
         // Mod macros tab is clicked.

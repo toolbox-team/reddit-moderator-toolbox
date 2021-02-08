@@ -483,11 +483,14 @@ function modbutton () {
 
             self.setting('lastAction', actionName);
 
-            if (banReason.length > MAX_BAN_REASON_LENGTH) {
-                return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);
-            }
-            if (banMessage.length > MAX_BAN_MESSAGE_LENGTH) {
-                return $status.text(`error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`);
+            self.info('action:', action);
+            if (action === 'banned') {
+                if (banReason.length > MAX_BAN_REASON_LENGTH) {
+                    return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);
+                }
+                if (banMessage.length > MAX_BAN_MESSAGE_LENGTH) {
+                    return $status.text(`error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`);
+                }
             }
 
             // Check dem values.
@@ -566,17 +569,22 @@ function modbutton () {
                     subs, 20, subreddit => {
                         TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        self.log(`banning from: ${subreddit}`);
+                        self.log(`performing action in: ${subreddit}`);
                         if (settingState) {
-                            TBApi.friendUser({
+                            const params = {
                                 user,
                                 action,
                                 subreddit,
-                                banReason,
-                                banMessage,
-                                banDuration,
-                                banContext,
-                            }).then(response => {
+                            };
+
+                            // Only send ban-related fields if performing a ban action
+                            if (action === 'banned') {
+                                params.banReason = banReason;
+                                params.banMessage = banMessage;
+                                params.banDuration = banDuration;
+                                params.banContext = banContext;
+                            }
+                            TBApi.friendUser(params).then(response => {
                                 if (response.json.errors.length) {
                                     throw new Error('There were one or more errors banning the user');
                                 }

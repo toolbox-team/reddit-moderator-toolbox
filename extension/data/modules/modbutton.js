@@ -483,7 +483,6 @@ function modbutton () {
 
             self.setting('lastAction', actionName);
 
-            self.info('action:', action);
             if (action === 'banned') {
                 if (banReason.length > MAX_BAN_REASON_LENGTH) {
                     return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);

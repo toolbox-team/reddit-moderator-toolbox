@@ -816,8 +816,22 @@ function usernotes () {
 
                     // Prune by user criteria we have to hit the API for
                     if (checkUserDeleted || checkUserSuspended || checkUserActivity) {
+                        // Calculate the date threshold for activity checks
+                        // NOTE: This value is only used if checkUserActivity is true, but because it's used in a couple
+                        //       different scopes and we don't want to recalculate it over and over, we just set it here
+                        //       and don't use it if we don't care about user activity. This could probably be cleaned.
                         const dateThreshold = Date.now() - parseInt($pruneByUserInactivityLimit.val(), 10);
-                        pruneReasons.push(`users inactive since ${new Date(dateThreshold).toISOString()}`);
+
+                        // Add the appropriate notes for the wiki revision comment
+                        if (checkUserActivity) {
+                            pruneReasons.push(`users inactive since ${new Date(dateThreshold).toISOString()}`);
+                        }
+                        if (checkUserDeleted) {
+                            pruneReasons.push('deleted users');
+                        }
+                        if (checkUserSuspended) {
+                            pruneReasons.push('suspended users');
+                        }
 
                         // Check each individual user
                         // `await Promise.all()` allows requests to be sent in parallel

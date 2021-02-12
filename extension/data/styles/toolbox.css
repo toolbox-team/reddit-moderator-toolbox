@@ -1776,7 +1776,8 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 }
 
 .mod-toolbox-rd #tb-removal-reasons-list,
-.mod-toolbox-rd #tb-mod-macros-list {
+.mod-toolbox-rd #tb-mod-macros-list,
+.mod-toolbox-rd #tb-magic-removal-reasons-list {
     border-top: solid 2px gray;
     margin-top: 5px;
     width: 99%;
@@ -1801,7 +1802,8 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 }
 
 .mod-toolbox-rd .edit_removal_reasons tr.removal-reason,
-.mod-toolbox-rd .edit_mod_macros tr.mod-macro {
+.mod-toolbox-rd .edit_mod_macros tr.mod-macro,
+.mod-toolbox-rd div.magic-removal-reason {
     border-bottom: solid 5px #F0F0F0;
 }
 
@@ -1855,6 +1857,44 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     display: none;
 }
 
+.mod-toolbox-rd #tb-magic-removal-reasons-list {
+    max-height: 600px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: block;
+    padding-right: 5px;
+}
+
+.mod-toolbox-rd .magic-removal-reason .magic-removal-reason-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-bottom: 1px dashed black;
+    padding: 5px 0;
+}
+
+.mod-toolbox-rd .magic-removal-reason .magic-removal-reason-content {
+    padding: 5px 0;
+}
+
+.mod-toolbox-rd .magic-removal-reason .magic-removal-reason-title .left {
+    flex: 1;
+    font-weight: bold;
+}
+
+.mod-toolbox-rd .magic-removal-reason .automod-source b {
+    padding: 5px 0;
+    display: block;
+}
+
+.mod-toolbox-rd .magic-removal-reason .automod-source pre {
+    overflow-y: hidden;
+    overflow-x: auto;
+    border: 1px dashed #e6e6de;
+    background-color: #fcfcfb;
+    border-radius: 2px;
+    padding: 5px 10px;
+}
 
 /*
 Icons in the sidebar

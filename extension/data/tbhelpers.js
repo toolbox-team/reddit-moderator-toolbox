@@ -717,4 +717,141 @@
         // Collapse to base64
         return btoa(objThing);
     };
+
+    /**
+     * Parses the given automoderator yaml and returns a list of objects
+     * containing { reason: string, reasonRegex: string, snippet: string }.
+     * Only returns automod entries that are set to report or filter and have
+     * a set reason. May include entries for which the reason or reason_regex
+     * are the same, depending on the configured result.
+     * @param {string} content 
+     * @returns {array}
+     */
+    TBHelpers.parseAutomodReasons = function (content) {
+        const documents = yaml.parseAllDocuments(content, { keepCstNodes: true });
+        const ret = [];
+
+        for (const doc of documents) {
+            if (!doc.has("action")) continue;
+            if (!doc.has("action_reason")) continue;
+
+            const action = doc.get("action");
+            const reason = doc.get("action_reason");
+
+            if (action !== "report" && action !== "filter") continue;
+
+            const regex = reason.replace(/\{\{[\w-]+\}\}/g, ".*?");
+
+            // bunch of spaghetti to get exactly the relevant snippet and dedent it
+            const firstNode = doc.contents.items[0].key;
+            const fullSnippet = doc.cstNode.context.src.slice(doc.range[0], doc.contents.range[1]);
+            const startOfSectionToFirstKey = firstNode.range[0] - doc.range[0];
+            const indentationLevel = startOfSectionToFirstKey - fullSnippet.slice(0, startOfSectionToFirstKey).lastIndexOf("\n") - 1;
+            const actualSnippet = fullSnippet.trim().split("\n").map((x, i) => i === 0 ? x : x.slice(indentationLevel)).filter(x => x).join("\n").trim();
+
+            ret.push({
+                reason,
+                reasonRegex: regex,
+                snippet: actualSnippet
+            });
+        }
+
+        return ret;
+    };
+
+    // Default texts
+    const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}',
+        DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}';
+
+    // retrieves the (possibly cached) settings for the given subreddit, or null
+    // if no such settings exist
+    TBHelpers.getSubredditConfig = async function getSubredditConfig(subreddit) {
+        // if we have no toolbox config for this subreddit, no point in looking up
+        if (TBCore.noConfig.includes(subreddit)) {
+            return null;
+        }
+
+        // check cache first
+        if (TBCore.configCache[subreddit]) {
+            return TBCore.configCache[subreddit];
+        }
+
+        // not cached, query the wiki
+        const wikiResp = await TBApi.readFromWiki(subreddit, "toolbox", true);
+        if (!wikiResp || wikiResp === TBCore.WIKI_PAGE_UNKNOWN || wikiResp === TBCore.NO_WIKI_PAGE || !wikiResp.removalReasons) {
+            return null;
+        }
+
+        // config is valid, update cache
+        TBCore.updateCache("configCache", wikiResp, subreddit);
+
+        return wikiResp;
+    };
+
+    // retrieves raw removal reasons settings from cache or toolbox wiki page,
+    // returns null if no removal reason settings.
+    TBHelpers.getRemovalReasonsStorage = async function getRemovalReasonsStorage(subreddit) {
+        const config = await TBHelpers.getSubredditConfig(subreddit);
+        if (!config) return null;
+
+        const rr = config.removalReasons;
+        if (rr.getfrom) {
+            return getRemovalReasonsStorage(rr.getfrom);
+        }
+
+        return rr;
+    };
+
+    // returns the removalreasons settings for the given subreddit, merged with
+    // the options set by the local user
+    // returns an empty promise if the subreddit has no removal reasons set
+    TBHelpers.getRemovalReasonsSettings = async function getRemovalReasonsSettings(subreddit) {
+        const data = await TBHelpers.getRemovalReasonsStorage(subreddit);
+        if (!data) return null;
+
+        return {
+            subreddit,
+
+            header: unescape(data.header || ""),
+            footer: unescape(data.footer || ""),
+
+            // whether or not the sending options should be forcibly taken
+            // from the settings or be configurable by the user
+            forceSettings: data.removalOption === "force",
+
+            // reply options
+            replyType: data.typeReply,
+            stickyComment: !!data.typeStickied,
+            lockComment: !!data.typeLockComment,
+            sendPMAsSub: !!data.typeAsSub,
+            autoArchivePM: !!data.autoArchive,
+            lockThread: !!data.typeLockThread,
+            pmSubject: data.pmsubject || DEFAULT_SUBJECT,
+
+            // information for when logging removals to a sub is enabled
+            logSub: data.logsub || "",
+            logReason: data.logreason || "",
+            logTitle: data.logTitle || DEFAULT_LOG_TITLE,
+
+            reasons: data.reasons.map(reason => ({
+                text: unescape(reason.text),
+                title: reason.title,
+                appliesToPosts: reason.removePosts === undefined ? true : !!reason.removePosts,
+                appliesToComments: reason.removeComments === undefined ? true : !!reason.removeComments,
+                flairText: reason.flairText,
+                flairCSS: reason.flairCSS,
+                flairTemplateID: reason.flairTemplateID || ""
+            }))
+        };
+    }
+
+    // retrieve the set of suggested removal reasons for the given subreddit
+    // will consult cache first. Returns an object with keys set to a regex
+    // and values set to a return value of `promptRemovalReason`.
+    TBHelpers.getSuggestedReasonsForSubreddit = async function getSuggestedReasonsForSubreddit(subreddit) {
+        const config = await TBHelpers.getSubredditConfig(subreddit);
+        if (!config) return {};
+
+        return config.suggestedRemovalReasons || {};
+    };
 })(window.TBHelpers = window.TBHelpers || {});

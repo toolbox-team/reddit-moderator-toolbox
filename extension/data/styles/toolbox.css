@@ -535,6 +535,11 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     width: initial !important;
 }
 
+.mod-toolbox-rd .mod-popup .mod-popup-flair-input label[for="flair-template-id"] {
+    position: relative;
+    bottom: 4px;
+}
+
 .mod-toolbox-rd .tb-window-error {
     color: red;
 }

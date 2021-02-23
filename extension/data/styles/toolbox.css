@@ -530,7 +530,8 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     padding: 3px;
 }
 
-.mod-toolbox-rd .mod-popup .flair-text {
+.mod-toolbox-rd .mod-popup .flair-text,
+.mod-toolbox-rd .mod-popup .flair-class {
     width: initial !important;
 }
 

@@ -230,14 +230,14 @@ function modbutton () {
                         title: 'User Flair',
                         tooltip: 'Edit User Flair.',
                         content: `
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text tb-input" type="text"></input></p>
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>
                     <p style="clear:both;" class="mod-popup-flair-input">
                         <label for="flair-template-id" class="mod-popup-flair-label">Template:</label>
                         <select style="text-overflow: ellipsis; width: 150px;" id="flair-template-id-select" class="tb-action-button">
                             <option value="">None</option>
                         </select>
-                    </p>`,
+                    </p>
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text tb-input" type="text"></input></p>
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>`,
                         footer: `
                 <span class="status error left"></span>
                 <button class="flair-save tb-action-button">Save Flair</button>`,
@@ -683,10 +683,21 @@ function modbutton () {
             $classinput.val(userFlairInfo.current.flair_css_class);
 
             userFlairTemplates.forEach(flair => $flairDropdown.append(`
-                <option value="${flair.id}" ${userFlairInfo.current.flair_template_id === flair.id ? 'selected' : ''}>
+                <option
+                    value="${flair.id}"
+                    ${userFlairInfo.current.flair_template_id === flair.id ? 'selected' : ''}
+                    style="background-color: ${flair.background_color ? flair.background_color : 'initial'}; color: ${flair.text_color === 'dark' ? '#000' : '#fff'};"
+                >
                     ${flair.text}
                 </option>
             `));
+
+            $flairDropdown.change(e => {
+                const selectedFlair = userFlairTemplates.find(el => el.id === e.target.value);
+                console.log(selectedFlair);
+                $textinput.val(selectedFlair.text);
+                $classinput.val(selectedFlair.css_class);
+            });
         });
 
         // changing the text and css class when dropdown selection changes

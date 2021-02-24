@@ -682,6 +682,13 @@ function modbutton () {
             $textinput.val(userFlairInfo.current.flair_text);
             $classinput.val(userFlairInfo.current.flair_css_class);
 
+            console.log(userFlairInfo.current);
+            if (userFlairInfo.current.flair_template_id) {
+                $classinput
+                    .attr('disabled', '')
+                    .attr('title', 'Changing the class is disabled when using a flair template.');
+            }
+
             userFlairTemplates.forEach(flair => $flairDropdown.append(`
                 <option
                     value="${flair.id}"
@@ -693,22 +700,22 @@ function modbutton () {
             `));
 
             $flairDropdown.change(e => {
+                if (!e.target.value) {
+                    $textinput.val('');
+                    $classinput
+                        .val('')
+                        .removeAttr('title')
+                        .removeAttr('disabled');
+                    return;
+                }
+
                 const selectedFlair = userFlairTemplates.find(el => el.id === e.target.value);
-                console.log(selectedFlair);
                 $textinput.val(selectedFlair.text);
-                $classinput.val(selectedFlair.css_class);
+                $classinput
+                    .val(selectedFlair.css_class)
+                    .attr('disabled', '')
+                    .attr('title', 'Changing the class is disabled when using a flair template.');
             });
-        });
-
-        // changing the text and css class when dropdown selection changes
-        $body.on('change', '#flair-template-id-select', function () {
-            const $this = $(this);
-            const $textInput = $this.parents('.tb-popup-content').find('.flair-text'),
-                  $cssInput = $this.parents('tb-popup-content').find('.flair-css');
-
-            const selectedFlairTemplate = userFlairTemplates.find(flair => flair.id === $this.val());
-            $textInput.val(selectedFlairTemplate.text || '');
-            $cssInput.val(selectedFlairTemplate.css_class || '');
         });
 
         // Edit save button clicked.

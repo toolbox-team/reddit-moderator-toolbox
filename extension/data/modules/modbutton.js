@@ -682,7 +682,6 @@ function modbutton () {
             $textinput.val(userFlairInfo.current.flair_text);
             $classinput.val(userFlairInfo.current.flair_css_class);
 
-            console.log(userFlairInfo.current);
             if (userFlairInfo.current.flair_template_id) {
                 $classinput
                     .attr('disabled', '')

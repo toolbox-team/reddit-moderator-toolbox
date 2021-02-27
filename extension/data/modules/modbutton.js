@@ -426,7 +426,8 @@ function modbutton () {
                 const id = $benbutton.attr('data-parentID');
                 const author = $benbutton.attr('data-author');
 
-                if (id === 'unknown') {
+                if (id === 'unknown' || id === 'undefined') {
+                    console.log('open - 1');
                     const info = {
                         subreddit,
                         user: author,

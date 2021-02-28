@@ -501,6 +501,11 @@ function usernotes () {
                     thingID = thingDetails.data.post.id;
                 }
 
+                if (!thingID) {
+                    // we don't have the ID on /about/banned, so no thing data for us
+                    return createUserPopup(subreddit, user, link, true, e);
+                }
+
                 TBCore.getApiThingInfo(thingID, subreddit, true, info => {
                     link = info.permalink;
                     createUserPopup(subreddit, user, link, disableLink, e);

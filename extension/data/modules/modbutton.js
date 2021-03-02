@@ -426,7 +426,7 @@ function modbutton () {
                 const id = $benbutton.attr('data-parentID');
                 const author = $benbutton.attr('data-author');
 
-                if (id === 'unknown') {
+                if (id === 'unknown' || id === 'undefined') {
                     const info = {
                         subreddit,
                         user: author,
@@ -455,6 +455,14 @@ function modbutton () {
                     openModPopup(event, info);
                 } else {
                     TBCore.getApiThingInfo(id, subreddit, true).then(info => {
+                        // If the thing we're fetching info for is removed in a subreddit the current user doesn't mod,
+                        // the API won't return information about it. However, we can still access such things if we're
+                        // on the user's profile. In that context, we manually fill in the author since we know at least
+                        // that much already.
+                        if (!info.author) {
+                            info.author = info.user = author;
+                        }
+
                         openModPopup(event, info);
                     });
                 }
@@ -483,11 +491,13 @@ function modbutton () {
 
             self.setting('lastAction', actionName);
 
-            if (banReason.length > MAX_BAN_REASON_LENGTH) {
-                return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);
-            }
-            if (banMessage.length > MAX_BAN_MESSAGE_LENGTH) {
-                return $status.text(`error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`);
+            if (action === 'banned') {
+                if (banReason.length > MAX_BAN_REASON_LENGTH) {
+                    return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);
+                }
+                if (banMessage.length > MAX_BAN_MESSAGE_LENGTH) {
+                    return $status.text(`error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`);
+                }
             }
 
             // Check dem values.
@@ -566,17 +576,22 @@ function modbutton () {
                     subs, 20, subreddit => {
                         TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        self.log(`banning from: ${subreddit}`);
+                        self.log(`performing action in: ${subreddit}`);
                         if (settingState) {
-                            TBApi.friendUser({
+                            const params = {
                                 user,
                                 action,
                                 subreddit,
-                                banReason,
-                                banMessage,
-                                banDuration,
-                                banContext,
-                            }).then(response => {
+                            };
+
+                            // Only send ban-related fields if performing a ban action
+                            if (action === 'banned') {
+                                params.banReason = banReason;
+                                params.banMessage = banMessage;
+                                params.banDuration = banDuration;
+                                params.banContext = banContext;
+                            }
+                            TBApi.friendUser(params).then(response => {
                                 if (response.json.errors.length) {
                                     throw new Error('There were one or more errors banning the user');
                                 }

@@ -296,10 +296,19 @@ function storagewrapper () {
                         purifyObject(input[key]);
                         break;
                     case 'string':
-                        // Let's see if we are dealing with json.
-                        // We want to handle json properly otherwise the purify process will mess up things.
+                        // If the string we're handling is a JSON string, purifying it before it's parsed will mangle
+                        // the JSON and make it unusable. We try to parse every value, and if parsing returns an object
+                        // or an array, we run purifyObject on the result and re-stringify the value, rather than
+                        // trying to purify the string itself. This ensures that when the string is parsed somewhere
+                        // else, it's already purified.
+                        // TODO: Identify if this behavior is actually used anywhere
                         try {
                             const jsonObject = JSON.parse(input[key]);
+                            // We only want to purify the parsed value if it's an object or array, otherwise we throw
+                            // back and purify the raw string instead (see #461)
+                            if (typeof jsonObject !== 'object' || jsonObject == null) {
+                                throw new Error('not using the parsed result of this string');
+                            }
                             purifyObject(jsonObject);
                             input[key] = JSON.stringify(jsonObject);
                         } catch (e) {

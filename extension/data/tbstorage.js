@@ -259,15 +259,18 @@ function storagewrapper () {
                 return;
             }
 
-            if (loggedinOld || loggedinRedesign) {
-                $body.addClass('mod-toolbox-rd');
-                $body.addClass('mod-toolbox');
-                setTimeout(() => {
-                    profileResults('storageLoaded', performance.now());
-                    const event = new CustomEvent('TBStorageLoaded');
-                    window.dispatchEvent(event);
-                }, 10);
+            if (!loggedinOld && !loggedinRedesign) {
+                logger.info('Did not detect a logged in user, toolbox will not start.');
+                return;
             }
+
+            $body.addClass('mod-toolbox-rd');
+            $body.addClass('mod-toolbox');
+            setTimeout(() => {
+                profileResults('storageLoaded', performance.now());
+                const event = new CustomEvent('TBStorageLoaded');
+                window.dispatchEvent(event);
+            }, 10);
         }
 
         function purify (input) {

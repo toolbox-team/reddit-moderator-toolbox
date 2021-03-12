@@ -306,10 +306,9 @@ function modbar () {
                 </div>
                 `;
 
-                $body.on('click', '#tb-toolbar-mysubs', function () {
-                    const $this = $(this);
-                    if (!$this.hasClass('tb-mysubs-activated')) {
-                        $this.addClass('tb-mysubs-activated');
+                $body.on('click', '#tb-toolbar-mysubs', () => {
+                    const $existingPopup = $body.find('.subreddits-you-mod-popup');
+                    if (!$existingPopup.length) {
                         TB.ui.popup({
                             title: 'Subreddits you moderate',
                             tabs: [
@@ -322,7 +321,6 @@ function modbar () {
                                 },
                             ],
                             cssClass: 'subreddits-you-mod-popup',
-                            closable: false, // TODO: this can be reworked to not require the `tb-mysubs-activated` class
                         }).appendTo('body').css({
                             position: 'fixed',
                             bottom: '41px',
@@ -331,8 +329,7 @@ function modbar () {
                         // Focus the filter bar for convenience
                         $('#tb-livefilter-input').focus();
                     } else {
-                        $this.removeClass('tb-mysubs-activated');
-                        $('.subreddits-you-mod-popup').remove();
+                        $existingPopup.remove();
                     }
 
                     $body.find('#tb-livefilter-input').keyup(function () {
@@ -349,11 +346,6 @@ function modbar () {
                             $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
                         });
                     });
-                });
-
-                $body.on('click', '.subreddits-you-mod-popup .close', function () {
-                    $(this).closest('.subreddits-you-mod-popup').remove();
-                    $body.find('#tb-toolbar-mysubs').removeClass('tb-mysubs-activated');
                 });
 
                 // only show the button once it's populated.

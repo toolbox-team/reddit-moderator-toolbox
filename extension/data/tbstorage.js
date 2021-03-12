@@ -227,7 +227,7 @@ function storagewrapper () {
         };
 
         // private methods.
-        function SendInit () {
+        function SendInit (tries = 3) {
             // Check if we are logged in and if we want to activate on old reddit as well.
             let loggedinRedesign = false,
                 loggedinOld = false;
@@ -259,15 +259,24 @@ function storagewrapper () {
                 return;
             }
 
-            if (loggedinOld || loggedinRedesign) {
-                $body.addClass('mod-toolbox-rd');
-                $body.addClass('mod-toolbox');
-                setTimeout(() => {
-                    profileResults('storageLoaded', performance.now());
-                    const event = new CustomEvent('TBStorageLoaded');
-                    window.dispatchEvent(event);
-                }, 10);
+            if (!loggedinOld && !loggedinRedesign) {
+                if (tries < 1) {
+                    logger.info('Did not detect a logged in user, toolbox will not start.');
+                } else {
+                    setTimeout(() => {
+                        SendInit(tries - 1);
+                    }, 500);
+                }
+                return;
             }
+
+            $body.addClass('mod-toolbox-rd');
+            $body.addClass('mod-toolbox');
+            setTimeout(() => {
+                profileResults('storageLoaded', performance.now());
+                const event = new CustomEvent('TBStorageLoaded');
+                window.dispatchEvent(event);
+            }, 10);
         }
 
         function purify (input) {

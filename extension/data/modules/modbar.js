@@ -322,6 +322,7 @@ function modbar () {
                                 },
                             ],
                             cssClass: 'subreddits-you-mod-popup',
+                            closable: false, // TODO: this can be reworked to not require the `tb-mysubs-activated` class
                         }).appendTo('body').css({
                             position: 'fixed',
                             bottom: '41px',

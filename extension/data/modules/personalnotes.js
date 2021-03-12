@@ -59,6 +59,7 @@ function personalnotes () {
                     },
                 ],
                 cssClass: 'personal-notes-popup',
+                closable: false, // TODO: can be reworked to not require the tb-notes-activated class
             }).appendTo('body');
         }
 

@@ -513,11 +513,6 @@ function usernotes () {
             }
         });
 
-        // Cancel button clicked
-        $body.on('click', '.utagger-popup .close', function () {
-            $(this).parents('.utagger-popup').remove();
-        });
-
         // Save or delete button clicked
         $body.on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
             self.log('Save or delete pressed');
@@ -888,10 +883,6 @@ function usernotes () {
                     self.saveUserNotes(sub, subUsenotes, `prune: ${pruneReasons.join(', ')}`, () => {
                         window.location.reload();
                     });
-                });
-
-                $popup.on('click', '.close', () => {
-                    $popup.remove();
                 });
 
                 const {topPosition, leftPosition} = TBui.drawPosition(event);

@@ -209,6 +209,7 @@
         cssClass = '',
         meta,
         draggable = true,
+        closable = true,
     }) {
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         const $popup = $(`
@@ -286,6 +287,13 @@
             $popup.drag($popup.find('.tb-window-header'));
             // Don't let people drag by the buttons, that gets confusing
             $popup.find('.buttons a').on('mousedown', e => e.stopPropagation());
+        }
+
+        if (closable) {
+            $popup.on('click', '.close', event => {
+                event.stopPropagation();
+                $popup.remove();
+            });
         }
 
         return $popup;

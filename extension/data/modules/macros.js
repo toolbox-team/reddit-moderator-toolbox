@@ -348,6 +348,7 @@ function modmacros () {
                     },
                 ],
                 cssClass: 'macro-popup',
+                closable: false, // TODO
             }).appendTo('body')
                 .css({
 

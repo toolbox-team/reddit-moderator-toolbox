@@ -513,7 +513,7 @@ function comments () {
                     const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                     // Build the context popup and once that is done append it to the body.
-                    const $contextPopup = TB.ui.popup({
+                    TB.ui.popup({
                         title: contextTitle,
                         tabs: [
                             {

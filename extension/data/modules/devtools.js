@@ -49,7 +49,7 @@ function devtools () {
                 }
 
                 // Build the context popup and once that is done append it to the body.
-                const $apiPopup = TB.ui.popup({
+                TB.ui.popup({
                     title: 'front-end api info',
                     tabs: [
                         {

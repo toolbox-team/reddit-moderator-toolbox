@@ -443,10 +443,6 @@ function tbmodule () {
                     const anonymizedSettings = await TB.storage.getAnonymizedSettings();
                     $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
                 });
-
-                $viewSettings.on('click', '.close', () => {
-                    $viewSettings.remove();
-                });
             });
 
             $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {

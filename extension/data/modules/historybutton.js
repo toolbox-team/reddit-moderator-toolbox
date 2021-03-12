@@ -267,14 +267,6 @@ function historybutton () {
                         domainslist,
                     };
 
-                    $popup.on('click', '.close', () => {
-                        if (!$overlay.length) {
-                            $popup.hide();
-                        } else {
-                            $popup.remove();
-                        }
-                    });
-
                     self.showAuthorInformation(author);
                     self.populateSubmissionHistory('', author, thisSubreddit);
 

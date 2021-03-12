@@ -513,11 +513,6 @@ function usernotes () {
             }
         });
 
-        // Cancel button clicked
-        $body.on('click', '.utagger-popup .close', function () {
-            $(this).parents('.utagger-popup').remove();
-        });
-
         // Save or delete button clicked
         $body.on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
             self.log('Save or delete pressed');
@@ -890,10 +885,6 @@ function usernotes () {
                     });
                 });
 
-                $popup.on('click', '.close', () => {
-                    $popup.remove();
-                });
-
                 const {topPosition, leftPosition} = TBui.drawPosition(event);
                 $popup.appendTo('#tb-un-note-content-wrap').css({
                     // position: 'absolute',
@@ -919,7 +910,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.on('click', '.tb-un-delete', async function () {
+            $body.on('click', '.tb-un-delete', function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -936,7 +927,7 @@ function usernotes () {
             });
 
             // Delete individual notes for user.
-            $body.on('click', '.tb-un-notedelete', async function () {
+            $body.on('click', '.tb-un-notedelete', function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),

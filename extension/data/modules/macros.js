@@ -495,17 +495,15 @@ function modmacros () {
                     }
                 }
             });
+
+            // The popup helper function registers a close handler for us to remove the window, but we still need to
+            // reset the macro button to the initial state after the popup is removed, so we do that here.
+            $macroPopup.on('click', '.close', () => {
+                const $selectElement = $body.find(`#macro-dropdown-${info.id}`);
+                $selectElement.val(MACROS);
+                $selectElement.prop('disabled', false);
+            });
         }
-
-        $body.on('click', '.macro-popup .close', function () {
-            const $currentMacroPopup = $(this).closest('.macro-popup'),
-                  infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
-                  $selectElement = $body.find(`#macro-dropdown-${infoId}`);
-
-            $selectElement.val(MACROS);
-            $currentMacroPopup.remove();
-            $selectElement.prop('disabled', false);
-        });
 
         $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
             const $this = $(this),

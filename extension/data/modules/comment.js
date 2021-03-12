@@ -513,7 +513,7 @@ function comments () {
                     const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                     // Build the context popup and once that is done append it to the body.
-                    const $contextPopup = TB.ui.popup({
+                    TB.ui.popup({
                         title: contextTitle,
                         tabs: [
                             {
@@ -534,10 +534,6 @@ function comments () {
                     TBui.tbRedditEvent($comments);
                     $('time.timeago').timeago();
                     $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
-                    // Close the popup
-                    $contextPopup.on('click', '.close', () => {
-                        $contextPopup.remove();
-                    });
                 });
             });
         }

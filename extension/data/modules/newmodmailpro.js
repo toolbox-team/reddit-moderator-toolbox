@@ -281,11 +281,6 @@ function newmodmailpro () {
                         // Ensure that the time ago for new messages updates appropriately.
                         $('time.timeago').timeago();
 
-                        // Handle popup closing.
-                        $contextPopup.on('click', '.close', () => {
-                            $contextPopup.remove();
-                        });
-
                         // Handle popup submission.
                         $contextPopup.on('click', '.submit', () => {
                             $contextPopup.remove();

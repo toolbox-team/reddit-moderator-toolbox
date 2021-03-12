@@ -406,11 +406,6 @@ function modbutton () {
                     $banIncludeTime.hide();
                 }
             });
-
-            // 'cancel' button clicked
-            $popup.on('click', '.close', () => {
-                $popup.remove();
-            });
         }
 
         // Mod button clicked

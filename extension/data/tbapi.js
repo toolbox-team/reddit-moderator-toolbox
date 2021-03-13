@@ -384,14 +384,18 @@
         banDuration,
         banContext,
     }) {
-        const trimmedBanMessage = banMessage.substring(0, 999);
-        const trimmedBanReason = banReason.substring(0, 300);
-        if (banDuration) {
-            if (banDuration > 999) {
-                banDuration = 999;
-            }
-            if (banDuration < 0) {
-                banDuration = 0;
+        let trimmedBanMessage,
+            trimmedBanReason;
+        if (action === 'banned') {
+            trimmedBanMessage = banMessage.substring(0, 999);
+            trimmedBanReason = banReason.substring(0, 300);
+            if (banDuration) {
+                if (banDuration > 999) {
+                    banDuration = 999;
+                }
+                if (banDuration < 0) {
+                    banDuration = 0;
+                }
             }
         }
 

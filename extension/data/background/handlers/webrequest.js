@@ -179,20 +179,16 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
 }
 
 // Makes a request and sends a reply with response and error properties
-messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions)
+messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions).then(
         // For succeeded requests, we send only the raw `response`
-    .then(async response => ({response: await serializeResponse(response)}))
+    async response => ({response: await serializeResponse(response)}),
         // For failed requests, we send:
         // - `error: true` to indicate the failure
         // - `message` containing information about the error
         // - `response` containing the raw response data (if applicable)
-    .catch(async error => {
-        const reply = {
+    async error => ({
             error: true,
             message: error.message,
-        };
-        if (error.response) {
-            reply.response = await serializeResponse(error.response);
-        }
-        return reply;
-    }));
+        response: error.response ? await serializeResponse(error.response) : undefined,
+    })
+));

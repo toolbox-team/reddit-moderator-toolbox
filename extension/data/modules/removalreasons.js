@@ -330,6 +330,7 @@ function removalreasons () {
                                 removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
                                 flairText: TBHelpers.htmlEncode(this.flairText),
                                 flairCSS: TBHelpers.htmlEncode(this.flairCSS),
+                                flairTemplateID: this.flairTemplateID === undefined ? '' : this.flairTemplateID,
                             });
                         });
 
@@ -446,7 +447,7 @@ function removalreasons () {
                             <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
                             <ul>
                                 <li>
-                                    <input ${forced ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
+                                    <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky && data.kind === 'submission' ? 'checked' : ''}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
                                 <li>
                                     <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
@@ -471,7 +472,7 @@ function removalreasons () {
                             <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
                         </li>
                         <li>
-                            <input ${forced ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                            <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread && data.kind === 'submission' ? 'checked' : ''}/><label for="type-action-lock-thread">Lock the removed thread.</label>
                         </li>
                     </ul>
                     </div>
@@ -534,6 +535,7 @@ function removalreasons () {
                             title: this.title,
                             flairText: this.flairText,
                             flairCSS: this.flairCSS,
+                            flairTemplateID: this.flairTemplateID,
                         });
 
                         if (this.title) {
@@ -641,9 +643,9 @@ function removalreasons () {
                   notifyBy = popup.find('.reason-type:checked').val(),
                   notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
                   autoArchive = popup.find('.reason-auto-archive').prop('checked'),
-                  notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
-                  actionLockThread = popup.find('.action-lock-thread').prop('checked') && !popup.find('.action-lock-thread').prop('disabled'),
-                  actionLockComment = popup.find('.action-lock-comment').prop('checked') && !popup.find('.action-lock-comment').prop('disabled'),
+                  notifySticky = popup.find('.reason-sticky').prop('checked'),
+                  actionLockThread = popup.find('.action-lock-thread').prop('checked'),
+                  actionLockComment = popup.find('.action-lock-comment').prop('checked'),
                   checked = popup.find('.reason-check:checked'),
                   status = popup.find('.status'),
                   attrs = popup.find('attrs'),
@@ -684,7 +686,7 @@ function removalreasons () {
             // Get custom reason input
             const markdownReasons = [];
             const customInput = [];
-            let flairText = '', flairCSS = '';
+            let flairText = '', flairCSS = '', flairTemplateID = '';
 
             checked.closest('.selectable-reason').each(function () {
                 const $this = $(this);
@@ -704,6 +706,9 @@ function removalreasons () {
                 }
                 if ($this.data('flairCSS')) {
                     flairCSS += ` ${$this.data('flairCSS')}`;
+                }
+                if ($this.data('flairTemplateID')) {
+                    flairTemplateID = $this.data('flairTemplateID');
                 }
             });
 
@@ -771,7 +776,7 @@ function removalreasons () {
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
             if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
-                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS).catch(() => {
+                TBApi.flairPost(data.fullname, data.subreddit, flairText, flairCSS, flairTemplateID).catch(() => {
                     status.text(FLAIR_ERROR);
                 });
             }
@@ -811,7 +816,7 @@ function removalreasons () {
 
             // Function to send PM and comment
             function sendRemovalMessage (logLink) {
-                TBCore.getModSubs(() => {
+                TBCore.getModSubs(async () => {
                     // If there is no message to send, don't send one.
                     if (reasonlength < 1) {
                         if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
@@ -831,6 +836,17 @@ function removalreasons () {
                     // Finalize the reason with optional log post link
                     if (typeof logLink !== 'undefined') {
                         reason = reason.replace('{loglink}', logLink);
+                    }
+
+                    // Lock thread if requested
+                    if (actionLockThread) {
+                        self.log(`Fullname of this link: ${data.fullname}`);
+                        try {
+                            await TBApi.lock(data.fullname);
+                        } catch (error) {
+                            self.error(`error locking ${data.fullname}:`, error);
+                            return status.text(LOCK_POST_ERROR);
+                        }
                     }
 
                     const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
@@ -858,15 +874,7 @@ function removalreasons () {
                                     status.text(DISTINGUISH_ERROR);
                                 });
 
-                                // Also lock the thread if requested
-                                if (actionLockThread) {
-                                    self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBApi.lock(data.fullname).then(() => {
-                                        removePopup(popup);
-                                    }).catch(() => {
-                                        status.text(LOCK_POST_ERROR);
-                                    });
-                                }
+                                // Lock reply if requested
                                 if (actionLockComment) {
                                     const commentId = response.json.data.things[0].data.id;
                                     self.log(`Fullname of reply: ${commentId}`);

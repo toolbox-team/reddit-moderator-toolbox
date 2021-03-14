@@ -54,12 +54,12 @@ function oldReddit () {
                 const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
                 $jsApiThingPlaceholder.append('<span data-name="toolbox">');
                 const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
-                $thing.find('.entry:first .author:first').after('<span class="tb-jsapi-author-container"></span>');
+                $thing.find('.entry:first .author:first, .entry:first .tagline:first > span:contains("[deleted]")').after('<span class="tb-jsapi-author-container"></span>');
                 const $jsApiPlaceholderAuthor = $thing.find('.tb-jsapi-author-container');
                 $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
-                if (!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
+                if (!$jsApiThingPlaceholder.length) {
                     return;
                 }
 
@@ -68,7 +68,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBpost',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 id: info.id,
                                 isRemoved: info.ham || info.spam,
                                 permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
@@ -86,7 +86,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBpostAuthor',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 post: {
                                     id: info.id,
                                 },
@@ -96,7 +96,6 @@ function oldReddit () {
                                 },
                             },
                         };
-
                         dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
                     }
                 }
@@ -107,7 +106,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBcommentOldReddit',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 post: {
                                     id: info.postID,
                                 },
@@ -128,7 +127,7 @@ function oldReddit () {
                         const detailObject = {
                             type: 'TBcommentAuthor',
                             data: {
-                                author: info.author,
+                                author: info.author || '[deleted]',
                                 post: {
                                     id: info.postID,
                                 },
@@ -223,7 +222,7 @@ function oldReddit () {
                         type: 'TBuserHovercard',
                         data: {
                             user: {
-                                username: info.user,
+                                username: info.user || '[deleted]',
                             },
                             contextID: info.id,
                             subreddit: {

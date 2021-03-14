@@ -404,7 +404,7 @@ function modmailpro () {
             let replyCount = $entries.length - 1;
 
             // Set subreddit name.
-            $thread.data('subreddit', subreddit);
+            $thread.attr('data-subreddit', subreddit);
 
             self.endProfile('thread-jquery');
 
@@ -803,7 +803,7 @@ function modmailpro () {
                 $this.css('display', 'none');
 
                 if (!byID) {
-                    const subname = $this.data('subreddit');
+                    const subname = $this.attr('data-subreddit');
 
                     if (items.includes(subname)) {
                         $this.css('display', '');
@@ -825,7 +825,7 @@ function modmailpro () {
         function hideThreads (subs) {
             $('.message-parent').each(function () {
                 const $this = $(this),
-                      subname = $this.data('subreddit');
+                      subname = $this.attr('data-subreddit');
 
                 $this.css('display', '');
 

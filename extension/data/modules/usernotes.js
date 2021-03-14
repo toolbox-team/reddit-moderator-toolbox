@@ -103,6 +103,10 @@ function usernotes () {
                 if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                     const subreddit = e.detail.data.subreddit.name;
                     const author = e.detail.data.author;
+                    if (author === '[deleted]') {
+                        return;
+                    }
+
                     $target.addClass('ut-thing');
                     $target.attr('data-subreddit', subreddit);
                     $target.attr('data-author', author);
@@ -497,16 +501,16 @@ function usernotes () {
                     thingID = thingDetails.data.post.id;
                 }
 
+                if (!thingID) {
+                    // we don't have the ID on /about/banned, so no thing data for us
+                    return createUserPopup(subreddit, user, link, true, e);
+                }
+
                 TBCore.getApiThingInfo(thingID, subreddit, true, info => {
                     link = info.permalink;
                     createUserPopup(subreddit, user, link, disableLink, e);
                 });
             }
-        });
-
-        // Cancel button clicked
-        $body.on('click', '.utagger-popup .close', function () {
-            $(this).parents('.utagger-popup').remove();
         });
 
         // Save or delete button clicked
@@ -723,9 +727,21 @@ function usernotes () {
                                 </label>
                             </p>
                             <p>
+                                <input type="checkbox" id="tb-un-prune-by-user-deleted"/>
+                                <label for="tb-un-prune-by-user-deleted">
+                                    Prune deleted users (slow)
+                                </label>
+                            </p>
+                            <p>
+                                <input type="checkbox" id="tb-un-prune-by-user-suspended"/>
+                                <label for="tb-un-prune-by-user-suspended">
+                                    Prune permanently suspended users (slow)
+                                </label>
+                            </p>
+                            <p>
                                 <input type="checkbox" id="tb-un-prune-by-user-inactivity"/>
                                 <label for="tb-un-prune-by-user-inactivity">
-                                    Prune deleted users and users who haven't posted or commented in
+                                    Prune users who haven't posted or commented in
                                     <select id="tb-un-prune-by-user-inactivity-limit">
                                         <option value="15552000000">6 months</option>
                                         <option value="31104000000">1 year</option>
@@ -745,16 +761,20 @@ function usernotes () {
 
                 const $pruneByNoteAge = $popup.find('#tb-un-prune-by-note-age');
                 const $pruneByNoteAgeLimit = $popup.find('#tb-un-prune-by-note-age-limit');
+                const $pruneByUserDeleted = $popup.find('#tb-un-prune-by-user-deleted');
+                const $pruneByUserSuspended = $popup.find('#tb-un-prune-by-user-suspended');
                 const $pruneByUserInactivity = $popup.find('#tb-un-prune-by-user-inactivity');
                 const $pruneByUserInactivityLimit = $popup.find('#tb-un-prune-by-user-inactivity-limit');
                 const $confirmButton = $popup.find('#tb-un-prune-confirm');
 
                 $confirmButton.on('click', async () => {
                     const checkNoteAge = $pruneByNoteAge.is(':checked');
+                    const checkUserDeleted = $pruneByUserDeleted.is(':checked');
+                    const checkUserSuspended = $pruneByUserSuspended.is(':checked');
                     const checkUserActivity = $pruneByUserInactivity.is(':checked');
 
                     // Do nothing if no pruning criteria are selected
-                    if (!checkNoteAge && !checkUserActivity) {
+                    if (!checkNoteAge && !checkUserDeleted && !checkUserSuspended && !checkUserActivity) {
                         return;
                     }
 
@@ -794,30 +814,59 @@ function usernotes () {
                         }
                     }
 
-                    // Prune by user activity and availability
-                    if (checkUserActivity) {
+                    // Prune by user criteria we have to hit the API for
+                    if (checkUserDeleted || checkUserSuspended || checkUserActivity) {
+                        // Calculate the date threshold for activity checks
+                        // NOTE: This value is only used if checkUserActivity is true, but because it's used in a couple
+                        //       different scopes and we don't want to recalculate it over and over, we just set it here
+                        //       and don't use it if we don't care about user activity. This could probably be cleaned.
                         const dateThreshold = Date.now() - parseInt($pruneByUserInactivityLimit.val(), 10);
-                        pruneReasons.push(`users inactive since ${new Date(dateThreshold).toISOString()}`);
+
+                        // Add the appropriate notes for the wiki revision comment
+                        if (checkUserActivity) {
+                            pruneReasons.push(`users inactive since ${new Date(dateThreshold).toISOString()}`);
+                        }
+                        if (checkUserDeleted) {
+                            pruneReasons.push('deleted users');
+                        }
+                        if (checkUserSuspended) {
+                            pruneReasons.push('suspended users');
+                        }
 
                         // Check each individual user
                         // `await Promise.all()` allows requests to be sent in parallel
                         TBui.longLoadSpinner(true, 'Checking user activity, this could take a bit', TB.ui.FEEDBACK_NEUTRAL);
                         await Promise.all(Object.entries(users).map(async ([username, user]) => {
-                            let shouldDelete;
-                            try {
-                                const {data} = await TBApi.getJSON(`/user/${username}.json`, {sort: 'new'});
-                                // `created_utc` is in seconds, JS timestamps are in milliseconds
-                                shouldDelete = !data.children.some(thing => thing.data.created_utc * 1000 > dateThreshold);
-                            } catch (error) {
-                                // 403 = permanently suspended, 404 = deleted/shadowbanned
-                                if (error.response) {
-                                    shouldDelete = error.response.status === 403 || error.response.status === 404;
-                                } else {
-                                    shouldDelete = false;
-                                }
-                            }
+                            let accountDeleted = false;
+                            let accountSuspended = false;
+                            let accountInactive = false;
 
-                            if (shouldDelete) {
+                            // Fetch the user's profile and see if they meet any of the criteria
+                            await TBApi.getJSON(`/user/${username}.json`, {sort: 'new'}).then(({data}) => {
+                                // The user exists and isn't suspended, and is considered inactive only if they have no
+                                // public post or comment history more recent than the threshold
+                                accountInactive = !data.children.some(thing => thing.data.created_utc * 1000 > dateThreshold);
+                            }).catch(error => {
+                                if (!error.response) {
+                                    // There was a network error - never act based on this
+                                    self.error(`Network error while trying to prune check /u/${username}:`, error);
+                                    return;
+                                }
+                                if (error.response.status === 404) {
+                                    // 404 tells us the user is deleted
+                                    accountDeleted = true;
+                                } else if (error.response.status === 403) {
+                                    // 403 tells us the user is permanently suspended
+                                    accountSuspended = true;
+                                }
+                            });
+
+                            // If any of the specified criteria are true, delete all the user's notes
+                            if (
+                                checkUserDeleted && accountDeleted ||
+                                checkUserSuspended && accountSuspended ||
+                                checkUserActivity && accountInactive
+                            ) {
                                 prunedNotes += user.notes.length;
                                 prunedUsers += 1;
                                 delete users[username];
@@ -836,10 +885,6 @@ function usernotes () {
                     });
                 });
 
-                $popup.on('click', '.close', () => {
-                    $popup.remove();
-                });
-
                 const {topPosition, leftPosition} = TBui.drawPosition(event);
                 $popup.appendTo('#tb-un-note-content-wrap').css({
                     // position: 'absolute',
@@ -849,7 +894,7 @@ function usernotes () {
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', async function () {
+            $body.on('click', '.tb-un-refresh', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent().find('.user');
@@ -865,7 +910,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.find('.tb-un-delete').on('click', function () {
+            $body.on('click', '.tb-un-delete', function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -882,7 +927,7 @@ function usernotes () {
             });
 
             // Delete individual notes for user.
-            $body.find('.tb-un-notedelete').on('click', function () {
+            $body.on('click', '.tb-un-notedelete', function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),
@@ -966,9 +1011,8 @@ function usernotes () {
                 Object.entries(user.notes).forEach(([key, val]) => {
                     const color = self._findSubredditColor(colors, val.type);
 
-                    const timeUTC = Math.round(val.time / 1000),
-                          timeISO = TBHelpers.timeConverterISO(timeUTC),
-                          timeHuman = TBHelpers.timeConverterRead(timeUTC);
+                    const timeISO = new Date(val.time).toISOString(),
+                          timeHuman = TBHelpers.timeConverterRead(val.time / 1000);
 
                     const $note = $(`
                         <div class="tb-un-note-details">
@@ -1105,7 +1149,7 @@ function usernotes () {
             self.printProfiles();
         });
 
-        $body.on('click', '.tb-un-editor > .tb-window-wrapper > .tb-window-header .close', () => {
+        $body.on('click', '.tb-un-editor .tb-window-header .close', () => {
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
         });

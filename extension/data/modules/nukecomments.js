@@ -87,6 +87,8 @@ function nukecomments () {
                 ],
                 cssClass: 'nuke-button-popup',
                 draggable: true,
+                // We don't let the user close this popup while items are being processed, so we use a custom handler
+                closable: false,
             }).appendTo($body)
                 .css({
                     left: positions.leftPosition,
@@ -172,7 +174,9 @@ function nukecomments () {
                 });
             });
 
-            $popup.on('click', '.close', () => {
+            // Handle popup close button, with custom logic to prevent the close if currently running
+            $popup.on('click', '.close', event => {
+                event.stopPropagation();
                 if (removalRunning) {
                     TB.ui.textFeedback('Comment chain nuke in progress, cannot close popup.', TBui.FEEDBACK_NEGATIVE);
                 } else {

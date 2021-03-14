@@ -324,7 +324,7 @@ function profilepro () {
                       displayName = data.data.subreddit.title,
                       publicDescription = data.data.subreddit.public_description;
                 const readableCreatedUTC = TBHelpers.timeConverterRead(userCreated),
-                      createdTimeAgo = TBHelpers.timeConverterISO(userCreated);
+                      createdTimeAgo = new Date(userCreated * 1000).toISOString();
 
                 const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
@@ -837,6 +837,10 @@ function profilepro () {
                 if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {
                     const author = e.detail.data.author;
                     const subreddit = e.detail.data.subreddit.name;
+                    if (author === '[deleted]') {
+                        return;
+                    }
+
                     TBCore.getModSubs(() => {
                         if (TBCore.modsSub(subreddit)) {
                             const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;

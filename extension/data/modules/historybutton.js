@@ -74,6 +74,11 @@ function historybutton () {
             }
             const author = e.detail.data.author,
                   subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
+
+            if (author === '[deleted]') {
+                return;
+            }
+
             self.attachHistoryButton($target, author, subreddit);
         });
 
@@ -152,7 +157,7 @@ function historybutton () {
                                 <label class="submission-count"></label> submissions
                                 <br>
                                 <span class="tb-history-comment-stats" style="display:none">
-                                <label class="comment-count"></label> comments of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
+                                <label class="comment-count"></label> comments, of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
                                 </span>
                                 </div>
                                 <div class="history-table-wrapper">
@@ -261,14 +266,6 @@ function historybutton () {
                         domains,
                         domainslist,
                     };
-
-                    $popup.on('click', '.close', () => {
-                        if (!$overlay.length) {
-                            $popup.hide();
-                        } else {
-                            $popup.remove();
-                        }
-                    });
 
                     self.showAuthorInformation(author);
                     self.populateSubmissionHistory('', author, thisSubreddit);

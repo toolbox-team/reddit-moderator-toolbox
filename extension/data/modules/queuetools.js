@@ -356,7 +356,7 @@ function queuetools () {
         </span>
     </div>`);
 
-            let $closePopup = () => {};
+            const $closePopup = () => {};
 
             $body.on('click', '.tb-general-button.select', function (event) {
                 // close popup if it exists
@@ -398,7 +398,7 @@ function queuetools () {
                     <p><label><input type="checkbox" class="choice" name="actioned" /> [ actioned ]</label></p>
                 </div>`;
 
-                const $popup = TB.ui.popup({
+                TB.ui.popup({
                     title: 'Select items',
                     tabs: [
                         {
@@ -416,10 +416,6 @@ function queuetools () {
                         top: positions.topPosition,
                         display: 'block',
                     });
-                $closePopup = () => {
-                    $popup.remove();
-                };
-                $popup.on('click', '.close', $closePopup);
             });
 
             $body.on('click', '.tb-dropdown:not(.active)', e => {
@@ -1369,7 +1365,7 @@ Action reason: ${value.data.details}
                                 const action = value.action;
                                 const details = value.details;
                                 const createdUTC = TBHelpers.timeConverterRead(value.created_utc);
-                                const createdTimeAgo = TBHelpers.timeConverterISO(value.created_utc);
+                                const createdTimeAgo = new Date(value.created_utc * 1000).toISOString();
 
                                 const actionHTML = `
                                 <tr>

@@ -288,10 +288,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.setCache('Utils', cacheName, TBCore[cacheName]);
         };
 
-        if (!TBCore.debugMode) {
-            TBLog.filterType('debug');
-        }
-
         // Update cache vars as needed.
         if (newLogin) {
             logger.log('Account changed');
@@ -877,8 +873,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 const $thing = $($sender.closest('.thing')[0] || $sender);
 
                 subredditType = $thing.attr('data-subreddit-type');
-                user = $entry.find('.author:first').text() || $thing.find('.author:first').text();
-                subreddit = $thing.data('subreddit') || TBCore.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
+                user = $entry.find('.author:first').text() || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
+                subreddit = $thing.attr('data-subreddit') || TBCore.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
                 permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
                 domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
                 id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
@@ -1297,12 +1293,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             if (!URL) {
-                callback(null);
+                return callback(null);
             }
 
             TBApi.getJSON(URL).then(resp => {
                 if (!resp) {
-                    callback(null);
+                    return callback(null);
                 }
                 resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
                 const $sitetable = $(resp).find('#siteTable');

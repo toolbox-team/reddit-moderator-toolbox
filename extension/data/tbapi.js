@@ -290,14 +290,9 @@
         // Fetch ban info for just this one user
         const data = await TBApi.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
         TBStorage.purifyObject(data);
-        const banned = data.data.children;
-
-        // If it's over or under exactly one item they are not banned or that is not their full name.
-        if (banned.length !== 1) {
-            return null;
-        }
-
-        return banned[0];
+        // This API sometimes returns weird things if the user isn't banned, so we use .find()
+        // to ensure `null` is returned if we don't get information about the right user
+        return data.data.children.find(ban => ban.name.toLowerCase() === user.toLowerCase());
     };
 
     /**
@@ -320,11 +315,12 @@
      * @param {string} cssClass The flair's CSS class
      * @returns {Promise}
      */
-    TBApi.flairPost = (postLink, subreddit, text, cssClass) => TBApi.post('/api/flair', {
+    TBApi.flairPost = (postLink, subreddit, text, cssClass, templateID) => TBApi.post('/api/selectflair', {
         api_type: 'json',
         link: postLink,
         text,
         css_class: cssClass,
+        flair_template_id: templateID,
         r: subreddit,
         uh: TBCore.modhash,
     });
@@ -338,12 +334,13 @@
      * @param {string} cssClass The flair's CSS class
      * @returns {Promise}
      */
-    TBApi.flairUser = (user, subreddit, text, cssClass) => TBApi.post('/api/flair', {
+    TBApi.flairUser = (user, subreddit, text, cssClass, templateID) => TBApi.post('/api/selectflair', {
         api_type: 'json',
         name: user,
         r: subreddit,
         text,
         css_class: cssClass,
+        flair_template_id: templateID,
         uh: TBCore.modhash,
     });
 
@@ -387,14 +384,18 @@
         banDuration,
         banContext,
     }) {
-        const trimmedBanMessage = banMessage.substring(0, 999);
-        const trimmedBanReason = banReason.substring(0, 300);
-        if (banDuration) {
-            if (banDuration > 999) {
-                banDuration = 999;
-            }
-            if (banDuration < 0) {
-                banDuration = 0;
+        let trimmedBanMessage,
+            trimmedBanReason;
+        if (action === 'banned') {
+            trimmedBanMessage = banMessage.substring(0, 999);
+            trimmedBanReason = banReason.substring(0, 300);
+            if (banDuration) {
+                if (banDuration > 999) {
+                    banDuration = 999;
+                }
+                if (banDuration < 0) {
+                    banDuration = 0;
+                }
             }
         }
 
@@ -611,7 +612,7 @@
             const response = await TBApi.post('/api/compose', {
                 from_sr: subreddit,
                 subject: subject.substr(0, 99),
-                text: message,
+                text: message.substr(0, 10000),
                 to: user,
                 uh: TBCore.modhash,
                 api_type: 'json',

@@ -13,29 +13,29 @@ function modmacros () {
         function getConfig (sub, callback) {
             if (TBCore.noConfig.indexOf(sub) !== -1) {
                 self.log('TBCore.noConfig.indexOf(sub) != -1');
-                callback(false);
+                return callback(false);
             }
 
             // get our config.
             if (TBCore.configCache[sub] !== undefined) {
-                callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
+                return callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
             } else {
                 TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
                         self.log('!resp || resp === TBCore.WIKI_PAGE_UNKNOWN');
-                        callback(false);
+                        return callback(false);
                     }
 
                     if (resp === TBCore.NO_WIKI_PAGE) {
                         self.log('resp === TBCore.NO_WIKI_PAGE');
                         TBCore.updateCache('noConfig', sub, false);
-                        callback(false);
+                        return callback(false);
                     }
                     TBStorage.purifyObject(resp);
 
                     // We likely have a good config, but maybe not domain tags.
                     TBCore.updateCache('configCache', resp, sub);
-                    callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
+                    return callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
                 });
             }
 
@@ -495,17 +495,15 @@ function modmacros () {
                     }
                 }
             });
+
+            // The popup helper function registers a close handler for us to remove the window, but we still need to
+            // reset the macro button to the initial state after the popup is removed, so we do that here.
+            $macroPopup.on('click', '.close', () => {
+                const $selectElement = $body.find(`#macro-dropdown-${info.id}`);
+                $selectElement.val(MACROS);
+                $selectElement.prop('disabled', false);
+            });
         }
-
-        $body.on('click', '.macro-popup .close', function () {
-            const $currentMacroPopup = $(this).closest('.macro-popup'),
-                  infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
-                  $selectElement = $body.find(`#macro-dropdown-${infoId}`);
-
-            $selectElement.val(MACROS);
-            $currentMacroPopup.remove();
-            $selectElement.prop('disabled', false);
-        });
 
         $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
             const $this = $(this),

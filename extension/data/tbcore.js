@@ -1550,7 +1550,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     'noeatnosleep',
                     'Garethp',
                     'WorseThanHipster',
-                    'geo1088',
+                    'eritbh',
                 ];
                 TBCore.tbDevs = devs;
                 TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);

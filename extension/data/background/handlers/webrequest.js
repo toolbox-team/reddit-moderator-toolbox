@@ -153,7 +153,7 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
 
     // Post requests need their body to be in formdata format
     if (body) {
-        if (typeof body === 'object' && !Array.isArray(body) && body != null) {
+        if (typeof body === 'object') {
             // If the body is passed as an object, convert it to a FormData object
             options.body = makeFormData(body);
         } else {

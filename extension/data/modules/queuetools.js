@@ -1423,7 +1423,7 @@ Action reason: ${value.data.details}
                 // Create the button and add its event listener
                 const $button = document.createElement('a');
                 $button.classList.add('tb-bracket-button');
-                $button.textContent = 'reports';
+                $button.textContent = 'show reports';
                 $button.addEventListener('click', clickEvent => {
                     // Construct the list of reports
                     const reportList = document.createElement('div');

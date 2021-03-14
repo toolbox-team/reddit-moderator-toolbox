@@ -1434,7 +1434,9 @@ Action reason: ${value.data.details}
                             li.textContent = `${count}: ${text}`;
                             modReportList.append(li);
                         }
-                        reportList.append('mod reports:', modReportList);
+                        const title = document.createElement('b');
+                        title.append('mod reports:');
+                        reportList.append(title, modReportList);
                     }
                     if (userReports.length) {
                         const userReportList = document.createElement('ul');
@@ -1443,7 +1445,9 @@ Action reason: ${value.data.details}
                             li.textContent = `${author}: ${text}`;
                             userReportList.append(li);
                         }
-                        reportList.append('user reports:', userReportList);
+                        const title = document.createElement('b');
+                        title.append('user reports:');
+                        reportList.append(title, userReportList);
                     }
 
                     // Display reports in a popup

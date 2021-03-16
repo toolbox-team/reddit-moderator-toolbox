@@ -236,8 +236,14 @@ function modbutton () {
                             <option value="">None</option>
                         </select>
                     </p>
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text tb-input" type="text"></input></p>
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>`,
+                    <p style="clear:both;" class="mod-popup-flair-input">
+                        <label for="flair-text" class="mod-popup-flair-label">Text:</label>
+                        <input id="flair-text" class="flair-text tb-input" type="text"></input>
+                        </p>
+                    <p style="clear:both;" class="mod-popup-flair-input">
+                        <label for="flair-class" class="mod-popup-flair-label">Class:</label>
+                        <input id="flair-class" class="flair-class tb-input" type="text"></input>
+                    </p>`,
                         footer: `
                 <span class="status error left"></span>
                 <button class="flair-save tb-action-button">Save Flair</button>`,

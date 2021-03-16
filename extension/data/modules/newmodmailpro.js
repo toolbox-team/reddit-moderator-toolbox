@@ -377,7 +377,7 @@ function newmodmailpro () {
                         // determine whether or not it should really go through. If it should go through, the handler
                         // will set this to false and then programmatically click the button.
                         event.preventDefault();
-                        handleSubmitButtonClick(event);
+                        handleSubmitButtonClick();
                     } else {
                         // This click is programmatic, so we let it through without doing anything, but we re-enable
                         // click handling for the next click in case the user manually clicks the button a second time.

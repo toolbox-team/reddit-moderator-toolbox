@@ -688,6 +688,10 @@ function modbutton () {
                     .attr('title', 'Changing the class is disabled when using a flair template.');
             }
 
+            if ($flairDropdown[0].options.length > 1) {
+                return;
+            }
+
             userFlairTemplates.forEach(flair => $flairDropdown.append(`
                 <option
                     value="${flair.id}"

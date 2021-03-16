@@ -132,15 +132,20 @@ function newmodmailpro () {
             ];
 
             /**
+             * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the
+             * button, we want to perform our own handling. However, in order to actually submit a reply once we're done
+             * with our own checks, we need to trigger the event again and let Reddit handle it normally.
+             */
+            let shouldHijackClickHandler = true;
+
+            /**
              * Submits the reply form, bypassing the submission button click. Should only be
              * called from the handleSubmitButtonClick handler or embedded functions.
              * @function
              */
             const submitReplyForm = () => {
-                // Note: we can't use .submit() here since it will trigger
-                // the native browser submission instead of the React event listener.
-                const formElement = $body.find('.ThreadViewerReplyForm')[0];
-                formElement.dispatchEvent(new Event('submit', {cancelable: false})); // cancelable: false is needed for FF
+                shouldHijackClickHandler = false;
+                $body.find('.ThreadViewerReplyForm__replyButton').click();
             };
 
             /**
@@ -149,10 +154,7 @@ function newmodmailpro () {
              * meantime.
              * @function
              */
-            const handleSubmitButtonClick = async event => {
-                // Cancel always. If allowed, we will manually submit the form.
-                event.preventDefault();
-
+            const handleSubmitButtonClick = async () => {
                 // First, check if the reply type is different.
                 if (lastReplyTypeCheck) {
                     // Get all mod replies and see if they are something we need to warn the user about.
@@ -369,7 +371,19 @@ function newmodmailpro () {
 
             // If we have any settings that interfere with the message 'submission', register the listener.
             if (TBCore.isNewMMThread && (lastReplyTypeCheck || checkForNewMessages)) {
-                $body.on('click', '.ThreadViewerReplyForm__replyButton', handleSubmitButtonClick);
+                $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {
+                    if (shouldHijackClickHandler) {
+                        // This click is manual, so we prevent the event from reaching Reddit and perform our checks to
+                        // determine whether or not it should really go through. If it should go through, the handler
+                        // will set this to false and then programmatically click the button.
+                        event.preventDefault();
+                        handleSubmitButtonClick();
+                    } else {
+                        // This click is programmatic, so we let it through without doing anything, but we re-enable
+                        // click handling for the next click in case the user manually clicks the button a second time.
+                        shouldHijackClickHandler = true;
+                    }
+                });
             }
 
             if (modMailNightmode) {

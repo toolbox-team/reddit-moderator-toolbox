@@ -154,10 +154,7 @@ function newmodmailpro () {
              * meantime.
              * @function
              */
-            const handleSubmitButtonClick = async event => {
-                // Cancel always. If allowed, we will manually submit the form.
-                event.preventDefault();
-
+            const handleSubmitButtonClick = async () => {
                 // First, check if the reply type is different.
                 if (lastReplyTypeCheck) {
                     // Get all mod replies and see if they are something we need to warn the user about.
@@ -379,6 +376,7 @@ function newmodmailpro () {
                         // This click is manual, so we prevent the event from reaching Reddit and perform our checks to
                         // determine whether or not it should really go through. If it should go through, the handler
                         // will set this to false and then programmatically click the button.
+                        event.preventDefault();
                         handleSubmitButtonClick(event);
                     } else {
                         // This click is programmatic, so we let it through without doing anything, but we re-enable

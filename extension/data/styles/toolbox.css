@@ -536,8 +536,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 }
 
 .mod-toolbox-rd .mod-popup .mod-popup-flair-input label[for="flair-template-id"] {
-    position: relative;
-    bottom: 4px;
+    vertical-align: super !important;
 }
 
 .mod-toolbox-rd .tb-window-error {

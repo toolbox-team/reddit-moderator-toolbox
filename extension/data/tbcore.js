@@ -1533,6 +1533,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                       devs = [];
 
                 children.forEach(child => {
+                    // AutoModerator seems to add itself to /r/toolbox sometimes, but it's definitely not a developer
+                    if (child.name === 'AutoModerator') {
+                        return;
+                    }
                     devs.push(child.name);
                 });
                 TBCore.tbDevs = devs;

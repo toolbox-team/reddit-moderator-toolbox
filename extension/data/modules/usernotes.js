@@ -436,10 +436,11 @@ function usernotes () {
                             let timeDiv;
 
                             if (note.link) {
-                                if (TBCore.isNewModmail && !note.link.startsWith('https://mod.reddit.com')) {
-                                    note.link = `https://www.reddit.com${note.link}`;
+                                let noteLink = note.link;
+                                if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
+                                    noteLink = `https://www.reddit.com${noteLink}`;
                                 }
-                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${note.link}">${timeString}</a></div>`;
+                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${noteLink}">${timeString}</a></div>`;
                             } else {
                                 timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
                             }

@@ -269,6 +269,13 @@ function modbutton () {
                     top: positions.topPosition,
                     display: 'block',
                 });
+
+            // Since we have post/comment context now, set some attributes on the user flair tab for use later
+            $popup.find('.tb-window-tabs .user_flair')
+                .attr('data-flair-text', info.author_flair_text || '')
+                .attr('data-flair-css-class', info.author_flair_css_class || '')
+                .attr('data-template-id', info.author_flair_template_id || '');
+
             const $actionSelect = $popup.find('.mod-action');
 
             // Set the action before setting up the initial interface
@@ -662,7 +669,8 @@ function modbutton () {
 
         // Flair ALL THE THINGS
         $body.on('click', '.tb-window-tabs .user_flair', async function () {
-            const $popup = $(this).parents('.mod-popup'),
+            const $this = $(this),
+                  $popup = $this.parents('.mod-popup'),
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
                   $textinput = $popup.find('.flair-text'),
@@ -673,21 +681,20 @@ function modbutton () {
                 return;
             }
 
-            const userFlairInfo = await TBApi.apiOauthPOST(`/r/${subreddit}/api/flairselector`, {name: user}).then(r => r.json());
-            userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
-            if (!userFlairInfo.current) {
-                return;
-            }
+            const currentFlairText = $this.attr('data-flair-text');
+            const currentFlairClass = $this.attr('data-flair-css-class');
+            const currentFlairTemplateID = $this.attr('data-flair-template-id');
 
-            TBStorage.purifyObject(userFlairInfo);
-            $textinput.val(userFlairInfo.current.flair_text);
-            $classinput.val(userFlairInfo.current.flair_css_class);
-
-            if (userFlairInfo.current.flair_template_id) {
+            $textinput.val(currentFlairText);
+            $classinput.val(currentFlairClass);
+            if (currentFlairTemplateID) {
                 $classinput
                     .attr('disabled', '')
                     .attr('title', 'Changing the class is disabled when using a flair template.');
             }
+
+            userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
+            TBStorage.purifyObject(userFlairTemplates);
 
             if ($flairDropdown[0].options.length > 1) {
                 return;
@@ -696,7 +703,7 @@ function modbutton () {
             userFlairTemplates.forEach(flair => $flairDropdown.append(`
                 <option
                     value="${flair.id}"
-                    ${userFlairInfo.current.flair_template_id === flair.id ? 'selected' : ''}
+                    ${currentFlairTemplateID === flair.id ? 'selected' : ''}
                     style="background-color: ${flair.background_color ? flair.background_color : 'initial'}; color: ${flair.text_color === 'dark' ? '#000' : '#fff'};"
                 >
                     ${flair.text}

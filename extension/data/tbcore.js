@@ -1127,6 +1127,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
                         wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBCore.logged,
+                        // NOTE: properties not returned from normal getThingInfo
+                        author_flair_text: data.children[0].data.author_flair_text,
+                        author_flair_css_class: data.children[0].data.author_flair_css_class,
+                        author_flair_template_id: data.children[0].data.author_flair_template_id,
                     };
                     callback(info);
                 });

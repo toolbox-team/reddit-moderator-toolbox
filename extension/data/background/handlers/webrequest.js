@@ -102,6 +102,8 @@ function queryString (parameters) {
 
 // Ratelimiter for all oauth.reddit.com requests
 const oauthRatelimiter = new Ratelimiter();
+// Ratelimiter for all old.reddit.com requests
+const oldRedditRatelimiter = new Ratelimiter();
 
 /**
  * Sends a generic HTTP request.
@@ -162,11 +164,13 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
     // Perform the request
     let response;
     try {
-        // Only oauth.reddit.com sends ratelimit headers :(
-        if (oauth) {
+        if (absolute) {
+            // Absolute URLs may hit non-Reddit domains, don't try to limit them
+            response = await fetch(url, options);
+        } else if (oauth) {
             response = await oauthRatelimiter.request(url, options);
         } else {
-            response = await fetch(url, options);
+            response = await oldRedditRatelimiter.request(url, options);
         }
     } catch (error) {
         console.error('Fetch request failed:', error);

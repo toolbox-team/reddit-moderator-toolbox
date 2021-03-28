@@ -274,7 +274,7 @@ function modbutton () {
             $popup.find('.tb-window-tabs .user_flair')
                 .attr('data-flair-text', info.author_flair_text || '')
                 .attr('data-flair-css-class', info.author_flair_css_class || '')
-                .attr('data-template-id', info.author_flair_template_id || '');
+                .attr('data-flair-template-id', info.author_flair_template_id || '');
 
             const $actionSelect = $popup.find('.mod-action');
 

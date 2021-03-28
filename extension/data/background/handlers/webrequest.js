@@ -61,10 +61,12 @@ async function getOAuthTokens (tries = 1) {
 }
 
 /**
- * Serializes a fetch Response to a JSON value that can be constructed into a
- * new Response later.
+ * Serializes a fetch `Response` to a JSON value that can be constructed into a
+ * new `Response` later.
  * @param {Response} response
- * @returns a JSONable thing
+ * @returns {Promise<array | undefined>} An array of arguments to the `Response`
+ * constructor, serializable to plain JSON, which can be used to replicate the
+ * given response.
  */
 async function serializeResponse (response) {
     const headers = {};
@@ -98,6 +100,21 @@ function queryString (parameters) {
         return '';
     }
     return `?${kvStrings.join('&')}`;
+}
+
+/**
+ * Creates a `FormData` object from the given set of key-value pairs.
+ * @param {object} obj
+ * @returns {FormData}
+ */
+function makeFormData (obj) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(obj)) {
+        if (value != null) {
+            formData.append(key, value);
+        }
+    }
+    return formData;
 }
 
 /**
@@ -136,13 +153,13 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
 
     // Post requests need their body to be in formdata format
     if (body) {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(body)) {
-            if (value !== undefined && value !== null) {
-                formData.append(key, value);
-            }
+        if (typeof body === 'object') {
+            // If the body is passed as an object, convert it to a FormData object
+            options.body = makeFormData(body);
+        } else {
+            // Otherwise, we assume the body is a string and use it as-is
+            options.body = body;
         }
-        options.body = formData;
     }
 
     // If requested, fetch OAuth tokens and add `Authorization` header
@@ -177,20 +194,16 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
 }
 
 // Makes a request and sends a reply with response and error properties
-messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions)
+messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions).then(
     // For succeeded requests, we send only the raw `response`
-    .then(async response => ({response: await serializeResponse(response)}))
+    async response => ({response: await serializeResponse(response)}),
     // For failed requests, we send:
     // - `error: true` to indicate the failure
     // - `message` containing information about the error
     // - `response` containing the raw response data (if applicable)
-    .catch(async error => {
-        const reply = {
-            error: true,
-            message: error.message,
-        };
-        if (error.response) {
-            reply.response = await serializeResponse(error.response);
-        }
-        return reply;
-    }));
+    async error => ({
+        error: true,
+        message: error.message,
+        response: error.response ? await serializeResponse(error.response) : undefined,
+    })
+));

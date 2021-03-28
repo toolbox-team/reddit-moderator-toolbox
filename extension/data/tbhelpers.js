@@ -717,4 +717,9 @@
         // Collapse to base64
         return btoa(objThing);
     };
+
+    /**
+     * Provides an initialized SnuOwnd parser.
+     */
+    TBHelpers.parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
 })(window.TBHelpers = window.TBHelpers || {});

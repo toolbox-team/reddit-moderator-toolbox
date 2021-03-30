@@ -5,7 +5,16 @@
 //       themselves. Note that these values are only guaranteed to be available
 //       after the document receives the `esCompatReady` event.
 (async () => {
-	window.TBApi = await import(browser.runtime.getURL('data/tbapi.js'));
-	window.TBui = await import(browser.runtime.getURL('data/tbui.js'));
+	const [
+		TBApi,
+		TBui,
+	] = await Promise.all([
+		import(browser.runtime.getURL('data/tbapi.js')),
+		import(browser.runtime.getURL('data/tbui.js')),
+	]);
+
+	window.TBApi = TBApi;
+	window.TBui = TBui;
+
 	window.document.dispatchEvent(new CustomEvent('esCompatReady'));
 })();

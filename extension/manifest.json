@@ -142,7 +142,6 @@
                 "data/tblog.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
-                "data/tbhelpers.js",
                 "data/tbcore.js",
                 "data/tbmodule.js",
                 "data/modules/devtools.js",
@@ -180,6 +179,7 @@
         // ES6 modules
         "data/tbapi.js",
         "data/tbui.js",
+        "data/tbhelpers.js",
         "data/tblistener.js",
         // Other stuff
         "/data/libs/snuownd.js",

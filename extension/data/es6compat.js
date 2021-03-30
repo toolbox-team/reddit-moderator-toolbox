@@ -8,15 +8,18 @@
 	const [
 		TBApi,
 		TBui,
+		TBHelpers,
 		{TBListener},
 	] = await Promise.all([
 		import(browser.runtime.getURL('data/tbapi.js')),
 		import(browser.runtime.getURL('data/tbui.js')),
+		import(browser.runtime.getURL('data/tbhelpers.js')),
 		import(browser.runtime.getURL('data/tblistener.js')),
 	]);
 	
 	window.TBApi = TBApi;
 	window.TBui = TBui;
+	window.TBHelpers = TBHelpers;
 	window.TBListener = new TBListener();
 
 	window.document.dispatchEvent(new CustomEvent('esCompatReady'));

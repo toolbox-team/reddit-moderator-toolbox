@@ -142,7 +142,6 @@
                 "data/tblog.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
-                "data/tbui.js",
                 "data/tbhelpers.js",
                 "data/tbcore.js",
                 "data/tblistener.js",
@@ -181,6 +180,7 @@
     "web_accessible_resources": [
         // ES6 modules
         "data/tbapi.js",
+        "data/tbui.js",
         // Other stuff
         "/data/libs/snuownd.js",
         "/data/styles/font/MaterialIcons-Regular.woff2",

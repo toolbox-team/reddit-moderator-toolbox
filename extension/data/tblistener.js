@@ -1,4 +1,7 @@
+import TBLog from './tblog.js';
+
 const logger = TBLog('TBListener');
+
 /**
  * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,
  * for example.

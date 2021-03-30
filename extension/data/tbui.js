@@ -1,3 +1,4 @@
+import TBLog from './tblog.js';
 import * as TBApi from './tbapi.js';
 
 const logger = TBLog('TBui');

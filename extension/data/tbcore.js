@@ -1,4 +1,4 @@
-'use strict';
+
 function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     /** @namespace  TBCore */
     (function (TBCore) {
@@ -1855,7 +1855,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     })(window.TBCore = window.TBCore || {});
 }
 
-(function () {
+document.addEventListener('esCompatReady', () => {
     const logger = TBLog('TBCore init');
     // wait for storage
     function getModSubs (after, callback) {
@@ -1921,22 +1921,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
     }
 
-    let storageLoaded = false;
-    let es6compatLoaded = false;
-    window.addEventListener('TBStorageLoaded', () => {
-        storageLoaded = true;
-        if (storageLoaded && es6compatLoaded) {
-            bothLoaded();
-        }
-    });
-    document.addEventListener('esCompatReady', () => {
-        es6compatLoaded = true;
-        if (storageLoaded && es6compatLoaded) {
-            bothLoaded();
-        }
-    });
-
-    async function bothLoaded () {
+    window.addEventListener('TBStorageLoaded', async () => {
         profileResults('utilsStart', performance.now());
         const SETTINGS_NAME = 'Utils';
         const cacheDetails = {
@@ -1974,5 +1959,5 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         } else {
             logger.error('Toolbox does not have user details and cannot not start.');
         }
-    }
-})();
+    });
+});

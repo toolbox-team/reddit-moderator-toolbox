@@ -5,7 +5,9 @@ const domain = window.location.hostname.split('.')[0];
 // Reset toolbox settings support
 // load storage if we're not on the reset page.
 if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {
-    storagewrapper();
+    document.addEventListener('esCompatReady', () => {
+        storagewrapper();
+    });
 } else {
     startReset();
 }

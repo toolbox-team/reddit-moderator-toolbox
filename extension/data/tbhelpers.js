@@ -1,3 +1,5 @@
+import TBLog from './tblog.js';
+
 const logger = TBLog('TBHelpers');
 
 /**

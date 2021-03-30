@@ -139,7 +139,6 @@
             ],
             "js": [
                 "data/es6compat.js",
-                "data/tblog.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
                 "data/tbcore.js",
@@ -177,6 +176,7 @@
     ],
     "web_accessible_resources": [
         // ES6 modules
+        "data/tblog.js",
         "data/tbapi.js",
         "data/tbui.js",
         "data/tbhelpers.js",

@@ -2,6 +2,8 @@
  * Generic helpers for making requests against the Reddit API.
  */
 
+import TBLog from './tblog.js';
+
 const logger = TBLog('TBApi');
 
 /**

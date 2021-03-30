@@ -1,7 +1,11 @@
 'use strict';
 
+document.addEventListener('esCompatReady', () => {
+    tbuiInit(window.TBui = window.TBui || {});
+});
+
 /** @namespace  TBui */
-(function (TBui) {
+function tbuiInit (TBui) {
     const logger = TBLog('TBui');
     const $body = $('body');
 
@@ -1984,4 +1988,4 @@
         return TBui.getBestTextColor.cache[bgColor];
     };
     TBui.getBestTextColor.cache = {};
-})(window.TBui = window.TBui || {});
+}

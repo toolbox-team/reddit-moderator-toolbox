@@ -138,12 +138,12 @@
                 "data/styles/codemirror/themes.css"
             ],
             "js": [
+                "data/es6compat.js",
                 "data/tblog.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
                 "data/tbui.js",
                 "data/tbhelpers.js",
-                "data/tbapi.js",
                 "data/tbcore.js",
                 "data/tblistener.js",
                 "data/tbmodule.js",
@@ -179,6 +179,9 @@
         }
     ],
     "web_accessible_resources": [
+        // ES6 modules
+        "data/tbapi.js",
+        // Other stuff
         "/data/libs/snuownd.js",
         "/data/styles/font/MaterialIcons-Regular.woff2",
         "/data/styles/font/MaterialIcons-Regular.woff",

@@ -1921,7 +1921,22 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
     }
 
-    window.addEventListener('TBStorageLoaded', async () => {
+    let storageLoaded = false;
+    let es6compatLoaded = false;
+    window.addEventListener('TBStorageLoaded', () => {
+        storageLoaded = true;
+        if (storageLoaded && es6compatLoaded) {
+            bothLoaded();
+        }
+    });
+    document.addEventListener('esCompatReady', () => {
+        es6compatLoaded = true;
+        if (storageLoaded && es6compatLoaded) {
+            bothLoaded();
+        }
+    });
+
+    async function bothLoaded () {
         profileResults('utilsStart', performance.now());
         const SETTINGS_NAME = 'Utils';
         const cacheDetails = {
@@ -1959,5 +1974,5 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         } else {
             logger.error('Toolbox does not have user details and cannot not start.');
         }
-    });
+    }
 })();

@@ -380,12 +380,12 @@ function queuetools () {
                     <p><label><input type="checkbox" class="choice" name="links" /> submissions</label></p>
                     <p><label><input type="checkbox" class="choice" name="self" /> text posts</label></p>
                     <p><label><input type="checkbox" class="choice" name="flair" /> posts with flair</label></p>
-                    
+
                     <p class="divider"><input type="text" class="choice tb-input" name="domain" placeholder="domain..." /></p>
                     <p><input type="text" class="choice tb-input" name="user" placeholder="user..." /></p>
                     <p><input type="text" class="choice tb-input" name="title" placeholder="title..." /></p>
                     <p><input type="text" class="choice tb-input" name="subreddit" placeholder="subreddit..." /></p>
-                    
+
                     <h2 class="divider">Conditional</h2>
                     <p><input type="text" class="choice tb-input" name="pointsgt" placeholder="points >..." /></p>
                     <p><input type="text" class="choice tb-input" name="pointslt" placeholder="points <..." /></p>
@@ -918,40 +918,44 @@ function queuetools () {
                         B = a;
                     }
 
+                    // Note: for default timestamps `live-timestamp` would be the proper class but this can't always be relied on.
+                    const defaultTimestampSelector = '.tagline time:not(.edited-timestamp):first';
+                    const editedTimestampSelector = 'time.edited-timestamp:first';
+
                     const $A = $(A),
                           $B = $(B);
                     switch (order) {
                     case 'age':
                     default: // just in case
                     {
-                        const timeA = new Date($A.find('time.live-timestamp:first').attr('datetime')).getTime(),
-                              timeB = new Date($B.find('time.live-timestamp:first').attr('datetime')).getTime();
+                        const timeA = new Date($A.find(defaultTimestampSelector).attr('datetime')).getTime(),
+                              timeB = new Date($B.find(defaultTimestampSelector).attr('datetime')).getTime();
                         return timeA - timeB;
                     }
                     case 'edited':
                     {
-                        const $aEditElement = $A.find('time.edited-timestamp:first').length ? $A.find('time.edited-timestamp:first') : $A.find('time.live-timestamp:first'),
-                              $bEditElement = $B.find('time.edited-timestamp:first').length ? $B.find('time.edited-timestamp:first') : $B.find('time.live-timestamp:first');
+                        const $aEditElement = $A.find(editedTimestampSelector).length ? $A.find(editedTimestampSelector) : $A.find(defaultTimestampSelector),
+                              $bEditElement = $B.find(editedTimestampSelector).length ? $B.find(editedTimestampSelector) : $B.find(defaultTimestampSelector);
                         const timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
                               timeEditB = new Date($bEditElement.attr('datetime')).getTime();
                         return timeEditA - timeEditB;
                     }
                     case 'removed':
                     {
-                        const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find('time.live-timestamp:first'),
-                              $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find('time.live-timestamp:first');
+                        const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find(defaultTimestampSelector),
+                              $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find(defaultTimestampSelector);
 
                         let timeRemoveA,
                             timeRemoveB;
 
-                        if ($aRemoveElement.hasClass('live-timestamp')) {
+                        if ($aRemoveElement.is('time')) {
                             timeRemoveA = $aRemoveElement.attr('datetime');
                         } else {
                             timeRemoveA = $aRemoveElement.attr('title');
                             timeRemoveA = timeRemoveA.replace('removed at ', '');
                         }
 
-                        if ($bRemoveElement.hasClass('live-timestamp')) {
+                        if ($bRemoveElement.is('time')) {
                             timeRemoveB = $bRemoveElement.attr('datetime');
                         } else {
                             timeRemoveB = $bRemoveElement.attr('title');

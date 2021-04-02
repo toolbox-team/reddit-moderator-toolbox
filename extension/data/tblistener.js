@@ -29,7 +29,7 @@ const listenerAliases = {
  * @private
  */
 function runTasks (tasks) {
-    $.log('run tasks', false, 'TBListener');
+    logger.debug('run tasks');
     let task;
     while ((task = tasks.shift())) {
         task();

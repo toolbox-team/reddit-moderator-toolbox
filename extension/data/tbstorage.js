@@ -12,7 +12,14 @@ logger.debug(`Domain: ${domain}`);
 
 export const isLoaded = false;
 
-browser.storage.local.get('tbsettings').then(sObject => {
+/**
+ * A promise which will fulfill once the current settings are fetched from
+ * extension storage. Once this promise fulfills, it's safe to assume
+ * `TBsettingsObject` contains our settings. Settings reads are delayed until
+ * then - either by awaiting this promise, or by waiting for the
+ * `TBStorageLoaded` window event, which is emitted at the same time.
+ */
+const initialLoadPromise = browser.storage.local.get('tbsettings').then(sObject => {
     if (sObject.tbsettings) {
         TBsettingsObject = sObject.tbsettings;
 
@@ -324,13 +331,15 @@ function purifyThing (input) {
 }
 
 function settingsToObject (callback) {
-    // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
-    const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
+    initialLoadPromise.then(() => {
+        // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
+        const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
 
-    // We are paranoid, so we are going to purify the object first.s
-    purifyObject(settingsObject);
+        // We are paranoid, so we are going to purify the object first.s
+        purifyObject(settingsObject);
 
-    callback(settingsObject);
+        callback(settingsObject);
+    });
 }
 
 // TODO: convert original function to promise
@@ -369,6 +378,10 @@ export function getSetting (module, setting, defaultVal) {
         return sanitzedResult;
     }
 }
+export async function getSettingAsync (...args) {
+    await initialLoadPromise;
+    return getSetting(...args);
+}
 
 // SyncSetting is responsible for saving the setting from the local object to extension storage.
 // As such it should ALMOST ALWAYS be left default. You only use false if you are 100% sure all settings will be stored later.
@@ -397,6 +410,10 @@ export function setSetting (module, setting, value, syncSettings = true) {
     }
 
     return getSetting(module, setting);
+}
+export async function setSettingAsync (...args) {
+    await initialLoadPromise;
+    return setSetting(...args);
 }
 
 export function getCache (module, setting, defaultVal) {

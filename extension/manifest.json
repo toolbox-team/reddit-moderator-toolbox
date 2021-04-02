@@ -138,7 +138,7 @@
                 "data/styles/codemirror/themes.css"
             ],
             "js": [
-                "data/es6compat.js",
+                "data/init.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
                 "data/tbcore.js",

@@ -5,14 +5,12 @@ document.addEventListener('esCompatReady', () => {
         const logger = TBLog('TBStorage');
         profileResults('storageStart', performance.now());
 
-        const SHORTNAME = 'TBStorage';
-
         TBStorage.settings = [];
 
         let TBsettingsObject;
         TBStorage.domain = window.location.hostname.split('.')[0];
 
-        $.log(`Domain: ${TBStorage.domain}`, false, SHORTNAME);
+        logger.debug(`Domain: ${TBStorage.domain}`);
 
         TBStorage.isLoaded = false;
 
@@ -172,7 +170,7 @@ document.addEventListener('esCompatReady', () => {
                             });
                             callback(true);
                         } else {
-                            $.log('Settings could not be verified', false, SHORTNAME);
+                            logger.debug('Settings could not be verified');
                             callback(false);
                         }
                     });
@@ -421,7 +419,7 @@ document.addEventListener('esCompatReady', () => {
                     inputValue,
                 }).then(response => {
                     if (response.errorThrown !== undefined) {
-                        $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
+                        logger.debug(`${storageKey} is corrupted.  Sending default.`);
                         resolve(defaultVal);
                     } else {
                         resolve(response.value);

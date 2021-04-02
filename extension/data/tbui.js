@@ -86,6 +86,7 @@ export const iconBot = `iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACz0lEQVQ4
                     9fXPsLT04RM1PDzsV6lU4ng8DlarNcLn82kMDxwfH2dIwHUgD/qRaG1t5eXm5oLFYglQY2Nj9filtxRFEe3a4uLi1+3tHZBMpmBlZRmczl+QXm9sfHmGjB78lXafNRHzLUCXKdR6FRubbW0PWQBiqMvl
                     hPTa7f7NINsXkUgkhediGVHGf0HB5fI2Ozs70TwgGpGBE9JrBMyeA8IEg8TH69zPy8u7SGqMbQgZxdPrkhLZTbX68fczg/4A1KNbXBApXrkAAAAASUVORK5CYII=`;
 
+/** Map of commonly used color names to CSS color values. */
 export const standardColors = {
     red: '#FF0000',
     softred: '#ED4337',
@@ -107,13 +108,25 @@ export const DISPLAY_CENTER = 'center';
 export const DISPLAY_BOTTOM = 'bottom';
 export const DISPLAY_CURSOR = 'cursor';
 
-export const button = function button (text, classes) {
-    return `<a href="javascript:;" class="tb-general-button ${classes}">${text}</a>`;
-};
+/**
+ * Generates HTML for a general button.
+ * @param {string} text Raw HTML string rendered inside the button
+ * @param {string} classes Extra text added to the button's `class` attribute
+ * @returns {string}
+ */
+export const button = (text, classes) => `
+    <a href="javascript:;" class="tb-general-button ${classes}">${text}</a>
+`;
 
-export const actionButton = function button (text, classes) {
-    return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
-};
+/**
+ * Generates HTML for an action button.
+ * @param {string} text Raw HTML string rendered inside the button
+ * @param {string} classes Extra text added to the button's `class` attribute
+ * @returns {string}
+ */
+export const actionButton = (text, classes) => `
+    <a href="javascript:;" class="tb-action-button ${classes}">${text}</a>
+`;
 
 // Notification stuff
 
@@ -202,7 +215,7 @@ $body.on('click', '.tb-notification', function () {
  * @param {boolean?} [draggable=true] Whether the user can move the popup
  * @returns {jQuery}
  */
-export const popup = function popup ({
+export function popup ({
     title,
     tabs,
     cssClass = '',
@@ -296,9 +309,9 @@ export const popup = function popup ({
     }
 
     return $popup;
-};
+}
 
-export const drawPosition = function drawPosition (event) {
+export function drawPosition (event) {
     const positions = {
         leftPosition: '',
         topPosition: '',
@@ -334,9 +347,9 @@ export const drawPosition = function drawPosition (event) {
     }
 
     return positions;
-};
+}
 
-export const switchOverlayTab = function switchOverlayTab (overlayClass, tabName) {
+export function switchOverlayTab (overlayClass, tabName) {
     const $overlay = $body.find(`.${overlayClass}`);
 
     const $tab = $overlay.find(`[data-module="${tabName}"]`);
@@ -346,7 +359,7 @@ export const switchOverlayTab = function switchOverlayTab (overlayClass, tabName
 
     $('.tb-window .tb-window-tab').hide();
     $(`.tb-window .tb-window-tab.${tabName}`).show();
-};
+}
 
 /**
  * Generates an overlay containing a single large window.
@@ -361,7 +374,7 @@ export const switchOverlayTab = function switchOverlayTab (overlayClass, tabName
  * where each key:val of the object is mapped to a `data-key="val"` attribute
  * @param {bool} verticalTabs Pass false to use horizontal tabs instead
  */
-export const overlay = function overlay (title, tabs, buttons, css_class, single_footer, details, verticalTabs = true) {
+export function overlay (title, tabs, buttons, css_class, single_footer, details, verticalTabs = true) {
     buttons = typeof buttons !== 'undefined' ? buttons : '';
     css_class = typeof css_class !== 'undefined' ? css_class : '';
     single_footer = typeof single_footer !== 'undefined' ? single_footer : false;
@@ -392,7 +405,6 @@ export const overlay = function overlay (title, tabs, buttons, css_class, single
     // we need a way to handle closing the overlay with a default, but also with use-specific cleanup code to run
     // NOTE: Click handler binds should be attached to the parent element of the relevant object, not $(body).
     // $overlay.on('click', '.buttons .close', function () {});
-
     if (tabs.length === 1) {
         $overlay.find('.tb-window').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
         $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(single_footer ? single_footer : tabs[0].footer));
@@ -482,9 +494,9 @@ export const overlay = function overlay (title, tabs, buttons, css_class, single
     }
 
     return $overlay;
-};
+}
 
-export const selectSingular = function selectSingular (choices, selected) {
+export function selectSingular (choices, selected) {
     const $selector = $(`
         <div class="select-single">
             <select class="selector tb-action-button"></select>
@@ -492,7 +504,6 @@ export const selectSingular = function selectSingular (choices, selected) {
           $selector_list = $selector.find('.selector');
 
     // Add values to select
-
     choices.forEach(keyValue => {
         const value = keyValue.toLowerCase().replace(/\s/g, '_');
         $selector_list.append($('<option>').attr('value', value).text(keyValue));
@@ -502,9 +513,9 @@ export const selectSingular = function selectSingular (choices, selected) {
     $selector_list.val(selected).prop('selected', true);
 
     return $selector;
-};
+}
 
-export const selectMultiple = function selectMultiple (available, selected) {
+export function selectMultiple (available, selected) {
     available = available instanceof Array ? available : [];
     selected = selected instanceof Array ? selected : [];
 
@@ -550,9 +561,9 @@ export const selectMultiple = function selectMultiple (available, selected) {
     });
 
     return $select_multiple;
-};
+}
 
-export const mapInput = function (labels, items) {
+export function mapInput (labels, items) {
     const keyLabel = labels[0],
           valueLabel = labels[1];
 
@@ -604,9 +615,9 @@ export const mapInput = function (labels, items) {
     }
 
     return $mapInput;
-};
+}
 
-export const textFeedback = function (feedbackText, feedbackKind, displayDuration, displayLocation) {
+export function textFeedback (feedbackText, feedbackKind, displayDuration, displayLocation) {
     if (!displayLocation) {
         displayLocation = DISPLAY_CENTER;
     }
@@ -663,10 +674,10 @@ export const textFeedback = function (feedbackText, feedbackKind, displayDuratio
         // And fade out nicely after 3 seconds.
         $feedbackWindow.delay(displayDuration ? displayDuration : 3000).fadeOut();
     }
-};
+}
 
 // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
-export const longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
+export function longLoadSpinner (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
     if (createOrDestroy !== undefined) {
         // if requested and the element is not present yet
         if (createOrDestroy && longLoadArray.length === 0) {
@@ -711,10 +722,10 @@ export const longLoadSpinner = function (createOrDestroy, feedbackText, feedback
             textFeedback(feedbackText, feedbackKind, feedbackDuration, displayLocation);
         }
     }
-};
+}
 
 // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations, this variant will NOT warn when you leave the page.
-export const longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
+export function longLoadNonPersistent (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
     if (createOrDestroy !== undefined) {
         // if requested and the element is not present yet
         if (createOrDestroy && longLoadArrayNonPersistent.length === 0) {
@@ -748,13 +759,13 @@ export const longLoadNonPersistent = function (createOrDestroy, feedbackText, fe
             textFeedback(feedbackText, feedbackKind, feedbackDuration, displayLocation);
         }
     }
-};
+}
 
-export const beforeunload = function () {
+export function beforeunload () {
     if (longLoadArray.length > 0) {
         return 'toolbox is still busy!';
     }
-};
+}
 
 let contextTimeout;
 
@@ -775,7 +786,7 @@ let contextTimeout;
  * @param {object} options.dataAttributes Any data attribute that might be
  * needed. Object keys will be used as the attribute name and value as value.
  */
-export const contextTrigger = function contextTrigger (triggerId, options) {
+export function contextTrigger (triggerId, options) {
     // We really don't need two context menus side by side.
     if (TBCore.isEmbedded) {
         return;
@@ -871,7 +882,7 @@ export const contextTrigger = function contextTrigger (triggerId, options) {
             $tbContextMenu.removeClass('show-tb-context');
         }
     }
-};
+}
 
 /**
  * Handles toolbox generated `thing` items as they become visible in the viewport.
@@ -1008,13 +1019,13 @@ const viewportObserver = new IntersectionObserver(handleTBThings, {
  * @function
  * @param {object} $elements jquery object containing the elements for which jsAPI events need to be send.
  */
-export const tbRedditEvent = function tbRedditEvent ($elements) {
+export function tbRedditEvent ($elements) {
     // $elements can also be a parent container, so we find our things first.
     const $tbThings = $elements.find('.tb-thing');
     $tbThings.each(function () {
         viewportObserver.observe(this);
     });
-};
+}
 
 /**
  * Will build a submission entry given a reddit API submission object.
@@ -1023,7 +1034,7 @@ export const tbRedditEvent = function tbRedditEvent ($elements) {
  * @param {object} submissionOptions object denoting what needs to be included.
  * @returns {object} jquery object with the build submission.
  */
-export const makeSubmissionEntry = function makeSubmissionEntry (submission, submissionOptions) {
+export function makeSubmissionEntry (submission, submissionOptions) {
     TBStorage.purifyObject(submission);
     // Misc
     const canModsubmission = submission.data.can_mod_post,
@@ -1238,7 +1249,6 @@ export const makeSubmissionEntry = function makeSubmissionEntry (submission, sub
 
     // Now we do the same for mod reports.
     // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
-
     if (submissionModReports.length) {
         const $submissionModReports = $(`
                 <ul class="tb-user-reports">
@@ -1309,7 +1319,7 @@ export const makeSubmissionEntry = function makeSubmissionEntry (submission, sub
     }
 
     return $buildsubmission;
-};
+}
 
 /**
  * Will build a comment given a reddit API comment object.
@@ -1319,7 +1329,7 @@ export const makeSubmissionEntry = function makeSubmissionEntry (submission, sub
  * Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
  * @returns {object} jquery object with the build comment.
  */
-export const makeSingleComment = function makeSingleComment (comment, commentOptions = {}) {
+export function makeSingleComment (comment, commentOptions = {}) {
     TBStorage.purifyObject(comment);
     // Misc
     const canModComment = comment.data.can_mod_post,
@@ -1589,7 +1599,6 @@ export const makeSingleComment = function makeSingleComment (comment, commentOpt
 
     // Now we do the same for mod reports.
     // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
-
     if (commentModReports.length) {
         $commentEntry.addClass('filtered');
         const $commentModReports = $(`
@@ -1667,7 +1676,7 @@ export const makeSingleComment = function makeSingleComment (comment, commentOpt
     }
 
     return $buildComment;
-};
+}
 
 /**
  * Will build a comment given a reddit API comment object.
@@ -1678,7 +1687,7 @@ export const makeSingleComment = function makeSingleComment (comment, commentOpt
  * boolean.
  * @returns {object} jquery object with the build comment thread.
  */
-export const makeCommentThread = function makeCommentThread (jsonInput, commentOptions) {
+export function makeCommentThread (jsonInput, commentOptions) {
     const $commentContainer = $('<div class="tb-comment-children"></div>');
 
     jsonInput.forEach(comment => {
@@ -1700,7 +1709,7 @@ export const makeCommentThread = function makeCommentThread (jsonInput, commentO
     });
 
     return $commentContainer;
-};
+}
 
 /**
  * Creates a jQuery element that dynamically displays paginated content.
@@ -1713,7 +1722,7 @@ export const makeCommentThread = function makeCommentThread (jsonInput, commentO
  * @returns {jQuery}
  */
 // TODO: optionally support caching calls to the content function to avoid wasting time regenerating identical pages
-export const pager = function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
+export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
     // Create elements for the content view and the pagination controls
     const $pagerContent = $('<div class="tb-pager-content"/>');
     const $pagerControls = $('<div class="tb-pager-controls"/>');
@@ -1801,7 +1810,7 @@ export const pager = function pager ({pageCount, controlPosition = 'top'}, conte
     loadPage(0);
 
     return $pager;
-};
+}
 
 /**
  * Creates a pager over a dataset.
@@ -1814,7 +1823,7 @@ export const pager = function pager ({pageCount, controlPosition = 'top'}, conte
  * either 'top' or 'bottom'
  * @returns {jQuery}
  */
-export const pagerForItems = function pagerForItems ({
+export function pagerForItems ({
     items,
     perPage,
     displayItem,
@@ -1832,7 +1841,7 @@ export const pagerForItems = function pagerForItems ({
         }
         return $wrapper;
     });
-};
+}
 
 // handling of comment & submisstion actions.
 // TODO make this into command pattern
@@ -1975,11 +1984,11 @@ $body.on('click', '.tb-self-expando-button', function () {
 
 // Utilities
 
-export const getBestTextColor = function (bgColor) {
+export function getBestTextColor (bgColor) {
     if (!getBestTextColor.cache[bgColor]) {
         const textColors = ['black', 'white'];
         getBestTextColor.cache[bgColor] = tinycolor.mostReadable(bgColor, textColors).toHexString();
     }
     return getBestTextColor.cache[bgColor];
-};
+}
 getBestTextColor.cache = {};

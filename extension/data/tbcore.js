@@ -1855,7 +1855,15 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     })(window.TBCore = window.TBCore || {});
 }
 
-document.addEventListener('esCompatReady', () => {
+/**
+ * A Promise that will resolve once the storage module is loaded.
+ * @type {Promise<void>}
+ */
+const storageLoadedPromise = new Promise(resolve => {
+    window.addEventListener('TBStorageLoaded', resolve, {once: true});
+});
+
+document.addEventListener('esCompatReady', async () => {
     const logger = TBLog('TBCore init');
     // wait for storage
     function getModSubs (after, callback) {
@@ -1900,64 +1908,64 @@ document.addEventListener('esCompatReady', () => {
         });
     }
 
-    function modsubInit (cacheDetails, userDetails) {
+    async function modsubInit (cacheDetails, userDetails) {
         if (cacheDetails.moderatedSubs.length === 0) {
             logger.log('No modsubs in cache, getting mod subs before initalizing');
-            getModSubs(null, subs => {
+            getModSubs(null, async subs => {
                 initwrapper({
                     userDetails,
                     newModSubs: subs,
                     cacheDetails,
                 });
+                await storageLoadedPromise; // don't emit TBCoreLoaded before TBStorageLoaded
                 profileResults('utilsLoaded', performance.now());
                 const event = new CustomEvent('TBCoreLoaded');
                 window.dispatchEvent(event);
             });
         } else {
             initwrapper({userDetails, cacheDetails});
+            await storageLoadedPromise; // don't emit TBCoreLoaded before TBStorageLoaded
             profileResults('utilsLoaded', performance.now());
             const event = new CustomEvent('TBCoreLoaded');
             window.dispatchEvent(event);
         }
     }
 
-    window.addEventListener('TBStorageLoaded', async () => {
-        profileResults('utilsStart', performance.now());
-        const SETTINGS_NAME = 'Utils';
-        const cacheDetails = {
-            cacheName: await TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
-            moderatedSubs: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []),
-            moderatedSubsData: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []),
-            noteCache: await TBStorage.getCache(SETTINGS_NAME, 'noteCache', {}),
-            configCache: await TBStorage.getCache(SETTINGS_NAME, 'configCache', {}),
-            rulesCache: await TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {}),
-            noConfig: await TBStorage.getCache(SETTINGS_NAME, 'noConfig', []),
-            noNotes: await TBStorage.getCache(SETTINGS_NAME, 'noNotes', []),
-            noRules: await TBStorage.getCache(SETTINGS_NAME, 'noRules', []),
-        };
+    profileResults('utilsStart', performance.now());
+    const SETTINGS_NAME = 'Utils';
+    const cacheDetails = {
+        cacheName: await TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
+        moderatedSubs: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []),
+        moderatedSubsData: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []),
+        noteCache: await TBStorage.getCache(SETTINGS_NAME, 'noteCache', {}),
+        configCache: await TBStorage.getCache(SETTINGS_NAME, 'configCache', {}),
+        rulesCache: await TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {}),
+        noConfig: await TBStorage.getCache(SETTINGS_NAME, 'noConfig', []),
+        noNotes: await TBStorage.getCache(SETTINGS_NAME, 'noNotes', []),
+        noRules: await TBStorage.getCache(SETTINGS_NAME, 'noRules', []),
+    };
 
-        let userDetails;
+    let userDetails;
 
-        try {
-            userDetails = await getUserDetails();
-            if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
-                TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
-            }
-
-            if (!userDetails) {
-                throw new Error('User details are empty');
-            }
-        } catch (error) {
-            logger.warn('Could not get user details through API.', error);
-
-            logger.log('Attempting to use user detail cache.');
-            userDetails = await TBStorage.getCache(SETTINGS_NAME, 'userDetails', {});
-        }
-
+    try {
+        userDetails = await getUserDetails();
         if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
-            modsubInit(cacheDetails, userDetails);
-        } else {
-            logger.error('Toolbox does not have user details and cannot not start.');
+            TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
         }
-    });
+
+        if (!userDetails) {
+            throw new Error('User details are empty');
+        }
+    } catch (error) {
+        logger.warn('Could not get user details through API.', error);
+
+        logger.log('Attempting to use user detail cache.');
+        userDetails = await TBStorage.getCache(SETTINGS_NAME, 'userDetails', {});
+    }
+
+    if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
+        modsubInit(cacheDetails, userDetails);
+    } else {
+        logger.error('Toolbox does not have user details and cannot not start.');
+    }
 });

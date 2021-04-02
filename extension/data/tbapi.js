@@ -3,6 +3,7 @@
  */
 
 import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
 
 const logger = TBLog('TBApi');
 

@@ -1,4 +1,5 @@
 import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';
 
 const logger = TBLog('TBui');
@@ -17,12 +18,12 @@ let contextMenuLocation = 'left';
 let contextMenuAttention = 'open';
 let contextMenuClick = false;
 
-window.addEventListener('TBStorageLoaded', () => {
-    subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
-    contextMenuLocation = TBStorage.getSetting('GenSettings', 'contextMenuLocation', 'left');
-    contextMenuAttention = TBStorage.getSetting('GenSettings', 'contextMenuAttention', 'open');
-    contextMenuClick = TBStorage.getSetting('GenSettings', 'contextMenuClick', false);
-});
+(async () => {
+    subredditColorSalt = await TBStorage.getSettingAsync('QueueTools', 'subredditColorSalt', 'PJSalt');
+    contextMenuLocation = await TBStorage.getSettingAsync('GenSettings', 'contextMenuLocation', 'left');
+    contextMenuAttention = await TBStorage.getSettingAsync('GenSettings', 'contextMenuAttention', 'open');
+    contextMenuClick = await TBStorage.getSettingAsync('GenSettings', 'contextMenuClick', false);
+})();
 
 /**
  * Material design icons mapped to toolbox names through their hexcode.

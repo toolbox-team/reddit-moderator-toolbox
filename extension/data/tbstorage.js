@@ -25,13 +25,22 @@ const initialLoadPromise = browser.storage.local.get('tbsettings').then(sObject 
 
         // Paranoid, malicious settings might be stored.
         purifyObject(TBsettingsObject);
-
-        SendInit();
     } else {
         TBsettingsObject = {};
-        SendInit();
     }
 
+    // TODO: Don't emit a TBStorage event; code should be cleaned up to use
+    //       async storage methods that handle the initial loading wait time
+    //       internally, rather than consumer code listening for this event.
+    const event = new CustomEvent('TBStorageLoaded');
+    window.dispatchEvent(event);
+
+    // Once that's all done, this promise will fulfill and pending storage calls
+    // will be unblocked.
+});
+
+// Don't handle background page messages until we've got our initial settings.
+initialLoadPromise.then(() => {
     // Listen for updated settings and update the settings object.
     browser.runtime.onMessage.addListener(message => {
         // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
@@ -174,59 +183,6 @@ export function verifiedSettingsSave (callback) {
             });
         });
     });
-}
-
-// private methods.
-function SendInit (tries = 3) {
-    // Check if we are logged in and if we want to activate on old reddit as well.
-    let loggedinRedesign = false,
-        loggedinOld = false;
-
-    const $body = $('body');
-
-    // Check for redesign
-    if ($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) {
-        loggedinRedesign = true;
-    }
-
-    // Check for old reddit
-    if ($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) {
-        loggedinOld = true;
-    }
-
-    // When firefox updates extension they get reloaded including all content scripts. Old elements remain on the page though.
-    // Toolbox doesn't like this very much.
-    // We are using this class because of the migration mess with v4.
-    if ($body.hasClass('mod-toolbox')) {
-        $body.attr('toolbox-warning', 'This page must be reloaded for toolbox to function correctly.');
-        return;
-    }
-
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
-    // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
-    if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
-        logger.error('firefox is in incognito mode, toolbox will not work.');
-        return;
-    }
-
-    if (!loggedinOld && !loggedinRedesign) {
-        if (tries < 1) {
-            logger.info('Did not detect a logged in user, toolbox will not start.');
-        } else {
-            setTimeout(() => {
-                SendInit(tries - 1);
-            }, 500);
-        }
-        return;
-    }
-
-    $body.addClass('mod-toolbox-rd');
-    $body.addClass('mod-toolbox');
-    setTimeout(() => {
-        profileResults('storageLoaded', performance.now());
-        const event = new CustomEvent('TBStorageLoaded');
-        window.dispatchEvent(event);
-    }, 10);
 }
 
 export function purify (input) {

@@ -1,54 +1,6 @@
 'use strict';
-// This is here because we load even before TBCore.
-const domain = window.location.hostname.split('.')[0];
 
-// Reset toolbox settings support
-// load storage if we're not on the reset page.
-if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {
-    document.addEventListener('esCompatReady', () => {
-        storagewrapper();
-    });
-} else {
-    startReset();
-}
-
-// Clear all toolbox related items.
-// After that direct users to a page confirming settings have been reset.
-function clearLocal () {
-    // Cache.
-    browser.runtime.sendMessage({
-        action: 'tb-cache',
-        method: 'clear',
-    }).then(() => {
-        // Wait a sec for stuff to clear.
-        setTimeout(() => {
-            window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
-        }, 1000);
-    });
-}
-
-function startReset () {
-    const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
-    if (r === true) {
-        // Chrome, Edge en firefox webextensions.
-        if (typeof chrome !== 'undefined') {
-            browser.storage.local.remove('tbsettings').then(() => {
-                // Wait a sec for stuff to clear.
-                setTimeout(() => {
-                    clearLocal();
-                }, 1000);
-            });
-
-        // Shouldn't happen as they don't have storage if this happens. But... you never know..
-        } else {
-            setTimeout(() => {
-                clearLocal();
-            }, 1000);
-        }
-    }
-}
-
-function storagewrapper () {
+document.addEventListener('esCompatReady', () => {
     (function (TBStorage) {
         const logger = TBLog('TBStorage');
         profileResults('storageStart', performance.now());
@@ -543,4 +495,4 @@ function storagewrapper () {
             return true;
         }
     })(window.TBStorage = window.TBStorage || {});
-}
+});

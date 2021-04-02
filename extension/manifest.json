@@ -140,7 +140,6 @@
             "js": [
                 "data/init.js",
                 "data/libs/tbplugins.js",
-                "data/tbstorage.js",
                 "data/tbcore.js",
                 "data/tbmodule.js",
                 "data/modules/devtools.js",
@@ -177,6 +176,7 @@
     "web_accessible_resources": [
         // ES6 modules
         "data/tblog.js",
+        "data/tbstorage.js",
         "data/tbapi.js",
         "data/tbui.js",
         "data/tbhelpers.js",

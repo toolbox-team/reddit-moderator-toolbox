@@ -44,12 +44,14 @@ async function checkReset () {
 	//       after the document receives the `esCompatReady` event.
 	const [
 		{default: TBLog},
+		TBStorage,
 		TBApi,
 		TBui,
 		TBHelpers,
 		{TBListener},
 	] = await Promise.all([
 		import(browser.runtime.getURL('data/tblog.js')),
+		import(browser.runtime.getURL('data/tbstorage.js')),
 		import(browser.runtime.getURL('data/tbapi.js')),
 		import(browser.runtime.getURL('data/tbui.js')),
 		import(browser.runtime.getURL('data/tbhelpers.js')),
@@ -57,6 +59,7 @@ async function checkReset () {
 	]);
 
 	window.TBLog = TBLog;
+	window.TBStorage = TBStorage;
 	window.TBApi = TBApi;
 	window.TBui = TBui;
 	window.TBHelpers = TBHelpers;

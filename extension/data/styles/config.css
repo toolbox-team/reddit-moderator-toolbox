@@ -33,7 +33,7 @@
 /* removal reasons */
 .mod-toolbox-rd .removal-reasons-content .removal-reason-label {
     white-space: break-spaces;
-    word-break: break-all;
+    overflow-wrap: anywhere;
 }
 
 /* ban-macro */

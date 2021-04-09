@@ -30,6 +30,12 @@
     z-index: 9999999999;
 }
 
+/* removal reasons */
+.mod-toolbox-rd .removal-reasons-content .removal-reason-label {
+    white-space: break-spaces;
+    overflow-wrap: anywhere;
+}
+
 /* ban-macro */
 
 .mod-toolbox-rd .tb-page-overlay.tb-config td {

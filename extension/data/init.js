@@ -39,92 +39,92 @@ async function checkReset () {
  * @returns {Promise<void>}
  */
 async function checkLoadConditions (tries = 3) {
-	let loggedinRedesign = false,
-	loggedinOld = false;
+    let loggedinRedesign = false,
+        loggedinOld = false;
 
-	const $body = $('body');
+    const $body = $('body');
 
-	// Check for redesign
-	if ($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) {
-		loggedinRedesign = true;
-	}
+    // Check for redesign
+    if ($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) {
+        loggedinRedesign = true;
+    }
 
-	// Check for old reddit
-	if ($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) {
-		loggedinOld = true;
-	}
+    // Check for old reddit
+    if ($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) {
+        loggedinOld = true;
+    }
 
-	if (!loggedinOld && !loggedinRedesign) {
-		if (tries < 1) {
-			// We've tried a bunch of times and still don't have anything, so
-			// assume there's no logged-in user
-			throw new Error('Did not detect a logged in user, Toolbox will not start');
-		} else {
-			// Give it another go
-			await new Promise(resolve => setTimeout(resolve, 500));
-			return checkLoadConditions(tries - 1);
-		}
-	}
+    if (!loggedinOld && !loggedinRedesign) {
+        if (tries < 1) {
+            // We've tried a bunch of times and still don't have anything, so
+            // assume there's no logged-in user
+            throw new Error('Did not detect a logged in user, Toolbox will not start');
+        } else {
+            // Give it another go
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return checkLoadConditions(tries - 1);
+        }
+    }
 
-	// When firefox updates extension they get reloaded including all content scripts. Old elements remain on the page though.
-	// Toolbox doesn't like this very much.
-	// We are using this class because of the migration mess with v4.
-	if ($body.hasClass('mod-toolbox')) {
-		$body.attr('toolbox-warning', 'This page must be reloaded for toolbox to function correctly.');
-		throw new Error('Toolbox has already been loaded in this window');
-	}
+    // When firefox updates extension they get reloaded including all content scripts. Old elements remain on the page though.
+    // Toolbox doesn't like this very much.
+    // We are using this class because of the migration mess with v4.
+    if ($body.hasClass('mod-toolbox')) {
+        $body.attr('toolbox-warning', 'This page must be reloaded for toolbox to function correctly.');
+        throw new Error('Toolbox has already been loaded in this window');
+    }
 
-	// https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
-	// https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
-	if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
-		throw new Error('Firefox is in Incognito mode, Toolbox will not work');
-	}
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
+    // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
+    if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
+        throw new Error('Firefox is in Incognito mode, Toolbox will not work');
+    }
 
-	$body.addClass('mod-toolbox');
+    $body.addClass('mod-toolbox');
 }
 
 (async () => {
-	// Handle settings reset and return early if we're doing that
-	if (await checkReset()) {
-		return;
-	}
+    // Handle settings reset and return early if we're doing that
+    if (await checkReset()) {
+        return;
+    }
 
-	// Ensure that other conditions are met, and return early if not
-	try {
-		await checkLoadConditions();
-	} catch (error) {
-		console.error(error);
-		return;
-	}
+    // Ensure that other conditions are met, and return early if not
+    try {
+        await checkLoadConditions();
+    } catch (error) {
+        console.error(error);
+        return;
+    }
 
-	// HACK: Exposes the contents of the helper function objects on the global
-	//       object to minimize the amount of work necessary to get existing modules
-	//       working with the new system. This should be removed once all modules
-	//       are converted to ES6 syntax and they can `import` the helpers
-	//       themselves. Note that these values are only guaranteed to be available
-	//       after the document receives the `esCompatReady` event.
-	const [
-		{default: TBLog},
-		TBStorage,
-		TBApi,
-		TBui,
-		TBHelpers,
-		{TBListener},
-	] = await Promise.all([
-		import(browser.runtime.getURL('data/tblog.js')),
-		import(browser.runtime.getURL('data/tbstorage.js')),
-		import(browser.runtime.getURL('data/tbapi.js')),
-		import(browser.runtime.getURL('data/tbui.js')),
-		import(browser.runtime.getURL('data/tbhelpers.js')),
-		import(browser.runtime.getURL('data/tblistener.js')),
-	]);
+    // HACK: Exposes the contents of the helper function objects on the global
+    //       object to minimize the amount of work necessary to get existing modules
+    //       working with the new system. This should be removed once all modules
+    //       are converted to ES6 syntax and they can `import` the helpers
+    //       themselves. Note that these values are only guaranteed to be available
+    //       after the document receives the `esCompatReady` event.
+    const [
+        {default: TBLog},
+        TBStorage,
+        TBApi,
+        TBui,
+        TBHelpers,
+        {TBListener},
+    ] = await Promise.all([
+        import(browser.runtime.getURL('data/tblog.js')),
+        import(browser.runtime.getURL('data/tbstorage.js')),
+        import(browser.runtime.getURL('data/tbapi.js')),
+        import(browser.runtime.getURL('data/tbui.js')),
+        import(browser.runtime.getURL('data/tbhelpers.js')),
+        import(browser.runtime.getURL('data/tblistener.js')),
+    ]);
 
-	window.TBLog = TBLog;
-	window.TBStorage = TBStorage;
-	window.TBApi = TBApi;
-	window.TBui = TBui;
-	window.TBHelpers = TBHelpers;
-	window.TBListener = new TBListener();
+    window.TBLog = TBLog;
+    window.TBStorage = TBStorage;
+    window.TBApi = TBApi;
+    window.TBui = TBui;
+    window.TBHelpers = TBHelpers;
+    window.TBListener = new TBListener();
 
-	window.document.dispatchEvent(new CustomEvent('esCompatReady'));
+    window.document.dispatchEvent(new CustomEvent('esCompatReady'));
 })();

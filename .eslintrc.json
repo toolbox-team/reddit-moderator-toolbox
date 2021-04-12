@@ -1,6 +1,6 @@
 {
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": 11
     },
     "env": {
         "browser": true,
@@ -28,10 +28,7 @@
     },
     "extends": "eslint:recommended",
     "rules": {
-        "strict": [
-            "error",
-            "global"
-        ],
+        "strict": "off",
         "no-prototype-builtins": "warn",
         "no-console": 0,
         "no-multi-spaces": "error",

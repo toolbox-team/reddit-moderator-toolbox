@@ -1,3 +1,7 @@
+import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
+import * as TBApi from './tbapi.js';
+
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -83,22 +87,61 @@ async function checkLoadConditions (tries = 3) {
     $body.addClass('mod-toolbox');
 }
 
+/**
+ * Gets a list of all subreddits the current user moderates from the API.
+ * @param {string} [after] Pagination parameter used for recursion
+ * @returns {Promise<string[]>}
+ */
+async function getModSubs (after) {
+    let json;
+    try {
+        json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
+            after,
+            limit: 100,
+        });
+        TBStorage.purifyObject(json);
+    } catch (error) {
+        if (error.response && error.response.status === 504) {
+            // Always retry 504s
+            return getModSubs(after);
+        } else {
+            throw error;
+        }
+    }
+
+    // If there are more subs left, fetch them and return everything
+    if (json.data.after) {
+        return [...json.data.children, ...await getModSubs(json.data.after)];
+    } else {
+        return json.data.children;
+    }
+}
+
+/**
+ * Gets information about the current user from the API.
+ * @param {number} [tries=3] Number of times to retry because of 504s
+ * @returns {Promise<object>}
+ */
+async function getUserDetails (tries = 3) {
+    try {
+        const data = await TBApi.getJSON('/api/me.json');
+        TBStorage.purifyObject(data);
+        return data;
+    } catch (error) {
+        if (error.response && error.response.status === 504 && tries > 1) {
+            // Always retry 504s
+            return getUserDetails(tries - 1);
+        } else {
+            throw error;
+        }
+    }
+}
+
 (async () => {
     // Handle settings reset and return early if we're doing that
     if (await checkReset()) {
         return;
     }
-
-    // Import the modules we'll need for the init process
-    const [
-        {default: TBLog},
-        TBStorage,
-        TBApi,
-    ] = await Promise.all([
-        import(browser.runtime.getURL('data/tblog.js')),
-        import(browser.runtime.getURL('data/tbstorage.js')),
-        import(browser.runtime.getURL('data/tbapi.js')),
-    ]);
 
     // HACK: We still need to export TBLog to some stuff for legacy logging
     window.TBLog = TBLog;
@@ -112,56 +155,6 @@ async function checkLoadConditions (tries = 3) {
     } catch (error) {
         logger.error('Load condition not met:', error.message);
         return;
-    }
-
-    /**
-     * Gets a list of all subreddits the current user moderates from the API.
-     * @param {string} [after] Pagination parameter used for recursion
-     * @returns {Promise<string[]>}
-     */
-    async function getModSubs (after) {
-        let json;
-        try {
-            json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
-                after,
-                limit: 100,
-            });
-            TBStorage.purifyObject(json);
-        } catch (error) {
-            if (error.response && error.response.status === 504) {
-            // Always retry 504s
-                return getModSubs(after);
-            } else {
-                throw error;
-            }
-        }
-
-        // If there are more subs left, fetch them and return everything
-        if (json.data.after) {
-            return [...json.data.children, ...await getModSubs(json.data.after)];
-        } else {
-            return json.data.children;
-        }
-    }
-
-    /**
-     * Gets information about the current user from the API.
-     * @param {number} [tries=3] Number of times to retry because of 504s
-     * @returns {Promise<object>}
-     */
-    async function getUserDetails (tries = 3) {
-        try {
-            const data = await TBApi.getJSON('/api/me.json');
-            TBStorage.purifyObject(data);
-            return data;
-        } catch (error) {
-            if (error.response && error.response.status === 504 && tries > 1) {
-            // Always retry 504s
-                return getUserDetails(tries - 1);
-            } else {
-                throw error;
-            }
-        }
     }
 
     // Get the current state of a bunch of cache values

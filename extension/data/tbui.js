@@ -1,6 +1,7 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';
+import * as TBHelpers from './tbhelpers.js';
 
 const logger = TBLog('TBui');
 const $body = $('body');

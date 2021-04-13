@@ -1,7 +1,21 @@
 
-window.TBCoreInitWrapper = function initwrapper ({userDetails, newModSubs, cacheDetails}) {
+window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs, cacheDetails}) {
+    const [
+        {default: TBLog},
+        TBStorage,
+        TBApi,
+        TBui,
+        TBHelpers,
+    ] = await Promise.all([
+        import(browser.runtime.getURL('data/tblog.js')),
+        import(browser.runtime.getURL('data/tbstorage.js')),
+        import(browser.runtime.getURL('data/tbapi.js')),
+        import(browser.runtime.getURL('data/tbui.js')),
+        import(browser.runtime.getURL('data/tbhelpers.js')),
+    ]);
+
     /** @namespace  TBCore */
-    (function (TBCore) {
+    (TBCore => {
         // We need these before we can do anything.
         TBCore.userDetails = userDetails;
         TBCore.modhash = userDetails.data.modhash;

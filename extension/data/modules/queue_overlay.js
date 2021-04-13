@@ -1,4 +1,6 @@
 import {Module} from '../tbmodule.js';
+import * as TBStorage from '../tbstorage.js';
+import * as TBui from '../tbui.js';
 
 const self = new Module('Queue Overlay');
 self.shortname = 'queueOverlay';

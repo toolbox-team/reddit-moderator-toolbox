@@ -1,4 +1,8 @@
 import {Module} from '../tbmodule.js';
+import * as TBStorage from '../tbstorage.js';
+import * as TBApi from '../tbapi.js';
+import * as TBui from '../tbui.js';
+import * as TBHelpers from '../tbhelpers.js';
 
 const self = new Module('User Notes');
 self.shortname = 'UserNotes';
@@ -1156,7 +1160,7 @@ self.usernotesManager = function () {
 };
 
 // Get usernotes from wiki
-self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
+self.getUserNotes = function (subreddit, callback, forceSkipCache) {
     self.log(`Getting usernotes (sub=${subreddit})`);
 
     if (!callback) {

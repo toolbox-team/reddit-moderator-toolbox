@@ -1,3 +1,9 @@
+import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
+import * as TBui from './tbui.js';
+import * as TBHelpers from './tbhelpers.js';
+import TBListener from './tblistener.js';
+
 function tbmodule () {
     window.TB = {
         ui: TBui,

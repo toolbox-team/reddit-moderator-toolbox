@@ -1,4 +1,6 @@
 import {Module} from '../tbmodule.js';
+import * as TBStorage from '../tbstorage.js';
+import * as TBApi from '../tbapi.js';
 
 const self = new Module('Mod Log Matrix');
 self.shortname = 'ModMatrix'; // backwards compatibility

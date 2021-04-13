@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import {escapeHTML} from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('Developer Tools');
 self.shortname = 'DevTools';

@@ -1,4 +1,7 @@
 import {Module} from '../tbmodule.js';
+import * as TBStorage from '../tbstorage.js';
+import * as TBApi from '../tbapi.js';
+import * as TBHelpers from '../tbhelpers.js';
 
 const self = new Module('Notifier');
 self.shortname = 'Notifier';

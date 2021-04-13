@@ -1,4 +1,6 @@
 import {Module} from '../tbmodule.js';
+import * as TBStorage from '../tbstorage.js';
+import * as TBHelpers from '../tbhelpers.js';
 
 const self = new Module('Mod Mail Pro');
 self.shortname = 'ModMail';

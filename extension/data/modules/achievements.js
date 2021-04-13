@@ -1,4 +1,5 @@
 import {Module} from '../tbmodule.js';
+import * as TBHelpers from '../tbhelpers.js';
 
 const self = new Module('Achievements');
 self.shortname = 'Achievements';

@@ -83,65 +83,28 @@ async function checkLoadConditions (tries = 3) {
     $body.addClass('mod-toolbox');
 }
 
-/**
- * Gets a list of all subreddits the current user moderates from the API.
- * @param {string} [after] Pagination parameter used for recursion
- * @returns {Promise<string[]>}
- */
-async function getModSubs (after) {
-    let json;
-    try {
-        json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
-            after,
-            limit: 100,
-        });
-        TBStorage.purifyObject(json);
-    } catch (error) {
-        if (error.response && error.response.status === 504) {
-            // Always retry 504s
-            return getModSubs(after);
-        } else {
-            throw error;
-        }
-    }
-
-    // If there are more subs left, fetch them and return everything
-    if (json.data.after) {
-        return [...json.data.children, ...await getModSubs(json.data.after)];
-    } else {
-        return json.data.children;
-    }
-}
-
-/**
- * Gets information about the current user from the API.
- * @param {number} [tries=3] Number of times to retry because of 504s
- * @returns {Promise<object>}
- */
-async function getUserDetails (tries = 3) {
-    try {
-        const data = await TBApi.getJSON('/api/me.json');
-        TBStorage.purifyObject(data);
-        return data;
-    } catch (error) {
-        if (error.response && error.response.status === 504 && tries > 1) {
-            // Always retry 504s
-            return getUserDetails(tries - 1);
-        } else {
-            throw error;
-        }
-    }
-}
-
 (async () => {
-    // Import the logger early since we need to log things
-    const {default: TBLog} = await import(browser.runtime.getURL('data/tblog.js'));
-    const logger = TBLog('Init');
-
     // Handle settings reset and return early if we're doing that
     if (await checkReset()) {
         return;
     }
+
+    // Import the modules we'll need for the init process
+    const [
+        {default: TBLog},
+        TBStorage,
+        TBApi,
+    ] = await Promise.all([
+        import(browser.runtime.getURL('data/tblog.js')),
+        import(browser.runtime.getURL('data/tbstorage.js')),
+        import(browser.runtime.getURL('data/tbapi.js')),
+    ]);
+
+    // HACK: We still need to export TBLog to some stuff for legacy logging
+    window.TBLog = TBLog;
+
+    // Create a logger
+    const logger = TBLog('Init');
 
     // Ensure that other conditions are met, and return early if not
     try {
@@ -151,32 +114,55 @@ async function getUserDetails (tries = 3) {
         return;
     }
 
-    // HACK: Exposes the contents of the helper function objects on the global
-    //       object to minimize the amount of work necessary to get existing modules
-    //       working with the new system. This should be removed once all modules
-    //       are converted to ES6 syntax and they can `import` the helpers
-    //       themselves. Note that these values are only guaranteed to be available
-    //       after the document receives the `esCompatReady` event.
-    const [
-        TBStorage,
-        TBApi,
-        TBui,
-        TBHelpers,
-        {default: TBListener},
-    ] = await Promise.all([
-        import(browser.runtime.getURL('data/tbstorage.js')),
-        import(browser.runtime.getURL('data/tbapi.js')),
-        import(browser.runtime.getURL('data/tbui.js')),
-        import(browser.runtime.getURL('data/tbhelpers.js')),
-        import(browser.runtime.getURL('data/tblistener.js')),
-    ]);
-    window.TBStorage = TBStorage;
-    window.TBApi = TBApi;
-    window.TBui = TBui;
-    window.TBHelpers = TBHelpers;
-    window.TBListener = TBListener;
-    // We imported TBLog earlier, but still need to make it global
-    window.TBLog = TBLog;
+    /**
+     * Gets a list of all subreddits the current user moderates from the API.
+     * @param {string} [after] Pagination parameter used for recursion
+     * @returns {Promise<string[]>}
+     */
+    async function getModSubs (after) {
+        let json;
+        try {
+            json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
+                after,
+                limit: 100,
+            });
+            TBStorage.purifyObject(json);
+        } catch (error) {
+            if (error.response && error.response.status === 504) {
+            // Always retry 504s
+                return getModSubs(after);
+            } else {
+                throw error;
+            }
+        }
+
+        // If there are more subs left, fetch them and return everything
+        if (json.data.after) {
+            return [...json.data.children, ...await getModSubs(json.data.after)];
+        } else {
+            return json.data.children;
+        }
+    }
+
+    /**
+     * Gets information about the current user from the API.
+     * @param {number} [tries=3] Number of times to retry because of 504s
+     * @returns {Promise<object>}
+     */
+    async function getUserDetails (tries = 3) {
+        try {
+            const data = await TBApi.getJSON('/api/me.json');
+            TBStorage.purifyObject(data);
+            return data;
+        } catch (error) {
+            if (error.response && error.response.status === 504 && tries > 1) {
+            // Always retry 504s
+                return getUserDetails(tries - 1);
+            } else {
+                throw error;
+            }
+        }
+    }
 
     // Get the current state of a bunch of cache values
     const cacheDetails = {

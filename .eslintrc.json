@@ -10,13 +10,7 @@
     },
     "globals": {
         "TB": true,
-        "TBListener": true,
         "TBCore": true,
-        "TBHelpers": true,
-        "TBApi": true,
-        "TBui": true,
-        "TBStorage": true,
-        "TBLog": true,
         "CodeMirror": true,
         "redditapi": true,
         "browser": true,

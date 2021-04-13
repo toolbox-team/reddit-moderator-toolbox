@@ -206,40 +206,40 @@ async function getUserDetails (tries = 3) {
     });
 
     // Load feature modules and register them
-    const moduleLoads = [
-        import(browser.runtime.getURL('data/modules/devtools.js')),
-        import(browser.runtime.getURL('data/modules/support.js')),
-        import(browser.runtime.getURL('data/modules/modbar.js')),
-        import(browser.runtime.getURL('data/modules/config.js')),
-        import(browser.runtime.getURL('data/modules/betterbuttons.js')),
-        import(browser.runtime.getURL('data/modules/domaintagger.js')),
-        import(browser.runtime.getURL('data/modules/modmatrix.js')),
-        import(browser.runtime.getURL('data/modules/syntax.js')),
-        import(browser.runtime.getURL('data/modules/modbutton.js')),
-        import(browser.runtime.getURL('data/modules/general.js')),
-        import(browser.runtime.getURL('data/modules/notifier.js')),
-        import(browser.runtime.getURL('data/modules/usernotes.js')),
-        import(browser.runtime.getURL('data/modules/comment.js')),
-        import(browser.runtime.getURL('data/modules/newmodmailpro.js')),
-        import(browser.runtime.getURL('data/modules/modmailpro.js')),
-        import(browser.runtime.getURL('data/modules/macros.js')),
-        import(browser.runtime.getURL('data/modules/personalnotes.js')),
-        import(browser.runtime.getURL('data/modules/historybutton.js')),
-        import(browser.runtime.getURL('data/modules/removalreasons.js')),
-        import(browser.runtime.getURL('data/modules/nukecomments.js')),
-        import(browser.runtime.getURL('data/modules/trouble.js')),
-        import(browser.runtime.getURL('data/modules/profile.js')),
-        import(browser.runtime.getURL('data/modules/queue_overlay.js')),
-        import(browser.runtime.getURL('data/modules/flyingsnoo.js')),
-        import(browser.runtime.getURL('data/modules/queuetools.js')),
-        import(browser.runtime.getURL('data/modules/achievements.js')),
-        import(browser.runtime.getURL('data/modules/oldreddit.js')),
-    ].map(moduleLoad => moduleLoad.then(({default: m}) => {
-        logger.debug('Initializing module', m);
+    await Promise.all([
+        'data/modules/devtools.js',
+        'data/modules/support.js',
+        'data/modules/modbar.js',
+        'data/modules/config.js',
+        'data/modules/betterbuttons.js',
+        'data/modules/domaintagger.js',
+        'data/modules/modmatrix.js',
+        'data/modules/syntax.js',
+        'data/modules/modbutton.js',
+        'data/modules/general.js',
+        'data/modules/notifier.js',
+        'data/modules/usernotes.js',
+        'data/modules/comment.js',
+        'data/modules/newmodmailpro.js',
+        'data/modules/modmailpro.js',
+        'data/modules/macros.js',
+        'data/modules/personalnotes.js',
+        'data/modules/historybutton.js',
+        'data/modules/removalreasons.js',
+        'data/modules/nukecomments.js',
+        'data/modules/trouble.js',
+        'data/modules/profile.js',
+        'data/modules/queue_overlay.js',
+        'data/modules/flyingsnoo.js',
+        'data/modules/queuetools.js',
+        'data/modules/achievements.js',
+        'data/modules/oldreddit.js',
+    ].map(async modulePath => {
+        const {default: m} = await import(browser.runtime.getURL(modulePath));
+        logger.debug('Registering module', m);
         window.TB.register_module(m);
     }));
 
-    // Once all modules are loaded, call TB.init()
-    await Promise.all(moduleLoads);
+    // Once all modules are registered, call TB.init() to run them
     window.TB.init();
 })();

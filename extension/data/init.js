@@ -83,7 +83,65 @@ async function checkLoadConditions (tries = 3) {
     $body.addClass('mod-toolbox');
 }
 
+/**
+ * Gets a list of all subreddits the current user moderates from the API.
+ * @param {string} [after] Pagination parameter used for recursion
+ * @returns {Promise<string[]>}
+ */
+async function getModSubs (after) {
+    let json;
+    try {
+        json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
+            after,
+            limit: 100,
+        });
+        TBStorage.purifyObject(json);
+    } catch (error) {
+        if (error.response && error.response.status === 504) {
+            // Always retry 504s
+            return getModSubs(after);
+        } else {
+            throw error;
+        }
+    }
+
+    // If there are more subs left, fetch them and return everything
+    if (json.data.after) {
+        return [...json.data.children, ...await getModSubs(json.data.after)];
+    } else {
+        return json.data.children;
+    }
+}
+
+/**
+ * Gets information about the current user from the API.
+ * @param {number} [tries=3] Number of times to retry because of 504s
+ * @returns {Promise<object>}
+ */
+async function getUserDetails (tries = 3) {
+    try {
+        const data = await TBApi.getJSON('/api/me.json');
+        TBStorage.purifyObject(data);
+        return data;
+    } catch (error) {
+        if (error.response && error.response.status === 504 && tries > 1) {
+            // Always retry 504s
+            return getUserDetails(tries - 1);
+        } else {
+            throw error;
+        }
+    }
+}
+
+const storageLoadedPromise = new Promise(resolve => {
+    window.addEventListener('TBStorageLoaded', resolve, {once: true});
+});
+
 (async () => {
+    // Import the logger early since we need to log things
+    const {default: TBLog} = await import(browser.runtime.getURL('data/tblog.js'));
+    const logger = TBLog('Init');
+
     // Handle settings reset and return early if we're doing that
     if (await checkReset()) {
         return;
@@ -93,7 +151,7 @@ async function checkLoadConditions (tries = 3) {
     try {
         await checkLoadConditions();
     } catch (error) {
-        console.error(error);
+        logger.error('Load condition not met:', error.message);
         return;
     }
 
@@ -104,27 +162,76 @@ async function checkLoadConditions (tries = 3) {
     //       themselves. Note that these values are only guaranteed to be available
     //       after the document receives the `esCompatReady` event.
     const [
-        {default: TBLog},
         TBStorage,
         TBApi,
         TBui,
         TBHelpers,
         {TBListener},
     ] = await Promise.all([
-        import(browser.runtime.getURL('data/tblog.js')),
         import(browser.runtime.getURL('data/tbstorage.js')),
         import(browser.runtime.getURL('data/tbapi.js')),
         import(browser.runtime.getURL('data/tbui.js')),
         import(browser.runtime.getURL('data/tbhelpers.js')),
         import(browser.runtime.getURL('data/tblistener.js')),
     ]);
-
-    window.TBLog = TBLog;
     window.TBStorage = TBStorage;
     window.TBApi = TBApi;
     window.TBui = TBui;
     window.TBHelpers = TBHelpers;
     window.TBListener = new TBListener();
+    // We imported TBLog earlier, but still need to make it global
+    window.TBLog = TBLog;
 
-    window.document.dispatchEvent(new CustomEvent('esCompatReady'));
+    // Get the current state of a bunch of cache values
+    const cacheDetails = {
+        cacheName: await TBStorage.getCache('Utils', 'cacheName', ''),
+        moderatedSubs: await TBStorage.getCache('Utils', 'moderatedSubs', []),
+        moderatedSubsData: await TBStorage.getCache('Utils', 'moderatedSubsData', []),
+        configCache: await TBStorage.getCache('Utils', 'configCache', {}),
+        rulesCache: await TBStorage.getCache('Utils', 'rulesCache', {}),
+        noConfig: await TBStorage.getCache('Utils', 'noConfig', []),
+        noRules: await TBStorage.getCache('Utils', 'noRules', []),
+    };
+
+    // Get user details from the API, falling back to cache if necessary
+    let userDetails;
+    try {
+        userDetails = await getUserDetails();
+        if (!userDetails) {
+            throw new Error('User details are empty');
+        }
+        if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
+            TBStorage.setCache('Utils', 'userDetails', userDetails);
+        }
+    } catch (error) {
+        logger.warn('Failed to get user details from API, getting from cache instead.', error);
+        userDetails = TBStorage.getCache('Utils', 'userDetails');
+    }
+    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
+        logger.error('Toolbox does not have user details and cannot start.');
+        return;
+    }
+
+    // Get moderated subreddits from the API if cache is empty
+    let newModSubs;
+    if (cacheDetails.moderatedSubs.length === 0) {
+        try {
+            logger.debug('No modsubs in cache, fetching them');
+            newModSubs = await getModSubs();
+        } catch (error) {
+            logger.warn('Failed to get moderated subreddits, and none are cached. Continuing with none.', error);
+        }
+    }
+
+    // Initialize TBCore on the global object
+    window.TBCoreInitWrapper({
+        userDetails,
+        cacheDetails,
+        newModSubs,
+    });
+
+    // Don't emit TBCoreLoaded before TBStorageLoaded
+    await storageLoadedPromise;
+
+    window.dispatchEvent(new CustomEvent('TBCoreLoaded'));
 })();

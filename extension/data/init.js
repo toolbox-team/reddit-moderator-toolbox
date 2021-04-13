@@ -1,6 +1,5 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
-import * as TBApi from './tbapi.js';
 import {delay} from './tbhelpers.js';
 
 /**
@@ -86,55 +85,11 @@ async function checkLoadConditions (tries = 3) {
     $body.addClass('mod-toolbox');
 }
 
-/**
- * Gets a list of all subreddits the current user moderates from the API.
- * @param {string} [after] Pagination parameter used for recursion
- * @returns {Promise<string[]>}
- */
-async function getModSubs (after) {
-    let json;
-    try {
-        json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
-            after,
-            limit: 100,
-        });
-        TBStorage.purifyObject(json);
-    } catch (error) {
-        if (error.response && error.response.status === 504) {
-            // Always retry 504s
-            return getModSubs(after);
-        } else {
-            throw error;
-        }
-    }
-
-    // If there are more subs left, fetch them and return everything
-    if (json.data.after) {
-        return [...json.data.children, ...await getModSubs(json.data.after)];
-    } else {
-        return json.data.children;
-    }
-}
-
-/**
- * Gets information about the current user from the API.
- * @param {number} [tries=3] Number of times to retry because of 504s
- * @returns {Promise<object>}
- */
-async function getUserDetails (tries = 3) {
-    try {
-        const data = await TBApi.getJSON('/api/me.json');
-        TBStorage.purifyObject(data);
-        return data;
-    } catch (error) {
-        if (error.response && error.response.status === 504 && tries > 1) {
-            // Always retry 504s
-            return getUserDetails(tries - 1);
-        } else {
-            throw error;
-        }
-    }
-}
+/** A promise that will resolve once TBCore is ready. */
+// TODO
+const coreLoadedPromise = new Promise(resolve => {
+    window.addEventListener('_coreLoaded', resolve, {once: true});
+});
 
 (async () => {
     // Handle settings reset and return early if we're doing that
@@ -162,55 +117,8 @@ async function getUserDetails (tries = 3) {
         return;
     }
 
-    // Get the current state of a bunch of cache values
-    const cacheDetails = {
-        cacheName: await TBStorage.getCache('Utils', 'cacheName', ''),
-        moderatedSubs: await TBStorage.getCache('Utils', 'moderatedSubs', []),
-        moderatedSubsData: await TBStorage.getCache('Utils', 'moderatedSubsData', []),
-        noteCache: await TBStorage.getCache('Utils', 'notesCache', {}),
-        configCache: await TBStorage.getCache('Utils', 'configCache', {}),
-        rulesCache: await TBStorage.getCache('Utils', 'rulesCache', {}),
-        noConfig: await TBStorage.getCache('Utils', 'noConfig', []),
-        noNotes: await TBStorage.getCache('Utils', 'noNotes', []),
-        noRules: await TBStorage.getCache('Utils', 'noRules', []),
-    };
-
-    // Get user details from the API, falling back to cache if necessary
-    let userDetails;
-    try {
-        userDetails = await getUserDetails();
-        if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
-            TBStorage.setCache('Utils', 'userDetails', userDetails);
-        } else {
-            throw new Error('Fetched user details are empty or invalid');
-        }
-    } catch (error) {
-        logger.warn('Failed to get user details from API, getting from cache instead.', error);
-        userDetails = TBStorage.getCache('Utils', 'userDetails');
-    }
-    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
-        logger.error('Toolbox does not have user details and cannot start.');
-        return;
-    }
-
-    // Get moderated subreddits from the API if cache is empty
-    let newModSubs;
-    if (cacheDetails.moderatedSubs.length === 0) {
-        try {
-            logger.debug('No modsubs in cache, fetching them');
-            newModSubs = await getModSubs();
-        } catch (error) {
-            logger.warn('Failed to get moderated subreddits, and none are cached. Continuing with none.', error);
-        }
-    }
-
-    // Initialize TBCore on the global object
-    await import(browser.runtime.getURL('data/tbcore.js'));
-    window.TBCoreInitWrapper({
-        userDetails,
-        cacheDetails,
-        newModSubs,
-    });
+    import(browser.runtime.getURL('data/tbcore.js'));
+    await coreLoadedPromise;
 
     // Load feature modules and register them
     await Promise.all([

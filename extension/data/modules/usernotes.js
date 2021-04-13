@@ -197,7 +197,7 @@ self.usernotes = function usernotes () {
                     `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.` :
                     `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
 
-                window.TBCore.alert(msg, clicked => {
+                TBCore.alert(msg, clicked => {
                     if (clicked) {
                         window.open(notes.ver > TBCore.notesMaxSchema ? '/r/toolbox/wiki/get' :
                             `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`);
@@ -601,7 +601,7 @@ self.usernotes = function usernotes () {
             let saveMsg;
             if (notes) {
                 if (notes.corrupted) {
-                    window.TBCore.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
+                    TBCore.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
                 }
 
                 const u = getUser(notes.users, user);
@@ -1240,7 +1240,7 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
             if (notes.ver <= TBCore.notesDeprecatedSchema) {
                 self.log(`Found deprecated notes in ${subreddit}: S${notes.ver}`);
 
-                window.TBCore.alert(
+                TBCore.alert(
                     `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBCore.notesSchema}.`,
                     clicked => {
                         if (clicked) {

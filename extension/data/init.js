@@ -1,8 +1,7 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';
-
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+import {delay} from './tbhelpers.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and

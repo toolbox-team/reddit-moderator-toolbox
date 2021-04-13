@@ -1,6 +1,9 @@
-import TBLog from './tblog.js';
-
-const logger = TBLog('TBHelpers');
+/**
+ * Returns a promise that resolves after the given time.
+ * @param {number} ms Number of milliseconds to delay
+ * @returns {Promise<void>}
+ */
+export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * Debounces a given function based on a given timeout.
@@ -612,7 +615,6 @@ export function cleanSubredditName (dirtySub) {
  * @returns {string} token replaced text!
  */
 export function replaceTokens (info, content) {
-    logger.log(info);
     for (const i of Object.keys(info)) {
         const pattern = new RegExp(`{${i}}`, 'mig');
         content = content.replace(pattern, info[i]);

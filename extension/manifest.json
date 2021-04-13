@@ -146,6 +146,7 @@
     ],
     "web_accessible_resources": [
         // ES6 modules
+        "data/init.js",
         "data/tblog.js",
         "data/tbstorage.js",
         "data/tbapi.js",

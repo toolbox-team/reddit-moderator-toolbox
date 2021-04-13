@@ -1086,7 +1086,7 @@ function usernotes () {
                 ],
                 [], // extra header buttons
                 'tb-un-editor', // class
-                false // single overriding footer
+                false, // single overriding footer
             ).appendTo('body');
             $body.css('overflow', 'hidden');
 
@@ -1157,7 +1157,7 @@ function usernotes () {
     };
 
     // Get usernotes from wiki
-    self.getUserNotes = function (subreddit, callback, forceSkipCache) {
+    self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
         self.log(`Getting usernotes (sub=${subreddit})`);
 
         if (!callback) {
@@ -1169,13 +1169,17 @@ function usernotes () {
 
         // Check cache (if not skipped)
         if (!forceSkipCache) {
-            if (TBCore.noteCache[subreddit] !== undefined) {
+            // TODO: These should really be stored under usernotes rather than utils
+            const noteCache = await TBStorage.getCache('Utils', 'noteCache', {});
+            const noNotesCache = await TBStorage.getCache('Utils', 'noNotes', []);
+
+            if (noteCache[subreddit] !== undefined) {
                 self.log('notes found in cache');
-                callback(true, TBCore.noteCache[subreddit], subreddit);
+                callback(true, noteCache[subreddit], subreddit);
                 return;
             }
 
-            if (TBCore.noNotes.indexOf(subreddit) !== -1) {
+            if (noNotesCache.indexOf(subreddit) !== -1) {
                 self.log('found in NoNotes cache');
                 returnFalse();
                 return;
@@ -1249,7 +1253,7 @@ function usernotes () {
                                     }
                                 });
                             }
-                        }
+                        },
                     );
                 }
 

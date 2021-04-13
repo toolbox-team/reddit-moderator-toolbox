@@ -259,9 +259,7 @@ window.TBCoreInitWrapper = function initwrapper ({userDetails, newModSubs, cache
         }
 
         // Get cached info. Short stored.
-        TBCore.noteCache = cacheDetails.noteCache;
         TBCore.noConfig = cacheDetails.noConfig;
-        TBCore.noNotes = cacheDetails.noNotes;
 
         // Get cached info. Long stored.
         TBCore.configCache = cacheDetails.configCache;
@@ -1409,11 +1407,9 @@ window.TBCoreInitWrapper = function initwrapper ({userDetails, newModSubs, cache
         TBCore.clearCache = function (calledFromBackground) {
             logger.log('TBCore.clearCache()');
 
-            TBCore.noteCache = {};
             TBCore.configCache = {};
             TBCore.rulesCache = {};
             TBCore.noConfig = [];
-            TBCore.noNotes = [];
             TBCore.noRules = [];
             TBCore.mySubs = [];
             TBCore.mySubsData = [];
@@ -1472,9 +1468,7 @@ window.TBCoreInitWrapper = function initwrapper ({userDetails, newModSubs, cache
                 logger.log('Timed cache update', message.payload);
                 // Cache has timed out
                 if (message.payload === 'short') {
-                    TBCore.noteCache = {};
                     TBCore.noConfig = [];
-                    TBCore.noNotes = [];
                 }
 
                 if (message.payload === 'long') {

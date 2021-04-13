@@ -14,7 +14,6 @@ function tbmodule () {
         },
 
         init: function tbInit () {
-            profileResults('tbInit', performance.now());
             initLoop();
 
             function initLoop () {
@@ -57,7 +56,6 @@ function tbmodule () {
 
                     // Start the event listener once everything else is initialized
                     TB.listener.start();
-                    profileResults('tbInitDone', performance.now());
                 }, 50);
             }
         },
@@ -288,7 +286,7 @@ function tbmodule () {
                 // overlay main class
                 'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
                 // optional, overriding single footer
-                `<input class="tb-save tb-action-button" type="button" value="save">${TBCore.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
+                `<input class="tb-save tb-action-button" type="button" value="save">${TBCore.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
             );
 
             // Add ordering attributes to the existing tabs so we can insert other special tabs around them
@@ -1096,11 +1094,8 @@ body {
 }
 
 window.addEventListener('TBCoreLoaded', () => {
-    profileResults('moduleStart', performance.now());
-
     $.log('TBModule has TBCore', false, 'TBinit');
     tbmodule();
-    profileResults('moduleLoaded', performance.now());
     const event = new CustomEvent('TBModuleLoaded');
     window.dispatchEvent(event);
 });

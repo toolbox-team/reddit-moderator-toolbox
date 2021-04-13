@@ -1,7 +1,6 @@
 import TBLog from './tblog.js';
 
 const logger = TBLog('TBStorage');
-profileResults('storageStart', performance.now());
 
 /**
  * The current subdomain (NOT full domain).

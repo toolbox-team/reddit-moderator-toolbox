@@ -23,8 +23,7 @@
         "SnuOwnd": true,
         "pako": true,
         "tinycolor": true,
-        "DOMPurify": true,
-        "profileResults": true
+        "DOMPurify": true
     },
     "extends": "eslint:recommended",
     "rules": {

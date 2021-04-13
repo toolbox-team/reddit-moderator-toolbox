@@ -228,6 +228,8 @@ async function getUserDetails (tries = 3) {
 
     // Load feature modules and register them
     [
+        import(browser.runtime.getURL('data/modules/devtools.js')),
+        import(browser.runtime.getURL('data/modules/support.js')),
         import(browser.runtime.getURL('data/modules/modbar.js')),
     ].forEach(moduleLoad => moduleLoad.then(({default: m}) => {
         logger.debug('Initializing module', m);

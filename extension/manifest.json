@@ -141,8 +141,6 @@
                 "data/init.js",
                 "data/libs/tbplugins.js",
                 "data/tbcore.js",
-                "data/modules/devtools.js",
-                "data/modules/support.js",
                 "data/modules/config.js",
                 "data/modules/betterbuttons.js",
                 "data/modules/domaintagger.js",
@@ -181,6 +179,8 @@
         "data/tblistener.js",
         "data/tbmodule.js",
 
+        "data/modules/devtools.js",
+        "data/modules/support.js",
         "data/modules/modbar.js",
 
         // Other stuff

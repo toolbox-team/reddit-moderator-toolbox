@@ -1168,17 +1168,13 @@ self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
 
     // Check cache (if not skipped)
     if (!forceSkipCache) {
-        // TODO: These should really be stored under usernotes rather than utils
-        const noteCache = await TBStorage.getCache('Utils', 'noteCache', {});
-        const noNotesCache = await TBStorage.getCache('Utils', 'noNotes', []);
-
-        if (noteCache[subreddit] !== undefined) {
+        if (TBCore.noteCache[subreddit] !== undefined) {
             self.log('notes found in cache');
-            callback(true, noteCache[subreddit], subreddit);
+            callback(true, TBCore.noteCache[subreddit], subreddit);
             return;
         }
 
-        if (noNotesCache.indexOf(subreddit) !== -1) {
+        if (TBCore.noNotes.indexOf(subreddit) !== -1) {
             self.log('found in NoNotes cache');
             returnFalse();
             return;

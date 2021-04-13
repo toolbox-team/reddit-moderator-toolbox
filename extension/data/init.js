@@ -183,9 +183,11 @@ async function getUserDetails (tries = 3) {
         cacheName: await TBStorage.getCache('Utils', 'cacheName', ''),
         moderatedSubs: await TBStorage.getCache('Utils', 'moderatedSubs', []),
         moderatedSubsData: await TBStorage.getCache('Utils', 'moderatedSubsData', []),
+        noteCache: await TBStorage.getCache('Utils', 'notesCache', {}),
         configCache: await TBStorage.getCache('Utils', 'configCache', {}),
         rulesCache: await TBStorage.getCache('Utils', 'rulesCache', {}),
         noConfig: await TBStorage.getCache('Utils', 'noConfig', []),
+        noNotes: await TBStorage.getCache('Utils', 'noNotes', []),
         noRules: await TBStorage.getCache('Utils', 'noRules', []),
     };
 

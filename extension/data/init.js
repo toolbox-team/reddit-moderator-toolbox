@@ -133,10 +133,6 @@ async function getUserDetails (tries = 3) {
     }
 }
 
-const storageLoadedPromise = new Promise(resolve => {
-    window.addEventListener('TBStorageLoaded', resolve, {once: true});
-});
-
 (async () => {
     // Import the logger early since we need to log things
     const {default: TBLog} = await import(browser.runtime.getURL('data/tblog.js'));
@@ -230,8 +226,11 @@ const storageLoadedPromise = new Promise(resolve => {
         newModSubs,
     });
 
-    // Don't emit TBCoreLoaded before TBStorageLoaded
-    await storageLoadedPromise;
-
-    window.dispatchEvent(new CustomEvent('TBCoreLoaded'));
+    // Load feature modules and register them
+    [
+        import(browser.runtime.getURL('data/modules/modbar.js')),
+    ].forEach(moduleLoad => moduleLoad.then(({default: m}) => {
+        logger.debug('Initializing module', m);
+        window.TB.register_module(m);
+    }));
 })();

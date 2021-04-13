@@ -1,4 +1,3 @@
-'use strict';
 function tbmodule () {
     window.TB = {
         ui: TBui,
@@ -6,10 +5,13 @@ function tbmodule () {
         listener: TBListener,
 
         modules: {},
-        moduleList: [],
+
+        /** @deprecated */
+        get moduleList () {
+            return Object.values(TB.modules).map(mod => mod.shortname);
+        },
 
         register_module (module) {
-            this.moduleList.push(module.shortname);
             this.modules[module.shortname] = module;
         },
 
@@ -964,138 +966,137 @@ body {
                 });
             });
         },
+
     };
 
-    // Prototype for all toolbox modules
-    TB.Module = function Module (name) {
-    // PUBLIC: Module Metadata
-        this.name = name;
-
-        this.config = {
-            betamode: false,
-            devmode: false,
-        };
-
-        this.settings = {};
-        this.settingsList = [];
-
-        this.register_setting = function register_setting (name, setting) {
-            this.settingsList.push(name);
-            this.settings[name] = setting;
-        };
-
-        this.register_setting('enabled', { // this one serves as an example as well as the absolute minimum setting that every module has
-            type: 'boolean',
-            default: false,
-            betamode: false, // optional
-            hidden: false, // optional
-            title: `Enable ${this.name}`,
-        });
-
-        // PUBLIC: settings interface
-        this.setting = function (name, value, syncSetting = true) {
-        // are we setting or getting?
-            if (typeof value !== 'undefined') {
-            // setting
-                return TB.storage.setSetting(this.shortname, name, value, syncSetting);
-            } else {
-            // getting
-            // do we have a default?
-                if (Object.prototype.hasOwnProperty.call(this.settings, name)
-                && Object.prototype.hasOwnProperty.call(this.settings[name], 'default')
-                ) {
-                // we know what the default should be
-                    return TB.storage.getSetting(this.shortname, name, this.settings[name]['default']);
-                } else {
-                // getSetting defaults to null for default value, no need to pass it explicitly
-                    return TB.storage.getSetting(this.shortname, name);
-                }
-            }
-        };
-
-        // Logging utilities
-        Object.assign(this, TBLog(this));
-
-        // Profiling
-
-        const profile = new Map(),
-              startTimes = new Map();
-
-        this.startProfile = function (key) {
-            if (!TBCore.debugMode) {
-                return;
-            }
-
-            startTimes.set(key, performance.now());
-
-            if (!profile.has(key)) {
-                // New key: add a new profile
-                profile.set(key, {time: 0, calls: 1});
-            } else {
-                // Existing key: increment calls
-                profile.get(key).calls++;
-            }
-        };
-
-        this.endProfile = function (key) {
-            if (!TBCore.debugMode) {
-                return;
-            }
-
-            // Never started profiling for the key
-            if (!startTimes.has(key)) {
-                return;
-            }
-
-            // Get spent time
-            const diff = performance.now() - startTimes.get(key);
-            startTimes.delete(key);
-
-            // Must have been started, so the object exists
-            profile.get(key).time += diff;
-        };
-
-        this.getProfiles = function () {
-            return profile;
-        };
-
-        this.getProfile = function (key) {
-            return profile.get(key);
-        };
-
-        this.printProfiles = function () {
-            this.log(`Profiling results: ${this.name}`);
-            this.log('--------------------------');
-            const loopthis = this;
-            this.getProfiles().forEach((profile, key) => {
-                loopthis.log(`${key}:`);
-                loopthis.log(`\tTime  = ${profile.time.toFixed(4)}`);
-                loopthis.log(`\tCalls = ${profile.calls}`);
-            });
-            this.log('--------------------------');
-        };
-
-        // PUBLIC: placeholder init(), just in case
-        this.init = function init () {
-        // pass
-        };
-    };
-
-    TB.Module.prototype = {
-        _shortname: '',
-        get shortname () {
-            // return name.trim().toLowerCase().replace(' ', '_');
-            return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(/\s/g, '');
-        },
-        set shortname (val) {
-            this._shortname = val;
-        },
-    };
+    TB.Module = Module;
 }
 
-window.addEventListener('TBCoreLoaded', () => {
-    $.log('TBModule has TBCore', false, 'TBinit');
-    tbmodule();
-    const event = new CustomEvent('TBModuleLoaded');
-    window.dispatchEvent(event);
-});
+// Prototype for all toolbox modules
+export function Module (name) {
+    // PUBLIC: Module Metadata
+    this.name = name;
+
+    this.config = {
+        betamode: false,
+        devmode: false,
+    };
+
+    this.settings = {};
+    this.settingsList = [];
+
+    this.register_setting = function register_setting (name, setting) {
+        this.settingsList.push(name);
+        this.settings[name] = setting;
+    };
+
+    this.register_setting('enabled', { // this one serves as an example as well as the absolute minimum setting that every module has
+        type: 'boolean',
+        default: false,
+        betamode: false, // optional
+        hidden: false, // optional
+        title: `Enable ${this.name}`,
+    });
+
+    // PUBLIC: settings interface
+    this.setting = function (name, value, syncSetting = true) {
+        // are we setting or getting?
+        if (typeof value !== 'undefined') {
+            // setting
+            return TB.storage.setSetting(this.shortname, name, value, syncSetting);
+        } else {
+            // getting
+            // do we have a default?
+            if (Object.prototype.hasOwnProperty.call(this.settings, name)
+                && Object.prototype.hasOwnProperty.call(this.settings[name], 'default')
+            ) {
+                // we know what the default should be
+                return TB.storage.getSetting(this.shortname, name, this.settings[name]['default']);
+            } else {
+                // getSetting defaults to null for default value, no need to pass it explicitly
+                return TB.storage.getSetting(this.shortname, name);
+            }
+        }
+    };
+
+    // Logging utilities
+    Object.assign(this, TBLog(this));
+
+    // Profiling
+
+    const profile = new Map(),
+          startTimes = new Map();
+
+    this.startProfile = function (key) {
+        if (!TBCore.debugMode) {
+            return;
+        }
+
+        startTimes.set(key, performance.now());
+
+        if (!profile.has(key)) {
+            // New key: add a new profile
+            profile.set(key, {time: 0, calls: 1});
+        } else {
+            // Existing key: increment calls
+            profile.get(key).calls++;
+        }
+    };
+
+    this.endProfile = function (key) {
+        if (!TBCore.debugMode) {
+            return;
+        }
+
+        // Never started profiling for the key
+        if (!startTimes.has(key)) {
+            return;
+        }
+
+        // Get spent time
+        const diff = performance.now() - startTimes.get(key);
+        startTimes.delete(key);
+
+        // Must have been started, so the object exists
+        profile.get(key).time += diff;
+    };
+
+    this.getProfiles = function () {
+        return profile;
+    };
+
+    this.getProfile = function (key) {
+        return profile.get(key);
+    };
+
+    this.printProfiles = function () {
+        this.log(`Profiling results: ${this.name}`);
+        this.log('--------------------------');
+        const loopthis = this;
+        this.getProfiles().forEach((profile, key) => {
+            loopthis.log(`${key}:`);
+            loopthis.log(`\tTime  = ${profile.time.toFixed(4)}`);
+            loopthis.log(`\tCalls = ${profile.calls}`);
+        });
+        this.log('--------------------------');
+    };
+
+    // PUBLIC: placeholder init(), just in case
+    this.init = function init () {
+        // pass
+    };
+}
+Module.prototype = {
+    _shortname: '',
+    get shortname () {
+        // return name.trim().toLowerCase().replace(' ', '_');
+        return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(/\s/g, '');
+    },
+    set shortname (val) {
+        this._shortname = val;
+    },
+};
+
+tbmodule();
+const event = new CustomEvent('TBModuleLoaded');
+window.dispatchEvent(event);

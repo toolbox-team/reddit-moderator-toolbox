@@ -181,11 +181,10 @@ async function checkLoadConditions (tries = 3) {
     let userDetails;
     try {
         userDetails = await getUserDetails();
-        if (!userDetails) {
-            throw new Error('User details are empty');
-        }
         if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
             TBStorage.setCache('Utils', 'userDetails', userDetails);
+        } else {
+            throw new Error('Fetched user details are empty or invalid');
         }
     } catch (error) {
         logger.warn('Failed to get user details from API, getting from cache instead.', error);

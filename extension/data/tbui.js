@@ -1957,7 +1957,7 @@ $body.on('click', '.tb-load-more-comments', function () {
                 $thisMoreComments.before($comments.html());
             });
 
-            tbRedditEvent($comments, 'comment');
+            tbRedditEvent($comments);
 
             processCount += 1;
             if (processCount === commentIDcount) {

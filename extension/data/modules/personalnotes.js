@@ -263,9 +263,7 @@ self.init = function () {
         newNotename = newNotename.trim();
         newNotename = TBHelpers.title_to_url(newNotename);
 
-        if (newNotename === '') {
-            TB.ui.textFeedback('You should try filling in an actual name...', TB.ui.FEEDBACK_NEGATIVE);
-        } else if (notesArray.includes(newNotename)) {
+        if (notesArray.includes(newNotename)) {
             TB.ui.textFeedback('That already is a note.', TB.ui.FEEDBACK_NEGATIVE);
         } else {
             notesArray.push(newNotename);

@@ -53,7 +53,7 @@ function log (type, ...args) {
         // Styles for the type name
         `color: ${color}; background: ${background}; padding: 0 3px; border-radius: 3px`,
         // The rest of the arguments are passed through unmodified
-        ...args
+        ...args,
     );
 }
 

@@ -1098,5 +1098,3 @@ Module.prototype = {
 };
 
 tbmodule();
-const event = new CustomEvent('TBModuleLoaded');
-window.dispatchEvent(event);

@@ -227,7 +227,7 @@ async function getUserDetails (tries = 3) {
     });
 
     // Load feature modules and register them
-    [
+    const moduleLoads = [
         import(browser.runtime.getURL('data/modules/devtools.js')),
         import(browser.runtime.getURL('data/modules/support.js')),
         import(browser.runtime.getURL('data/modules/modbar.js')),
@@ -255,8 +255,12 @@ async function getUserDetails (tries = 3) {
         import(browser.runtime.getURL('data/modules/queuetools.js')),
         import(browser.runtime.getURL('data/modules/achievements.js')),
         import(browser.runtime.getURL('data/modules/oldreddit.js')),
-    ].forEach(moduleLoad => moduleLoad.then(({default: m}) => {
+    ].map(moduleLoad => moduleLoad.then(({default: m}) => {
         logger.debug('Initializing module', m);
         window.TB.register_module(m);
     }));
+
+    // Once all modules are loaded, call TB.init()
+    await Promise.all(moduleLoads);
+    window.TB.init();
 })();

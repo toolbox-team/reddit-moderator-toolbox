@@ -140,8 +140,7 @@
             "js": [
                 "data/init.js",
                 "data/libs/tbplugins.js",
-                "data/tbcore.js",
-                "data/tbmoduleinit.js"
+                "data/tbcore.js"
             ]
         }
     ],

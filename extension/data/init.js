@@ -162,7 +162,7 @@ async function getUserDetails (tries = 3) {
         TBApi,
         TBui,
         TBHelpers,
-        {TBListener},
+        {default: TBListener},
     ] = await Promise.all([
         import(browser.runtime.getURL('data/tbstorage.js')),
         import(browser.runtime.getURL('data/tbapi.js')),
@@ -174,7 +174,7 @@ async function getUserDetails (tries = 3) {
     window.TBApi = TBApi;
     window.TBui = TBui;
     window.TBHelpers = TBHelpers;
-    window.TBListener = new TBListener();
+    window.TBListener = TBListener;
     // We imported TBLog earlier, but still need to make it global
     window.TBLog = TBLog;
 

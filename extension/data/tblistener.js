@@ -48,7 +48,7 @@ function remove (array, item) {
     return !!~index && !!array.splice(index, 1);
 }
 
-export class TBListener {
+class TBListener {
     /**
      * Create a new instance of TBListener. Nothing happens yet until TBListener.start() has been called
      */
@@ -252,3 +252,5 @@ export class TBListener {
         }
     }
 }
+
+export default new TBListener();

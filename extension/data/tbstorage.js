@@ -38,12 +38,6 @@ const initialLoadPromise = browser.storage.local.get('tbsettings').then(sObject 
         TBsettingsObject = {};
     }
 
-    // TODO: Don't emit a TBStorage event; code should be cleaned up to use
-    //       async storage methods that handle the initial loading wait time
-    //       internally, rather than consumer code listening for this event.
-    const event = new CustomEvent('TBStorageLoaded');
-    window.dispatchEvent(event);
-
     // Once that's all done, this promise will fulfill and pending storage calls
     // will be unblocked.
 });

@@ -1865,107 +1865,111 @@ const storageLoadedPromise = new Promise(resolve => {
 
 document.addEventListener('esCompatReady', async () => {
     const logger = TBLog('TBCore init');
-    // wait for storage
-    function getModSubs (after, callback) {
-        let modSubs = [];
-        TBApi.getJSON('/subreddits/mine/moderator.json', {
-            after,
-            limit: 100,
-        }).then(json => {
+
+    /**
+     * Gets a list of all subreddits the current user moderates from the API.
+     * @param {string} [after] Pagination parameter used for recursion
+     * @returns {Promise<string[]>}
+     */
+    async function getModSubs (after) {
+        let json;
+        try {
+            json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
+                after,
+                limit: 100,
+            });
             TBStorage.purifyObject(json);
-            modSubs = modSubs.concat(json.data.children);
-
-            if (json.data.after) {
-                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
-            } else {
-                return callback(modSubs);
-            }
-        }).catch(error => {
-            logger.log('getModSubs failed', error);
+        } catch (error) {
             if (error.response && error.response.status === 504) {
-                logger.log('504 Timeout retrying request');
-                getModSubs(after, subs => callback(modSubs.concat(subs)));
-            } else {
-                modSubs = [];
-                return callback(modSubs);
-            }
-        });
-    }
-
-    function getUserDetails (tries = 0) {
-        return TBApi.getJSON('/api/me.json').then(data => {
-            TBStorage.purifyObject(data);
-            logger.log(data);
-            return data;
-        }).catch(error => {
-            logger.log('getUserDetails failed', error);
-            if (error.response && error.response.status === 504 && tries < 4) {
-                logger.log('504 Timeout retrying request');
-                return getUserDetails(tries + 1);
+                // Always retry 504s
+                return getModSubs(after);
             } else {
                 throw error;
             }
-        });
+        }
+
+        // If there are more subs left, fetch them and return everything
+        if (json.data.after) {
+            return [...json.data.children, ...await getModSubs(json.data.after)];
+        } else {
+            return json.data.children;
+        }
     }
 
-    async function modsubInit (cacheDetails, userDetails) {
-        if (cacheDetails.moderatedSubs.length === 0) {
-            logger.log('No modsubs in cache, getting mod subs before initalizing');
-            getModSubs(null, async subs => {
-                initwrapper({
-                    userDetails,
-                    newModSubs: subs,
-                    cacheDetails,
-                });
-                await storageLoadedPromise; // don't emit TBCoreLoaded before TBStorageLoaded
-                profileResults('utilsLoaded', performance.now());
-                const event = new CustomEvent('TBCoreLoaded');
-                window.dispatchEvent(event);
-            });
-        } else {
-            initwrapper({userDetails, cacheDetails});
-            await storageLoadedPromise; // don't emit TBCoreLoaded before TBStorageLoaded
-            profileResults('utilsLoaded', performance.now());
-            const event = new CustomEvent('TBCoreLoaded');
-            window.dispatchEvent(event);
+    /**
+     * Gets information about the current user from the API.
+     * @param {number} [tries=3] Number of times to retry because of 504s
+     * @returns {Promise<object>}
+     */
+    async function getUserDetails (tries = 3) {
+        try {
+            const data = await TBApi.getJSON('/api/me.json');
+            TBStorage.purifyObject(data);
+            return data;
+        } catch (error) {
+            if (error.response && error.response.status === 504 && tries > 1) {
+                // Always retry 504s
+                return getUserDetails(tries - 1);
+            } else {
+                throw error;
+            }
         }
     }
 
     profileResults('utilsStart', performance.now());
     const SETTINGS_NAME = 'Utils';
+
+    // Get the current state of a bunch of cache values
     const cacheDetails = {
         cacheName: await TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
         moderatedSubs: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []),
         moderatedSubsData: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []),
-        noteCache: await TBStorage.getCache(SETTINGS_NAME, 'noteCache', {}),
         configCache: await TBStorage.getCache(SETTINGS_NAME, 'configCache', {}),
         rulesCache: await TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {}),
         noConfig: await TBStorage.getCache(SETTINGS_NAME, 'noConfig', []),
-        noNotes: await TBStorage.getCache(SETTINGS_NAME, 'noNotes', []),
         noRules: await TBStorage.getCache(SETTINGS_NAME, 'noRules', []),
     };
 
+    // Get user details from the API, falling back to cache if necessary
     let userDetails;
-
     try {
         userDetails = await getUserDetails();
-        if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
-            TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
-        }
-
         if (!userDetails) {
             throw new Error('User details are empty');
         }
+        if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
+            TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
+        }
     } catch (error) {
-        logger.warn('Could not get user details through API.', error);
-
-        logger.log('Attempting to use user detail cache.');
-        userDetails = await TBStorage.getCache(SETTINGS_NAME, 'userDetails', {});
+        logger.warn('Failed to get user details from API, getting from cache instead.', error);
+        userDetails = TBStorage.getCache(SETTINGS_NAME, 'userDetails');
+    }
+    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
+        logger.error('Toolbox does not have user details and cannot start.');
+        return;
     }
 
-    if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
-        modsubInit(cacheDetails, userDetails);
-    } else {
-        logger.error('Toolbox does not have user details and cannot not start.');
+    // Get moderated subreddits from the API if cache is empty
+    let newModSubs;
+    if (cacheDetails.moderatedSubs.length === 0) {
+        try {
+            logger.debug('No modsubs in cache, fetching them');
+            newModSubs = await getModSubs();
+        } catch (error) {
+            logger.warn('Failed to get moderated subreddits, and none are cached. Continuing with none.', error);
+        }
     }
+
+    // Initialize TBCore on the global object
+    initwrapper({
+        userDetails,
+        cacheDetails,
+        newModSubs,
+    });
+
+    // Don't emit TBCoreLoaded before TBStorageLoaded
+    await storageLoadedPromise;
+
+    profileResults('utilsLoaded', performance.now());
+    window.dispatchEvent(new CustomEvent('TBCoreLoaded'));
 });

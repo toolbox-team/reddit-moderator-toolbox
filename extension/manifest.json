@@ -139,8 +139,7 @@
             ],
             "js": [
                 "content_script.js",
-                "data/libs/tbplugins.js",
-                "data/tbcore.js"
+                "data/libs/tbplugins.js"
             ]
         }
     ],
@@ -152,6 +151,7 @@
         "data/tbapi.js",
         "data/tbui.js",
         "data/tbhelpers.js",
+        "data/tbcore.js",
         "data/tblistener.js",
         "data/tbmodule.js",
 

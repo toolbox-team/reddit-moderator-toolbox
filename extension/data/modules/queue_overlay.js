@@ -1,6 +1,7 @@
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Queue Overlay');
 self.shortname = 'queueOverlay';
@@ -109,7 +110,7 @@ self.init = function () {
         } else {
             newUrl = `/r/${multi}/about/${type}/`;
         }
-        $iframe.attr('src', `${TBCore.link(newUrl)}?embedded=true`);
+        $iframe.attr('src', `${window.TBCore.link(newUrl)}?embedded=true`);
     }
 
     /**
@@ -221,7 +222,7 @@ self.init = function () {
             $reloadListing.addClass('loading');
             TBui.longLoadSpinner(true);
 
-            $iframe.attr('src', `${TBCore.link(listUrl)}?embedded=true`);
+            $iframe.attr('src', `${window.TBCore.link(listUrl)}?embedded=true`);
         }
 
         // No listing is open in the tab yet. Create needed elements and load iframe.
@@ -233,7 +234,7 @@ self.init = function () {
             const $reloadListing = $tabContent.find('.tb-queue-reload');
             const listUrl = figureOutMulti($tbQueueUrl, type, subreddit);
 
-            const $iframe = $(`<iframe src="${TBCore.link(listUrl)}?embedded=true" class="tb-queue-iframe"></iframe>`).appendTo($tabContent);
+            const $iframe = $(`<iframe src="${window.TBCore.link(listUrl)}?embedded=true" class="tb-queue-iframe"></iframe>`).appendTo($tabContent);
 
             // Handle reloading from the reload button.
             $reloadListing.on('click', () => {

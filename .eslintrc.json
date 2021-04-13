@@ -10,7 +10,6 @@
     },
     "globals": {
         "TB": true,
-        "TBCore": true,
         "CodeMirror": true,
         "redditapi": true,
         "browser": true,
@@ -32,6 +31,7 @@
         "no-constant-condition": "warn",
         "space-infix-ops": "error",
         "no-sequences": "error",
+        "no-use-before-define": ["error", "nofunc"],
         "no-multiple-empty-lines": [
             "error",
             {

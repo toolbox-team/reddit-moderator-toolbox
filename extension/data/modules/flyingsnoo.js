@@ -1,4 +1,5 @@
 import {Module} from '../tbmodule.js';
+import * as TBCore from '../tbcore.js';
 
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety
@@ -27,7 +28,7 @@ self.init = function () {
               height = 145;
 
         // unlock achievement
-        TBCore.sendEvent(TBCore.events.TB_FLY_SNOO);
+        window.TBCore.sendEvent(window.TBCore.events.TB_FLY_SNOO);
 
         const floater = $('<div></div>').css({
             height: `${height}px`,
@@ -83,7 +84,7 @@ self.init = function () {
                 floater.css('background', `url(${browser.runtime.getURL('data/images/snoo_splat.png')})`);
 
                 // unlock achievement
-                TBCore.sendEvent(TBCore.events.TB_KILL_SNOO);
+                window.TBCore.sendEvent(window.TBCore.events.TB_KILL_SNOO);
             } else {
                 requestAnimationFrame(killSnoo);
             }

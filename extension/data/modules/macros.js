@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Mod Macros');
 self.shortname = 'ModMacros';
@@ -14,14 +15,14 @@ self.init = function () {
           MACROS = 'TB-MACROS';
 
     function getConfig (sub, callback) {
-        if (TBCore.noConfig.indexOf(sub) !== -1) {
-            self.log('TBCore.noConfig.indexOf(sub) != -1');
+        if (window.TBCore.noConfig.indexOf(sub) !== -1) {
+            self.log('window.TBCore.noConfig.indexOf(sub) != -1');
             return callback(false);
         }
 
         // get our config.
-        if (TBCore.configCache[sub] !== undefined) {
-            return callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
+        if (window.TBCore.configCache[sub] !== undefined) {
+            return callback(checkConfig(window.TBCore.configCache[sub]), window.TBCore.configCache[sub].modMacros);
         } else {
             TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
                 if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
@@ -31,14 +32,14 @@ self.init = function () {
 
                 if (resp === TBCore.NO_WIKI_PAGE) {
                     self.log('resp === TBCore.NO_WIKI_PAGE');
-                    TBCore.updateCache('noConfig', sub, false);
+                    window.TBCore.updateCache('noConfig', sub, false);
                     return callback(false);
                 }
                 TBStorage.purifyObject(resp);
 
                 // We likely have a good config, but maybe not domain tags.
-                TBCore.updateCache('configCache', resp, sub);
-                return callback(checkConfig(TBCore.configCache[sub]), TBCore.configCache[sub].modMacros);
+                window.TBCore.updateCache('configCache', resp, sub);
+                return callback(checkConfig(window.TBCore.configCache[sub]), window.TBCore.configCache[sub].modMacros);
             });
         }
 
@@ -95,8 +96,8 @@ self.init = function () {
     }
 
     if (TBCore.isOldReddit) {
-        TBCore.getModSubs(() => {
-            if (TBCore.post_site && TBCore.mySubs.includes(TBCore.post_site)) {
+        window.TBCore.getModSubs(() => {
+            if (TBCore.post_site && window.TBCore.mySubs.includes(TBCore.post_site)) {
                 self.log('getting config');
                 getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
@@ -122,7 +123,7 @@ self.init = function () {
             const $this = $(this);
             if ($this.text() === 'reply') {
                 const $thing = $this.closest('.thing'),
-                      info = TBCore.getThingInfo($thing, true);
+                      info = window.TBCore.getThingInfo($thing, true);
 
                 // This is because reddit clones the top-level reply box for all reply boxes.
                 // We need to remove it before adding the new one, because the new one works differently.
@@ -161,7 +162,7 @@ self.init = function () {
     // Add macro button in new modmail
     function addNewMMMacro () {
         const $thing = $body.find('.InfoBar'),
-              info = TBCore.getThingInfo($thing, true);
+              info = window.TBCore.getThingInfo($thing, true);
 
         // Don't add macro button twice.
         if ($body.find('.tb-usertext-buttons').length) {
@@ -204,8 +205,8 @@ self.init = function () {
             const subreddit = commentDetails.data.subreddit.name;
             const thingID = commentDetails.data.id;
 
-            TBCore.getModSubs(() => {
-                if (TBCore.modsSub(subreddit)) {
+            window.TBCore.getModSubs(() => {
+                if (window.TBCore.modsSub(subreddit)) {
                     getConfig(subreddit, (success, config) => {
                         // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {
@@ -229,8 +230,8 @@ self.init = function () {
         if (event.detail.pageType === 'subredditCommentsPage') {
             const subreddit = event.detail.pageDetails.subreddit;
 
-            TBCore.getModSubs(() => {
-                if (TBCore.modsSub(subreddit)) {
+            window.TBCore.getModSubs(() => {
+                if (window.TBCore.modsSub(subreddit)) {
                     getConfig(subreddit, (success, config) => {
                         // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {
@@ -524,9 +525,9 @@ self.init = function () {
         // If it's a top-level reply we need to find the post's info.
         if (topLevel) {
             self.log('toplevel');
-            info = TBCore.getThingInfo($('#siteTable').find('.thing:first'));
+            info = window.TBCore.getThingInfo($('#siteTable').find('.thing:first'));
         } else {
-            info = TBCore.getThingInfo($this.closest('.thing'));
+            info = window.TBCore.getThingInfo($this.closest('.thing'));
         }
 
         self.log(info);
@@ -536,7 +537,7 @@ self.init = function () {
                 const macro = config[index];
 
                 if (thingID) {
-                    TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
+                    window.TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
                         $this.attr('id', `macro-dropdown-${thinginfo.id}`);
                         editMacro($this, thinginfo, macro, topLevel);
                     });

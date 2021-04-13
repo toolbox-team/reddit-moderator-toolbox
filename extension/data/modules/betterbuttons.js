@@ -1,5 +1,6 @@
 import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Better Buttons');
 self.shortname = 'BButtons';
@@ -322,11 +323,11 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports () {
 self.initAddRemoveButtons = function initRemoveButtons () {
     // only need to iterate if at least one of the options is enabled
     const $things = $('.thing.link:not(.tb-removebuttons-checked)');
-    TBCore.forEachChunkedDynamic($things, item => {
+    window.TBCore.forEachChunkedDynamic($things, item => {
         const $thing = $(item);
         $thing.addClass('tb-removebuttons-checked');
 
-        const thing = TBCore.getThingInfo(item, true);
+        const thing = window.TBCore.getThingInfo(item, true);
 
         if (self.setting('spamRemoved')) {
             // only for subreddits we mod
@@ -428,7 +429,7 @@ self.initCommentLock = function () {
 
     function commentLockRun () {
         const $comments = $('div.comment:not(.tb-lock-button)');
-        TBCore.forEachChunkedDynamic($comments, processComment);
+        window.TBCore.forEachChunkedDynamic($comments, processComment);
     }
 
     function processComment (comment) {
@@ -450,7 +451,7 @@ self.initCommentLock = function () {
         const $lockButton = $(event.target);
 
         const action = $lockButton.attr('tb-action');
-        const info = TBCore.getThingInfo(this, true);
+        const info = window.TBCore.getThingInfo(this, true);
         const data = {
             id: info.id,
         };

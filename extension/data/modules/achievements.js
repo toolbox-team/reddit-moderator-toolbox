@@ -1,5 +1,6 @@
 import {Module} from '../tbmodule.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Achievements');
 self.shortname = 'Achievements';
@@ -58,7 +59,7 @@ function Manager () {
                   maxValue = maxValues[i];
 
             self.log('Registering Achievement');
-            if (TBCore.devMode) {
+            if (window.TBCore.devMode) {
                 self.log(`  name=${title}`);
             } // spoilers
             self.log(`  maxValue=${maxValue}`);
@@ -107,7 +108,7 @@ function Manager () {
                 }
 
                 self.log(`${title} Unlocked!`);
-                TBCore.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.shortname}`);
+                window.TBCore.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.shortname}`);
             }
         }
 
@@ -228,8 +229,8 @@ self.init = function () {
     });
 
     // toolbox Loves You: Look at the about page
-    self.manager.register(`<a href="${TBCore.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
-        TBCore.catchEvent(TBCore.events.TB_ABOUT_PAGE, () => {
+    self.manager.register(`<a href="${window.TBCore.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
+        window.TBCore.catchEvent(window.TBCore.events.TB_ABOUT_PAGE, () => {
             self.manager.unlock(saveIndex);
         });
     });
@@ -245,9 +246,9 @@ self.init = function () {
     self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", saveIndex => {
         $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
             const $this = $(this);
-            const auth = TBCore.getThingInfo($this).author;
+            const auth = window.TBCore.getThingInfo($this).author;
 
-            if (TBCore.tbDevs.indexOf(auth) !== -1) {
+            if (window.TBCore.tbDevs.indexOf(auth) !== -1) {
                 self.manager.unlock(saveIndex, 1);
             }
             // TODO: wait for 'yes' click.
@@ -268,7 +269,7 @@ self.init = function () {
         });
 
         // If the API is used
-        TBCore.catchEvent(TBCore.events.TB_APPROVE_THING, () => {
+        window.TBCore.catchEvent(window.TBCore.events.TB_APPROVE_THING, () => {
             self.manager.unlock(saveIndex, 1);
         });
     });
@@ -289,14 +290,14 @@ self.init = function () {
 
     // Found flying Snoo
     self.manager.register('Cadbury Bunny', 'Found flying Snoo.', saveIndex => {
-        TBCore.catchEvent(TBCore.events.TB_FLY_SNOO, () => {
+        window.TBCore.catchEvent(window.TBCore.events.TB_FLY_SNOO, () => {
             self.manager.unlock(saveIndex);
         });
     });
 
     // Killed Snoo
     self.manager.register('you bastard!', 'Killed Snoo.', saveIndex => {
-        TBCore.catchEvent(TBCore.events.TB_KILL_SNOO, () => {
+        window.TBCore.catchEvent(window.TBCore.events.TB_KILL_SNOO, () => {
             self.manager.unlock(saveIndex);
         });
     });

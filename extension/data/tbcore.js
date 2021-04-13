@@ -1,28 +1,166 @@
+import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
+import * as TBApi from './tbapi.js';
+import * as TBui from './tbui.js';
+import * as TBHelpers from './tbhelpers.js';
 
-window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs, cacheDetails}) {
-    const [
-        {default: TBLog},
-        TBStorage,
-        TBApi,
-        TBui,
-        TBHelpers,
-    ] = await Promise.all([
-        import(browser.runtime.getURL('data/tblog.js')),
-        import(browser.runtime.getURL('data/tbstorage.js')),
-        import(browser.runtime.getURL('data/tbapi.js')),
-        import(browser.runtime.getURL('data/tbui.js')),
-        import(browser.runtime.getURL('data/tbhelpers.js')),
-    ]);
+// Module exports
 
+/** If true, this version of Toolbox is a beta release. */
+export const betaRelease = false; // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+
+// Schema versioning information
+// TODO: Put these into the files they're used in, rather than keeping them here
+export const configSchema = 1;
+export const configMinSchema = 1;
+export const configMaxSchema = 1;
+export const notesSchema = 6;
+export const notesMinSchema = 4;
+export const notesDeprecatedSchema = 4;
+export const notesMaxSchema = 6; // The non-default max version (to allow phase-in schema releases)
+
+// Generated version strings
+const manifest = browser.runtime.getManifest();
+const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
+const matchVersion = manifest.version_name.match(versionRegex);
+export const toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
+export const toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
+export const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
+
+// Details about the current page
+export const isMod = $('body.moderator').length;
+export const isOldReddit = $('#header').length;
+export const isNewModmail = location.host === 'mod.reddit.com';
+export const isNewMMThread = $('body').find('.ThreadViewer').length > 0;
+export const isEmbedded = $('body').hasClass('embedded-page');
+export const isExtension = true;
+export let pageDetails = {};
+
+// Additional location checks to determine the type of page we're on
+export const isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
+export const isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
+export const isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|edited)\/?/);
+export const isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
+export const isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
+export const isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
+export const isUserPage = location.pathname.match(/\/(?:user)\/?/);
+export const isCommentsPage = location.pathname.match(/\?*\/(?:comments)\/?/);
+export const isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
+export const isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
+export const isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
+
+/**
+ * The base domain to use for links to content on Reddit. If we are on new
+ * modmail we use www.reddit.com; wnywhere else we use whatever is the current
+ * domain.
+ */
+export const baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
+
+// Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
+const invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'];
+export let post_site = isModFakereddit || $('.redditname:not(.pagename) a:first').html() || ''; // This may need to be changed to regex, if this is unreliable.
+if (isModFakereddit || post_site === undefined || !post_site || invalidPostSites.indexOf(post_site) !== -1) {
+    post_site = '';
+}
+
+// Error codes used in lots of places
+export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
+export const WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
+
+const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
+/** The name of the current browser. */
+export const browserName =
+    typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style
+        ? FIREFOX
+        : typeof chrome !== 'undefined'
+            ? navigator.userAgent.includes(' OPR/')
+                ? OPERA
+                : navigator.userAgent.includes(' Edg/')
+                    ? EDGE
+                    : CHROME
+            : UNKNOWN_BROWSER;
+
+// Random quote generator
+const randomQuotes = [
+    "Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
+    "Simple solution, don't use nightmode....",
+    'Nightmode users are a buncha nerds.',
+    "Oh, so that's where that code went, I thought i had lost it somehow.",
+    'Are all close buttons pretty now?!?!?',
+    'As a Business Analyst myself...',
+    "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
+    'You are now an approvened submitter',
+    "Translate creesch's Klingon settings to English.",
+    'Cuz Uncle Jessy was hot and knew the Beach Boys',
+    "Don't worry too much. There's always extra pieces.",
+    'Make the check actually check.',
+    "I dunno what this 'Safari' thing is.",
+    'eeeeew... why is there PHP code in this room?',
+    'nah there is an actual difference between stuff',
+    '...have you paid money *out of your own pocket* to anyone to vet this product?',
+    'first I want to make sure my thing actually does work sort of',
+    "Don't let \"perfect\" get in the way of \"good.\"",
+    'damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me',
+    "It's not even kinda bad... It's strangely awful.",
+    'Like a good neighbor, /u/andytuba is there',
+    'toolbox is build on beer',
+    'aww, i thought this was about real tools',
+    'my poop never smelled worse than when i lived off pizza bagel bites',
+    'Little dot, little dot ♪ You are not so little anymore ♫',
+    "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
+    'Luu',
+    'I go two and hope for the best.',
+    'oh dammit, I forgot to include url shit',
+    'I think I just released a broken release',
+    'BECAUSE I AM THE LAW!!!',
+];
+/** A random quote for the about page, determined at page load. */
+export const RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
+
+const randomTextFeedbacks = [
+    'Please hold, your call is important to us.',
+    'Remember, toolbox loves you.',
+    'toolbox will be back later, gone fishing.',
+    "toolbox is 'doing things', don't ask.",
+    'Tuning probability drive parameters.',
+    'Initiating data transfer: NSA_backdoor_package. ',
+    'Please post puppy pictures, they are so fluffy!',
+    'RES is visiting for a sleepover,  no time right now',
+    'toolbox is on strike, we demand more karma!',
+    'brb... kicking Gustavobc from #toolbox',
+    'Requesting a new insurance quote from /u/andytuba',
+    'Sending all your data to Pyongyang',
+    'Contacting lizard overlords for instructions',
+    'Releasing raptors',
+    'Booting robot uprising',
+    'I need to tell you something critically important! I am sure I will remember in a moment...',
+    "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK",
+    'One sec... catching some bugs',
+    'Here listen to some music while you wait, https://youtu.be/dQw4w9WgXcQ',
+    'Me? No. I\'m no docter but it looks like you have a broken toe.',
+    'Boo! Scared yeh didn\'t I?',
+    'Having issues? Try double jumping!',
+    'Hold on, need a bathroom break!',
+    'When in doubt, check the lost and found.',
+    'Rustling some jimmies.',
+    'Hello and, again, welcome to the Toolbox Science computer-aided enrichment center.',
+    'Run, Snoo, Run!',
+];
+/** A random text message for long loading tasks, determined at page load. */
+export const RandomFeedback = randomTextFeedbacks[Math.floor(Math.random() * randomTextFeedbacks.length)];
+
+// Global object shenanigans
+
+window.TBCoreInitWrapper = function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     /** @namespace  TBCore */
     (TBCore => {
+        const logger = TBLog('TBCore');
+
         // We need these before we can do anything.
         TBCore.userDetails = userDetails;
         TBCore.modhash = userDetails.data.modhash;
 
         TBCore.logged = userDetails.data.name;
-
-        TBCore.post_site = $('.redditname:not(.pagename) a:first').html(); // This may need to be changed to regex, if this is unreliable.
 
         if (window.location.hostname === 'mod.reddit.com') {
             $('body').addClass('mod-toolbox-new-modmail');
@@ -37,19 +175,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
             }
         });
 
-        /**
-         * If we are on new modmail we use www.reddit.com for all other
-         * instances we use whatever is the current domain. Used because some
-         * browsers do not like relative urls in extensions
-         * @constant {string}
-         */
-        TBCore.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
-
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
-        const SHORTNAME = 'TBCore';
         const SETTINGS_NAME = 'Utils';
-
-        const logger = TBLog(SHORTNAME);
 
         // Private variables
         let seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
@@ -60,116 +186,11 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
 
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
               newLogin = cacheName !== TBCore.logged,
-              betaRelease = false, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-              getModSubsCallbacks = [],
-              invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
-
-              randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
-                  "Simple solution, don't use nightmode....",
-                  'Nightmode users are a buncha nerds.',
-                  "Oh, so that's where that code went, I thought i had lost it somehow.",
-                  'Are all close buttons pretty now?!?!?',
-                  'As a Business Analyst myself...',
-                  "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
-                  'You are now an approvened submitter',
-                  "Translate creesch's Klingon settings to English.",
-                  'Cuz Uncle Jessy was hot and knew the Beach Boys',
-                  "Don't worry too much. There's always extra pieces.",
-                  'Make the check actually check.',
-                  "I dunno what this 'Safari' thing is.",
-                  'eeeeew... why is there PHP code in this room?',
-                  'nah there is an actual difference between stuff',
-                  '...have you paid money *out of your own pocket* to anyone to vet this product?',
-                  'first I want to make sure my thing actually does work sort of',
-                  "Don't let \"perfect\" get in the way of \"good.\"",
-                  'damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me',
-                  "It's not even kinda bad... It's strangely awful.",
-                  'Like a good neighbor, /u/andytuba is there',
-                  'toolbox is build on beer',
-                  'aww, i thought this was about real tools',
-                  'my poop never smelled worse than when i lived off pizza bagel bites',
-                  'Little dot, little dot ♪ You are not so little anymore ♫',
-                  "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
-                  'Luu',
-                  'I go two and hope for the best.',
-                  'oh dammit, I forgot to include url shit',
-                  'I think I just released a broken release',
-                  'BECAUSE I AM THE LAW!!!'],
-
-              RandomFeedbackText = ['Please hold, your call is important to us.',
-                  'Remember, toolbox loves you.',
-                  'toolbox will be back later, gone fishing.',
-                  "toolbox is 'doing things', don't ask.",
-                  'Tuning probability drive parameters.',
-                  'Initiating data transfer: NSA_backdoor_package. ',
-                  'Please post puppy pictures, they are so fluffy!',
-                  'RES is visiting for a sleepover,  no time right now',
-                  'toolbox is on strike, we demand more karma!',
-                  'brb... kicking Gustavobc from #toolbox',
-                  'Requesting a new insurance quote from /u/andytuba',
-                  'Sending all your data to Pyongyang',
-                  'Contacting lizard overlords for instructions',
-                  'Releasing raptors',
-                  'Booting robot uprising',
-                  'I need to tell you something critically important! I am sure I will remember in a moment...',
-                  "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK",
-                  'One sec... catching some bugs',
-                  'Here listen to some music while you wait, https://youtu.be/dQw4w9WgXcQ',
-                  'Me? No. I\'m no docter but it looks like you have a broken toe.',
-                  'Boo! Scared yeh didn\'t I?',
-                  'Having issues? Try double jumping!',
-                  'Hold on, need a bathroom break!',
-                  'When in doubt, check the lost and found.',
-                  'Rustling some jimmies.',
-                  'Hello and, again, welcome to the Toolbox Science computer-aided enrichment center.',
-                  'Run, Snoo, Run!'];
+              getModSubsCallbacks = [];
 
         let gettingModSubs = false;
         // Public variables
 
-        TBCore.isOldReddit = $('#header').length;
-        TBCore.isEmbedded = $('body').hasClass('embedded-page');
-
-        TBCore.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-        TBCore.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
-
-        TBCore.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|edited)\/?/);
-        TBCore.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
-        TBCore.isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
-        TBCore.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
-
-        TBCore.isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
-        TBCore.isUserPage = location.pathname.match(/\/(?:user)\/?/);
-        TBCore.isCommentsPage = location.pathname.match(/\?*\/(?:comments)\/?/);
-        TBCore.isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
-        TBCore.isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
-
-        TBCore.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
-        TBCore.isMod = $('body.moderator').length;
-
-        const manifest = browser.runtime.getManifest();
-        const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
-        const matchVersion = manifest.version_name.match(versionRegex);
-        const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
-
-        TBCore.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
-        TBCore.toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
-        TBCore.shortVersion = shortVersion;
-        TBCore.configSchema = 1;
-        TBCore.configMinSchema = 1;
-        TBCore.configMaxSchema = 1;
-        TBCore.notesSchema = 6;
-        TBCore.notesMinSchema = 4;
-        TBCore.notesDeprecatedSchema = 4;
-        TBCore.notesMaxSchema = 6; // The non-default max version (to allow phase-in schema releases)
-        TBCore.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
-        TBCore.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
-        TBCore.isNewModmail = location.host === 'mod.reddit.com';
-        TBCore.isNewMMThread = $('body').find('.ThreadViewer').length > 0;
-        TBCore.pageDetails = {};
-        TBCore.isExtension = true;
-        TBCore.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
-        TBCore.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];
         TBCore.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
         TBCore.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
         TBCore.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
@@ -177,38 +198,6 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
         TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
         TBCore.firstRun = false;
         TBCore.tbDevs = toolboxDevs;
-        TBCore.betaRelease = betaRelease;
-
-        TBCore.browser = UNKNOWN_BROWSER;
-
-        // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
-        if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
-            TBCore.browser = FIREFOX;
-        } else if (typeof chrome !== 'undefined') {
-            TBCore.browser = CHROME;
-
-            if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
-                TBCore.browser = OPERA;
-            }
-
-            if (navigator.userAgent.indexOf(' Edg/') >= 0) { // always check after Chrome
-                TBCore.browser = EDGE;
-            }
-        }
-
-        // Stuff from TBStorage
-        TBCore.domain = TBStorage.domain;
-
-        // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
-        if (TBCore.isModFakereddit || TBCore.post_site === undefined || !TBCore.post_site || invalidPostSites.indexOf(TBCore.post_site) !== -1) {
-            TBCore.post_site = '';
-        }
-
-        // Do settings echo before anything else.  If it fails, exit toolbox.
-        if (TBStorage.setSetting(SETTINGS_NAME, 'echoTest', 'echo') !== 'echo') {
-            alert('toolbox can not save settings\n\ntoolbox will now exit');
-            return;
-        }
 
         $('body').addClass('mod-toolbox-rd');
         // Bit hacky maybe but allows us more flexibility in specificity.
@@ -360,10 +349,10 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
 
         // First run changes.
 
-        if (TBCore.shortVersion > lastVersion) {
+        if (shortVersion > lastVersion) {
             // These need to happen for every version change
             TBCore.firstRun = true; // for use by other modules.
-            TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', TBCore.shortVersion); // set last version to this version.
+            TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
             setTimeout(getToolboxDevs, 0); // always repopulate tb devs for each version change
 
             //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
@@ -448,7 +437,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
           * @param {string} link The link path, starting with "/"
           * @returns {string}
           */
-        TBCore.link = link => TBCore.isNewModmail ? `https://www.reddit.com${link}` : link;
+        TBCore.link = link => isNewModmail ? `https://www.reddit.com${link}` : link;
 
         /**
          * Puts important debug information in a object so we can easily include
@@ -458,7 +447,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
          */
         TBCore.debugInformation = function debugInformation () {
             const debugObject = {
-                toolboxVersion: TBCore.toolboxVersion,
+                toolboxVersion,
                 browser: '',
                 browserVersion: '',
                 platformInformation: '',
@@ -471,7 +460,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
 
             const browserUserAgent = navigator.userAgent;
             let browserMatchedInfo = [];
-            switch (TBCore.browser) {
+            switch (browserName) {
             case CHROME: {
                 // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
                 // This way we can also cut some support requests short.
@@ -659,27 +648,27 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
             // platform check.
             switch (note.platform) {
             case 'firefox':
-                if (TBCore.browser === FIREFOX && TBCore.isExtension) {
+                if (browserName === FIREFOX && isExtension) {
                     show();
                 }
                 break;
             case 'chrome':
-                if (TBCore.browser === CHROME && TBCore.isExtension) {
+                if (browserName === CHROME && isExtension) {
                     show();
                 }
                 break;
             case 'opera':
-                if (TBCore.browser === OPERA && TBCore.isExtension) {
+                if (browserName === OPERA && isExtension) {
                     show();
                 }
                 break;
             case 'edge':
-                if (TBCore.browser === EDGE && TBCore.isExtension) {
+                if (browserName === EDGE && isExtension) {
                     show();
                 }
                 break;
             case 'script':
-                if (!TBCore.isExtension) {
+                if (!isExtension) {
                     show();
                 }
                 break;
@@ -710,7 +699,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
                     title,
                     body,
                     // We can't use TBCore.link for this since the background page has to have an absolute URL
-                    url: TBCore.isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
+                    url: isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
                     modHash: TBCore.modhash,
                     markreadid: markreadid || false,
                 },
@@ -850,7 +839,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
                 subredditType;
 
             // If new modmail the method is slightly different.
-            if (TBCore.isNewModmail) {
+            if (isNewModmail) {
                 subredditType = '';
                 // Lack of a better name, can be a thread_message or infobar.
                 const $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
@@ -888,7 +877,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
 
                 subredditType = $thing.attr('data-subreddit-type');
                 user = $entry.find('.author:first').text() || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
-                subreddit = $thing.attr('data-subreddit') || TBCore.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
+                subreddit = $thing.attr('data-subreddit') || post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
                 permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
                 domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
                 id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
@@ -911,12 +900,12 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
                 spam = removal[2] === 'spam' || removal[2] === 'confirm spam';
                 ham = removal[2] === 'remove not spam';
 
-                if (TBCore.isEditUserPage && !user) {
+                if (isEditUserPage && !user) {
                     user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
                 }
 
                 // If we still don't have a sub, we're in mod mail, or PMs.
-                if (TBCore.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
+                if (isModmail || $sender.closest('.message-parent')[0] !== undefined) {
                 // Change it to use the parent's title.
                     title = $sender.find('.subject-text:first').text();
                     subreddit = subreddit ? subreddit : $entry.find('.head a:last').text() || $thing.find('.head a:last').text();
@@ -962,7 +951,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
             // If the permalink is relative, stick the current domain name in.
             // Only do so if a permalink is found.
             if (permalink && permalink.slice(0, 1) === '/') {
-                permalink = TBCore.baseDomain + permalink;
+                permalink = baseDomain + permalink;
             }
 
             if (permalink && permaCommentLinkRegex.test(permalink)) {
@@ -1106,7 +1095,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
                     // If the permalink is relative, stick the current domain name in.
                     // Only do so if a permalink is found.
                     if (permalink && permalink.slice(0, 1) === '/') {
-                        permalink = TBCore.baseDomain + permalink;
+                        permalink = baseDomain + permalink;
                     }
 
                     if (permalink && permaCommentLinkRegex.test(permalink)) {
@@ -1363,7 +1352,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
 
         TBCore.importSettings = function (subreddit, callback) {
             TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
-                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
+                if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
                     logger.log('Error loading wiki page');
                     return;
                 }
@@ -1457,10 +1446,10 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
                 callback(TBCore.configCache[sub], sub);
             } else {
                 TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
-                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
+                    if (!resp || resp === WIKI_PAGE_UNKNOWN) {
                         // Complete and utter failure
                         callback(false, sub);
-                    } else if (resp === TBCore.NO_WIKI_PAGE) {
+                    } else if (resp === NO_WIKI_PAGE) {
                         // Subreddit not configured yet
                         TBCore.updateCache('noConfig', sub, false);
                         callback(false, sub);
@@ -1746,7 +1735,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
                     }
                 }
 
-                TBCore.pageDetails = contextObject;
+                pageDetails = contextObject;
 
                 // The timeout is there because locationHref can change before react is done rendering.
                 setTimeout(() => {
@@ -1829,7 +1818,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
         // get toolbox news
         (function getNotes () {
             TBApi.readFromWiki('toolbox', 'tbnotes', true).then(resp => {
-                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
+                if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
                     return;
                 }
                 TBStorage.purifyObject(resp);
@@ -1841,7 +1830,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
 
             if (betaRelease) {
                 TBApi.readFromWiki('tb_beta', 'tbnotes', true).then(resp => {
-                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
+                    if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
                         return;
                     }
                     TBStorage.purifyObject(resp);
@@ -1854,7 +1843,7 @@ window.TBCoreInitWrapper = async function initwrapper ({userDetails, newModSubs,
             // check dev sub, if debugMode
             if (TBCore.debugMode) {
                 TBApi.readFromWiki('tb_dev', 'tbnotes', true).then(resp => {
-                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || resp.length < 1) {
+                    if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
                         TBCore.devMode = false;
                         TBCore.devModeLock = true;
                         return;

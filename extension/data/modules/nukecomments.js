@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Comment Nuke');
 self.shortname = 'CommentNuke';
@@ -148,7 +149,7 @@ self.init = function () {
             commentArray = TBHelpers.saneSort(commentArray);
             const removalArrayLength = commentArray.length;
             let removalCount = 0;
-            TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
+            window.TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
                 removalCount++;
                 TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
                 if (executionType === 'remove') {
@@ -254,9 +255,9 @@ self.init = function () {
         const commentID = e.detail.data.id.substring(3);
         const postID = e.detail.data.post.id.substring(3);
 
-        TBCore.getModSubs(() => {
+        window.TBCore.getModSubs(() => {
             // We have to mod the subreddit to show the button
-            if (!TBCore.modsSub(subreddit)) {
+            if (!window.TBCore.modsSub(subreddit)) {
                 return;
             }
             // We also have to be on a comments page or looking at a context popup

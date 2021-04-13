@@ -156,6 +156,12 @@ async function getUserDetails (tries = 3) {
         return;
     }
 
+    // Do settings echo before anything else.  If it fails, exit toolbox.
+    if (await TBStorage.setSettingAsync('Utils', 'echoTest', 'echo') !== 'echo') {
+        alert('toolbox can not save settings\n\ntoolbox will now exit');
+        return;
+    }
+
     // Get the current state of a bunch of cache values
     const cacheDetails = {
         cacheName: await TBStorage.getCache('Utils', 'cacheName', ''),
@@ -199,6 +205,7 @@ async function getUserDetails (tries = 3) {
     }
 
     // Initialize TBCore on the global object
+    await import(browser.runtime.getURL('data/tbcore.js'));
     window.TBCoreInitWrapper({
         userDetails,
         cacheDetails,

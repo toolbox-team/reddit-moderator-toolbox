@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Removal Reasons');
 self.shortname = 'RReasons';
@@ -105,7 +106,7 @@ self.init = function () {
     // Remote stuff retrieval
     function getRemovalReasons (subreddit, callback) {
         // Nothing to do if no toolbox config
-        if (TBCore.noConfig.indexOf(subreddit) !== -1) {
+        if (window.TBCore.noConfig.indexOf(subreddit) !== -1) {
             callback(false);
             return;
         }
@@ -114,8 +115,8 @@ self.init = function () {
         let reasons = '';
 
         // See if we have the reasons in the cache.
-        if (TBCore.configCache[subreddit] !== undefined) {
-            reasons = TBCore.configCache[subreddit].removalReasons;
+        if (window.TBCore.configCache[subreddit] !== undefined) {
+            reasons = window.TBCore.configCache[subreddit].removalReasons;
 
             // If we need to get them from another sub, recurse.
             if (reasons && reasons.getfrom) {
@@ -146,7 +147,7 @@ self.init = function () {
             TBStorage.purifyObject(resp);
 
             // We have a valid config, cache it.
-            TBCore.updateCache('configCache', resp, subreddit);
+            window.TBCore.updateCache('configCache', resp, subreddit);
 
             reasons = resp.removalReasons;
 
@@ -165,7 +166,7 @@ self.init = function () {
             }
 
             self.log('failed: all');
-            TBCore.updateCache('noConfig', subreddit, false);
+            window.TBCore.updateCache('noConfig', subreddit, false);
             callback(false);
         });
     }
@@ -225,7 +226,7 @@ self.init = function () {
             }
         }
 
-        TBCore.getApiThingInfo(thingID, thingSubreddit, false, info => {
+        window.TBCore.getApiThingInfo(thingID, thingSubreddit, false, info => {
             // Get link/comment attributes
             const data = {
                 subreddit: info.subreddit,
@@ -765,7 +766,7 @@ self.init = function () {
         subject = TBHelpers.replaceTokens(data, subject);
         logTitle = TBHelpers.replaceTokens(data, logTitle);
 
-        TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
+        window.TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
             if (!ham) {
                 TBApi.removeThing(data.fullname);
             }
@@ -818,7 +819,7 @@ self.init = function () {
 
         // Function to send PM and comment
         function sendRemovalMessage (logLink) {
-            TBCore.getModSubs(async () => {
+            window.TBCore.getModSubs(async () => {
                 // If there is no message to send, don't send one.
                 if (reasonlength < 1) {
                     if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
@@ -851,7 +852,7 @@ self.init = function () {
                     }
                 }
 
-                const subredditData = TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
+                const subredditData = window.TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
                       notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
                       notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
                       notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;

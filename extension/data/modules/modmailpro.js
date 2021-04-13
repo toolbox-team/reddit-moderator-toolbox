@@ -1,6 +1,7 @@
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Mod Mail Pro');
 self.shortname = 'ModMail';
@@ -186,7 +187,7 @@ self.modmailpro = function () {
           botsToFilter = self.setting('botsToFilter'),
           filteredSubs = self.setting('filteredSubs'),
           newTabLinks = self.setting('newTabLinks'),
-          unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), // TBCore.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
+          unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), // window.TBCore.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
           moreCommentThreads = [],
           unreadThreads = [],
           unansweredThreads = [];
@@ -297,11 +298,11 @@ self.modmailpro = function () {
         }
 
         function processThreads (threads, chunkSize, processRate, completeAction, profileKey) {
-            TBCore.forEachChunked(
+            window.TBCore.forEachChunked(
                 threads, chunkSize, processRate,
                 (thread, count, array) => {
                     self.log(`Running thread batch: ${count + 1} of ${array.length}`);
-                    // self.log('\tUser = ' + TBCore.getThingInfo(thread).user);
+                    // self.log('\tUser = ' + window.TBCore.getThingInfo(thread).user);
                     processThread(thread);
                 },
                 () => {
@@ -340,7 +341,7 @@ self.modmailpro = function () {
                       newCount = $entries.length;
 
                 setView(ALL);
-                $menuList.html(`<a href="${TBCore.link('/message/moderator/')}">go to full mod mail</a>`);
+                $menuList.html(`<a href="${window.TBCore.link('/message/moderator/')}">go to full mod mail</a>`);
                 $('.unread-count').html(TBStorage.purify(`<b>${newCount}</b> - new mod mail thread${newCount === 1 ? '' : 's'}`));
                 $entries.click();
             } else {
@@ -397,7 +398,7 @@ self.modmailpro = function () {
               $collapseLink = $thread.find('.tb-collapse-link'),
               $subredditArea = $thread.find('.correspondent:first'),
 
-              threadInfo = TBCore.getThingInfo($thread),
+              threadInfo = window.TBCore.getThingInfo($thread),
               threadID = threadInfo.id,
               subreddit = threadInfo.subreddit,
               title = threadInfo.title,
@@ -476,7 +477,7 @@ self.modmailpro = function () {
 
         // Don't parse all entries if we don't need to.
         if (fadeRecipient) {
-            TBCore.forEachChunked(
+            window.TBCore.forEachChunked(
                 $entries, 5, entryProcessRate,
                 entry => {
                     self.startProfile('fade-recipient-internal');
@@ -651,7 +652,7 @@ self.modmailpro = function () {
 
         self.endProfile('highlight-new-jquery');
 
-        TBCore.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
+        window.TBCore.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
             self.startProfile('highlight-new-internal');
 
             const $message = $(message),
@@ -864,7 +865,7 @@ self.modmailpro = function () {
         $body.find('.entry').css('display', '');
         $body.find('.expand-btn').css('display', '');
 
-        TBCore.forEachChunked(threads, 10, 300, thread => {
+        window.TBCore.forEachChunked(threads, 10, 300, thread => {
             const $this = $(thread);
 
             if (expandReplies) {
@@ -986,7 +987,7 @@ self.autoLoad = function () {
         TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
         self.log(`real time a gogo: ${limit}`);
-        TBCore.addToSiteTable(updateURL + String(limit), resp => {
+        window.TBCore.addToSiteTable(updateURL + String(limit), resp => {
             if (!resp) {
                 return;
             }
@@ -1007,7 +1008,7 @@ self.mailDropDowns = function () {
           $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
           $mmpMenu = $('.mmp-menu');
 
-    TBCore.getModSubs(() => {
+    window.TBCore.getModSubs(() => {
         populateDropDowns();
     });
 
@@ -1015,7 +1016,7 @@ self.mailDropDowns = function () {
         $mmpMenu.append($composeSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
         $mmpMenu.append($switchSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
-        $(TBCore.mySubs).each(function () {
+        $(window.TBCore.mySubs).each(function () {
             $('.compose-mail').append($('<option>', {
                 value: this,
             }).text(this));

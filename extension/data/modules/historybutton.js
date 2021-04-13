@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('History Button');
 
@@ -116,7 +117,7 @@ self.runJsAPI = function () {
 self.init = function () {
     self.log('init');
     const $body = $('body');
-    TBCore.modSubCheck(modSubCheck => {
+    window.TBCore.modSubCheck(modSubCheck => {
         self.log(`mscheck: ${modSubCheck}`);
         if (modSubCheck) {
             self.log('passed');
@@ -144,7 +145,7 @@ self.init = function () {
 
                       popupContent = `
                             <div>
-                                <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
+                                <a href="${window.TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
                                 <span class="karma" />
                                 <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
                                 <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
@@ -513,10 +514,10 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
                 cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
             }
 
-            let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
+            let url = window.TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
             // If the domain is a self post, change the URL
             if (match) {
-                url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
+                url = window.TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
             }
 
             // Append domain to the table
@@ -560,7 +561,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
         user.subredditList.forEach((subreddit, index) => {
             const subredditCount = user.subreddits.submissions[subreddit].count,
                   subredditKarma = user.subreddits.submissions[subreddit].karma,
-                  url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`),
+                  url = window.TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`),
                   percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
             let cssClass = '';
@@ -790,7 +791,7 @@ self.reportAuthorToSpam = function (author) {
             $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
             // $rtsLink.hide();
             if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
+                rtsNativeLink.href = window.TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
             }
             return;
         }

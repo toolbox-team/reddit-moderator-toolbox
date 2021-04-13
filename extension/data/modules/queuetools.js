@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Queue Tools');
 self.shortname = 'QueueTools';
@@ -196,7 +197,7 @@ self.queuetoolsOld = function () {
 
         $this.addClass('color-processed');
 
-        if (!TBCore.modsSub(subredditName)) {
+        if (!window.TBCore.modsSub(subredditName)) {
             return;
         }
 
@@ -205,7 +206,7 @@ self.queuetoolsOld = function () {
         $this.addClass('tb-subreddit-color');
     }
 
-    TBCore.getModSubs(() => {
+    window.TBCore.getModSubs(() => {
         if (subredditColor) {
             self.log('adding sub colors');
             $('.thing').each(colorSubreddits);
@@ -300,7 +301,7 @@ self.queuetoolsOld = function () {
         // remove stuff we can't moderate (in non-mod queues only)
         function removeUnmoddable () {
             if (!TBCore.isModpage && !TBCore.isSubCommentsPage) {
-                TBCore.getModSubs(() => {
+                window.TBCore.getModSubs(() => {
                     $('.thing').each(function () {
                         const $thing = $(this),
                               $sub = $thing.find('.subreddit');
@@ -308,7 +309,7 @@ self.queuetoolsOld = function () {
                         // Remove if the sub isn't moderated
                         if ($sub.length > 0) {
                             const sub = TBHelpers.cleanSubredditName($sub.text());
-                            if (!TBCore.modsSub(sub)) {
+                            if (!window.TBCore.modsSub(sub)) {
                                 $thing.remove();
                             }
                         } else if ($thing.find('.parent').text().endsWith('[promoted post]')) {
@@ -673,7 +674,7 @@ self.queuetoolsOld = function () {
 
                 if (approve) {
                     TBApi.approveThing(id).then(() => {
-                        TBCore.sendEvent(TBCore.events.TB_APPROVE_THING);
+                        window.TBCore.sendEvent(window.TBCore.events.TB_APPROVE_THING);
                     });
                 } else {
                     TBApi.removeThing(id, spam);
@@ -866,19 +867,19 @@ self.queuetoolsOld = function () {
 
             TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
 
-            TBCore.forEachChunked(
+            window.TBCore.forEachChunked(
                 $('.subscription-box a.title'), 20, 100, elem => {
                     const $elem = $(elem),
                           sr = $elem.text();
 
-                    TB.storage.getCache('QueueTools', `${prefix + TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
+                    TB.storage.getCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
                         const data = JSON.parse(cacheData);
 
                         modSubs.push(sr);
                         TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
 
                         // Update count and re-cache data if more than an hour old.
-                        $elem.parent().append(`<a href="${TBCore.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
+                        $elem.parent().append(`<a href="${window.TBCore.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
                         if (now > data[1]) {
                             updateModqueueCount(sr);
                         }
@@ -888,7 +889,7 @@ self.queuetoolsOld = function () {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);
-                                TB.storage.setCache('QueueTools', `${prefix + TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
+                                TB.storage.setCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
                                 $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
                             });
                         }
@@ -1015,7 +1016,7 @@ self.queuetoolsOld = function () {
                     threadID = $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
                 } else {
                     // I am the parent submission, so get my own ID
-                    // TBCore.getThingInfo() is overkill here
+                    // window.TBCore.getThingInfo() is overkill here
                     threadID = $thing.attr('data-fullname').replace('t3_', '');
                 }
                 // Only record thread IDs once each
@@ -1348,8 +1349,8 @@ self.init = function () {
     }
 
     function makeActionTable ($target, subreddit, id) {
-        TBCore.getModSubs(() => {
-            if (TBCore.modsSub(subreddit)) {
+        window.TBCore.getModSubs(() => {
+            if (window.TBCore.modsSub(subreddit)) {
                 getActions(subreddit, id, actions => {
                     if (actions) {
                         const show = $('body').hasClass('tb-show-actions');

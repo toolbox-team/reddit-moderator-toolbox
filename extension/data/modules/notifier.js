@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Notifier');
 self.shortname = 'Notifier';
@@ -53,7 +54,7 @@ self.register_setting('sampleSound', {
     type: 'action',
     title: 'sample sound',
     class: 'tb-sample-sound',
-    event: TBCore.events.TB_SAMPLE_SOUND,
+    event: window.TBCore.events.TB_SAMPLE_SOUND,
 });
 
 self.register_setting('messageUnreadLink', {
@@ -227,7 +228,7 @@ self.init = function () {
         });
     }
 
-    TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
+    window.TBCore.catchEvent(window.TBCore.events.TB_SAMPLE_SOUND, () => {
         self.log('playing sound');
 
         const audio = new Audio(NOTIFICATION_SOUND);
@@ -246,26 +247,26 @@ self.init = function () {
               $mailcount = $('#mailcount'),
               $tb_mail = $('#tb-mail'),
               $tb_mailCount = $('#tb-mailCount');
-        // TODO: only call TBCore.link once per string literal in this section
+        // TODO: only call window.TBCore.link once per string literal in this section
         if (count < 1) {
             $mailCount.empty();
             $mail.attr('class', 'nohavemail');
             $mail.attr('title', 'no new mail!');
-            $mail.attr('href', TBCore.link('/message/inbox/'));
-            $mailcount.attr('href', TBCore.link(messageunreadurl));
+            $mail.attr('href', window.TBCore.link('/message/inbox/'));
+            $mailcount.attr('href', window.TBCore.link(messageunreadurl));
             $tb_mail.toggleClass('nohavemail', true).toggleClass('havemail', false);
             $tb_mail.attr('title', 'no new mail!');
-            $tb_mail.attr('href', TBCore.link('/message/inbox/'));
-            $('#tb-mailCount').attr('href', TBCore.link('/message/inbox/'));
+            $tb_mail.attr('href', window.TBCore.link('/message/inbox/'));
+            $('#tb-mailCount').attr('href', window.TBCore.link('/message/inbox/'));
         } else {
             $mail.attr('class', 'havemail');
             $mail.attr('title', 'new mail!');
-            $mail.attr('href', TBCore.link(messageunreadurl));
-            $mailcount.attr('href', TBCore.link(messageunreadurl));
+            $mail.attr('href', window.TBCore.link(messageunreadurl));
+            $mailcount.attr('href', window.TBCore.link(messageunreadurl));
             $tb_mail.toggleClass('havemail', true).toggleClass('nohavemail', false);
             $tb_mail.attr('title', 'new mail!');
-            $tb_mail.attr('href', TBCore.link(messageunreadurl));
-            $tb_mailCount.attr('href', TBCore.link(messageunreadurl));
+            $tb_mail.attr('href', window.TBCore.link(messageunreadurl));
+            $tb_mailCount.attr('href', window.TBCore.link(messageunreadurl));
         }
         $tb_mailCount.text(`[${count}]`);
 
@@ -322,7 +323,7 @@ self.init = function () {
         self.log('updating all counters accross tabs');
         browser.runtime.sendMessage({
             action: 'tb-global',
-            globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
+            globalEvent: window.TBCore.events.TB_UPDATE_COUNTERS,
             excludeBackground: true,
             payload: {
                 unreadMessageCount: self.setting('unreadMessageCount'),
@@ -374,7 +375,7 @@ self.init = function () {
         });
     }
 
-    window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
+    window.addEventListener(window.TBCore.events.TB_UPDATE_COUNTERS, event => {
         self.log('updating counters from background');
         updateMessagesCount(event.detail.unreadMessageCount);
         updateModqueueCount(event.detail.modqueueCount);
@@ -430,11 +431,11 @@ self.init = function () {
                 TBStorage.purifyObject(jsondata);
                 const commenttitle = jsondata[0].data.children[0].data.title;
                 if (straightToInbox && messageunreadlink) {
-                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
+                    window.TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
                 } else if (straightToInbox) {
-                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
+                    window.TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
                 } else {
-                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
+                    window.TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
                 }
             });
         }
@@ -500,10 +501,10 @@ self.init = function () {
                     });
 
                     if (messagecount === 1) {
-                        TBCore.notification('One new message!', notificationbody, messageunreadurl);
+                        window.TBCore.notification('One new message!', notificationbody, messageunreadurl);
                         youveGotMail();
                     } else if (messagecount > 1) {
-                        TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
+                        window.TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
                         youveGotMail();
                     }
                 } else {
@@ -541,7 +542,7 @@ self.init = function () {
                                 author = value.data.subreddit;
                             }
 
-                            TBCore.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
+                            window.TBCore.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
                             pushedunread.push(value.data.name);
                         }
                     });
@@ -564,7 +565,7 @@ self.init = function () {
                 const infotitle = jsondata.data.children[0].data.title,
                       infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink += mqidname.substring(3);
-                TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
+                window.TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
             });
         }
 
@@ -631,9 +632,9 @@ self.init = function () {
                         notificationbody = `${notificationbody}\n and: ${xmoreModqueue.toString()} more items \n`;
                     }
                     if (queuecount === 1) {
-                        TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
+                        window.TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
                     } else if (queuecount > 1) {
-                        TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
+                        window.TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                     }
                 } else {
                     json.data.children.forEach(value => {
@@ -643,7 +644,7 @@ self.init = function () {
                                   mqauthor = value.data.author,
                                   mqsubreddit = value.data.subreddit;
 
-                            TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
+                            window.TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                             pusheditems.push(value.data.name);
                         } else if (!pusheditems.includes(value.data.name)) {
                             const reportauthor = value.data.author,
@@ -708,9 +709,9 @@ self.init = function () {
                         }
 
                         if (queuecount === 1) {
-                            TBCore.notification('One new unmoderated item!', notificationbody, unModeratedURL);
+                            window.TBCore.notification('One new unmoderated item!', notificationbody, unModeratedURL);
                         } else {
-                            TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
+                            window.TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                         }
                     } else {
                         json.data.children.forEach(value => {
@@ -720,7 +721,7 @@ self.init = function () {
                                       uqauthor = value.data.author,
                                       uqsubreddit = value.data.subreddit;
 
-                                TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
+                                window.TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
                             }
                         });
                     }

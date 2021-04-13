@@ -1,4 +1,5 @@
 import {Module} from '../tbmodule.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Trouble Shooter');
 self.shortname = 'Trouble';
@@ -162,7 +163,7 @@ self.init = function () {
         let neg_thresh = neg_thresh_pref;
 
         // lower the threashold by one for user's comments
-        if (RegExp(`/${TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
+        if (RegExp(`/${window.TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
             --neg_thresh;
         }
 

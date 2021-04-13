@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Comments');
 self.shortname = 'Comments'; // historical precedent for settings
@@ -108,11 +109,11 @@ self.initOldReddit = function () {
         if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
             const $things = $('.thing.comment:not(.tb-comments-checked)');
-            TBCore.forEachChunkedDynamic($things, item => {
+            window.TBCore.forEachChunkedDynamic($things, item => {
                 const $thing = $(item);
                 $thing.addClass('tb-comments-checked');
 
-                const thing = TBCore.getThingInfo($thing, true);
+                const thing = window.TBCore.getThingInfo($thing, true);
 
                 if (self.approveComments) {
                     // only for subreddits we mod
@@ -277,8 +278,8 @@ self.init = function () {
         TB.listener.on('comment', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
-            TBCore.getModSubs(() => {
-                if (TBCore.modsSub(subreddit)) {
+            window.TBCore.getModSubs(() => {
+                if (window.TBCore.modsSub(subreddit)) {
                     $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                     $target.closest('.Comment').find('p').highlight(highlighted);
                 }
@@ -288,7 +289,7 @@ self.init = function () {
         $body.on('click', '.expando-button', function () {
             const $this = $(this);
             const $thing = $this.closest('.thing');
-            const thingInfo = TBCore.getThingInfo($thing, true);
+            const thingInfo = window.TBCore.getThingInfo($thing, true);
             if (thingInfo.subreddit) {
                 setTimeout(() => {
                     $thing.find('.md').highlight(highlighted);
@@ -301,8 +302,8 @@ self.init = function () {
 
             if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.subreddit;
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
+                window.TBCore.getModSubs(() => {
+                    if (window.TBCore.modsSub(subreddit)) {
                         $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
                     }
                 });
@@ -432,7 +433,7 @@ self.init = function () {
         };
         let count = 0;
         // from each id in the idlisting we construct a new comment.
-        TBCore.forEachChunkedDynamic(idListing, value => {
+        window.TBCore.forEachChunkedDynamic(idListing, value => {
             count++;
             const msg = `Building comment ${count}/${idListing.length}`;
             TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);

@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Profile Pro');
 self.shortname = 'Profile';
@@ -83,7 +84,7 @@ self.init = function () {
     function hideModActionsThings (hide) {
         const $things = $('.tb-thing');
         if (hide) {
-            TBCore.forEachChunkedDynamic($things, thing => {
+            window.TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 const modAction = $thing.find('.tb-moderator').length;
                 if (modAction) {
@@ -91,7 +92,7 @@ self.init = function () {
                 }
             }, {framerate: 40});
         } else {
-            TBCore.forEachChunkedDynamic($things, thing => {
+            window.TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 const modAction = $thing.find('.tb-moderator').length;
                 if (modAction) {
@@ -109,17 +110,17 @@ self.init = function () {
     function filterModdable (hide) {
         const $things = $('.tb-thing');
         if (hide) {
-            TBCore.getModSubs(() => {
-                TBCore.forEachChunkedDynamic($things, thing => {
+            window.TBCore.getModSubs(() => {
+                window.TBCore.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
                     const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
-                    if (!TBCore.mySubs.includes(subreddit)) {
+                    if (!window.TBCore.mySubs.includes(subreddit)) {
                         $thing.addClass('tb-mod-filtered');
                     }
                 }, {framerate: 40});
             });
         } else {
-            TBCore.forEachChunkedDynamic($things, thing => {
+            window.TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 $thing.removeClass('tb-mod-filtered');
             }, {framerate: 40});
@@ -154,7 +155,7 @@ self.init = function () {
         }
 
         // Use dynamic chuncking to add all things to the sitetable.
-        TBCore.forEachChunkedDynamic(data, entry => {
+        window.TBCore.forEachChunkedDynamic(data, entry => {
             // Comment
             if (entry.kind === 't1') {
                 const $comment = TBui.makeSingleComment(entry, commentOptions);
@@ -259,7 +260,7 @@ self.init = function () {
                 const $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
                 let subCount = 0;
 
-                TBCore.forEachChunkedDynamic(data.data, subreddit => {
+                window.TBCore.forEachChunkedDynamic(data.data, subreddit => {
                     subCount++;
                     const subredditName = subreddit.sr,
                           iconImage = subreddit.icon_img,
@@ -267,7 +268,7 @@ self.init = function () {
                           subscribers = subreddit.subscribers;
 
                     const liElement = `<li>
-                            <a href="${TBCore.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
+                            <a href="${window.TBCore.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
                             ${over18 ? '<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>' : ''}
                             ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ''}
                         </li>`;
@@ -330,7 +331,7 @@ self.init = function () {
             const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
                     <ul class="tb-user-detail-ul">
-                        <li><a href="${TBCore.link(`/user/${user}`)}">/u/${user}</a></li>
+                        <li><a href="${window.TBCore.link(`/user/${user}`)}">/u/${user}</a></li>
                         ${displayName ? `<li>Display name: ${displayName}</li>` : ''}
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
@@ -523,10 +524,10 @@ self.init = function () {
     });
 
     function populateSearchSuggestion (subreddit) {
-        if (subreddit && TBCore.mySubs.includes(subreddit)) {
+        if (subreddit && window.TBCore.mySubs.includes(subreddit)) {
             $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${subreddit}"><td>${subreddit}</td></td></tr>`);
         }
-        $(TBCore.mySubs).each(function () {
+        $(window.TBCore.mySubs).each(function () {
             if (this !== subreddit) {
                 $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
             }
@@ -549,7 +550,7 @@ self.init = function () {
     function initSearchSuggestion (subreddit) {
         if (!$body.find('#tb-search-suggest').length) {
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-            TBCore.getModSubs(() => {
+            window.TBCore.getModSubs(() => {
                 populateSearchSuggestion(subreddit);
             });
         }
@@ -842,8 +843,8 @@ self.init = function () {
                     return;
                 }
 
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
+                window.TBCore.getModSubs(() => {
+                    if (window.TBCore.modsSub(subreddit)) {
                         const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
                         requestAnimationFrame(() => {
                             $target.append(profileButton);
@@ -858,8 +859,8 @@ self.init = function () {
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
 
-            TBCore.getModSubs(() => {
-                if (TBCore.modsSub(subreddit)) {
+            window.TBCore.getModSubs(() => {
+                if (window.TBCore.modsSub(subreddit)) {
                     const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
                     $target.append(profileButton);
                 }

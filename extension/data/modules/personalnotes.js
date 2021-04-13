@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Personal Notes');
 self.shortname = 'PNotes';
@@ -132,10 +133,10 @@ self.init = function () {
         // Making sure the ui is only created once.
         if (!$existingPopup.length) {
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-            TBCore.getModSubs(() => {
+            window.TBCore.getModSubs(() => {
                 // We can't expect people to get the capitalizing right.
                 const mySubsLowerCase = [];
-                $(TBCore.mySubs).each(function () {
+                $(window.TBCore.mySubs).each(function () {
                     mySubsLowerCase.push(this.toLowerCase());
                 });
 
@@ -247,7 +248,7 @@ self.init = function () {
                     page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,
-                    uh: TBCore.modhash,
+                    uh: window.TBCore.modhash,
                 },
             }).then(() => {
                 $this.closest('li').remove();

@@ -29,7 +29,7 @@ Info| &nbsp;
 *Cookies Enabled*|{{cookiesEnabled}}
 `;
 
-    const debugInfo = TBCore.debugInformation();
+    const debugInfo = window.TBCore.debugInformation();
     const submissionAddition = template(debugTemplate, {
         toolboxVersion: debugInfo.toolboxVersion,
         browserName: debugInfo.browser,

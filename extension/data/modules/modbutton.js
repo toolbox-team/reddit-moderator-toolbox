@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 1000;
@@ -55,7 +56,7 @@ const $body = $('body'),
 
 self.runRedesign = function () {
     // Not a mod, don't bother.
-    if (TBCore.mySubs.length < 1) {
+    if (window.TBCore.mySubs.length < 1) {
         return;
     }
     const onlyshowInhover = self.setting('onlyshowInhover');
@@ -122,19 +123,19 @@ self.updateSavedSubs = function () {
 
         // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
-        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
+        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(window.TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
 
         self.savedSubs.forEach(subreddit => {
             // only subs we moderate
             // and not the current sub
-            if (TBCore.modsSub(subreddit) && subreddit !== currentSub) {
+            if (window.TBCore.modsSub(subreddit) && subreddit !== currentSub) {
                 $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${subreddit
                 }" id="action-${subreddit}"><label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit}</label></div>`);
             }
         });
     });
 
-    TBCore.mySubs.forEach(subreddit => {
+    window.TBCore.mySubs.forEach(subreddit => {
         $popups.find(`select.${self.OTHER}`).append(`<option value="${subreddit}">${subreddit}</option>`);
     });
 };
@@ -153,7 +154,7 @@ self.init = function () {
 
     self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
-    TBCore.getModSubs(() => {
+    window.TBCore.getModSubs(() => {
         // it's Go Time™!
         self.runRedesign();
     });
@@ -315,7 +316,7 @@ self.init = function () {
         // get pre-definded ban message/note
         if (subreddit) {
             self.log('getting ban macros');
-            TBCore.getConfig(subreddit, config => {
+            window.TBCore.getConfig(subreddit, config => {
                 if (!config || !config.banMacros) {
                     return;
                 }
@@ -421,7 +422,7 @@ self.init = function () {
         const $benbutton = $(benbutton);
 
         if (TBCore.isNewModmail) {
-            const info = TBCore.getThingInfo(this, true);
+            const info = window.TBCore.getThingInfo(this, true);
             openModPopup(event, info);
         } else {
             const subreddit = $benbutton.attr('data-subreddit');
@@ -449,14 +450,14 @@ self.init = function () {
                     banned_by: '',
                     spam: '',
                     ham: '',
-                    rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
-                    sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
-                    wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
-                    mod: TBCore.logged,
+                    rules: subreddit ? window.TBCore.link(`/r/${subreddit}/about/rules`) : '',
+                    sidebar: subreddit ? window.TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
+                    wiki: subreddit ? window.TBCore.link(`/r/${subreddit}/wiki/index`) : '',
+                    mod: window.TBCore.logged,
                 };
                 openModPopup(event, info);
             } else {
-                TBCore.getApiThingInfo(id, subreddit, true, info => {
+                window.TBCore.getApiThingInfo(id, subreddit, true, info => {
                     // If the thing we're fetching info for is removed in a subreddit the current user doesn't mod,
                     // the API won't return information about it. However, we can still access such things if we're
                     // on the user's profile. In that context, we manually fill in the author since we know at least
@@ -540,7 +541,7 @@ self.init = function () {
                 }
 
                 if (confirmban) {
-                    const subs = TBCore.mySubs;
+                    const subs = window.TBCore.mySubs;
                     excludeGlobal.forEach(val => {
                         subs.splice(subs.indexOf(val), 1);
                     });
@@ -574,7 +575,7 @@ self.init = function () {
 
             TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
 
-            TBCore.forEachChunkedRateLimit(
+            window.TBCore.forEachChunkedRateLimit(
                 subs, 20, subreddit => {
                     TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 

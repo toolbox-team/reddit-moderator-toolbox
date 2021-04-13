@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Domain Tagger');
 self.shortname = 'DTagger';
@@ -25,14 +26,14 @@ self.init = function () {
 
     $body.addClass(`tb-dt-type-${tagType}`);
 
-    TBCore.getModSubs(() => {
+    window.TBCore.getModSubs(() => {
         self.log('run called from getModSubs');
-        self.log(TBCore.mySubs);
+        self.log(window.TBCore.mySubs);
         run(true);
     });
 
     function postToWiki (sub, json, reason) {
-        TBCore.updateCache('configCache', json, sub);
+        window.TBCore.updateCache('configCache', json, sub);
         TBApi.postToWiki('toolbox', sub, json, reason, true, false).then(() => {
             $('div.thing.link.dt-processed').removeClass('dt-processed');
             run(false);
@@ -55,7 +56,7 @@ self.init = function () {
 
         // Mark non-mySubs as processed and remove them from collection
         $things.filter(function () {
-            return !TBCore.modsSub(this.dataset.subreddit);
+            return !window.TBCore.modsSub(this.dataset.subreddit);
         }).addClass('dt-processed');
 
         $things = $things.not('.dt-processed');
@@ -65,7 +66,7 @@ self.init = function () {
         self.startProfile('build-object-list');
 
         const subs = {};
-        TBCore.forEachChunkedDynamic($things, thing => {
+        window.TBCore.forEachChunkedDynamic($things, thing => {
             self.startProfile('build-object-list-inner');
 
             const $thing = $(thing),
@@ -84,7 +85,7 @@ self.init = function () {
             self.log('Processing subreddits');
             self.log(Object.keys(subs));
 
-            TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
+            window.TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
                 processSubreddit(sub, tags);
             }).then(() => {
                 self.log('Done processing things');
@@ -105,7 +106,7 @@ self.init = function () {
 
     function processSubreddit (sub, things) {
         self.log(`  Processing subreddit: /r/${sub}`);
-        TBCore.getConfig(sub, config => {
+        window.TBCore.getConfig(sub, config => {
             self.log(`    Config retrieved for /r/${sub}`);
             if (config && config.domainTags && config.domainTags.length > 0) {
                 setTags(config.domainTags, things);
@@ -167,7 +168,7 @@ self.init = function () {
 
         self.startProfile('set-tags');
         let done = false;
-        TBCore.forEachChunkedDynamic(things, thing => {
+        window.TBCore.forEachChunkedDynamic(things, thing => {
             self.startProfile('set-tags-inner');
             const $thing = $(thing),
                   $entry = $thing.find('.entry'),

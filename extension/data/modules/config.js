@@ -3,6 +3,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBui from '../tbui.js';
 import * as TBApi from '../tbapi.js';
 import * as TBStorage from '../tbstorage.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('toolbox Config');
 self.shortname = 'TBConfig'; // for backwards compatibility
@@ -18,7 +19,7 @@ self.init = function () {
     // Set up some base variables
     const $body = $('body'),
           unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
-    let config = TBCore.config,
+    let config = window.TBCore.config,
         sortReasons = [],
         subreddit,
         postFlairTemplates;
@@ -37,8 +38,8 @@ self.init = function () {
                 Through this window you can edit the settings for /r/${subredditConfig}. </br>
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
                 </br>
-                </br><a href="${TBCore.link(`/r/${subredditConfig}/w/pages/`)}" class="tb-general-button">All Wiki Pages</a>
-                </br><a ${unManager ? 'style="display:none;"' : ''} href="${TBCore.link(`/r/${subredditConfig}/about/usernotes/`)}" class="tb-general-button">Manage Usernotes</a>
+                </br><a href="${window.TBCore.link(`/r/${subredditConfig}/w/pages/`)}" class="tb-general-button">All Wiki Pages</a>
+                </br><a ${unManager ? 'style="display:none;"' : ''} href="${window.TBCore.link(`/r/${subredditConfig}/about/usernotes/`)}" class="tb-general-button">Manage Usernotes</a>
 
                 </span>
                 `,
@@ -86,7 +87,7 @@ self.init = function () {
                     tooltip: 'Edit the automoderator config.',
                     content: `
                 <p class="tb-settings-p">
-                    <a href="${TBCore.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
+                    <a href="${window.TBCore.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
                 </p>
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
@@ -153,7 +154,7 @@ self.init = function () {
                             </li>
                         </ul>
                     </div>
-                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${TBCore.advancedMode ? '' : 'style="display:none;"'}>show advanced settings</a>
+                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${window.TBCore.advancedMode ? '' : 'style="display:none;"'}>show advanced settings</a>
                     <h3 class="rr-advanced">Advanced settings</h3>
                     <div class="rr-advanced">
                         get reason from /r/:
@@ -324,8 +325,8 @@ self.init = function () {
         if (event.detail.pageDetails.subreddit) {
             const subreddit = event.detail.pageDetails.subreddit;
 
-            TBCore.getModSubs(() => {
-                if (TBCore.modsSub(subreddit)) {
+            window.TBCore.getModSubs(() => {
+                if (window.TBCore.modsSub(subreddit)) {
                     TBui.contextTrigger('tb-config-link', {
                         addTrigger: true,
                         triggerText: `/r/${subreddit} config`,
@@ -352,12 +353,12 @@ self.init = function () {
             if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                 self.log('Failed: wiki config');
 
-                config = TBCore.config;
+                config = window.TBCore.config;
                 showConfig(subreddit, config);
             } else {
                 config = resp;
                 TBStorage.purifyObject(config);
-                if (TBCore.isConfigValidVersion(subreddit, config)) {
+                if (window.TBCore.isConfigValidVersion(subreddit, config)) {
                     showConfig(subreddit, config);
                 }
             }
@@ -385,7 +386,7 @@ self.init = function () {
                 $body.find('.edit_automoderator_config .error').hide();
             }
             self.log('clearing cache');
-            TBCore.clearCache();
+            window.TBCore.clearCache();
 
             TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
         }).catch(async err => {
@@ -586,7 +587,7 @@ self.init = function () {
             colors = config.usernoteColors;
         } else {
             // Default types
-            colors = TBCore.defaultUsernoteTypes;
+            colors = window.TBCore.defaultUsernoteTypes;
         }
 
         let $list;

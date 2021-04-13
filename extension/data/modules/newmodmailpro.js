@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('New Mod Mail Pro');
 self.shortname = 'NewModMail';

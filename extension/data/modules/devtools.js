@@ -105,7 +105,7 @@ self.init = function () {
                             <div id="notification">
                                 <h1> Notification tester </h1>
                                 <code>
-                                    TBCore.notification = function (title, body, path, markreadid = false)
+                                    window.TBCore.notification = function (title, body, path, markreadid = false)
                                 </code>
                                 <hr>
                                 <input type="text" placeholder="title" id="tb-test-notification-title" class="tb-input"><br>
@@ -135,7 +135,7 @@ self.init = function () {
                   path = $body.find('#tb-test-notification-path').val(),
                   markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
 
-            TBCore.notification(title, body, path, markreadid);
+            window.TBCore.notification(title, body, path, markreadid);
         });
 
         $body.on('click', '.tb-testCommentUI-button', async function () {
@@ -171,7 +171,7 @@ self.init = function () {
             const inputURL = $body.find('#tb-testCommentUI-input-url').val();
             const data = await TBApi.getJSON(inputURL, {raw_json: 1});
             TBStorage.purifyObject(data);
-            TBCore.forEachChunkedDynamic(data.data.children, entry => {
+            window.TBCore.forEachChunkedDynamic(data.data.children, entry => {
                 if (entry.kind === 't3') {
                     const $submission = TBui.makeSubmissionEntry(entry);
                     $siteTable.append($submission);

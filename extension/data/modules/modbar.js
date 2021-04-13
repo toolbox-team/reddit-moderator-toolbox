@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 
 const self = new Module('Modbar');
 self.shortname = 'Modbar';
@@ -86,7 +87,7 @@ self.init = function () {
     // Doing it like this because it means we don't have to mess with reddit css
     const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
 
-    if (!TBCore.logged || TBCore.isEmbedded) {
+    if (!window.TBCore.logged || TBCore.isEmbedded) {
         return;
     }
 
@@ -113,7 +114,7 @@ self.init = function () {
           customCSS = self.setting('customCSS'),
           consoleShowing = self.setting('consoleShowing'),
 
-          debugMode = TBCore.debugMode,
+          debugMode = window.TBCore.debugMode,
 
           modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
           unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
@@ -182,7 +183,7 @@ self.init = function () {
 
     // This is here in case notifier is disabled which is where this normally is set.
     // Atleast, I think.... - creesch
-    let modMailUrl = $('#modmail').attr('href') || TBCore.link('/message/moderator/');
+    let modMailUrl = $('#modmail').attr('href') || window.TBCore.link('/message/moderator/');
     if (parseInt(modmailCustomLimit) > 0) {
         modMailUrl += `?limit=${modmailCustomLimit}`;
         $('#modmail').attr('href', modMailUrl);
@@ -190,7 +191,7 @@ self.init = function () {
         $('#tb-modmailcount').attr('href', modMailUrl);
     }
 
-    const modQueueUrl = TBCore.link(modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
+    const modQueueUrl = window.TBCore.link(modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
     const $modBar = $(`
 <div id="tb-bottombar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">${TBui.icons.arrowLeft}</a>
@@ -201,8 +202,8 @@ self.init = function () {
     </span>
     <span id="tb-bottombar-contentright">
         <span id="tb-toolbarcounters">
-            <a title="no mail" href="${TBCore.link('/message/inbox/')}" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
-            <a href="${TBCore.link('/message/inbox/')}" id="tb-mailCount"></a>
+            <a title="no mail" href="${window.TBCore.link('/message/inbox/')}" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
+            <a href="${window.TBCore.link('/message/inbox/')}" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">${TBui.icons.oldModmail}</a>
             <a href="${modMailUrl}" id="tb-modmailcount"></a>
             <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? 'target="_blank"' : ''}>${TBui.icons.newModmail}</a>
@@ -253,7 +254,7 @@ self.init = function () {
     // Add unmoderated icon if it is enabled.
 
     if (unmoderatedOn) {
-        const unModQueueUrl = TBCore.link(unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
+        const unModQueueUrl = window.TBCore.link(unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
         $modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">${TBui.icons.unmoderated}</a>
 <a href="${unModQueueUrl}" id="tb-unmoderatedCount"></a>
@@ -277,28 +278,28 @@ self.init = function () {
         const configEnabled = TBStorage.getSetting('TBConfig', 'enabled', false),
               usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false),
               subredditColorSalt = self.setting('subredditColorSalt');
-        TBCore.getModSubs(() => {
+        window.TBCore.getModSubs(() => {
             self.log('got mod subs');
-            self.log(TBCore.mySubs.length);
-            self.log(TBCore.mySubsData.length);
-            $(TBCore.mySubsData).each(function () {
+            self.log(window.TBCore.mySubs.length);
+            self.log(window.TBCore.mySubsData.length);
+            $(window.TBCore.mySubsData).each(function () {
                 const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
                 subList += `
                         <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
-                            <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
+                            <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${window.TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
                             <td class="tb-my-subreddits-subreddit">
-                                <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
-                                <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
-                                <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
-                                <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
-                                <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
+                                <a title="/r/${this.subreddit} modmail!" target="_blank" href="${window.TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
+                                <a title="/r/${this.subreddit} modqueue" target="_blank" href="${window.TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
+                                <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${window.TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
+                                <a title="/r/${this.subreddit} moderation log" target="_blank" href="${window.TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
+                                <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${window.TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
                                 ${usernotesEnabled ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>` : ''}
                                 ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
                             </td>
                         </tr>
                     `;
             });
-            livefilterCount = TBCore.mySubs.length;
+            livefilterCount = window.TBCore.mySubs.length;
 
             const modSubsPopupContent = `
                 <div id="tb-my-subreddits">
@@ -365,7 +366,7 @@ self.init = function () {
             `);
     }
 
-    if (TBCore.firstRun) {
+    if (window.TBCore.firstRun) {
         $('.tb-first-run').show().css('display', 'inline-block');
     }
 
@@ -375,7 +376,7 @@ self.init = function () {
 
         $body.on('click', '#tb-reload-link', () => {
             self.log('reloading chrome');
-            TBCore.reloadToolbox();
+            window.TBCore.reloadToolbox();
         });
     }
 
@@ -464,7 +465,7 @@ self.init = function () {
         if ($('.tb-settings').length) {
             return;
         } // Don't show the window twice
-        TBCore.getModSubs(() => {
+        window.TBCore.getModSubs(() => {
             TB.showSettings();
         });
     });
@@ -476,10 +477,10 @@ self.init = function () {
 
         // achievement support
         if (module === 'about') {
-            TBCore.sendEvent(TBCore.events.TB_ABOUT_PAGE);
+            window.TBCore.sendEvent(window.TBCore.events.TB_ABOUT_PAGE);
         }
         if (module === 'syntax') {
-            TBCore.sendEvent(TBCore.events.TB_SYNTAX_SETTINGS);
+            window.TBCore.sendEvent(window.TBCore.events.TB_SYNTAX_SETTINGS);
         }
 
         $('.tb-window-tabs a').removeClass('active');

@@ -1,5 +1,5 @@
 import {Module} from '../tbmodule.js';
-import {template} from '../tbhelpers';
+import {template} from '../tbhelpers.js';
 
 const self = new Module('Support Module');
 self.shortname = 'support';

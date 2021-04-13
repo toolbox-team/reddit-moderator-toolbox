@@ -416,7 +416,6 @@ self.init = function () {
         // We'll use this to determine if we are done with all counters and want to send a message to the background page telling all other tabs to update.
         let updateCounters = unmoderatedOn ? 4 : 3;
 
-        // $.log('updating totals');
         // We're checking now.
         self.setting('lastChecked', now);
 
@@ -461,7 +460,6 @@ self.init = function () {
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 const pushedunread = self.setting('unreadPushed');
-                // $.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     let notificationbody,
                         messagecount = 0;
@@ -501,8 +499,6 @@ self.init = function () {
                         }
                     });
 
-                    // $.log(messagecount);
-                    // $.log(notificationbody);
                     if (messagecount === 1) {
                         TBCore.notification('One new message!', notificationbody, messageunreadurl);
                         youveGotMail();
@@ -590,16 +586,12 @@ self.init = function () {
             if (updateCounters === 0) {
                 updateAllTabs();
             }
-            // $.log(modNotifications);
             if (modNotifications && count > modqueueCount) {
                 // Ok let's have a look and see if there are actually new items to display
-                // $.log('test');
                 // set up an array in which we will load the last 100 items that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 const pusheditems = self.setting('modqueuePushed');
-                // $.log(consolidatedMessages);
                 if (consolidatedMessages) {
-                    // $.log('here we go!');
                     let notificationbody, queuecount = 0, xmoreModqueue = 0;
                     json.data.children.forEach(value => {
                         let subreddit,
@@ -638,8 +630,6 @@ self.init = function () {
                     if (xmoreModqueue > 0) {
                         notificationbody = `${notificationbody}\n and: ${xmoreModqueue.toString()} more items \n`;
                     }
-                    // $.log(queuecount);
-                    // $.log(notificationbody);
                     if (queuecount === 1) {
                         TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
                     } else if (queuecount > 1) {

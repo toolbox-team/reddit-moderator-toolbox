@@ -169,8 +169,6 @@ self.init = function () {
               user = info.user,
               thing_id = info.id;
 
-        // $.log('modbutton ' + subreddit, true);
-
         // no user?
         if (!user) {
             TB.ui.textFeedback('No user', TB.ui.FEEDBACK_NEGATIVE);

@@ -520,7 +520,7 @@ function isEquivalent (a, b) {
     // If number of properties is different,
     // objects are not equivalent
     if (aProps.length !== bProps.length) {
-        $.log(`length :${aProps.length} ${bProps.length}`);
+        logger.debug(`length :${aProps.length} ${bProps.length}`);
         return false;
     }
 
@@ -534,11 +534,11 @@ function isEquivalent (a, b) {
         if (propA !== propB) {
             if (typeof propA === 'object' && typeof propB === 'object') {
                 if (!isEquivalent(propA, propB)) {
-                    $.log(`prop :${propA} ${propB}`);
+                    logger.debug(`prop :${propA} ${propB}`);
                     return false;
                 }
             } else {
-                $.log(`prop :${propA} ${propB}`);
+                logger.debug(`prop :${propA} ${propB}`);
                 return false;
             }
         }

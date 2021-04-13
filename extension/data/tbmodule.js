@@ -4,6 +4,8 @@ import * as TBui from './tbui.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
 
+const logger = TBLog('TBModule');
+
 function tbmodule () {
     window.TB = {
         ui: TBui,
@@ -26,7 +28,7 @@ function tbmodule () {
 
             function initLoop () {
                 setTimeout(() => {
-                    $.log('TBModule has TBStorage, loading modules', false, 'TBinit');
+                    logger.debug('TBModule has TBStorage, loading modules');
                     // call every module's init() method on page load
                     for (let i = 0; i < TB.moduleList.length; i++) {
                         const module = TB.modules[TB.moduleList[i]];
@@ -36,7 +38,7 @@ function tbmodule () {
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
                         if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
                         // skip this module entirely
-                            $.log(`Beta  mode not enabled. Skipping ${module.name} module`, false, 'TBinit');
+                            logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                             continue;
                         }
 
@@ -46,18 +48,18 @@ function tbmodule () {
 
                         if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
                         // skip this module entirely
-                            $.log(`Debug mode not enabled. Skipping ${module.name} module`, false, 'TBinit');
+                            logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
                             continue;
                         }
 
                         if (!TBCore.isOldReddit && module.oldReddit) {
-                            $.log(`Module not suitable for new reddit. Skipping ${module.name} module`, false, 'TBinit');
+                            logger.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
                             continue;
                         }
 
                         // lock 'n load
                         if (module.setting('enabled')) {
-                            $.log(`Loading ${module.name} module`, false, 'TBinit');
+                            logger.debug(`Loading ${module.name} module`);
                             module.init();
                         }
                     }
@@ -383,7 +385,7 @@ function tbmodule () {
                 if (!sub) {
                     TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
 
-                    $.log('no setting sub');
+                    logger.debug('no setting sub');
                     return;
                 }
 
@@ -733,13 +735,13 @@ body {
                     {
                         noWrap = true;
 
-                        $.log('----------', false, 'TBModule');
-                        $.log('GENERATING ACHIEVEMENT PAGE', false, 'TBModule');
+                        logger.debug('----------');
+                        logger.debug('GENERATING ACHIEVEMENT PAGE');
                         const total = module.manager.getAchievementTotal(),
                               unlocked = module.manager.getUnlockedCount();
 
-                        $.log(`  total=${total}`, false, 'TBModule');
-                        $.log(`  unlocked=${unlocked}`, false, 'TBModule');
+                        logger.debug(`  total=${total}`);
+                        logger.debug(`  unlocked=${unlocked}`);
 
                         $setting = $('<div>').attr('class', 'achievements');
                         $setting.append($('<h1>').text('Mod Achievements'));
@@ -751,9 +753,9 @@ body {
 
                         const $list = $('<div>').attr('class', 'achievements-list');
                         for (let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
-                            $.log(`  saveIndex: ${saveIndex}`, false, 'TBModule');
+                            logger.debug(`  saveIndex: ${saveIndex}`);
                             for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
-                                $.log(`  index: ${index}`, false, 'TBModule');
+                                logger.debug(`  index: ${index}`);
                                 let aTitle = '???',
                                     aDescr = '??????',
                                     aClass = '';

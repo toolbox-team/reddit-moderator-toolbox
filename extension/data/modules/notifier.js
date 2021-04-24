@@ -431,11 +431,11 @@ self.init = function () {
                 TBStorage.purifyObject(jsondata);
                 const commenttitle = jsondata[0].data.children[0].data.title;
                 if (straightToInbox && messageunreadlink) {
-                    window.TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
+                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
                 } else if (straightToInbox) {
-                    window.TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
+                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
                 } else {
-                    window.TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
+                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
                 }
             });
         }
@@ -501,10 +501,10 @@ self.init = function () {
                     });
 
                     if (messagecount === 1) {
-                        window.TBCore.notification('One new message!', notificationbody, messageunreadurl);
+                        TBCore.notification('One new message!', notificationbody, messageunreadurl);
                         youveGotMail();
                     } else if (messagecount > 1) {
-                        window.TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
+                        TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
                         youveGotMail();
                     }
                 } else {
@@ -542,7 +542,7 @@ self.init = function () {
                                 author = value.data.subreddit;
                             }
 
-                            window.TBCore.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
+                            TBCore.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
                             pushedunread.push(value.data.name);
                         }
                     });
@@ -565,7 +565,7 @@ self.init = function () {
                 const infotitle = jsondata.data.children[0].data.title,
                       infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink += mqidname.substring(3);
-                window.TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
+                TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
             });
         }
 
@@ -632,9 +632,9 @@ self.init = function () {
                         notificationbody = `${notificationbody}\n and: ${xmoreModqueue.toString()} more items \n`;
                     }
                     if (queuecount === 1) {
-                        window.TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
+                        TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
                     } else if (queuecount > 1) {
-                        window.TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
+                        TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                     }
                 } else {
                     json.data.children.forEach(value => {
@@ -644,7 +644,7 @@ self.init = function () {
                                   mqauthor = value.data.author,
                                   mqsubreddit = value.data.subreddit;
 
-                            window.TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
+                            TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                             pusheditems.push(value.data.name);
                         } else if (!pusheditems.includes(value.data.name)) {
                             const reportauthor = value.data.author,
@@ -709,9 +709,9 @@ self.init = function () {
                         }
 
                         if (queuecount === 1) {
-                            window.TBCore.notification('One new unmoderated item!', notificationbody, unModeratedURL);
+                            TBCore.notification('One new unmoderated item!', notificationbody, unModeratedURL);
                         } else {
-                            window.TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
+                            TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                         }
                     } else {
                         json.data.children.forEach(value => {
@@ -721,7 +721,7 @@ self.init = function () {
                                       uqauthor = value.data.author,
                                       uqsubreddit = value.data.subreddit;
 
-                                window.TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
+                                TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
                             }
                         });
                     }

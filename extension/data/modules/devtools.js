@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import {escapeHTML} from '../tbhelpers.js';
+import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
 const self = new Module('Developer Tools');
@@ -105,7 +106,7 @@ self.init = function () {
                             <div id="notification">
                                 <h1> Notification tester </h1>
                                 <code>
-                                    window.TBCore.notification = function (title, body, path, markreadid = false)
+                                    TBCore.notification = function (title, body, path, markreadid = false)
                                 </code>
                                 <hr>
                                 <input type="text" placeholder="title" id="tb-test-notification-title" class="tb-input"><br>
@@ -135,7 +136,7 @@ self.init = function () {
                   path = $body.find('#tb-test-notification-path').val(),
                   markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
 
-            window.TBCore.notification(title, body, path, markreadid);
+            TBCore.notification(title, body, path, markreadid);
         });
 
         $body.on('click', '.tb-testCommentUI-button', async function () {

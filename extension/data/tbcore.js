@@ -231,7 +231,7 @@ const randomTextFeedbacks = [
 /** A random text message for long loading tasks, determined at page load. */
 export const RandomFeedback = randomTextFeedbacks[Math.floor(Math.random() * randomTextFeedbacks.length)];
 
-// Functions for displaying notes
+// Functions for displaying notes/notifications
 
 /**
  * Opens the toolbox "nag" alert everyone loves so much. USE SPARINGLY.
@@ -266,6 +266,32 @@ export function alert ({message, noteID, showClose}, callback) {
             return;
         }
         callback(true);
+    });
+}
+
+/**
+ * Shows a notification, uses native browser notifications if the user
+ * allows it or falls back on html notifications.
+ * @function
+ * @param {string} title Notification title
+ * @param {string} body Body text
+ * @param {string} path Absolute path to be opend when clicking the
+ * notification
+ * @param {string?} markreadid The ID of a conversation to mark as read
+ * when the notification is clicked
+ */
+export function notification (title, body, path, markreadid = false) {
+    browser.runtime.sendMessage({
+        action: 'tb-notification',
+        native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
+        details: {
+            title,
+            body,
+            // We can't use TBCore.link for this since the background page has to have an absolute URL
+            url: isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
+            modHash: window.TBCore.modhash,
+            markreadid: markreadid || false,
+        },
     });
 }
 
@@ -815,32 +841,6 @@ let newModSubs;
         }
 
         window.addEventListener(tbuEvent, callback);
-    };
-
-    /**
-     * Shows a notification, uses native browser notifications if the user
-     * allows it or falls back on html notifications.
-     * @function
-     * @param {string} title Notification title
-     * @param {string} body Body text
-     * @param {string} path Absolute path to be opend when clicking the
-     * notification
-     * @param {string?} markreadid The ID of a conversation to mark as read
-     * when the notification is clicked
-     */
-    TBCore.notification = function (title, body, path, markreadid = false) {
-        browser.runtime.sendMessage({
-            action: 'tb-notification',
-            native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
-            details: {
-                title,
-                body,
-                // We can't use TBCore.link for this since the background page has to have an absolute URL
-                url: isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
-                modHash: TBCore.modhash,
-                markreadid: markreadid || false,
-            },
-        });
     };
 
     TBCore.modSubCheck = function (callback) {

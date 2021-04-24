@@ -987,7 +987,7 @@ self.autoLoad = function () {
         TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
         self.log(`real time a gogo: ${limit}`);
-        window.TBCore.addToSiteTable(updateURL + String(limit), resp => {
+        TBCore.addToSiteTable(updateURL + String(limit), resp => {
             if (!resp) {
                 return;
             }

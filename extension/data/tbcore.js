@@ -866,6 +866,31 @@ export function importSettings (subreddit, callback) {
     });
 }
 
+export function addToSiteTable (URL, callback) {
+    if (!callback) {
+        return;
+    }
+
+    if (!URL) {
+        return callback(null);
+    }
+
+    TBApi.getJSON(URL).then(resp => {
+        if (!resp) {
+            return callback(null);
+        }
+        resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
+        const $sitetable = $(resp).find('#siteTable');
+        $sitetable.find('.nextprev').remove();
+
+        if ($sitetable.length) {
+            callback($sitetable);
+        } else {
+            callback(null);
+        }
+    });
+}
+
 // Global object shenanigans
 
 /**
@@ -1500,31 +1525,6 @@ async function getToolboxDevs () {
                 callback(info);
             });
         }
-    };
-
-    TBCore.addToSiteTable = function (URL, callback) {
-        if (!callback) {
-            return;
-        }
-
-        if (!URL) {
-            return callback(null);
-        }
-
-        TBApi.getJSON(URL).then(resp => {
-            if (!resp) {
-                return callback(null);
-            }
-            resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
-            const $sitetable = $(resp).find('#siteTable');
-            $sitetable.find('.nextprev').remove();
-
-            if ($sitetable.length) {
-                callback($sitetable);
-            } else {
-                callback(null);
-            }
-        });
     };
 
     // Cache manipulation

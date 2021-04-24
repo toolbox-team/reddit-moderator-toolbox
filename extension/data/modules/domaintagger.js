@@ -26,7 +26,7 @@ self.init = function () {
 
     $body.addClass(`tb-dt-type-${tagType}`);
 
-    window.TBCore.getModSubs().then(() => {
+    TBCore.getModSubs().then(() => {
         self.log('run called from getModSubs');
         self.log(window.TBCore.mySubs);
         run(true);

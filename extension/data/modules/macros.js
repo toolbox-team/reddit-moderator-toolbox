@@ -96,7 +96,7 @@ self.init = function () {
     }
 
     if (TBCore.isOldReddit) {
-        window.TBCore.getModSubs().then(() => {
+        TBCore.getModSubs().then(() => {
             if (TBCore.post_site && window.TBCore.mySubs.includes(TBCore.post_site)) {
                 self.log('getting config');
                 getConfig(TBCore.post_site, (success, config) => {
@@ -205,7 +205,7 @@ self.init = function () {
             const subreddit = commentDetails.data.subreddit.name;
             const thingID = commentDetails.data.id;
 
-            window.TBCore.getModSubs().then(() => {
+            TBCore.getModSubs().then(() => {
                 if (TBCore.modsSub(subreddit)) {
                     getConfig(subreddit, (success, config) => {
                         // if we're a mod, add macros to top level reply button.
@@ -230,7 +230,7 @@ self.init = function () {
         if (event.detail.pageType === 'subredditCommentsPage') {
             const subreddit = event.detail.pageDetails.subreddit;
 
-            window.TBCore.getModSubs().then(() => {
+            TBCore.getModSubs().then(() => {
                 if (TBCore.modsSub(subreddit)) {
                     getConfig(subreddit, (success, config) => {
                         // if we're a mod, add macros to top level reply button.

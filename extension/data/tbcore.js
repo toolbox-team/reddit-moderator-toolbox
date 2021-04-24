@@ -51,6 +51,62 @@ export const isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:commen
 export const isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
 
 // Details about the current user
+
+// If mod subs are being fetched, stores a promise that will fulfill afterwards
+let fetchModSubsPromise = null;
+
+/**
+ * Returns a promise that will resolve once `TBCore.mySubs` and
+ * `TBCore.mySubsData` are definitely populated with the user's moderated
+ * subreddits, fetching the sub list from the API if necessary.
+ * @returns {Promise<void>}
+ */
+export const getModSubs = () => new Promise(resolve => {
+    logger.log('getting mod subs');
+
+    // If we already have moderated subreddits, callback works immediately
+    if (window.TBCore.mySubs.length && window.TBCore.mySubsData.length) {
+        // TODO: why do these sorts need to happen every time?
+        window.TBCore.mySubs = TBHelpers.saneSort(window.TBCore.mySubs);
+        window.TBCore.mySubsData = TBHelpers.sortBy(window.TBCore.mySubsData, 'subscribers');
+
+        return resolve();
+    }
+
+    // We need to refresh the list of moderated subreddits. Create a promise
+    // that takes care of doing the updating, in `fetchModSubsPromise`, and
+    // wait for that promise to fulfill before calling the callback.
+
+    // Are we already fetching subs? If not, create the promise to do that
+    if (!fetchModSubsPromise) {
+        // Set fetchModSubsPromise to a promise that will fulfill once the sub list is updated
+        fetchModSubsPromise = fetchModSubs().then(subs => {
+            // mySubs should contain a list of subreddit names
+            window.TBCore.mySubs = TBHelpers.saneSort(subs.map(({data}) => data.display_name.trim()));
+
+            // mySubsData should contain a list of objects describing each subreddit
+            window.TBCore.mySubsData = TBHelpers.sortBy(subs.map(({data}) => ({
+                subreddit: data.display_name,
+                subscribers: data.subscribers,
+                over18: data.over18,
+                created_utc: data.created_utc,
+                subreddit_type: data.subreddit_type,
+                submission_type: data.submission_type,
+                is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
+            })), 'subscribers');
+
+            // Update the cache
+            TBStorage.setCache('Utils', 'moderatedSubs', window.TBCore.mySubs);
+            TBStorage.setCache('Utils', 'moderatedSubsData', window.TBCore.mySubsData);
+
+            // We're done fetching, unset this promise
+            fetchModSubsPromise = null;
+        });
+    }
+
+    // Register the callback to be executed once the fetch is done
+    fetchModSubsPromise.then(resolve);
+});
 export const modsSub = subreddit => window.TBCore.mySubs.includes(subreddit);
 
 /**
@@ -787,51 +843,8 @@ let newModSubs;
         });
     };
 
-    let fetchModSubsPromise = null;
-    TBCore.getModSubs = () => new Promise(resolve => {
-        logger.log('getting mod subs');
-
-        // If we already have moderated subreddits, callback works immediately
-        if (TBCore.mySubs.length && TBCore.mySubsData.length) {
-            // TODO: why do these sorts need to happen every time?
-            TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
-            TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
-
-            return resolve();
-        }
-
-        // We need to refresh the list of moderated subreddits. Create a promise
-        // that takes care of doing the updating, in `fetchModSubsPromise`, and
-        // wait for that promise to fulfill before calling the callback.
-
-        // Are we already fetching subs? If not, create the promise to do that
-        if (!fetchModSubsPromise) {
-            // Set fetchModSubsPromise to a promise that will fulfill
-            fetchModSubsPromise = fetchModSubs().then(subs => {
-                // mySubs should contain a list of subreddit names
-                TBCore.mySubs = TBHelpers.saneSort(subs.map(({data}) => data.display_name.trim()));
-                // mySubsData should contain a list of objects describing each subreddit
-                TBCore.mySubsData = TBHelpers.sortBy(subs.map(({data}) => ({
-                    subreddit: data.display_name,
-                    subscribers: data.subscribers,
-                    over18: data.over18,
-                    created_utc: data.created_utc,
-                    subreddit_type: data.subreddit_type,
-                    submission_type: data.submission_type,
-                    is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
-                })), 'subscribers');
-                // Update the cache
-                TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
-                TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
-            });
-        }
-
-        // Register the callback to be executed once the fetch is done
-        fetchModSubsPromise.then(resolve);
-    });
-
     TBCore.modSubCheck = function (callback) {
-        TBCore.getModSubs().then(() => {
+        getModSubs().then(() => {
             const subCount = TBCore.mySubsData.length;
             let subscriberCount = 0;
             TBCore.mySubsData.forEach(subreddit => {

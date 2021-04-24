@@ -154,7 +154,7 @@ self.init = function () {
 
     self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
-    window.TBCore.getModSubs(() => {
+    window.TBCore.getModSubs().then(() => {
         // it's Go Time™!
         self.runRedesign();
     });

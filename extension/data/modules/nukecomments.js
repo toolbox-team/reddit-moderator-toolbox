@@ -255,7 +255,7 @@ self.init = function () {
         const commentID = e.detail.data.id.substring(3);
         const postID = e.detail.data.post.id.substring(3);
 
-        window.TBCore.getModSubs(() => {
+        window.TBCore.getModSubs().then(() => {
             // We have to mod the subreddit to show the button
             if (!TBCore.modsSub(subreddit)) {
                 return;

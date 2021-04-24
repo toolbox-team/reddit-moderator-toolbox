@@ -1008,7 +1008,7 @@ self.mailDropDowns = function () {
           $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
           $mmpMenu = $('.mmp-menu');
 
-    window.TBCore.getModSubs(() => {
+    window.TBCore.getModSubs().then(() => {
         populateDropDowns();
     });
 

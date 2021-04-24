@@ -133,7 +133,7 @@ self.init = function () {
         // Making sure the ui is only created once.
         if (!$existingPopup.length) {
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-            window.TBCore.getModSubs(() => {
+            window.TBCore.getModSubs().then(() => {
                 // We can't expect people to get the capitalizing right.
                 const mySubsLowerCase = [];
                 $(window.TBCore.mySubs).each(function () {

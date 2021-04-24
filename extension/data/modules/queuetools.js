@@ -206,7 +206,7 @@ self.queuetoolsOld = function () {
         $this.addClass('tb-subreddit-color');
     }
 
-    window.TBCore.getModSubs(() => {
+    window.TBCore.getModSubs().then(() => {
         if (subredditColor) {
             self.log('adding sub colors');
             $('.thing').each(colorSubreddits);
@@ -301,7 +301,7 @@ self.queuetoolsOld = function () {
         // remove stuff we can't moderate (in non-mod queues only)
         function removeUnmoddable () {
             if (!TBCore.isModpage && !TBCore.isSubCommentsPage) {
-                window.TBCore.getModSubs(() => {
+                window.TBCore.getModSubs().then(() => {
                     $('.thing').each(function () {
                         const $thing = $(this),
                               $sub = $thing.find('.subreddit');
@@ -1349,7 +1349,7 @@ self.init = function () {
     }
 
     function makeActionTable ($target, subreddit, id) {
-        window.TBCore.getModSubs(() => {
+        window.TBCore.getModSubs().then(() => {
             if (TBCore.modsSub(subreddit)) {
                 getActions(subreddit, id, actions => {
                     if (actions) {

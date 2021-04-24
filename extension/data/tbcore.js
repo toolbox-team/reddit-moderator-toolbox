@@ -788,7 +788,7 @@ let newModSubs;
     };
 
     let fetchModSubsPromise = null;
-    TBCore.getModSubs = function (callback) {
+    TBCore.getModSubs = () => new Promise(resolve => {
         logger.log('getting mod subs');
 
         // If we already have moderated subreddits, callback works immediately
@@ -797,8 +797,7 @@ let newModSubs;
             TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
             TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
 
-            callback();
-            return;
+            return resolve();
         }
 
         // We need to refresh the list of moderated subreddits. Create a promise
@@ -828,11 +827,11 @@ let newModSubs;
         }
 
         // Register the callback to be executed once the fetch is done
-        fetchModSubsPromise.then(callback);
-    };
+        fetchModSubsPromise.then(resolve);
+    });
 
     TBCore.modSubCheck = function (callback) {
-        TBCore.getModSubs(() => {
+        TBCore.getModSubs().then(() => {
             const subCount = TBCore.mySubsData.length;
             let subscriberCount = 0;
             TBCore.mySubsData.forEach(subreddit => {

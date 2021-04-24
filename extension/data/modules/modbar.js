@@ -278,7 +278,7 @@ self.init = function () {
         const configEnabled = TBStorage.getSetting('TBConfig', 'enabled', false),
               usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false),
               subredditColorSalt = self.setting('subredditColorSalt');
-        window.TBCore.getModSubs(() => {
+        window.TBCore.getModSubs().then(() => {
             self.log('got mod subs');
             self.log(window.TBCore.mySubs.length);
             self.log(window.TBCore.mySubsData.length);
@@ -465,7 +465,7 @@ self.init = function () {
         if ($('.tb-settings').length) {
             return;
         } // Don't show the window twice
-        window.TBCore.getModSubs(() => {
+        window.TBCore.getModSubs().then(() => {
             TB.showSettings();
         });
     });

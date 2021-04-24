@@ -50,7 +50,7 @@ self.usernotes = function usernotes () {
           showDate = self.setting('showDate');
     let firstRun = true;
 
-    window.TBCore.getModSubs(() => {
+    window.TBCore.getModSubs().then(() => {
         self.log('Got mod subs');
         self.log(window.TBCore.mySubs);
         run();
@@ -115,7 +115,7 @@ self.usernotes = function usernotes () {
                 $target.attr('data-subreddit', subreddit);
                 $target.attr('data-author', author);
 
-                window.TBCore.getModSubs(() => {
+                window.TBCore.getModSubs().then(() => {
                     if (TBCore.modsSub(subreddit)) {
                         attachNoteTag($target, subreddit, author);
                         foundSubreddit(subreddit);
@@ -134,7 +134,7 @@ self.usernotes = function usernotes () {
             $target.attr('data-subreddit', subreddit);
             $target.attr('data-author', author);
 
-            window.TBCore.getModSubs(() => {
+            window.TBCore.getModSubs().then(() => {
                 if (TBCore.modsSub(subreddit)) {
                     attachNoteTag($target, subreddit, author, {
                         customText: 'Usernotes',
@@ -688,7 +688,7 @@ self.usernotesManager = function () {
             if (event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
 
-                window.TBCore.getModSubs(() => {
+                window.TBCore.getModSubs().then(() => {
                     if (TBCore.modsSub(subreddit)) {
                         TBui.contextTrigger('tb-un-config-link', {
                             addTrigger: true,

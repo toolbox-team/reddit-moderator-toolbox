@@ -278,7 +278,7 @@ self.init = function () {
         TB.listener.on('comment', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
-            window.TBCore.getModSubs(() => {
+            window.TBCore.getModSubs().then(() => {
                 if (TBCore.modsSub(subreddit)) {
                     $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                     $target.closest('.Comment').find('p').highlight(highlighted);
@@ -302,7 +302,7 @@ self.init = function () {
 
             if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.subreddit;
-                window.TBCore.getModSubs(() => {
+                window.TBCore.getModSubs().then(() => {
                     if (TBCore.modsSub(subreddit)) {
                         $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
                     }

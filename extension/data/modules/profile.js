@@ -110,7 +110,7 @@ self.init = function () {
     function filterModdable (hide) {
         const $things = $('.tb-thing');
         if (hide) {
-            window.TBCore.getModSubs(() => {
+            window.TBCore.getModSubs().then(() => {
                 window.TBCore.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
                     const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
@@ -550,7 +550,7 @@ self.init = function () {
     function initSearchSuggestion (subreddit) {
         if (!$body.find('#tb-search-suggest').length) {
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-            window.TBCore.getModSubs(() => {
+            window.TBCore.getModSubs().then(() => {
                 populateSearchSuggestion(subreddit);
             });
         }
@@ -843,7 +843,7 @@ self.init = function () {
                     return;
                 }
 
-                window.TBCore.getModSubs(() => {
+                window.TBCore.getModSubs().then(() => {
                     if (TBCore.modsSub(subreddit)) {
                         const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
                         requestAnimationFrame(() => {
@@ -859,7 +859,7 @@ self.init = function () {
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
 
-            window.TBCore.getModSubs(() => {
+            window.TBCore.getModSubs().then(() => {
                 if (TBCore.modsSub(subreddit)) {
                     const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
                     $target.append(profileButton);

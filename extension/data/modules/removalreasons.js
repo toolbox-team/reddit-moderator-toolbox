@@ -819,7 +819,7 @@ self.init = function () {
 
         // Function to send PM and comment
         function sendRemovalMessage (logLink) {
-            window.TBCore.getModSubs(async () => {
+            window.TBCore.getModSubs().then(async () => {
                 // If there is no message to send, don't send one.
                 if (reasonlength < 1) {
                     if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {

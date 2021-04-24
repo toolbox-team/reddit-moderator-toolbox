@@ -244,7 +244,7 @@ export async function showNote (note) {
  * @param {string} [after] Pagination parameter used for recursion
  * @returns {Promise<string[]>}
  */
-async function getModSubs (after) {
+async function fetchModSubs (after) {
     let json;
     try {
         json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
@@ -255,7 +255,7 @@ async function getModSubs (after) {
     } catch (error) {
         if (error.response && error.response.status === 504) {
             // Always retry 504s
-            return getModSubs(after);
+            return fetchModSubs(after);
         } else {
             throw error;
         }
@@ -263,7 +263,7 @@ async function getModSubs (after) {
 
     // If there are more subs left, fetch them and return everything
     if (json.data.after) {
-        return [...json.data.children, ...await getModSubs(json.data.after)];
+        return [...json.data.children, ...await fetchModSubs(json.data.after)];
     } else {
         return json.data.children;
     }
@@ -274,7 +274,7 @@ async function getModSubs (after) {
  * @param {number} [tries=3] Number of times to retry because of 504s
  * @returns {Promise<object>}
  */
-async function getUserDetails (tries = 3) {
+async function fetchUserDetails (tries = 3) {
     try {
         const data = await TBApi.getJSON('/api/me.json');
         TBStorage.purifyObject(data);
@@ -282,7 +282,7 @@ async function getUserDetails (tries = 3) {
     } catch (error) {
         if (error.response && error.response.status === 504 && tries > 1) {
             // Always retry 504s
-            return getUserDetails(tries - 1);
+            return fetchUserDetails(tries - 1);
         } else {
             throw error;
         }
@@ -307,7 +307,7 @@ let newModSubs;
 
     // Get user details from the API, falling back to cache if necessary
     try {
-        userDetails = await getUserDetails();
+        userDetails = await fetchUserDetails();
         if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
             TBStorage.setCache('Utils', 'userDetails', userDetails);
         } else {
@@ -326,7 +326,7 @@ let newModSubs;
     if (cacheDetails.moderatedSubs.length === 0) {
         try {
             logger.debug('No modsubs in cache, fetching them');
-            newModSubs = await getModSubs();
+            newModSubs = await fetchModSubs();
         } catch (error) {
             logger.warn('Failed to get moderated subreddits, and none are cached. Continuing with none.', error);
         }

@@ -1,5 +1,6 @@
 import {Module} from '../tbmodule.js';
 import {template} from '../tbhelpers.js';
+import {debugInformation} from '../tbcore.js';
 
 const self = new Module('Support Module');
 self.shortname = 'support';
@@ -29,7 +30,7 @@ Info| &nbsp;
 *Cookies Enabled*|{{cookiesEnabled}}
 `;
 
-    const debugInfo = window.TBCore.debugInformation();
+    const debugInfo = debugInformation();
     const submissionAddition = template(debugTemplate, {
         toolboxVersion: debugInfo.toolboxVersion,
         browserName: debugInfo.browser,

@@ -161,6 +161,8 @@ if (isModFakereddit || post_site === undefined || !post_site || invalidPostSites
 export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
 export const WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
 
+// Platform and debugging information
+
 const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
 /** The name of the current browser. */
 export const browserName =
@@ -173,6 +175,120 @@ export const browserName =
                     ? EDGE
                     : CHROME
             : UNKNOWN_BROWSER;
+
+/**
+ * Puts important debug information in a object so we can easily include
+ * it in /r/toolbox posts and comments when people need support.
+ * @function
+ * @returns {DebugObject} Object with debug information
+ */
+export function debugInformation () {
+    const debugObject = {
+        toolboxVersion,
+        browser: '',
+        browserVersion: '',
+        platformInformation: '',
+        betaMode: window.TBCore.betaMode,
+        debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
+        compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
+        advancedSettings: window.TBCore.advancedMode,
+        cookiesEnabled: navigator.cookieEnabled,
+    };
+
+    const browserUserAgent = navigator.userAgent;
+    let browserMatchedInfo = [];
+    switch (browserName) {
+    case CHROME: {
+        // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
+        // This way we can also cut some support requests short.
+        const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
+        const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
+        const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
+        if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
+            browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
+            debugObject.browser = 'Vivaldi';
+            debugObject.browserVersion = browserMatchedInfo[2];
+            debugObject.platformInformation = browserMatchedInfo[1];
+        } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 && yandexRegex.test(browserUserAgent)) { // Yandex
+            browserMatchedInfo = browserUserAgent.match(yandexRegex);
+            debugObject.browser = 'Yandex';
+            debugObject.browserVersion = browserMatchedInfo[2];
+            debugObject.platformInformation = browserMatchedInfo[1];
+        } else if (chromeRegex.test(browserUserAgent)) {
+            browserMatchedInfo = browserUserAgent.match(chromeRegex);
+            debugObject.browser = 'Chrome';
+            debugObject.browserVersion = browserMatchedInfo[2];
+            debugObject.platformInformation = browserMatchedInfo[1];
+        } else {
+            debugObject.browser = 'Chrome derivative';
+            debugObject.browserVersion = 'Unknown';
+            debugObject.platformInformation = browserUserAgent;
+        }
+        break;
+    }
+    case FIREFOX: {
+        const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
+        const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
+        if (firefoxRegex.test(browserUserAgent)) {
+            browserMatchedInfo = browserUserAgent.match(firefoxRegex);
+            debugObject.browser = 'Firefox';
+            debugObject.browserVersion = browserMatchedInfo[2];
+            debugObject.platformInformation = browserMatchedInfo[1];
+        } else if (firefoxDerivativeRegex.test(browserUserAgent)) {
+            browserMatchedInfo = browserUserAgent.match(firefoxDerivativeRegex);
+            debugObject.browser = 'Firefox derivative';
+            debugObject.browserVersion = browserMatchedInfo[2];
+            debugObject.platformInformation = browserMatchedInfo[1];
+        } else {
+            debugObject.browser = 'Firefox derivative';
+            debugObject.browserVersion = 'Unknown';
+            debugObject.platformInformation = browserUserAgent;
+        }
+        break;
+    }
+    case OPERA: {
+        browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
+        debugObject.browser = 'Opera';
+        debugObject.browserVersion = browserMatchedInfo[2];
+        debugObject.platformInformation = browserMatchedInfo[1];
+        break;
+    }
+    case EDGE: {
+        browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edg\/([0-9.]*).*$/);
+        debugObject.browser = 'Edge';
+        debugObject.browserVersion = browserMatchedInfo[2];
+        debugObject.platformInformation = browserMatchedInfo[1];
+        break;
+    }
+    case UNKNOWN_BROWSER: {
+        debugObject.browser = 'Unknown';
+        debugObject.browserVersion = 'Unknown';
+        debugObject.platformInformation = browserUserAgent;
+        break;
+    }
+    default: {
+        // This should really never happen, but just in case I left it in.
+        debugObject.browser = 'Error in browser detection';
+        debugObject.browserVersion = 'Unknown';
+        debugObject.platformInformation = browserUserAgent;
+    }
+    }
+    // info level is always displayed unless disabled in devmode
+    logger.info('Version/browser information:', debugObject);
+    return debugObject;
+}
+/**
+ * @typedef {Object} DebugObject
+ * @property {string} toolboxVersion The toolbox version
+ * @property {string} browser Browser used (Firefox, Chrome, etc)
+ * @property {string} browserVersion The version of the browser
+ * @property {string} platformInformation Other platform information
+ * @property {boolean} betaMode toolbox beta mode enabled
+ * @property {boolean} debugMode  toolbox debugMode enabled
+ * @property {boolean} compactMode toolbox compactmode enabled
+ * @property {boolean} advancedSettings toolbox advanced settings enabled
+ * @property {boolean} cookiesEnabled Browser cookies enabled
+ */
 
 // Random quote generator
 const randomQuotes = [
@@ -897,20 +1013,6 @@ let userDetails;
     // Methods and stuff
 
     /**
-     * @typedef {Object} debugObject
-     * @memberof TBCore
-     * @property {string} toolboxVersion The toolbox version
-     * @property {string} browser Browser used (Firefox, Chrome, etc)
-     * @property {string} browserVersion The version of the browser
-     * @property {string} platformInformation Other platform information
-     * @property {boolean} betaMode toolbox beta mode enabled
-     * @property {boolean} debugMode  toolbox debugMode enabled
-     * @property {boolean} compactMode toolbox compactmode enabled
-     * @property {boolean} advancedSettings toolbox advanced settings enabled
-     * @property {boolean} cookiesEnabled Browser cookies enabled
-     */
-
-    /**
      * Takes an absolute path for a link and prepends the www.reddit.com
      * domain if we're in new modmail (mod.reddit.com). Makes absolute path
      * links work everywhere.
@@ -919,108 +1021,6 @@ let userDetails;
      * @returns {string}
      */
     TBCore.link = link => isNewModmail ? `https://www.reddit.com${link}` : link;
-
-    /**
-     * Puts important debug information in a object so we can easily include
-     * it in /r/toolbox posts and comments when people need support.
-     * @function
-     * @returns {TBCore.debugObject} Object with debug information
-     */
-    TBCore.debugInformation = function debugInformation () {
-        const debugObject = {
-            toolboxVersion,
-            browser: '',
-            browserVersion: '',
-            platformInformation: '',
-            betaMode: TBCore.betaMode,
-            debugMode: TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false),
-            compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
-            advancedSettings: TBCore.advancedMode,
-            cookiesEnabled: navigator.cookieEnabled,
-        };
-
-        const browserUserAgent = navigator.userAgent;
-        let browserMatchedInfo = [];
-        switch (browserName) {
-        case CHROME: {
-            // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
-            // This way we can also cut some support requests short.
-            const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
-            const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
-            const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
-            if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
-                browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
-                debugObject.browser = 'Vivaldi';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
-            } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 && yandexRegex.test(browserUserAgent)) { // Yandex
-                browserMatchedInfo = browserUserAgent.match(yandexRegex);
-                debugObject.browser = 'Yandex';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
-            } else if (chromeRegex.test(browserUserAgent)) {
-                browserMatchedInfo = browserUserAgent.match(chromeRegex);
-                debugObject.browser = 'Chrome';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
-            } else {
-                debugObject.browser = 'Chrome derivative';
-                debugObject.browserVersion = 'Unknown';
-                debugObject.platformInformation = browserUserAgent;
-            }
-            break;
-        }
-        case FIREFOX: {
-            const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
-            const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
-            if (firefoxRegex.test(browserUserAgent)) {
-                browserMatchedInfo = browserUserAgent.match(firefoxRegex);
-                debugObject.browser = 'Firefox';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
-            } else if (firefoxDerivativeRegex.test(browserUserAgent)) {
-                browserMatchedInfo = browserUserAgent.match(firefoxDerivativeRegex);
-                debugObject.browser = 'Firefox derivative';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
-            } else {
-                debugObject.browser = 'Firefox derivative';
-                debugObject.browserVersion = 'Unknown';
-                debugObject.platformInformation = browserUserAgent;
-            }
-            break;
-        }
-        case OPERA: {
-            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
-            debugObject.browser = 'Opera';
-            debugObject.browserVersion = browserMatchedInfo[2];
-            debugObject.platformInformation = browserMatchedInfo[1];
-            break;
-        }
-        case EDGE: {
-            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edg\/([0-9.]*).*$/);
-            debugObject.browser = 'Edge';
-            debugObject.browserVersion = browserMatchedInfo[2];
-            debugObject.platformInformation = browserMatchedInfo[1];
-            break;
-        }
-        case UNKNOWN_BROWSER: {
-            debugObject.browser = 'Unknown';
-            debugObject.browserVersion = 'Unknown';
-            debugObject.platformInformation = browserUserAgent;
-            break;
-        }
-        default: {
-            // This should really never happen, but just in case I left it in.
-            debugObject.browser = 'Error in browser detection';
-            debugObject.browserVersion = 'Unknown';
-            debugObject.platformInformation = browserUserAgent;
-        }
-        }
-        // info level is always displayed unless disabled in devmode
-        logger.info('Version/browser information:', debugObject);
-        return debugObject;
-    };
 
     TBCore.sendEvent = function (tbuEvent) {
         logger.log('Sending event:', tbuEvent);

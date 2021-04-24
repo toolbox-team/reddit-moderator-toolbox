@@ -32,13 +32,13 @@ self.init = function () {
 
                 if (resp === TBCore.NO_WIKI_PAGE) {
                     self.log('resp === TBCore.NO_WIKI_PAGE');
-                    window.TBCore.updateCache('noConfig', sub, false);
+                    TBCore.updateCache('noConfig', sub, false);
                     return callback(false);
                 }
                 TBStorage.purifyObject(resp);
 
                 // We likely have a good config, but maybe not domain tags.
-                window.TBCore.updateCache('configCache', resp, sub);
+                TBCore.updateCache('configCache', resp, sub);
                 return callback(checkConfig(window.TBCore.configCache[sub]), window.TBCore.configCache[sub].modMacros);
             });
         }

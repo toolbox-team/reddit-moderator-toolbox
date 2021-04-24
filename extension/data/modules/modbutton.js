@@ -316,7 +316,7 @@ self.init = function () {
         // get pre-definded ban message/note
         if (subreddit) {
             self.log('getting ban macros');
-            window.TBCore.getConfig(subreddit, config => {
+            TBCore.getConfig(subreddit, config => {
                 if (!config || !config.banMacros) {
                     return;
                 }

@@ -386,7 +386,7 @@ self.init = function () {
                 $body.find('.edit_automoderator_config .error').hide();
             }
             self.log('clearing cache');
-            window.TBCore.clearCache();
+            TBCore.clearCache();
 
             TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
         }).catch(async err => {

@@ -33,7 +33,7 @@ self.init = function () {
     });
 
     function postToWiki (sub, json, reason) {
-        window.TBCore.updateCache('configCache', json, sub);
+        TBCore.updateCache('configCache', json, sub);
         TBApi.postToWiki('toolbox', sub, json, reason, true, false).then(() => {
             $('div.thing.link.dt-processed').removeClass('dt-processed');
             run(false);
@@ -106,7 +106,7 @@ self.init = function () {
 
     function processSubreddit (sub, things) {
         self.log(`  Processing subreddit: /r/${sub}`);
-        window.TBCore.getConfig(sub, config => {
+        TBCore.getConfig(sub, config => {
             self.log(`    Config retrieved for /r/${sub}`);
             if (config && config.domainTags && config.domainTags.length > 0) {
                 setTags(config.domainTags, things);

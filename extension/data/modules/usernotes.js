@@ -924,7 +924,7 @@ self.usernotesManager = function () {
             if (r === true) {
                 self.log(`deleting notes for ${user}`);
                 delete subUsenotes.users[user];
-                window.TBCore.updateCache('noteCache', subUsenotes, sub);
+                TBCore.updateCache('noteCache', subUsenotes, sub);
                 self.saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`);
                 $userSpan.parent().remove();
                 TB.ui.textFeedback(`Deleted all notes for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
@@ -940,7 +940,7 @@ self.usernotesManager = function () {
 
             self.log(`deleting note for ${user}`);
             subUsenotes.users[user].notes.splice(note, 1);
-            window.TBCore.updateCache('noteCache', subUsenotes, sub);
+            TBCore.updateCache('noteCache', subUsenotes, sub);
             self.saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`);
             $noteSpan.remove();
             TB.ui.textFeedback(`Deleted note for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
@@ -1196,14 +1196,14 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
             return;
         }
         if (resp === TBCore.NO_WIKI_PAGE) {
-            window.TBCore.updateCache('noNotes', subreddit, false);
+            TBCore.updateCache('noNotes', subreddit, false);
             self.log('Usernotes read error: NO_WIKI_PAGE');
             returnFalse(TBCore.NO_WIKI_PAGE);
             return;
         }
         // // No notes exist in wiki page
         if (resp.length < 1) {
-            window.TBCore.updateCache('noNotes', subreddit, false);
+            TBCore.updateCache('noNotes', subreddit, false);
             self.log('Usernotes read error: wiki empty');
             returnFalse();
             return;
@@ -1215,7 +1215,7 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
         const notes = convertNotes(resp, subreddit);
 
         // We have notes, cache them and return them.
-        window.TBCore.updateCache('noteCache', notes, subreddit);
+        TBCore.updateCache('noteCache', notes, subreddit);
         if (callback) {
             callback(true, notes, subreddit);
         }
@@ -1248,7 +1248,7 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
                             self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`, succ => {
                                 if (succ) {
                                     TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
-                                    window.TBCore.clearCache();
+                                    TBCore.clearCache();
                                     window.location.reload();
                                 }
                             });
@@ -1323,7 +1323,7 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
     }
 
     // Update cache
-    window.TBCore.updateCache('noteCache', notes, sub);
+    TBCore.updateCache('noteCache', notes, sub);
 
     // Deconvert notes to wiki format
     notes = deconvertNotes(notes);
@@ -1509,7 +1509,7 @@ self.getSubredditColors = async function (subreddit) {
     self.log(`Getting subreddit colors for /r/${subreddit}`);
     // TODO: convert original function to promise
     const config = await new Promise(resolve => {
-        window.TBCore.getConfig(subreddit, resolve);
+        TBCore.getConfig(subreddit, resolve);
     });
 
     if (config && config.usernoteColors && config.usernoteColors.length > 0) {

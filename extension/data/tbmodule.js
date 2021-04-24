@@ -357,7 +357,7 @@ function tbmodule () {
                 TB.storage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
 
                 if ($('#clearcache').prop('checked')) {
-                    window.TBCore.clearCache();
+                    TBCore.clearCache();
                 }
 
                 $(settingsDialog).remove();
@@ -399,7 +399,7 @@ function tbmodule () {
                 if ($(e.target).hasClass('tb-settings-import')) {
                     TBCore.importSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                        window.TBCore.clearCache();
+                        TBCore.clearCache();
                         TB.storage.verifiedSettingsSave(succ => {
                             if (succ) {
                                 TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
@@ -415,7 +415,7 @@ function tbmodule () {
                     TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
                     TBCore.exportSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                        window.TBCore.clearCache();
+                        TBCore.clearCache();
                         window.location.reload();
                     });
                 }

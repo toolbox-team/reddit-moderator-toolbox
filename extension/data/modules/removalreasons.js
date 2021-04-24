@@ -147,7 +147,7 @@ self.init = function () {
             TBStorage.purifyObject(resp);
 
             // We have a valid config, cache it.
-            window.TBCore.updateCache('configCache', resp, subreddit);
+            TBCore.updateCache('configCache', resp, subreddit);
 
             reasons = resp.removalReasons;
 
@@ -166,7 +166,7 @@ self.init = function () {
             }
 
             self.log('failed: all');
-            window.TBCore.updateCache('noConfig', subreddit, false);
+            TBCore.updateCache('noConfig', subreddit, false);
             callback(false);
         });
     }

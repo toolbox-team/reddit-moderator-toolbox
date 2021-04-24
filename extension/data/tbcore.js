@@ -951,9 +951,10 @@ async function getToolboxDevs () {
     await TBStorage.setSettingAsync('Utils', 'tbDevs', devs);
 }
 
-let userDetails;
+// Perform startup tasks
 (async () => {
     // Get user details from the API, falling back to cache if necessary
+    let userDetails;
     try {
         userDetails = await fetchUserDetails();
         if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
@@ -970,6 +971,14 @@ let userDetails;
         return;
     }
 
+    // Module exports can't be reassigned asynchronously (modules that imported
+    // the value already won't be updated with the new value). To preserve old
+    // behavior, we create a `window.TBCore` object separate from the exported
+    // values of this module, and put values that need to be asynchronously
+    // reassigned on it rather than exporting them.
+    // TODO: Move remaining properties off this global object into exports or
+    //       rework them as necessary (e.g. with exported get/set functions that
+    //       update an internal variable)
     const TBCore = window.TBCore = window.TBCore || {};
 
     // We need these before we can do anything.

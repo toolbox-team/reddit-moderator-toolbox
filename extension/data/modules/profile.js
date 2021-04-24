@@ -844,7 +844,7 @@ self.init = function () {
                 }
 
                 window.TBCore.getModSubs(() => {
-                    if (window.TBCore.modsSub(subreddit)) {
+                    if (TBCore.modsSub(subreddit)) {
                         const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
                         requestAnimationFrame(() => {
                             $target.append(profileButton);
@@ -860,7 +860,7 @@ self.init = function () {
             const author = e.detail.data.user.username;
 
             window.TBCore.getModSubs(() => {
-                if (window.TBCore.modsSub(subreddit)) {
+                if (TBCore.modsSub(subreddit)) {
                     const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
                     $target.append(profileButton);
                 }

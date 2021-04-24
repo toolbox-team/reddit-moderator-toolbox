@@ -128,7 +128,7 @@ self.updateSavedSubs = function () {
         self.savedSubs.forEach(subreddit => {
             // only subs we moderate
             // and not the current sub
-            if (window.TBCore.modsSub(subreddit) && subreddit !== currentSub) {
+            if (TBCore.modsSub(subreddit) && subreddit !== currentSub) {
                 $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${subreddit
                 }" id="action-${subreddit}"><label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit}</label></div>`);
             }

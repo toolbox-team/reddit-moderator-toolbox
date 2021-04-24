@@ -116,7 +116,7 @@ self.usernotes = function usernotes () {
                 $target.attr('data-author', author);
 
                 window.TBCore.getModSubs(() => {
-                    if (window.TBCore.modsSub(subreddit)) {
+                    if (TBCore.modsSub(subreddit)) {
                         attachNoteTag($target, subreddit, author);
                         foundSubreddit(subreddit);
                         queueProcessSub(subreddit, $target);
@@ -135,7 +135,7 @@ self.usernotes = function usernotes () {
             $target.attr('data-author', author);
 
             window.TBCore.getModSubs(() => {
-                if (window.TBCore.modsSub(subreddit)) {
+                if (TBCore.modsSub(subreddit)) {
                     attachNoteTag($target, subreddit, author, {
                         customText: 'Usernotes',
                     });
@@ -689,7 +689,7 @@ self.usernotesManager = function () {
                 const subreddit = event.detail.pageDetails.subreddit;
 
                 window.TBCore.getModSubs(() => {
-                    if (window.TBCore.modsSub(subreddit)) {
+                    if (TBCore.modsSub(subreddit)) {
                         TBui.contextTrigger('tb-un-config-link', {
                             addTrigger: true,
                             triggerText: 'edit usernotes',

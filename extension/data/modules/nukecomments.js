@@ -257,7 +257,7 @@ self.init = function () {
 
         window.TBCore.getModSubs(() => {
             // We have to mod the subreddit to show the button
-            if (!window.TBCore.modsSub(subreddit)) {
+            if (!TBCore.modsSub(subreddit)) {
                 return;
             }
             // We also have to be on a comments page or looking at a context popup

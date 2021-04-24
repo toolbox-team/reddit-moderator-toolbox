@@ -197,7 +197,7 @@ self.queuetoolsOld = function () {
 
         $this.addClass('color-processed');
 
-        if (!window.TBCore.modsSub(subredditName)) {
+        if (!TBCore.modsSub(subredditName)) {
             return;
         }
 
@@ -309,7 +309,7 @@ self.queuetoolsOld = function () {
                         // Remove if the sub isn't moderated
                         if ($sub.length > 0) {
                             const sub = TBHelpers.cleanSubredditName($sub.text());
-                            if (!window.TBCore.modsSub(sub)) {
+                            if (!TBCore.modsSub(sub)) {
                                 $thing.remove();
                             }
                         } else if ($thing.find('.parent').text().endsWith('[promoted post]')) {
@@ -1350,7 +1350,7 @@ self.init = function () {
 
     function makeActionTable ($target, subreddit, id) {
         window.TBCore.getModSubs(() => {
-            if (window.TBCore.modsSub(subreddit)) {
+            if (TBCore.modsSub(subreddit)) {
                 getActions(subreddit, id, actions => {
                     if (actions) {
                         const show = $('body').hasClass('tb-show-actions');

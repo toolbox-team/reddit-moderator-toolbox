@@ -326,7 +326,7 @@ self.init = function () {
             const subreddit = event.detail.pageDetails.subreddit;
 
             window.TBCore.getModSubs(() => {
-                if (window.TBCore.modsSub(subreddit)) {
+                if (TBCore.modsSub(subreddit)) {
                     TBui.contextTrigger('tb-config-link', {
                         addTrigger: true,
                         triggerText: `/r/${subreddit} config`,

@@ -206,7 +206,7 @@ self.init = function () {
             const thingID = commentDetails.data.id;
 
             window.TBCore.getModSubs(() => {
-                if (window.TBCore.modsSub(subreddit)) {
+                if (TBCore.modsSub(subreddit)) {
                     getConfig(subreddit, (success, config) => {
                         // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {
@@ -231,7 +231,7 @@ self.init = function () {
             const subreddit = event.detail.pageDetails.subreddit;
 
             window.TBCore.getModSubs(() => {
-                if (window.TBCore.modsSub(subreddit)) {
+                if (TBCore.modsSub(subreddit)) {
                     getConfig(subreddit, (success, config) => {
                         // if we're a mod, add macros to top level reply button.
                         if (success && config.length > 0) {

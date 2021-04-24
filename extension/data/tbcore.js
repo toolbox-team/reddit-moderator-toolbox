@@ -50,6 +50,9 @@ export const isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)
 export const isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
 export const isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
 
+// Details about the current user
+export const modsSub = subreddit => window.TBCore.mySubs.includes(subreddit);
+
 /**
  * The base domain to use for links to content on Reddit. If we are on new
  * modmail we use www.reddit.com; wnywhere else we use whatever is the current
@@ -392,15 +395,13 @@ let newModSubs;
         </style>
     `);
 
-    TBCore.modsSub = subreddit => TBCore.mySubs.includes(subreddit);
-
     // Get cached info.
     function processNewModSubs () {
         TBCore.mySubs = [];
         TBCore.mySubsData = [];
         newModSubs.forEach(subData => {
             const sub = subData.data.display_name.trim();
-            if (!TBCore.modsSub(sub)) {
+            if (!modsSub(sub)) {
                 TBCore.mySubs.push(sub);
             }
 
@@ -826,7 +827,7 @@ let newModSubs;
         function getSubsResult (subs, after) {
             $(subs).each(function () {
                 const sub = this.data.display_name.trim();
-                if (!TBCore.modsSub(sub)) {
+                if (!modsSub(sub)) {
                     TBCore.mySubs.push(sub);
                 }
 
@@ -1023,7 +1024,7 @@ let newModSubs;
         subreddit = TBHelpers.cleanSubredditName(subreddit);
 
         // Not a mod, reset current sub.
-        if (modCheck && !TBCore.modsSub(subreddit)) {
+        if (modCheck && !modsSub(subreddit)) {
             subreddit = '';
         }
 
@@ -1118,7 +1119,7 @@ let newModSubs;
 
                 let subreddit = message.data.subreddit || '';
 
-                if (modCheck && !TBCore.modsSub(subreddit)) {
+                if (modCheck && !modsSub(subreddit)) {
                     subreddit = '';
                 }
 
@@ -1167,7 +1168,7 @@ let newModSubs;
                 subreddit = TBHelpers.cleanSubredditName(subreddit);
 
                 // Not a mod, reset current sub.
-                if (modCheck && !TBCore.modsSub(subreddit)) {
+                if (modCheck && !modsSub(subreddit)) {
                     subreddit = '';
                 }
 
@@ -1185,7 +1186,7 @@ let newModSubs;
                     permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
                 }
 
-                if (modCheck && !TBCore.modsSub(subreddit)) {
+                if (modCheck && !modsSub(subreddit)) {
                     subreddit = '';
                 }
 

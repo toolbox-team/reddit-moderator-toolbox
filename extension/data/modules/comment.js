@@ -113,7 +113,7 @@ self.initOldReddit = function () {
                 const $thing = $(item);
                 $thing.addClass('tb-comments-checked');
 
-                const thing = window.TBCore.getThingInfo($thing, true);
+                const thing = TBCore.getThingInfo($thing, true);
 
                 if (self.approveComments) {
                     // only for subreddits we mod
@@ -289,7 +289,7 @@ self.init = function () {
         $body.on('click', '.expando-button', function () {
             const $this = $(this);
             const $thing = $this.closest('.thing');
-            const thingInfo = window.TBCore.getThingInfo($thing, true);
+            const thingInfo = TBCore.getThingInfo($thing, true);
             if (thingInfo.subreddit) {
                 setTimeout(() => {
                     $thing.find('.md').highlight(highlighted);

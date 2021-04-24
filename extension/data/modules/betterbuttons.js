@@ -327,7 +327,7 @@ self.initAddRemoveButtons = function initRemoveButtons () {
         const $thing = $(item);
         $thing.addClass('tb-removebuttons-checked');
 
-        const thing = window.TBCore.getThingInfo(item, true);
+        const thing = TBCore.getThingInfo(item, true);
 
         if (self.setting('spamRemoved')) {
             // only for subreddits we mod
@@ -451,7 +451,7 @@ self.initCommentLock = function () {
         const $lockButton = $(event.target);
 
         const action = $lockButton.attr('tb-action');
-        const info = window.TBCore.getThingInfo(this, true);
+        const info = TBCore.getThingInfo(this, true);
         const data = {
             id: info.id,
         };

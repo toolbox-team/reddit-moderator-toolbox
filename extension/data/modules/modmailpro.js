@@ -302,7 +302,7 @@ self.modmailpro = function () {
                 threads, chunkSize, processRate,
                 (thread, count, array) => {
                     self.log(`Running thread batch: ${count + 1} of ${array.length}`);
-                    // self.log('\tUser = ' + window.TBCore.getThingInfo(thread).user);
+                    // self.log('\tUser = ' + TBCore.getThingInfo(thread).user);
                     processThread(thread);
                 },
                 () => {
@@ -398,7 +398,7 @@ self.modmailpro = function () {
               $collapseLink = $thread.find('.tb-collapse-link'),
               $subredditArea = $thread.find('.correspondent:first'),
 
-              threadInfo = window.TBCore.getThingInfo($thread),
+              threadInfo = TBCore.getThingInfo($thread),
               threadID = threadInfo.id,
               subreddit = threadInfo.subreddit,
               title = threadInfo.title,

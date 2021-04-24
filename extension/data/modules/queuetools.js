@@ -1016,7 +1016,7 @@ self.queuetoolsOld = function () {
                     threadID = $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
                 } else {
                     // I am the parent submission, so get my own ID
-                    // window.TBCore.getThingInfo() is overkill here
+                    // TBCore.getThingInfo() is overkill here
                     threadID = $thing.attr('data-fullname').replace('t3_', '');
                 }
                 // Only record thread IDs once each

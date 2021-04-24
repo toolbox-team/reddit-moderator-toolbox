@@ -422,7 +422,7 @@ self.init = function () {
         const $benbutton = $(benbutton);
 
         if (TBCore.isNewModmail) {
-            const info = window.TBCore.getThingInfo(this, true);
+            const info = TBCore.getThingInfo(this, true);
             openModPopup(event, info);
         } else {
             const subreddit = $benbutton.attr('data-subreddit');
@@ -457,7 +457,7 @@ self.init = function () {
                 };
                 openModPopup(event, info);
             } else {
-                window.TBCore.getApiThingInfo(id, subreddit, true, info => {
+                TBCore.getApiThingInfo(id, subreddit, true, info => {
                     // If the thing we're fetching info for is removed in a subreddit the current user doesn't mod,
                     // the API won't return information about it. However, we can still access such things if we're
                     // on the user's profile. In that context, we manually fill in the author since we know at least

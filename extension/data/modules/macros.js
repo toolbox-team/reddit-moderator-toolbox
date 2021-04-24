@@ -123,7 +123,7 @@ self.init = function () {
             const $this = $(this);
             if ($this.text() === 'reply') {
                 const $thing = $this.closest('.thing'),
-                      info = window.TBCore.getThingInfo($thing, true);
+                      info = TBCore.getThingInfo($thing, true);
 
                 // This is because reddit clones the top-level reply box for all reply boxes.
                 // We need to remove it before adding the new one, because the new one works differently.
@@ -162,7 +162,7 @@ self.init = function () {
     // Add macro button in new modmail
     function addNewMMMacro () {
         const $thing = $body.find('.InfoBar'),
-              info = window.TBCore.getThingInfo($thing, true);
+              info = TBCore.getThingInfo($thing, true);
 
         // Don't add macro button twice.
         if ($body.find('.tb-usertext-buttons').length) {
@@ -525,9 +525,9 @@ self.init = function () {
         // If it's a top-level reply we need to find the post's info.
         if (topLevel) {
             self.log('toplevel');
-            info = window.TBCore.getThingInfo($('#siteTable').find('.thing:first'));
+            info = TBCore.getThingInfo($('#siteTable').find('.thing:first'));
         } else {
-            info = window.TBCore.getThingInfo($this.closest('.thing'));
+            info = TBCore.getThingInfo($this.closest('.thing'));
         }
 
         self.log(info);
@@ -537,7 +537,7 @@ self.init = function () {
                 const macro = config[index];
 
                 if (thingID) {
-                    window.TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
+                    TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
                         $this.attr('id', `macro-dropdown-${thinginfo.id}`);
                         editMacro($this, thinginfo, macro, topLevel);
                     });

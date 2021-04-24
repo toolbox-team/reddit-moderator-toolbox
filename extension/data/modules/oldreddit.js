@@ -46,7 +46,7 @@ function handleThing (entries, observer) {
             return;
         }
 
-        const info = window.TBCore.getThingInfo($thing);
+        const info = TBCore.getThingInfo($thing);
 
         requestAnimationFrame(() => {
             const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
@@ -206,7 +206,7 @@ function newModmailSidebar () {
             $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)').each(function () {
                 const $infobar = $(this);
                 $infobar.addClass('tb-seen');
-                const info = window.TBCore.getThingInfo(this, true);
+                const info = TBCore.getThingInfo(this, true);
                 const $jsApiThingPlaceholder = $(`
                         <div class="tb-jsapi-container InfoBar__recents">
                             <div class="InfoBar__recentsTitle">Toolbox functions:</div>

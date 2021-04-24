@@ -866,6 +866,8 @@ export function importSettings (subreddit, callback) {
     });
 }
 
+// Misc. functions
+
 export function addToSiteTable (URL, callback) {
     if (!callback) {
         return;
@@ -889,6 +891,332 @@ export function addToSiteTable (URL, callback) {
             callback(null);
         }
     });
+}
+
+export function getThingInfo (sender, modCheck) {
+    // First we check if we are in new modmail thread and for now we take a very simple.
+    // Everything we need info for is centered around threads.
+    const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+    const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+
+    // declare what we will need.
+    const $sender = $(sender);
+    const $body = $('body');
+
+    let subreddit,
+        permalink,
+        permalink_newmodmail,
+        domain,
+        id,
+        postID,
+        body,
+        title,
+        kind,
+        postlink,
+        banned_by,
+        spam,
+        ham,
+        user,
+        approved_by,
+        $textBody,
+        subredditType;
+
+    // If new modmail the method is slightly different.
+    if (isNewModmail) {
+        subredditType = '';
+        // Lack of a better name, can be a thread_message or infobar.
+        const $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
+        const browserUrl = window.location.href;
+
+        const idRegex = new RegExp('.*mod.reddit.com/mail/.*?/(.*?)$', 'i');
+
+        subreddit = $body.find('.ThreadTitle__community').text();
+        const idMatch = browserUrl.match(idRegex);
+        // `idMatch` can be null when quickly navigating away (in which case `id` is inconsequential)
+        id = idMatch ? idMatch[1] : 'racey';
+
+        permalink_newmodmail = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
+
+        permalink = $body.find('.ThreadTitle__messageLink');
+        permalink = permalink.length ? permalink[0].href : permalink_newmodmail;
+
+        // Funny story, there is currently no functionality in new modmail that can make use of the body.
+        // Macros look at the sidebar and other modules don't need the body.
+        // Todo: Figure out what body to present when activated from modmacro.
+        $textBody = $threadBase.find('.Message__body .md').clone();
+
+        $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
+        body = $textBody.text() || '';
+        body = body.replace(/^\s+|\s+$/g, '');
+        $textBody.remove();
+        title = $body.find('.ThreadTitle__title').text();
+        kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
+        spam = false;
+        ham = false;
+        user = $threadBase.find('.Message__author').first().text() || $body.find('.InfoBar__username').first().text();
+    } else {
+        const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
+        const $thing = $($sender.closest('.thing')[0] || $sender);
+
+        subredditType = $thing.attr('data-subreddit-type');
+        user = $entry.find('.author:first').text() || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
+        subreddit = $thing.attr('data-subreddit') || post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
+        permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
+        domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
+        id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
+        $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
+        $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
+        body = $textBody.text() || '';
+        body = body.replace(/^\s+|\s+$/g, '');
+
+        $textBody.remove();
+
+        // These need some fall backs, but only removal reasons use them for now.
+        title = $thing.find('a.title').length ? $thing.find('a.title').text() : '';
+        kind = $thing.hasClass('link') ? 'submission' : 'comment';
+        postlink = $thing.find('a.title').attr('href');
+
+        // removed? spam or ham?
+        const removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
+
+        banned_by = removal[1] || '';
+        spam = removal[2] === 'spam' || removal[2] === 'confirm spam';
+        ham = removal[2] === 'remove not spam';
+
+        if (isEditUserPage && !user) {
+            user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
+        }
+
+        // If we still don't have a sub, we're in mod mail, or PMs.
+        if (isModmail || $sender.closest('.message-parent')[0] !== undefined) {
+            // Change it to use the parent's title.
+            title = $sender.find('.subject-text:first').text();
+            subreddit = subreddit ? subreddit : $entry.find('.head a:last').text() || $thing.find('.head a:last').text();
+            // This is a weird palce to go about this, and the conditions are strange,
+            // but if we're going to assume we're us, we better make damned well sure that is likely the case.
+            // if ($entry.find('.remove-button').text() === '') {
+            // The previous check would mistakenly catch removed modmail messages as the user's messages.
+            // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
+            // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
+
+            // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
+            user = $entry.find('.sender a.author').text();
+            // If there is only one use present and it says "to" it means that this is not the user sending the message.
+            if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
+                user = window.TBCore.logged;
+            }
+            if (user === '') {
+                user = window.TBCore.logged;
+                if (!subreddit || subreddit.indexOf('/r/') < 1) {
+                    // Find a better way, I double dog dare ya!
+                    subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
+                }
+            }
+        }
+        const approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '';
+        approved_by = approved_text.match(/by\s(.+?)\s/) || '';
+    }
+
+    // A recent reddit change makes subreddit names sometimes start with "/r/".
+    // Mod mail subreddit names additionally end with "/".
+    // reddit pls, need consistency
+    subreddit = TBHelpers.cleanSubredditName(subreddit);
+
+    // Not a mod, reset current sub.
+    if (modCheck && !modsSub(subreddit)) {
+        subreddit = '';
+    }
+
+    if (user === '[deleted]') {
+        user = '';
+    }
+
+    // If the permalink is relative, stick the current domain name in.
+    // Only do so if a permalink is found.
+    if (permalink && permalink.slice(0, 1) === '/') {
+        permalink = baseDomain + permalink;
+    }
+
+    if (permalink && permaCommentLinkRegex.test(permalink)) {
+        const permalinkDetails = permalink.match(permaLinkInfoRegex);
+        postID = `t3_${permalinkDetails[2]}`;
+        permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+    }
+
+    const info = {
+        subreddit,
+        subredditType,
+        user,
+        author: user,
+        permalink,
+        permalink_newmodmail: permalink_newmodmail || permalink,
+        url: permalink,
+        domain,
+        id,
+        postID: postID || '',
+        body: `> ${body.split('\n').join('\n> ')}`,
+        raw_body: body,
+        uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+        approved_by,
+        title,
+        uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+        kind,
+        postlink,
+        link: postlink,
+        banned_by,
+        spam,
+        ham,
+        rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+        sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+        wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
+        mod: window.TBCore.logged,
+    };
+
+    return info;
+}
+
+function findMessage (object, searchID) {
+    let found;
+    switch (object.kind) {
+    case 'Listing':
+        for (let i = 0; i < object.data.children.length; i++) {
+            const childFound = findMessage(object.data.children[i], searchID);
+            if (childFound) {
+                found = childFound;
+            }
+        }
+        break;
+    case 't4':
+        logger.log('t4:', object.data.id);
+        if (object.data.id === searchID) {
+            found = object;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies && typeof object.data.replies === 'object') {
+            const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
+            if (childFound) {
+                found = childFound;
+            }
+        }
+        break;
+    default:
+        break;
+    }
+    return found;
+}
+
+export function getApiThingInfo (id, subreddit, modCheck, callback) {
+    if (id.startsWith('t4_')) {
+        const shortID = id.substr(3);
+        TBApi.getJSON(`/message/messages/${shortID}.json`).then(response => {
+            TBStorage.purifyObject(response);
+            const message = findMessage(response, shortID);
+            const body = message.data.body,
+                  user = message.data.author,
+                  title = message.data.subject,
+                  permalink = `/message/messages/${shortID}`;
+
+            let subreddit = message.data.subreddit || '';
+
+            if (modCheck && !modsSub(subreddit)) {
+                subreddit = '';
+            }
+
+            const info = {
+                subreddit,
+                user,
+                author: user,
+                permalink,
+                url: permalink,
+                domain: '',
+                id,
+                body: `> ${body.split('\n').join('\n> ')}`,
+                raw_body: body,
+                uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                approved_by: '',
+                title,
+                uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                kind: 'comment',
+                postlink: '',
+                link: '',
+                banned_by: '',
+                spam: '',
+                ham: '',
+                rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+                sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+                wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
+                mod: window.TBCore.logged,
+            };
+
+            callback(info);
+        });
+    } else {
+        const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+        TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
+            TBStorage.purifyObject(response);
+            const data = response.data;
+
+            let user = data.children[0].data.author;
+            const body = data.children[0].data.body || data.children[0].data.selftext || '';
+            let permalink = data.children[0].data.permalink;
+            const title = data.children[0].data.title || '';
+            const postlink = data.children[0].data.url || '';
+            // A recent reddit change makes subreddit names sometimes start with "/r/".
+            // Mod mail subreddit names additionally end with "/".
+            // reddit pls, need consistency
+            subreddit = TBHelpers.cleanSubredditName(subreddit);
+
+            // Not a mod, reset current sub.
+            if (modCheck && !modsSub(subreddit)) {
+                subreddit = '';
+            }
+
+            if (user === '[deleted]') {
+                user = '';
+            }
+
+            // If the permalink is relative, stick the current domain name in.
+            // Only do so if a permalink is found.
+            if (permalink && permalink.slice(0, 1) === '/') {
+                permalink = baseDomain + permalink;
+            }
+
+            if (permalink && permaCommentLinkRegex.test(permalink)) {
+                permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+            }
+
+            if (modCheck && !modsSub(subreddit)) {
+                subreddit = '';
+            }
+
+            const info = {
+                subreddit,
+                user,
+                author: user,
+                permalink,
+                url: permalink,
+                domain: data.children[0].data.domain || '',
+                id,
+                body: `> ${body.split('\n').join('\n> ')}`,
+                raw_body: body,
+                uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                approved_by: data.children[0].data.approved_by,
+                title,
+                uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
+                postlink,
+                link: postlink,
+                banned_by: data.children[0].data.banned_by,
+                spam: data.children[0].data.spam,
+                ham: data.children[0].data.removed,
+                rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+                sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+                wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
+                mod: window.TBCore.logged,
+            };
+            callback(info);
+        });
+    }
 }
 
 // Global object shenanigans
@@ -1198,336 +1526,6 @@ async function getToolboxDevs () {
         {key: 'permban', color: 'darkred', text: 'Permanent Ban'},
         {key: 'botban', color: 'black', text: 'Bot Ban'},
     ];
-
-    // Methods and stuff
-
-    TBCore.getThingInfo = function (sender, modCheck) {
-        // First we check if we are in new modmail thread and for now we take a very simple.
-        // Everything we need info for is centered around threads.
-        const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-        const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
-
-        // declare what we will need.
-        const $sender = $(sender);
-        const $body = $('body');
-
-        let subreddit,
-            permalink,
-            permalink_newmodmail,
-            domain,
-            id,
-            postID,
-            body,
-            title,
-            kind,
-            postlink,
-            banned_by,
-            spam,
-            ham,
-            user,
-            approved_by,
-            $textBody,
-            subredditType;
-
-        // If new modmail the method is slightly different.
-        if (isNewModmail) {
-            subredditType = '';
-            // Lack of a better name, can be a thread_message or infobar.
-            const $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
-            const browserUrl = window.location.href;
-
-            const idRegex = new RegExp('.*mod.reddit.com/mail/.*?/(.*?)$', 'i');
-
-            subreddit = $body.find('.ThreadTitle__community').text();
-            const idMatch = browserUrl.match(idRegex);
-            // `idMatch` can be null when quickly navigating away (in which case `id` is inconsequential)
-            id = idMatch ? idMatch[1] : 'racey';
-
-            permalink_newmodmail = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
-
-            permalink = $body.find('.ThreadTitle__messageLink');
-            permalink = permalink.length ? permalink[0].href : permalink_newmodmail;
-
-            // Funny story, there is currently no functionality in new modmail that can make use of the body.
-            // Macros look at the sidebar and other modules don't need the body.
-            // Todo: Figure out what body to present when activated from modmacro.
-            $textBody = $threadBase.find('.Message__body .md').clone();
-
-            $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
-            body = $textBody.text() || '';
-            body = body.replace(/^\s+|\s+$/g, '');
-            $textBody.remove();
-            title = $body.find('.ThreadTitle__title').text();
-            kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
-            spam = false;
-            ham = false;
-            user = $threadBase.find('.Message__author').first().text() || $body.find('.InfoBar__username').first().text();
-        } else {
-            const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
-            const $thing = $($sender.closest('.thing')[0] || $sender);
-
-            subredditType = $thing.attr('data-subreddit-type');
-            user = $entry.find('.author:first').text() || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
-            subreddit = $thing.attr('data-subreddit') || post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
-            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
-            domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
-            id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
-            $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
-            $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
-            body = $textBody.text() || '';
-            body = body.replace(/^\s+|\s+$/g, '');
-
-            $textBody.remove();
-
-            // These need some fall backs, but only removal reasons use them for now.
-            title = $thing.find('a.title').length ? $thing.find('a.title').text() : '';
-            kind = $thing.hasClass('link') ? 'submission' : 'comment';
-            postlink = $thing.find('a.title').attr('href');
-
-            // removed? spam or ham?
-            const removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
-
-            banned_by = removal[1] || '';
-            spam = removal[2] === 'spam' || removal[2] === 'confirm spam';
-            ham = removal[2] === 'remove not spam';
-
-            if (isEditUserPage && !user) {
-                user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
-            }
-
-            // If we still don't have a sub, we're in mod mail, or PMs.
-            if (isModmail || $sender.closest('.message-parent')[0] !== undefined) {
-                // Change it to use the parent's title.
-                title = $sender.find('.subject-text:first').text();
-                subreddit = subreddit ? subreddit : $entry.find('.head a:last').text() || $thing.find('.head a:last').text();
-                // This is a weird palce to go about this, and the conditions are strange,
-                // but if we're going to assume we're us, we better make damned well sure that is likely the case.
-                // if ($entry.find('.remove-button').text() === '') {
-                // The previous check would mistakenly catch removed modmail messages as the user's messages.
-                // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
-                // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
-
-                // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
-                user = $entry.find('.sender a.author').text();
-                // If there is only one use present and it says "to" it means that this is not the user sending the message.
-                if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
-                    user = TBCore.logged;
-                }
-                if (user === '') {
-                    user = TBCore.logged;
-                    if (!subreddit || subreddit.indexOf('/r/') < 1) {
-                        // Find a better way, I double dog dare ya!
-                        subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
-                    }
-                }
-            }
-            const approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '';
-            approved_by = approved_text.match(/by\s(.+?)\s/) || '';
-        }
-
-        // A recent reddit change makes subreddit names sometimes start with "/r/".
-        // Mod mail subreddit names additionally end with "/".
-        // reddit pls, need consistency
-        subreddit = TBHelpers.cleanSubredditName(subreddit);
-
-        // Not a mod, reset current sub.
-        if (modCheck && !modsSub(subreddit)) {
-            subreddit = '';
-        }
-
-        if (user === '[deleted]') {
-            user = '';
-        }
-
-        // If the permalink is relative, stick the current domain name in.
-        // Only do so if a permalink is found.
-        if (permalink && permalink.slice(0, 1) === '/') {
-            permalink = baseDomain + permalink;
-        }
-
-        if (permalink && permaCommentLinkRegex.test(permalink)) {
-            const permalinkDetails = permalink.match(permaLinkInfoRegex);
-            postID = `t3_${permalinkDetails[2]}`;
-            permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
-        }
-
-        const info = {
-            subreddit,
-            subredditType,
-            user,
-            author: user,
-            permalink,
-            permalink_newmodmail: permalink_newmodmail || permalink,
-            url: permalink,
-            domain,
-            id,
-            postID: postID || '',
-            body: `> ${body.split('\n').join('\n> ')}`,
-            raw_body: body,
-            uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-            approved_by,
-            title,
-            uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-            kind,
-            postlink,
-            link: postlink,
-            banned_by,
-            spam,
-            ham,
-            rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
-            sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
-            wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-            mod: TBCore.logged,
-        };
-
-        return info;
-    };
-
-    function findMessage (object, searchID) {
-        let found;
-        switch (object.kind) {
-        case 'Listing':
-            for (let i = 0; i < object.data.children.length; i++) {
-                const childFound = findMessage(object.data.children[i], searchID);
-                if (childFound) {
-                    found = childFound;
-                }
-            }
-            break;
-        case 't4':
-            logger.log('t4:', object.data.id);
-            if (object.data.id === searchID) {
-                found = object;
-            }
-
-            if (Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies && typeof object.data.replies === 'object') {
-                const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
-                if (childFound) {
-                    found = childFound;
-                }
-            }
-            break;
-        default:
-            break;
-        }
-        return found;
-    }
-
-    TBCore.getApiThingInfo = function (id, subreddit, modCheck, callback) {
-        if (id.startsWith('t4_')) {
-            const shortID = id.substr(3);
-            TBApi.getJSON(`/message/messages/${shortID}.json`).then(response => {
-                TBStorage.purifyObject(response);
-                const message = findMessage(response, shortID);
-                const body = message.data.body,
-                      user = message.data.author,
-                      title = message.data.subject,
-                      permalink = `/message/messages/${shortID}`;
-
-                let subreddit = message.data.subreddit || '';
-
-                if (modCheck && !modsSub(subreddit)) {
-                    subreddit = '';
-                }
-
-                const info = {
-                    subreddit,
-                    user,
-                    author: user,
-                    permalink,
-                    url: permalink,
-                    domain: '',
-                    id,
-                    body: `> ${body.split('\n').join('\n> ')}`,
-                    raw_body: body,
-                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                    approved_by: '',
-                    title,
-                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                    kind: 'comment',
-                    postlink: '',
-                    link: '',
-                    banned_by: '',
-                    spam: '',
-                    ham: '',
-                    rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
-                    sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
-                    wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                    mod: TBCore.logged,
-                };
-
-                callback(info);
-            });
-        } else {
-            const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-            TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
-                TBStorage.purifyObject(response);
-                const data = response.data;
-
-                let user = data.children[0].data.author;
-                const body = data.children[0].data.body || data.children[0].data.selftext || '';
-                let permalink = data.children[0].data.permalink;
-                const title = data.children[0].data.title || '';
-                const postlink = data.children[0].data.url || '';
-                // A recent reddit change makes subreddit names sometimes start with "/r/".
-                // Mod mail subreddit names additionally end with "/".
-                // reddit pls, need consistency
-                subreddit = TBHelpers.cleanSubredditName(subreddit);
-
-                // Not a mod, reset current sub.
-                if (modCheck && !modsSub(subreddit)) {
-                    subreddit = '';
-                }
-
-                if (user === '[deleted]') {
-                    user = '';
-                }
-
-                // If the permalink is relative, stick the current domain name in.
-                // Only do so if a permalink is found.
-                if (permalink && permalink.slice(0, 1) === '/') {
-                    permalink = baseDomain + permalink;
-                }
-
-                if (permalink && permaCommentLinkRegex.test(permalink)) {
-                    permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
-                }
-
-                if (modCheck && !modsSub(subreddit)) {
-                    subreddit = '';
-                }
-
-                const info = {
-                    subreddit,
-                    user,
-                    author: user,
-                    permalink,
-                    url: permalink,
-                    domain: data.children[0].data.domain || '',
-                    id,
-                    body: `> ${body.split('\n').join('\n> ')}`,
-                    raw_body: body,
-                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                    approved_by: data.children[0].data.approved_by,
-                    title,
-                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                    kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
-                    postlink,
-                    link: postlink,
-                    banned_by: data.children[0].data.banned_by,
-                    spam: data.children[0].data.spam,
-                    ham: data.children[0].data.removed,
-                    rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
-                    sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
-                    wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                    mod: TBCore.logged,
-                };
-                callback(info);
-            });
-        }
-    };
-
-    // Cache manipulation
 
     // Listen to background page communication and act based on that.
     browser.runtime.onMessage.addListener(message => {

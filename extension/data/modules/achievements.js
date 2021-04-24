@@ -246,7 +246,7 @@ self.init = function () {
     self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", saveIndex => {
         $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
             const $this = $(this);
-            const auth = window.TBCore.getThingInfo($this).author;
+            const auth = TBCore.getThingInfo($this).author;
 
             if (window.TBCore.tbDevs.indexOf(auth) !== -1) {
                 self.manager.unlock(saveIndex, 1);

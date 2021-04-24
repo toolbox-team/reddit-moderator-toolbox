@@ -226,7 +226,7 @@ self.init = function () {
             }
         }
 
-        window.TBCore.getApiThingInfo(thingID, thingSubreddit, false, info => {
+        TBCore.getApiThingInfo(thingID, thingSubreddit, false, info => {
             // Get link/comment attributes
             const data = {
                 subreddit: info.subreddit,
@@ -766,7 +766,7 @@ self.init = function () {
         subject = TBHelpers.replaceTokens(data, subject);
         logTitle = TBHelpers.replaceTokens(data, logTitle);
 
-        window.TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
+        TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
             if (!ham) {
                 TBApi.removeThing(data.fullname);
             }

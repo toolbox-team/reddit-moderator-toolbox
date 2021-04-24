@@ -489,7 +489,7 @@ self.usernotes = function usernotes () {
         let link;
 
         if (TBCore.isNewModmail) {
-            link = window.TBCore.getThingInfo($thing).permalink_newmodmail;
+            link = TBCore.getThingInfo($thing).permalink_newmodmail;
             createUserPopup(subreddit, user, link, disableLink, e);
         } else {
             let thingID;
@@ -511,7 +511,7 @@ self.usernotes = function usernotes () {
                 return createUserPopup(subreddit, user, link, true, e);
             }
 
-            window.TBCore.getApiThingInfo(thingID, subreddit, true, info => {
+            TBCore.getApiThingInfo(thingID, subreddit, true, info => {
                 link = info.permalink;
                 createUserPopup(subreddit, user, link, disableLink, e);
             });

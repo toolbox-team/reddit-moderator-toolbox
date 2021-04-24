@@ -1841,16 +1841,6 @@ let newModSubs;
     //    logger.log('NER! NER! NER! NER!');
     // });
 
-    window.onbeforeunload = function () {
-        // TBUI now handles the long load array.
-        if (TBui.longLoadArray.length > 0) {
-            return 'toolbox is still busy!';
-        }
-
-        // Just in case.
-        // TBStorage.unloading();
-    };
-
     // get toolbox news
     (function getNotes () {
         TBApi.readFromWiki('toolbox', 'tbnotes', true).then(resp => {

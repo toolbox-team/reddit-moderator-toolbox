@@ -1995,3 +1995,10 @@ export function getBestTextColor (bgColor) {
     return getBestTextColor.cache[bgColor];
 }
 getBestTextColor.cache = {};
+
+// Trigger a prompt if the user tries to close the tab while we're doing things
+window.onbeforeunload = function () {
+    if (longLoadArray.length > 0) {
+        return 'toolbox is still busy!';
+    }
+};

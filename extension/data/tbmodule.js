@@ -78,7 +78,7 @@ function tbmodule () {
             //
             // preload some generic variables
             //
-            const debugMode = window.TBCore.debugMode,
+            const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
                   betaMode = window.TBCore.betaMode,
                   devMode = window.TBCore.devMode,
                   advancedMode = window.TBCore.advancedMode,
@@ -1037,7 +1037,7 @@ export function Module (name) {
           startTimes = new Map();
 
     this.startProfile = function (key) {
-        if (!window.TBCore.debugMode) {
+        if (!TBStorage.getSetting('Utils', 'debugMode', false)) {
             return;
         }
 
@@ -1053,7 +1053,7 @@ export function Module (name) {
     };
 
     this.endProfile = function (key) {
-        if (!window.TBCore.debugMode) {
+        if (!TBStorage.getSetting('Utils', 'debugMode', false)) {
             return;
         }
 

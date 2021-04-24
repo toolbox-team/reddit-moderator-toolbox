@@ -164,7 +164,6 @@ export async function postToWiki (page, subreddit, data, reason, isJSON, updateA
 
     if (isJSON) {
         // Not indenting saves precious bytes.
-        // data = JSON.stringify(data, undefined, window.TBCore.debugMode ? 2 : undefined);
         data = JSON.stringify(data);
     }
 

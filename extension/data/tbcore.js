@@ -364,7 +364,6 @@ let newModSubs;
     let gettingModSubs = false;
     // Public variables
 
-    TBCore.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBCore.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBCore.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
     TBCore.advancedMode = TBStorage.getSetting(SETTINGS_NAME, 'advancedMode', false);
@@ -560,7 +559,6 @@ let newModSubs;
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
         TBStorage.setSetting(SETTINGS_NAME, 'debugMode', false);
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
-        TBCore.debugMode = false;
         TBCore.betaMode = false;
     }
 
@@ -632,7 +630,7 @@ let newModSubs;
             browserVersion: '',
             platformInformation: '',
             betaMode: TBCore.betaMode,
-            debugMode: TBCore.debugMode,
+            debugMode: TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false),
             compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
             advancedSettings: TBCore.advancedMode,
             cookiesEnabled: navigator.cookieEnabled,
@@ -1926,7 +1924,7 @@ let newModSubs;
         }
 
         // check dev sub, if debugMode
-        if (TBCore.debugMode) {
+        if (TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false)) {
             TBApi.readFromWiki('tb_dev', 'tbnotes', true).then(resp => {
                 if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
                     TBCore.devMode = false;

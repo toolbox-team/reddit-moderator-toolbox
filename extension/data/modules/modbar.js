@@ -114,7 +114,7 @@ self.init = function () {
           customCSS = self.setting('customCSS'),
           consoleShowing = self.setting('consoleShowing'),
 
-          debugMode = window.TBCore.debugMode,
+          debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
 
           modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
           unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),

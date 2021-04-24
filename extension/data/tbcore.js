@@ -78,21 +78,33 @@ export const isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || locatio
 let fetchModSubsPromise = null;
 
 /**
- * Returns a promise that will resolve once `TBCore.mySubs` and
- * `TBCore.mySubsData` are definitely populated with the user's moderated
- * subreddits, fetching the sub list from the API if necessary.
+ * Populates `TBCore.mySubs` and `TBCore.mySubsData` if they're not already
+ * present. First tries to read their values from cache, and falls back to
+ * fetching the list of moderated subs from the API. Returns a Promise that
+ * resolves once those properties are definitely populated and ready to use.
  * @returns {Promise<void>}
  */
-export const getModSubs = () => new Promise(resolve => {
+export async function getModSubs () {
     logger.log('getting mod subs');
 
-    // If we already have moderated subreddits, callback works immediately
+    // If the info we need is already present, return immediately
     if (window.TBCore.mySubs.length && window.TBCore.mySubsData.length) {
-        // TODO: why do these sorts need to happen every time?
-        window.TBCore.mySubs = TBHelpers.saneSort(window.TBCore.mySubs);
-        window.TBCore.mySubsData = TBHelpers.sortBy(window.TBCore.mySubsData, 'subscribers');
+        return;
+    }
 
-        return resolve();
+    // Try to load the info we need from cache
+    const [
+        cachedModSubs,
+        cachedModSubsData,
+    ] = await Promise.all([
+        TBStorage.getCache('Utils', 'moderatedSubs', []),
+        TBStorage.getCache('Utils', 'moderatedSubsData', []),
+    ]);
+    if (cachedModSubs.length && cachedModSubsData.length) {
+        // We have modded sub info in cache, just use that
+        window.TBCore.mySubs = cachedModSubs;
+        window.TBCore.mySubsData = cachedModSubsData;
+        return;
     }
 
     // We need to refresh the list of moderated subreddits. Create a promise
@@ -103,10 +115,10 @@ export const getModSubs = () => new Promise(resolve => {
     if (!fetchModSubsPromise) {
         // Set fetchModSubsPromise to a promise that will fulfill once the sub list is updated
         fetchModSubsPromise = fetchModSubs().then(subs => {
-            // mySubs should contain a list of subreddit names
+            // mySubs should contain a list of subreddit names, sorted alphabetically
             window.TBCore.mySubs = TBHelpers.saneSort(subs.map(({data}) => data.display_name.trim()));
 
-            // mySubsData should contain a list of objects describing each subreddit
+            // mySubsData should contain a list of objects describing each subreddit, sorted by subscriber count
             window.TBCore.mySubsData = TBHelpers.sortBy(subs.map(({data}) => ({
                 subreddit: data.display_name,
                 subscribers: data.subscribers,
@@ -126,9 +138,9 @@ export const getModSubs = () => new Promise(resolve => {
         });
     }
 
-    // Register the callback to be executed once the fetch is done
-    fetchModSubsPromise.then(resolve);
-});
+    // Pass the promise back to be handled by the caller
+    return fetchModSubsPromise;
+}
 export const modsSub = subreddit => window.TBCore.mySubs.includes(subreddit);
 
 /**
@@ -567,7 +579,7 @@ export function forEachChunkedDynamic (array, process, options) {
 /**
  * Gets a list of all subreddits the current user moderates from the API.
  * @param {string} [after] Pagination parameter used for recursion
- * @returns {Promise<string[]>}
+ * @returns {Promise<object[]>}
  */
 async function fetchModSubs (after) {
     let json;
@@ -648,21 +660,7 @@ async function getToolboxDevs () {
 }
 
 let userDetails;
-let cacheDetails;
-let newModSubs;
 (async () => {
-    // Get the current state of a bunch of cache values
-    cacheDetails = {
-        moderatedSubs: await TBStorage.getCache('Utils', 'moderatedSubs', []),
-        moderatedSubsData: await TBStorage.getCache('Utils', 'moderatedSubsData', []),
-        noteCache: await TBStorage.getCache('Utils', 'notesCache', {}),
-        configCache: await TBStorage.getCache('Utils', 'configCache', {}),
-        rulesCache: await TBStorage.getCache('Utils', 'rulesCache', {}),
-        noConfig: await TBStorage.getCache('Utils', 'noConfig', []),
-        noNotes: await TBStorage.getCache('Utils', 'noNotes', []),
-        noRules: await TBStorage.getCache('Utils', 'noRules', []),
-    };
-
     // Get user details from the API, falling back to cache if necessary
     try {
         userDetails = await fetchUserDetails();
@@ -678,16 +676,6 @@ let newModSubs;
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
         logger.error('Toolbox does not have user details and cannot start.');
         return;
-    }
-
-    // Get moderated subreddits from the API if cache is empty
-    if (cacheDetails.moderatedSubs.length === 0) {
-        try {
-            logger.debug('No modsubs in cache, fetching them');
-            newModSubs = await fetchModSubs();
-        } catch (error) {
-            logger.warn('Failed to get moderated subreddits, and none are cached. Continuing with none.', error);
-        }
     }
 
     const TBCore = window.TBCore = window.TBCore || {};
@@ -752,56 +740,17 @@ let newModSubs;
         </style>
     `);
 
-    // Get cached info.
-    function processNewModSubs () {
-        TBCore.mySubs = [];
-        TBCore.mySubsData = [];
-        newModSubs.forEach(subData => {
-            const sub = subData.data.display_name.trim();
-            if (!modsSub(sub)) {
-                TBCore.mySubs.push(sub);
-            }
+    // Populate `TBCore.mySubs` and `TBCore.mySubsData`
+    getModSubs();
 
-            const isinthere = TBCore.mySubsData.some(tbCoreSubData => tbCoreSubData.subreddit === sub);
-
-            if (!isinthere) {
-                const subredditData = {
-                    subreddit: sub,
-                    subscribers: subData.data.subscribers,
-                    over18: subData.data.over18,
-                    created_utc: subData.data.created_utc,
-                    subreddit_type: subData.data.subreddit_type,
-                    submission_type: subData.data.submission_type,
-                    is_enrolled_in_new_modmail: subData.data.is_enrolled_in_new_modmail,
-                };
-
-                TBCore.mySubsData.push(subredditData);
-            }
-        });
-
-        TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
-        TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
-        // Update the cache.
-        TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
-        TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
-    }
-
-    if (newModSubs && newModSubs.length > 0) {
-        processNewModSubs();
-    } else {
-        TBCore.mySubs = cacheDetails.moderatedSubs;
-        TBCore.mySubsData = cacheDetails.moderatedSubsData;
-    }
-
-    // Get cached info. Short stored.
-    TBCore.noteCache = cacheDetails.noteCache;
-    TBCore.noConfig = cacheDetails.noConfig;
-    TBCore.noNotes = cacheDetails.noNotes;
-
-    // Get cached info. Long stored.
-    TBCore.configCache = cacheDetails.configCache;
-    TBCore.rulesCache = cacheDetails.rulesCache;
-    TBCore.noRules = cacheDetails.noRules;
+    // Get other cached info
+    // TODO: Remove these and replace their uses with direct cache calls
+    TBCore.configCache = await TBStorage.getCache('Utils', 'configCache', {});
+    TBCore.noteCache = await TBStorage.getCache('Utils', 'notesCache', {});
+    TBCore.rulesCache = await TBStorage.getCache('Utils', 'rulesCache', {});
+    TBCore.noConfig = await TBStorage.getCache('Utils', 'noConfig', []);
+    TBCore.noNotes = await TBStorage.getCache('Utils', 'noNotes', []);
+    TBCore.noRules = await TBStorage.getCache('Utils', 'noRules', []);
 
     /**
      * Updates in page cache and background page.
@@ -1567,7 +1516,6 @@ let newModSubs;
         }
     };
 
-    let firstCacheTimeout = true;
     // Listen to background page communication and act based on that.
     browser.runtime.onMessage.addListener(message => {
         switch (message.action) {
@@ -1590,13 +1538,6 @@ let newModSubs;
                 TBCore.noRules = [];
                 TBCore.mySubs = [];
                 TBCore.mySubsData = [];
-
-                // On first init where the modsubs cache was empty we already got this data.
-                // Here we simply use that data to fill the cache so we don't need to do unneeded actions.
-                if (newModSubs && newModSubs.length > 0 && firstCacheTimeout) {
-                    firstCacheTimeout = false;
-                    processNewModSubs();
-                }
             }
 
             break;

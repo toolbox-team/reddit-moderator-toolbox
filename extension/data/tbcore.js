@@ -341,6 +341,37 @@ export async function showNote (note) {
     });
 }
 
+/**
+ * Fetches notes for the given subreddit (from /r/sub/w/tbnotes).
+ * @param {string} sub The name of the subreddit to fetch notes from
+ * @returns {Promise<object[]>}
+ */
+async function fetchNewsNotes (sub) {
+    const resp = await TBApi.readFromWiki(sub, 'tbnotes', true);
+    TBStorage.purifyObject(resp);
+    if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
+        throw new Error(`Failed to fetch notes for /r/${sub}`);
+    }
+    return resp.notes;
+}
+
+// Fetch notes on startup and display any new
+(async () => {
+    fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
+
+    if (betaRelease) {
+        fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(logger.warn);
+    }
+
+    if (await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
+        fetchNewsNotes('tb_dev').then(notes => notes.forEach(showNote)).catch(error => {
+            logger.warn(error);
+            window.TBCore.devMode = false;
+            window.TBCore.devModeLock = true;
+        });
+    }
+})();
+
 // Iteration helpers
 
 // Prevent page lock while parsing things.  (stolen from RES)
@@ -1787,100 +1818,62 @@ let newModSubs;
         refreshHashContext();
     });
 
-    // Watch for new things and send out events based on that.
-    if ($('#header').length) {
-        let newThingRunning = false;
-        // NER, load more comments, and mod frame support.
-        const target = document.querySelector('div.content');
-
-        // create an observer instance
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
-
-                if ($target.hasClass('expando')) {
-                    const expandoEvent = new CustomEvent('tbNewExpando');
-                    mutation.target.dispatchEvent(expandoEvent);
-                }
-
-                if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
-                    $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) {
-                    return;
-                }
-
-                logger.log(`TBNewThings firing from: ${$target.attr('class')}`);
-                // It is entirely possible that TBNewThings is fired multiple times.
-                // That is why we only set a new timeout if there isn't one set already.
-                if (!newThingRunning) {
-                    newThingRunning = true;
-                    // Wait a sec for stuff to load.
-                    setTimeout(() => {
-                        newThingRunning = false;
-                        const event = new CustomEvent('TBNewThings');
-                        window.dispatchEvent(event);
-                    }, 1000);
-                }
-            });
-        });
-
-        // configuration of the observer:
-        // We specifically want all child elements but nothing else.
-        const config = {
-            attributes: false,
-            childList: true,
-            characterData: false,
-            subtree: true,
-        };
-
-        // pass in the target node, as well as the observer options
-        observer.observe(target, config);
-    }
-
-    // NER support. todo: finish this.
-    // window.addEventListener("neverEndingLoad", function () {
-    //    logger.log('NER! NER! NER! NER!');
-    // });
-
-    // get toolbox news
-    (function getNotes () {
-        TBApi.readFromWiki('toolbox', 'tbnotes', true).then(resp => {
-            if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
-                return;
-            }
-            TBStorage.purifyObject(resp);
-
-            $(resp.notes).each(function () {
-                showNote(this);
-            });
-        });
-
-        if (betaRelease) {
-            TBApi.readFromWiki('tb_beta', 'tbnotes', true).then(resp => {
-                if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
-                    return;
-                }
-                TBStorage.purifyObject(resp);
-                $(resp.notes).each(function () {
-                    showNote(this);
-                });
-            });
-        }
-
-        // check dev sub, if debugMode
-        if (TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false)) {
-            TBApi.readFromWiki('tb_dev', 'tbnotes', true).then(resp => {
-                if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
-                    TBCore.devMode = false;
-                    TBCore.devModeLock = true;
-                    return;
-                }
-                TBStorage.purifyObject(resp);
-                $(resp.notes).each(function () {
-                    showNote(this);
-                });
-            });
-        }
-    })();
-
     window.dispatchEvent(new CustomEvent('_coreLoaded'));
 })(window.TBCore = window.TBCore || {});
+
+// NER support for certain cases on old Reddit
+
+// Watch for new things and send out events based on that.
+if ($('#header').length) {
+    let newThingRunning = false;
+    // NER, load more comments, and mod frame support.
+    const target = document.querySelector('div.content');
+
+    // create an observer instance
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+
+            if ($target.hasClass('expando')) {
+                const expandoEvent = new CustomEvent('tbNewExpando');
+                mutation.target.dispatchEvent(expandoEvent);
+            }
+
+            if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
+                    $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) {
+                return;
+            }
+
+            logger.log(`TBNewThings firing from: ${$target.attr('class')}`);
+            // It is entirely possible that TBNewThings is fired multiple times.
+            // That is why we only set a new timeout if there isn't one set already.
+            if (!newThingRunning) {
+                newThingRunning = true;
+                // Wait a sec for stuff to load.
+                setTimeout(() => {
+                    newThingRunning = false;
+                    const event = new CustomEvent('TBNewThings');
+                    window.dispatchEvent(event);
+                }, 1000);
+            }
+        });
+    });
+
+    // configuration of the observer:
+    // We specifically want all child elements but nothing else.
+    const config = {
+        attributes: false,
+        childList: true,
+        characterData: false,
+        subtree: true,
+    };
+
+    // pass in the target node, as well as the observer options
+    observer.observe(target, config);
+}
+
+// NER support. todo: finish this.
+// window.addEventListener("neverEndingLoad", function () {
+//    logger.log('NER! NER! NER! NER!');
+// });
+

@@ -1046,11 +1046,11 @@ export function makeSubmissionEntry (submission, submissionOptions) {
           submissionAuthor = submission.data.author,
           submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
           submissionCreatedUTC = submission.data.created_utc, // unix epoch
-          submissionPermalink = window.TBCore.link(submission.data.permalink),
+          submissionPermalink = TBCore.link(submission.data.permalink),
           submissionSubreddit = submission.data.subreddit,
           submissionSubredditType = submission.data.subreddit_type,
           submissionName = submission.data.name,
-          submissionUrl = submission.data.is_self ? window.TBCore.link(submission.data.permalink) : submission.data.url,
+          submissionUrl = submission.data.is_self ? TBCore.link(submission.data.permalink) : submission.data.url,
           submissionTitle = submission.data.title,
           submissionThumbnail = submission.data.thumbnail,
           submissionDomain = submission.data.domain,
@@ -1143,7 +1143,7 @@ export function makeSubmissionEntry (submission, submissionOptions) {
         if (submissionDistinguished === 'admin') {
             authorAttributes.push('<span class="tb-admin" title="reddit admin, speaking officially">A</span>');
         } else if (submissionDistinguished === 'moderator') {
-            authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="${window.TBCore.link(`/r/${submissionSubreddit}/about/moderators`)}">M</a>`);
+            authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="${TBCore.link(`/r/${submissionSubreddit}/about/moderators`)}">M</a>`);
         } else {
             authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${submissionDistinguished}">${submissionDistinguished}</a>`);
         }
@@ -1174,7 +1174,7 @@ export function makeSubmissionEntry (submission, submissionOptions) {
                     <div class="tb-submission-title">
                         <a class="tb-title" href="${submissionUrl}">${submissionTitle}</a>
                         <span class="tb-domain">
-                            (<a href="${window.TBCore.link(`/domain/${submissionDomain}`)}">${submissionDomain}</a>)
+                            (<a href="${TBCore.link(`/domain/${submissionDomain}`)}">${submissionDomain}</a>)
                         </span>
                     </div>
                     ${submissionIsSelf && submissionSelfTextHTML ? `<div class="tb-self-expando-button"><i class="tb-icons">${icons.add}</i></div>` : ''}
@@ -1184,11 +1184,11 @@ export function makeSubmissionEntry (submission, submissionOptions) {
                         by ${submissionAuthor === '[deleted]' ? `
                             <span>[deleted]</span>
                         ` : `
-                            <a href="${window.TBCore.link(`/user/${submissionAuthor}`)}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a>
+                            <a href="${TBCore.link(`/user/${submissionAuthor}`)}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a>
                         `}
                         <span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span>
-                        to <a href="${window.TBCore.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
+                        to <a href="${TBCore.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
                         ${submissionPinned ? '- <span class="tb-pinned-tagline" title="pinned to this user\'s profile">pinned</span>' : ''}
                         ${submissionGildings.gid_1 ? `- <span class="tb-award-silver">silver x${submissionGildings.gid_1}</span>` : ''}
                         ${submissionGildings.gid_2 ? `- <span class="tb-award-gold">gold x${submissionGildings.gid_2}</span>` : ''}
@@ -1348,7 +1348,7 @@ export function makeSingleComment (comment, commentOptions = {}) {
         // commentId = comment.data.id, // comment ID
           commentName = comment.data.name, // fullname t1_<comment ID>
           commentParentId = comment.data.parent_id,
-          commentPermalink = window.TBCore.link(comment.data.permalink),
+          commentPermalink = TBCore.link(comment.data.permalink),
           commentSubreddit = comment.data.subreddit,
         // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
           commentSubredditType = comment.data.subreddit_type,
@@ -1400,8 +1400,8 @@ export function makeSingleComment (comment, commentOptions = {}) {
         if (comment.data.link_url.startsWith('https://old.reddit.com')) {
             // Rewrite url to be relative.
             linkUrl = linkUrl.replace('https://old.reddit.com', '');
-            // Pass to `window.TBCore.link` to neatly deal with it.
-            linkUrl = window.TBCore.link(linkUrl);
+            // Pass to `TBCore.link` to neatly deal with it.
+            linkUrl = TBCore.link(linkUrl);
         }
 
         const linkTitle = comment.data.link_title,
@@ -1413,8 +1413,8 @@ export function makeSingleComment (comment, commentOptions = {}) {
                 by ${linkAuthor === '[deleted]' ? `
                     <span>[deleted]</span>
                 ` : `
-                    <a class="tb-link-author" href="${window.TBCore.link(`/user/${linkAuthor}`)}">${linkAuthor}</a>
-                `} in <a class="subreddit hover" href="${window.TBCore.link(`/r/${commentSubreddit}/`)}">${commentSubreddit}</a>
+                    <a class="tb-link-author" href="${TBCore.link(`/user/${linkAuthor}`)}">${linkAuthor}</a>
+                `} in <a class="subreddit hover" href="${TBCore.link(`/r/${commentSubreddit}/`)}">${commentSubreddit}</a>
             </div>
             `;
     }
@@ -1485,7 +1485,7 @@ export function makeSingleComment (comment, commentOptions = {}) {
         if (commentDistinguished === 'admin') {
             authorAttributes.push('<span class="tb-admin" title="reddit admin, speaking officially">A</span>');
         } else if (commentDistinguished === 'moderator') {
-            authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="${window.TBCore.link(`/r/${commentSubreddit}/about/moderators`)}">M</a>`);
+            authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="${TBCore.link(`/r/${commentSubreddit}/about/moderators`)}">M</a>`);
         } else {
             authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${commentDistinguished}">${commentDistinguished}</a>`);
         }
@@ -1526,7 +1526,7 @@ export function makeSingleComment (comment, commentOptions = {}) {
                         ${commentAuthor === '[deleted]' ? `
                             <span>[deleted]</span>
                         ` : `
-                            <a class="tb-comment-author ${authorStatus}" href="${window.TBCore.link(`/user/${commentAuthor}`)}">${commentAuthor}</a>
+                            <a class="tb-comment-author ${authorStatus}" href="${TBCore.link(`/user/${commentAuthor}`)}">${commentAuthor}</a>
                         `}
                         ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
                         ${authorAttributes.length ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}

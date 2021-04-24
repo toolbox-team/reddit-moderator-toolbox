@@ -228,7 +228,7 @@ self.init = function () {
         });
     }
 
-    window.TBCore.catchEvent(window.TBCore.events.TB_SAMPLE_SOUND, () => {
+    TBCore.catchEvent(window.TBCore.events.TB_SAMPLE_SOUND, () => {
         self.log('playing sound');
 
         const audio = new Audio(NOTIFICATION_SOUND);
@@ -247,26 +247,26 @@ self.init = function () {
               $mailcount = $('#mailcount'),
               $tb_mail = $('#tb-mail'),
               $tb_mailCount = $('#tb-mailCount');
-        // TODO: only call window.TBCore.link once per string literal in this section
+        // TODO: only call TBCore.link once per string literal in this section
         if (count < 1) {
             $mailCount.empty();
             $mail.attr('class', 'nohavemail');
             $mail.attr('title', 'no new mail!');
-            $mail.attr('href', window.TBCore.link('/message/inbox/'));
-            $mailcount.attr('href', window.TBCore.link(messageunreadurl));
+            $mail.attr('href', TBCore.link('/message/inbox/'));
+            $mailcount.attr('href', TBCore.link(messageunreadurl));
             $tb_mail.toggleClass('nohavemail', true).toggleClass('havemail', false);
             $tb_mail.attr('title', 'no new mail!');
-            $tb_mail.attr('href', window.TBCore.link('/message/inbox/'));
-            $('#tb-mailCount').attr('href', window.TBCore.link('/message/inbox/'));
+            $tb_mail.attr('href', TBCore.link('/message/inbox/'));
+            $('#tb-mailCount').attr('href', TBCore.link('/message/inbox/'));
         } else {
             $mail.attr('class', 'havemail');
             $mail.attr('title', 'new mail!');
-            $mail.attr('href', window.TBCore.link(messageunreadurl));
-            $mailcount.attr('href', window.TBCore.link(messageunreadurl));
+            $mail.attr('href', TBCore.link(messageunreadurl));
+            $mailcount.attr('href', TBCore.link(messageunreadurl));
             $tb_mail.toggleClass('havemail', true).toggleClass('nohavemail', false);
             $tb_mail.attr('title', 'new mail!');
-            $tb_mail.attr('href', window.TBCore.link(messageunreadurl));
-            $tb_mailCount.attr('href', window.TBCore.link(messageunreadurl));
+            $tb_mail.attr('href', TBCore.link(messageunreadurl));
+            $tb_mailCount.attr('href', TBCore.link(messageunreadurl));
         }
         $tb_mailCount.text(`[${count}]`);
 

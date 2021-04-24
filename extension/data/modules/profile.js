@@ -268,7 +268,7 @@ self.init = function () {
                           subscribers = subreddit.subscribers;
 
                     const liElement = `<li>
-                            <a href="${window.TBCore.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
+                            <a href="${TBCore.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
                             ${over18 ? '<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>' : ''}
                             ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ''}
                         </li>`;
@@ -331,7 +331,7 @@ self.init = function () {
             const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
                     <ul class="tb-user-detail-ul">
-                        <li><a href="${window.TBCore.link(`/user/${user}`)}">/u/${user}</a></li>
+                        <li><a href="${TBCore.link(`/user/${user}`)}">/u/${user}</a></li>
                         ${displayName ? `<li>Display name: ${displayName}</li>` : ''}
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>

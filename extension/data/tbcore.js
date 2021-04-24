@@ -165,6 +165,16 @@ export async function modSubCheck () {
  */
 export const baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
+/**
+ * Takes an absolute path for a link and prepends the www.reddit.com
+ * domain if we're in new modmail (mod.reddit.com). Makes absolute path
+ * links work everywhere.
+ * @function
+ * @param {string} l The link path, starting with "/"
+ * @returns {string}
+ */
+export const link = l => isNewModmail ? `https://www.reddit.com${l}` : l;
+
 // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
 const invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'];
 export let post_site = isModFakereddit || $('.redditname:not(.pagename) a:first').html() || ''; // This may need to be changed to regex, if this is unreliable.
@@ -175,6 +185,21 @@ if (isModFakereddit || post_site === undefined || !post_site || invalidPostSites
 // Error codes used in lots of places
 export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
 export const WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
+
+// Page event management
+
+export function sendEvent (tbuEvent) {
+    logger.log('Sending event:', tbuEvent);
+    window.dispatchEvent(new CustomEvent(tbuEvent));
+}
+
+export function catchEvent (tbuEvent, callback) {
+    if (!callback) {
+        return;
+    }
+
+    window.addEventListener(tbuEvent, callback);
+}
 
 // Platform and debugging information
 
@@ -438,7 +463,7 @@ export function notification (title, body, path, markreadid = false) {
         details: {
             title,
             body,
-            // We can't use TBCore.link for this since the background page has to have an absolute URL
+            // We can't use link() for this since the background page has to have an absolute URL
             url: isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
             modHash: window.TBCore.modhash,
             markreadid: markreadid || false,
@@ -1088,29 +1113,6 @@ let userDetails;
 
     // Methods and stuff
 
-    /**
-     * Takes an absolute path for a link and prepends the www.reddit.com
-     * domain if we're in new modmail (mod.reddit.com). Makes absolute path
-     * links work everywhere.
-     * @function
-     * @param {string} link The link path, starting with "/"
-     * @returns {string}
-     */
-    TBCore.link = link => isNewModmail ? `https://www.reddit.com${link}` : link;
-
-    TBCore.sendEvent = function (tbuEvent) {
-        logger.log('Sending event:', tbuEvent);
-        window.dispatchEvent(new CustomEvent(tbuEvent));
-    };
-
-    TBCore.catchEvent = function (tbuEvent, callback) {
-        if (!callback) {
-            return;
-        }
-
-        window.addEventListener(tbuEvent, callback);
-    };
-
     TBCore.getThingInfo = function (sender, modCheck) {
         // First we check if we are in new modmail thread and for now we take a very simple.
         // Everything we need info for is centered around threads.
@@ -1284,9 +1286,9 @@ let userDetails;
             banned_by,
             spam,
             ham,
-            rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
-            sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
-            wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
+            rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+            sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+            wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
             mod: TBCore.logged,
         };
 
@@ -1360,9 +1362,9 @@ let userDetails;
                     banned_by: '',
                     spam: '',
                     ham: '',
-                    rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
-                    sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
-                    wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
+                    rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+                    sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+                    wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
                     mod: TBCore.logged,
                 };
 
@@ -1427,9 +1429,9 @@ let userDetails;
                     banned_by: data.children[0].data.banned_by,
                     spam: data.children[0].data.spam,
                     ham: data.children[0].data.removed,
-                    rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
-                    sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
-                    wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
+                    rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+                    sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+                    wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
                     mod: TBCore.logged,
                 };
                 callback(info);

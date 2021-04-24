@@ -450,9 +450,9 @@ self.init = function () {
                     banned_by: '',
                     spam: '',
                     ham: '',
-                    rules: subreddit ? window.TBCore.link(`/r/${subreddit}/about/rules`) : '',
-                    sidebar: subreddit ? window.TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
-                    wiki: subreddit ? window.TBCore.link(`/r/${subreddit}/wiki/index`) : '',
+                    rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
+                    sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
+                    wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
                     mod: window.TBCore.logged,
                 };
                 openModPopup(event, info);

@@ -390,7 +390,7 @@ self.createModeratorRow = function (moderator) {
     }
     const row = $('<tr></tr>').addClass(`moderator-${moderator}`).addClass('mod-row');
 
-    row.append(`<td><a href="${window.TBCore.link(`/user/${moderator}`)}" target="_blank" title="${moderator}">${moderator}</a></td>`);
+    row.append(`<td><a href="${TBCore.link(`/user/${moderator}`)}" target="_blank" title="${moderator}">${moderator}</a></td>`);
     for (const subredditAction of Object.keys(this.subredditActions)) {
         const td = $(`<td class="action-cell action-${subredditAction}"><a title="${this.subredditActions[subredditAction].title} actions by ${moderator}" target="_blank" class="action-number" href="${this.subredditUrl}about/log?type=${subredditAction}&mod=${moderator}">0</a></td>`);
         row.append(td);

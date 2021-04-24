@@ -674,7 +674,7 @@ self.queuetoolsOld = function () {
 
                 if (approve) {
                     TBApi.approveThing(id).then(() => {
-                        window.TBCore.sendEvent(window.TBCore.events.TB_APPROVE_THING);
+                        TBCore.sendEvent(window.TBCore.events.TB_APPROVE_THING);
                     });
                 } else {
                     TBApi.removeThing(id, spam);
@@ -879,7 +879,7 @@ self.queuetoolsOld = function () {
                         TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
 
                         // Update count and re-cache data if more than an hour old.
-                        $elem.parent().append(`<a href="${window.TBCore.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
+                        $elem.parent().append(`<a href="${TBCore.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
                         if (now > data[1]) {
                             updateModqueueCount(sr);
                         }

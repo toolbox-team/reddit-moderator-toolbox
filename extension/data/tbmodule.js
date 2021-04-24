@@ -218,7 +218,7 @@ function tbmodule () {
                     id: 'about',
                     content: `
                 <h1 id="tb-random-about-quote">"${window.TBCore.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="${window.TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${window.TBCore.toolboxVersionName}</a>
+                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${window.TBCore.toolboxVersionName}</a>
                     <h3> Open source </h3>
                     Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
                     <h3> Privacy </h3>
@@ -266,8 +266,8 @@ function tbmodule () {
                     <h3>Credits:</h3>
                     <a href="https://www.reddit.com/user/ShaneH7646">/u/ShaneH7646 for the snoo running gif</a><br>
                     <a href="https://material.io/tools/icons/" target="_blank">Material icons</a><br>
-                    <a href="${window.TBCore.link('/user/DEADB33F')}" target="_blank">Modtools base code by DEADB33F</a><br>
-                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${window.TBCore.link('/u/djimbob')}" target="_blank">/u/djimbob</a><br>
+                    <a href="${TBCore.link('/user/DEADB33F')}" target="_blank">Modtools base code by DEADB33F</a><br>
+                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${TBCore.link('/u/djimbob')}" target="_blank">/u/djimbob</a><br>
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>
@@ -609,7 +609,7 @@ function tbmodule () {
                         $setting.append(TB.ui.actionButton(title, options.class));
 
                         $body.on('click', `.${options.class}`, () => {
-                            window.TBCore.sendEvent(event);
+                            TBCore.sendEvent(event);
                         });
 
                         break;
@@ -716,7 +716,7 @@ body {
                                 });
                             });
 
-                            window.TBCore.catchEvent(window.TBCore.events.TB_SYNTAX_SETTINGS, () => {
+                            TBCore.catchEvent(window.TBCore.events.TB_SYNTAX_SETTINGS, () => {
                                 setTimeout(() => {
                                     editorSettings.refresh();
                                 }, 5);

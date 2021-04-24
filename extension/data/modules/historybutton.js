@@ -117,7 +117,7 @@ self.runJsAPI = function () {
 self.init = function () {
     self.log('init');
     const $body = $('body');
-    window.TBCore.modSubCheck(modSubCheck => {
+    TBCore.modSubCheck().then(modSubCheck => {
         self.log(`mscheck: ${modSubCheck}`);
         if (modSubCheck) {
             self.log('passed');

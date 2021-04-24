@@ -143,6 +143,21 @@ export async function getModSubs () {
 }
 export const modsSub = subreddit => window.TBCore.mySubs.includes(subreddit);
 
+export async function modSubCheck () {
+    await getModSubs();
+    const subCount = window.TBCore.mySubsData.length;
+    let subscriberCount = 0;
+    window.TBCore.mySubsData.forEach(subreddit => {
+        subscriberCount += subreddit.subscribers;
+    });
+    subscriberCount -= subCount;
+    if (subscriberCount > 25) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /**
  * The base domain to use for links to content on Reddit. If we are on new
  * modmail we use www.reddit.com; wnywhere else we use whatever is the current
@@ -1040,22 +1055,6 @@ let userDetails;
         }
 
         window.addEventListener(tbuEvent, callback);
-    };
-
-    TBCore.modSubCheck = function (callback) {
-        getModSubs().then(() => {
-            const subCount = TBCore.mySubsData.length;
-            let subscriberCount = 0;
-            TBCore.mySubsData.forEach(subreddit => {
-                subscriberCount += subreddit.subscribers;
-            });
-            subscriberCount -= subCount;
-            if (subscriberCount > 25) {
-                return callback(true);
-            } else {
-                return callback(false);
-            }
-        });
     };
 
     TBCore.getThingInfo = function (sender, modCheck) {

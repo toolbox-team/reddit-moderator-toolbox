@@ -575,7 +575,7 @@ self.init = function () {
 
             TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
 
-            window.TBCore.forEachChunkedRateLimit(
+            TBCore.forEachChunkedRateLimit(
                 subs, 20, subreddit => {
                     TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 

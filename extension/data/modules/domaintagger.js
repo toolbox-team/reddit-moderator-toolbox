@@ -66,7 +66,7 @@ self.init = function () {
         self.startProfile('build-object-list');
 
         const subs = {};
-        window.TBCore.forEachChunkedDynamic($things, thing => {
+        TBCore.forEachChunkedDynamic($things, thing => {
             self.startProfile('build-object-list-inner');
 
             const $thing = $(thing),
@@ -85,7 +85,7 @@ self.init = function () {
             self.log('Processing subreddits');
             self.log(Object.keys(subs));
 
-            window.TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
+            TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
                 processSubreddit(sub, tags);
             }).then(() => {
                 self.log('Done processing things');
@@ -168,7 +168,7 @@ self.init = function () {
 
         self.startProfile('set-tags');
         let done = false;
-        window.TBCore.forEachChunkedDynamic(things, thing => {
+        TBCore.forEachChunkedDynamic(things, thing => {
             self.startProfile('set-tags-inner');
             const $thing = $(thing),
                   $entry = $thing.find('.entry'),

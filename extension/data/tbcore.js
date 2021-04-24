@@ -341,6 +341,196 @@ export async function showNote (note) {
     });
 }
 
+// Iteration helpers
+
+// Prevent page lock while parsing things.  (stolen from RES)
+export function forEachChunked (array, chunkSize, delay, call, complete, start) {
+    if (array === null) {
+        finish();
+    }
+    if (chunkSize === null || chunkSize < 1) {
+        finish();
+    }
+    if (delay === null || delay < 0) {
+        finish();
+    }
+    if (call === null) {
+        finish();
+    }
+    let counter = 0;
+
+    function doChunk () {
+        if (counter === 0 && start) {
+            start();
+        }
+
+        for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+            const ret = call(array[counter], counter, array);
+            if (ret === false) {
+                return window.setTimeout(finish, delay);
+            }
+        }
+        if (counter < array.length) {
+            window.setTimeout(doChunk, delay);
+        } else {
+            window.setTimeout(finish, delay);
+        }
+    }
+
+    window.setTimeout(doChunk, delay);
+
+    function finish () {
+        return complete ? complete() : false;
+    }
+}
+
+// Chunking abused for ratelimiting
+export function forEachChunkedRateLimit (array, chunkSize, call, complete, start) {
+    let length,
+        limit,
+        counter;
+    const delay = 100;
+
+    if (array === null) {
+        finish();
+    } else if (chunkSize === null || chunkSize < 1) {
+        finish();
+    } else if (call === null) {
+        finish();
+    } else {
+        length = array.length;
+        limit = length > chunkSize ? 20 : 0;
+        counter = 0;
+
+        if (length < chunkSize) {
+            chunkSize = length;
+        }
+        updateRateLimit();
+    }
+
+    function doChunk () {
+        if (counter === 0 && start) {
+            start();
+        }
+
+        for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+            const ret = call(array[counter], counter, array);
+            if (ret === false) {
+                return window.setTimeout(finish, delay);
+            }
+        }
+        if (counter < array.length) {
+            window.setTimeout(updateRateLimit, delay);
+        } else {
+            window.setTimeout(finish, delay);
+        }
+    }
+
+    function timer (count, $body, ratelimitRemaining) {
+        count -= 1;
+        if (count <= 0) {
+            $body.find('#ratelimit-counter').empty();
+            $body.find('#ratelimit-counter').hide();
+            return count;
+        }
+
+        const minutes = Math.floor(count / 60);
+        const seconds = count - minutes * 60;
+
+        $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
+    <br><br>
+    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
+    `);
+
+        return count;
+    }
+
+    function updateRateLimit () {
+        TBApi.getRatelimit().then(({ratelimitReset, ratelimitRemaining}) => {
+            const $body = $('body');
+
+            if (!$body.find('#ratelimit-counter').length) {
+                $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
+            }
+
+            if (chunkSize + limit > parseInt(ratelimitRemaining)) {
+                $body.find('#ratelimit-counter').show();
+                let count = parseInt(ratelimitReset),
+                    counter = 0;
+
+                counter = setInterval(() => {
+                    count = timer(count, $body, ratelimitRemaining);
+                    if (count <= 0) {
+                        clearInterval(counter);
+                        doChunk();
+                    }
+                }, 1000);
+            } else {
+                doChunk();
+            }
+        });
+    }
+
+    function finish () {
+        return complete ? complete() : false;
+    }
+}
+
+export function forEachChunkedDynamic (array, process, options) {
+    if (typeof process !== 'function') {
+        return;
+    }
+    const arr = Array.from(array);
+    let start,
+        stop,
+        fr,
+        started = false;
+    const opt = Object.assign({
+        size: 25, // starting size
+        framerate: 30, // target framerate
+        nerf: 0.9, // Be careful with this one
+    }, options);
+    let size = opt.size;
+    const nerf = opt.nerf,
+          framerate = opt.framerate,
+
+          now = () => window.performance.now(),
+
+          again = typeof window.requestAnimationFrame === 'function' ?
+              function (callback) {
+                  window.requestAnimationFrame(callback);
+              } :
+              function (callback) {
+                  setTimeout(callback, 1000 / opt.framerate);
+              };
+
+    function optimize () {
+        stop = now();
+        fr = 1000 / (stop - start);
+        size = Math.ceil(size * (1 + (fr / framerate - 1) * nerf));
+        return start = stop;
+    }
+
+    return new Promise(resolve => {
+        function doChunk () {
+            if (started) {
+                optimize();
+            } else {
+                started = true;
+            }
+
+            arr.splice(0, size).forEach(process);
+
+            if (arr.length) {
+                return again(doChunk);
+            }
+            return resolve(array);
+        }
+        start = now();
+        again(doChunk);
+    });
+}
+
 // Global object shenanigans
 
 /**
@@ -1183,194 +1373,6 @@ let newModSubs;
                 callback(info);
             });
         }
-    };
-
-    // Prevent page lock while parsing things.  (stolen from RES)
-    TBCore.forEachChunked = function (array, chunkSize, delay, call, complete, start) {
-        if (array === null) {
-            finish();
-        }
-        if (chunkSize === null || chunkSize < 1) {
-            finish();
-        }
-        if (delay === null || delay < 0) {
-            finish();
-        }
-        if (call === null) {
-            finish();
-        }
-        let counter = 0;
-
-        function doChunk () {
-            if (counter === 0 && start) {
-                start();
-            }
-
-            for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
-                const ret = call(array[counter], counter, array);
-                if (ret === false) {
-                    return window.setTimeout(finish, delay);
-                }
-            }
-            if (counter < array.length) {
-                window.setTimeout(doChunk, delay);
-            } else {
-                window.setTimeout(finish, delay);
-            }
-        }
-
-        window.setTimeout(doChunk, delay);
-
-        function finish () {
-            return complete ? complete() : false;
-        }
-    };
-
-    // Chunking abused for ratelimiting
-    TBCore.forEachChunkedRateLimit = function (array, chunkSize, call, complete, start) {
-        let length,
-            limit,
-            counter;
-        const delay = 100;
-
-        if (array === null) {
-            finish();
-        } else if (chunkSize === null || chunkSize < 1) {
-            finish();
-        } else if (call === null) {
-            finish();
-        } else {
-            length = array.length;
-            limit = length > chunkSize ? 20 : 0;
-            counter = 0;
-
-            if (length < chunkSize) {
-                chunkSize = length;
-            }
-            updateRateLimit();
-        }
-
-        function doChunk () {
-            if (counter === 0 && start) {
-                start();
-            }
-
-            for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
-                const ret = call(array[counter], counter, array);
-                if (ret === false) {
-                    return window.setTimeout(finish, delay);
-                }
-            }
-            if (counter < array.length) {
-                window.setTimeout(updateRateLimit, delay);
-            } else {
-                window.setTimeout(finish, delay);
-            }
-        }
-
-        function timer (count, $body, ratelimitRemaining) {
-            count -= 1;
-            if (count <= 0) {
-                $body.find('#ratelimit-counter').empty();
-                $body.find('#ratelimit-counter').hide();
-                return count;
-            }
-
-            const minutes = Math.floor(count / 60);
-            const seconds = count - minutes * 60;
-
-            $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
-    <br><br>
-    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
-    `);
-
-            return count;
-        }
-
-        function updateRateLimit () {
-            TBApi.getRatelimit().then(({ratelimitReset, ratelimitRemaining}) => {
-                const $body = $('body');
-
-                if (!$body.find('#ratelimit-counter').length) {
-                    $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
-                }
-
-                if (chunkSize + limit > parseInt(ratelimitRemaining)) {
-                    $body.find('#ratelimit-counter').show();
-                    let count = parseInt(ratelimitReset),
-                        counter = 0;
-
-                    counter = setInterval(() => {
-                        count = timer(count, $body, ratelimitRemaining);
-                        if (count <= 0) {
-                            clearInterval(counter);
-                            doChunk();
-                        }
-                    }, 1000);
-                } else {
-                    doChunk();
-                }
-            });
-        }
-
-        function finish () {
-            return complete ? complete() : false;
-        }
-    };
-
-    TBCore.forEachChunkedDynamic = function (array, process, options) {
-        if (typeof process !== 'function') {
-            return;
-        }
-        const arr = Array.from(array);
-        let start,
-            stop,
-            fr,
-            started = false;
-        const opt = Object.assign({
-            size: 25, // starting size
-            framerate: 30, // target framerate
-            nerf: 0.9, // Be careful with this one
-        }, options);
-        let size = opt.size;
-        const nerf = opt.nerf,
-              framerate = opt.framerate,
-
-              now = () => window.performance.now(),
-
-              again = typeof window.requestAnimationFrame === 'function' ?
-                  function (callback) {
-                      window.requestAnimationFrame(callback);
-                  } :
-                  function (callback) {
-                      setTimeout(callback, 1000 / opt.framerate);
-                  };
-
-        function optimize () {
-            stop = now();
-            fr = 1000 / (stop - start);
-            size = Math.ceil(size * (1 + (fr / framerate - 1) * nerf));
-            return start = stop;
-        }
-
-        return new Promise(resolve => {
-            function doChunk () {
-                if (started) {
-                    optimize();
-                } else {
-                    started = true;
-                }
-
-                arr.splice(0, size).forEach(process);
-
-                if (arr.length) {
-                    return again(doChunk);
-                }
-                return resolve(array);
-            }
-            start = now();
-            again(doChunk);
-        });
     };
 
     TBCore.reloadToolbox = function () {

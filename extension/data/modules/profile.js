@@ -84,7 +84,7 @@ self.init = function () {
     function hideModActionsThings (hide) {
         const $things = $('.tb-thing');
         if (hide) {
-            window.TBCore.forEachChunkedDynamic($things, thing => {
+            TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 const modAction = $thing.find('.tb-moderator').length;
                 if (modAction) {
@@ -92,7 +92,7 @@ self.init = function () {
                 }
             }, {framerate: 40});
         } else {
-            window.TBCore.forEachChunkedDynamic($things, thing => {
+            TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 const modAction = $thing.find('.tb-moderator').length;
                 if (modAction) {
@@ -111,7 +111,7 @@ self.init = function () {
         const $things = $('.tb-thing');
         if (hide) {
             TBCore.getModSubs().then(() => {
-                window.TBCore.forEachChunkedDynamic($things, thing => {
+                TBCore.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
                     const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
                     if (!window.TBCore.mySubs.includes(subreddit)) {
@@ -120,7 +120,7 @@ self.init = function () {
                 }, {framerate: 40});
             });
         } else {
-            window.TBCore.forEachChunkedDynamic($things, thing => {
+            TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 $thing.removeClass('tb-mod-filtered');
             }, {framerate: 40});
@@ -155,7 +155,7 @@ self.init = function () {
         }
 
         // Use dynamic chuncking to add all things to the sitetable.
-        window.TBCore.forEachChunkedDynamic(data, entry => {
+        TBCore.forEachChunkedDynamic(data, entry => {
             // Comment
             if (entry.kind === 't1') {
                 const $comment = TBui.makeSingleComment(entry, commentOptions);
@@ -260,7 +260,7 @@ self.init = function () {
                 const $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
                 let subCount = 0;
 
-                window.TBCore.forEachChunkedDynamic(data.data, subreddit => {
+                TBCore.forEachChunkedDynamic(data.data, subreddit => {
                     subCount++;
                     const subredditName = subreddit.sr,
                           iconImage = subreddit.icon_img,

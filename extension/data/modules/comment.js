@@ -109,7 +109,7 @@ self.initOldReddit = function () {
         if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
             const $things = $('.thing.comment:not(.tb-comments-checked)');
-            window.TBCore.forEachChunkedDynamic($things, item => {
+            TBCore.forEachChunkedDynamic($things, item => {
                 const $thing = $(item);
                 $thing.addClass('tb-comments-checked');
 
@@ -433,7 +433,7 @@ self.init = function () {
         };
         let count = 0;
         // from each id in the idlisting we construct a new comment.
-        window.TBCore.forEachChunkedDynamic(idListing, value => {
+        TBCore.forEachChunkedDynamic(idListing, value => {
             count++;
             const msg = `Building comment ${count}/${idListing.length}`;
             TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);

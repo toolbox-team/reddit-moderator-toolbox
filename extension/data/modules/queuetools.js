@@ -867,7 +867,7 @@ self.queuetoolsOld = function () {
 
             TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
 
-            window.TBCore.forEachChunked(
+            TBCore.forEachChunked(
                 $('.subscription-box a.title'), 20, 100, elem => {
                     const $elem = $(elem),
                           sr = $elem.text();

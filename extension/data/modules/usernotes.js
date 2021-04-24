@@ -154,7 +154,7 @@ self.usernotes = function usernotes () {
             addTBListener();
             firstRun = false;
         } else {
-            window.TBCore.forEachChunked(subs, 10, 200, processSub);
+            TBCore.forEachChunked(subs, 10, 200, processSub);
         }
     }
 
@@ -238,7 +238,7 @@ self.usernotes = function usernotes () {
 
         self.endProfile('set-notes-find');
 
-        window.TBCore.forEachChunked(things, 20, 100, thing => {
+        TBCore.forEachChunked(things, 20, 100, thing => {
             self.startProfile('set-notes-process');
 
             // Get all tags related to the current subreddit

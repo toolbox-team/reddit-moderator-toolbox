@@ -172,7 +172,7 @@ self.init = function () {
             const inputURL = $body.find('#tb-testCommentUI-input-url').val();
             const data = await TBApi.getJSON(inputURL, {raw_json: 1});
             TBStorage.purifyObject(data);
-            window.TBCore.forEachChunkedDynamic(data.data.children, entry => {
+            TBCore.forEachChunkedDynamic(data.data.children, entry => {
                 if (entry.kind === 't3') {
                     const $submission = TBui.makeSubmissionEntry(entry);
                     $siteTable.append($submission);

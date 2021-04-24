@@ -323,7 +323,7 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports () {
 self.initAddRemoveButtons = function initRemoveButtons () {
     // only need to iterate if at least one of the options is enabled
     const $things = $('.thing.link:not(.tb-removebuttons-checked)');
-    window.TBCore.forEachChunkedDynamic($things, item => {
+    TBCore.forEachChunkedDynamic($things, item => {
         const $thing = $(item);
         $thing.addClass('tb-removebuttons-checked');
 
@@ -429,7 +429,7 @@ self.initCommentLock = function () {
 
     function commentLockRun () {
         const $comments = $('div.comment:not(.tb-lock-button)');
-        window.TBCore.forEachChunkedDynamic($comments, processComment);
+        TBCore.forEachChunkedDynamic($comments, processComment);
     }
 
     function processComment (comment) {

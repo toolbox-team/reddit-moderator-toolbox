@@ -149,7 +149,7 @@ self.init = function () {
             commentArray = TBHelpers.saneSort(commentArray);
             const removalArrayLength = commentArray.length;
             let removalCount = 0;
-            window.TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
+            TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
                 removalCount++;
                 TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
                 if (executionType === 'remove') {

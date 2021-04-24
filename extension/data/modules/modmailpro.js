@@ -298,7 +298,7 @@ self.modmailpro = function () {
         }
 
         function processThreads (threads, chunkSize, processRate, completeAction, profileKey) {
-            window.TBCore.forEachChunked(
+            TBCore.forEachChunked(
                 threads, chunkSize, processRate,
                 (thread, count, array) => {
                     self.log(`Running thread batch: ${count + 1} of ${array.length}`);
@@ -477,7 +477,7 @@ self.modmailpro = function () {
 
         // Don't parse all entries if we don't need to.
         if (fadeRecipient) {
-            window.TBCore.forEachChunked(
+            TBCore.forEachChunked(
                 $entries, 5, entryProcessRate,
                 entry => {
                     self.startProfile('fade-recipient-internal');
@@ -652,7 +652,7 @@ self.modmailpro = function () {
 
         self.endProfile('highlight-new-jquery');
 
-        window.TBCore.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
+        TBCore.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
             self.startProfile('highlight-new-internal');
 
             const $message = $(message),
@@ -865,7 +865,7 @@ self.modmailpro = function () {
         $body.find('.entry').css('display', '');
         $body.find('.expand-btn').css('display', '');
 
-        window.TBCore.forEachChunked(threads, 10, 300, thread => {
+        TBCore.forEachChunked(threads, 10, 300, thread => {
             const $this = $(thread);
 
             if (expandReplies) {

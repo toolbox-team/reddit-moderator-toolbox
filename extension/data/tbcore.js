@@ -713,6 +713,60 @@ export function forEachChunkedDynamic (array, process, options) {
     });
 }
 
+// Functions dealing with settings
+
+// TODO: Move this function to tbmodule, the only place it's ever used
+export function exportSettings (subreddit, callback) {
+    const settingsObject = {};
+    $(TBStorage.settings).each(function () {
+        if (this === 'Storage.settings') {
+            return;
+        } // don't backup the setting registry.
+
+        const key = this.split('.'),
+              setting = TBStorage.getSetting(key[0], key[1], null);
+
+        if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
+            settingsObject[this] = setting;
+        }
+    });
+
+    TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
+}
+
+// TODO: Move this function to tbmodule, the only place it's ever used
+export function importSettings (subreddit, callback) {
+    TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
+        if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
+            logger.log('Error loading wiki page');
+            return;
+        }
+        TBStorage.purifyObject(resp);
+        if (resp['Utils.lastversion'] < 300) {
+            TBui.textFeedback('Cannot import from a toolbox version under 3.0');
+            logger.log('Cannot import from a toolbox version under 3.0');
+            return;
+        }
+
+        const doNotImport = [
+            'oldreddit.enabled',
+        ];
+
+        Object.entries(resp).forEach(([fullKey, value]) => {
+            const key = fullKey.split('.');
+
+            // Do not import certain legacy settings.
+            if (doNotImport.includes(fullKey)) {
+                logger.log(`Skipping ${fullKey} import`);
+            } else {
+                TBStorage.setSetting(key[0], key[1], value, false);
+            }
+        });
+
+        callback();
+    });
+}
+
 // Global object shenanigans
 
 /**
@@ -1381,57 +1435,6 @@ let userDetails;
                 callback(info);
             });
         }
-    };
-
-    // Import export methods
-    TBCore.exportSettings = function (subreddit, callback) {
-        const settingsObject = {};
-        $(TBStorage.settings).each(function () {
-            if (this === 'Storage.settings') {
-                return;
-            } // don't backup the setting registry.
-
-            const key = this.split('.'),
-                  setting = TBStorage.getSetting(key[0], key[1], null);
-
-            if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
-                settingsObject[this] = setting;
-            }
-        });
-
-        TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
-    };
-
-    TBCore.importSettings = function (subreddit, callback) {
-        TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
-            if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
-                logger.log('Error loading wiki page');
-                return;
-            }
-            TBStorage.purifyObject(resp);
-            if (resp['Utils.lastversion'] < 300) {
-                TBui.textFeedback('Cannot import from a toolbox version under 3.0');
-                logger.log('Cannot import from a toolbox version under 3.0');
-                return;
-            }
-
-            const doNotImport = [
-                'oldreddit.enabled',
-            ];
-
-            Object.entries(resp).forEach(([fullKey, value]) => {
-                const key = fullKey.split('.');
-
-                // Do not import certain legacy settings.
-                if (doNotImport.includes(fullKey)) {
-                    logger.log(`Skipping ${fullKey} import`);
-                } else {
-                    TBStorage.setSetting(key[0], key[1], value, false);
-                }
-            });
-
-            callback();
-        });
     };
 
     TBCore.addToSiteTable = function (URL, callback) {

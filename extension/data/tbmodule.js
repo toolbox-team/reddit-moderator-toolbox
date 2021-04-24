@@ -397,7 +397,7 @@ function tbmodule () {
                 TB.storage.setSetting('Utils', 'settingSub', sub);
 
                 if ($(e.target).hasClass('tb-settings-import')) {
-                    window.TBCore.importSettings(sub, () => {
+                    TBCore.importSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                         window.TBCore.clearCache();
                         TB.storage.verifiedSettingsSave(succ => {
@@ -413,7 +413,7 @@ function tbmodule () {
                     });
                 } else {
                     TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
-                    window.TBCore.exportSettings(sub, () => {
+                    TBCore.exportSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                         window.TBCore.clearCache();
                         window.location.reload();

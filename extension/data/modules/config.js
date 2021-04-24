@@ -358,7 +358,7 @@ self.init = function () {
             } else {
                 config = resp;
                 TBStorage.purifyObject(config);
-                if (window.TBCore.isConfigValidVersion(subreddit, config)) {
+                if (TBCore.isConfigValidVersion(subreddit, config)) {
                     showConfig(subreddit, config);
                 }
             }

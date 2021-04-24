@@ -21,6 +21,28 @@ export const notesMinSchema = 4;
 export const notesDeprecatedSchema = 4;
 export const notesMaxSchema = 6; // The non-default max version (to allow phase-in schema releases)
 
+/**
+ * Checks if a given subreddit config version is valid with this version of toolbox
+ * @function
+ * @param {object} config
+ * @param {string} subreddit
+ * @returns {booleean} valid
+ */
+export function isConfigValidVersion (subreddit, config) {
+    if (config.ver < configMinSchema || config.ver > configMaxSchema) {
+        TB.ui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TB.ui.FEEDBACK_NEGATIVE);
+        logger.error(`Failed config version check:
+\tsubreddit: ${subreddit}
+\tconfig.ver: ${config.ver}
+\tTBCore.configSchema: ${configSchema}
+\tTBCore.configMinSchema: ${configMinSchema}
+\tTBCore.configMaxSchema: ${configMaxSchema}`);
+        return false;
+    }
+
+    return true;
+}
+
 // Generated version strings
 const manifest = browser.runtime.getManifest();
 const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
@@ -771,28 +793,6 @@ let newModSubs;
         // info level is always displayed unless disabled in devmode
         logger.info('Version/browser information:', debugObject);
         return debugObject;
-    };
-
-    /**
-     * Checks if a given subreddit config version is valid with this version of toolbox
-     * @function
-     * @param {object} config
-     * @param {string} subreddit
-     * @returns {booleean} valid
-     */
-    TBCore.isConfigValidVersion = function isConfigValidVersion (subreddit, config) {
-        if (config.ver < TBCore.configMinSchema || config.ver > TBCore.configMaxSchema) {
-            TB.ui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TB.ui.FEEDBACK_NEGATIVE);
-            logger.log('Failed config version check:');
-            logger.log(`\tsubreddit: ${subreddit}`);
-            logger.log(`\tconfig.ver: ${config.ver}`);
-            logger.log(`\tTBCore.configSchema: ${TBCore.configSchema}`);
-            logger.log(`\tTBCore.notesMinSchema: ${TBCore.minConfigSchema}`);
-            logger.log(`\tTBCore.configMaxSchema: ${TBCore.configMaxSchema}`);
-            return false;
-        }
-
-        return true;
     };
 
     /**

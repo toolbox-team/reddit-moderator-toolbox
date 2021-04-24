@@ -290,6 +290,14 @@ export function debugInformation () {
  * @property {boolean} cookiesEnabled Browser cookies enabled
  */
 
+/** Reloads the extension, then reloads the current window. */
+export function reloadToolbox () {
+    TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
+    browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
+        window.location.reload();
+    });
+}
+
 // Random quote generator
 const randomQuotes = [
     "Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
@@ -913,8 +921,7 @@ let userDetails;
             await TBStorage.setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
         }
     });
-    // Clean up the list of seen notes if it's too large
-    await TBStorage.getSettingAsync(SETTINGS_NAME, 'seenNotes', []).then(async seenNotes => {
+    TBStorage.getSettingAsync(SETTINGS_NAME, 'seenNotes', []).then(async seenNotes => {
         if (seenNotes.length > 250) {
             logger.log('clearing seen notes');
             seenNotes.splice(150, seenNotes.length - 150);
@@ -1375,13 +1382,6 @@ let userDetails;
                 callback(info);
             });
         }
-    };
-
-    TBCore.reloadToolbox = function () {
-        TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-        browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
-            window.location.reload();
-        });
     };
 
     // Import export methods

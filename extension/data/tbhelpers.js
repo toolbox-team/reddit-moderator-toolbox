@@ -309,11 +309,11 @@ export function title_to_url (title) {
 }
 
 // Easy way to use templates. Usage example:
-//    window.TBCore.template('/r/{{subreddit}}/comments/{{link_id}}/{{title}}/', {
-//                'subreddit': 'toolbox',
-//                'title':  title_to_url('this is a title we pulled from a post),
-//                'link_id': '2kwx2o'
-//            });
+//    TBHelpers.template('/r/{{subreddit}}/comments/{{link_id}}/{{title}}/', {
+//         'subreddit': 'toolbox',
+//         'title':  title_to_url('this is a title we pulled from a post),
+//         'link_id': '2kwx2o'
+//     });
 export function template (tpl, variables) {
     return tpl.replace(/{{([^}]+)}}/g, (match, variable) => variables[variable]);
 }

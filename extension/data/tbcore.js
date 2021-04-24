@@ -583,6 +583,39 @@ async function fetchUserDetails (tries = 3) {
     }
 }
 
+/**
+ * Fetches the list of Toolbox developers from the /r/toolbox mod list.
+ * @returns {Promise<void>}
+ */
+async function getToolboxDevs () {
+    let devs;
+    try {
+        // Fetch the /r/toolbox mod list
+        const resp = await TBApi.getJSON('/r/toolbox/about/moderators.json');
+        TBStorage.purifyObject(resp);
+        devs = resp.data.children.map(child => child.name).filter(dev => dev !== 'AutoModerator');
+    } catch (_) {
+        // Something went wrong, use a hardcoded fallback list
+        devs = [
+            'agentlame',
+            'creesch',
+            'LowSociety ',
+            'TheEnigmaBlade',
+            'dakta',
+            'largenocream',
+            'psdtwk',
+            'amici_ursi',
+            'noeatnosleep',
+            'Garethp',
+            'WorseThanHipster',
+            'eritbh',
+        ];
+    }
+
+    window.TBCore.tbDevs = devs;
+    await TBStorage.setSettingAsync('Utils', 'tbDevs', devs);
+}
+
 let userDetails;
 let cacheDetails;
 let newModSubs;
@@ -792,11 +825,7 @@ let newModSubs;
     });
 
     if (!toolboxDevs || toolboxDevs.length < 1) {
-        // TODO: getToolboxDevs relies on TBApi.getJSON, which is only set
-        //       after this code gets called. So, we use setTimeout to queue
-        //       the call and execute it after the methods we need are all
-        //       defined.
-        setTimeout(getToolboxDevs, 0);
+        getToolboxDevs();
     }
 
     // Extra checks on old faults
@@ -824,7 +853,7 @@ let newModSubs;
         // These need to happen for every version change
         TBCore.firstRun = true; // for use by other modules.
         TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
-        setTimeout(getToolboxDevs, 0); // always repopulate tb devs for each version change
+        getToolboxDevs(); // always repopulate tb devs for each version change
 
         //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
@@ -1009,15 +1038,6 @@ let newModSubs;
         // info level is always displayed unless disabled in devmode
         logger.info('Version/browser information:', debugObject);
         return debugObject;
-    };
-
-    /**
-     * Fetches the toolbox dev from /r/toolbox or falls back to a predefined list.
-     * @function
-     * @returns {array} List of toolbox devs
-     */
-    TBCore.getToolboxDevs = function getToolboxDevs () {
-        getToolboxDevs();
     };
 
     TBCore.sendEvent = function (tbuEvent) {
@@ -1578,41 +1598,6 @@ let newModSubs;
                     logger.log('error setting wiki page to mod only access');
                 }
             });
-    }
-
-    function getToolboxDevs () {
-        TBApi.getJSON('/r/toolbox/about/moderators.json').then(resp => {
-            TBStorage.purifyObject(resp);
-            const children = resp.data.children,
-                  devs = [];
-
-            children.forEach(child => {
-                // AutoModerator seems to add itself to /r/toolbox sometimes, but it's definitely not a developer
-                if (child.name === 'AutoModerator') {
-                    return;
-                }
-                devs.push(child.name);
-            });
-            TBCore.tbDevs = devs;
-            TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
-        }).catch(() => {
-            const devs = [
-                'agentlame',
-                'creesch',
-                'LowSociety ',
-                'TheEnigmaBlade',
-                'dakta',
-                'largenocream',
-                'psdtwk',
-                'amici_ursi',
-                'noeatnosleep',
-                'Garethp',
-                'WorseThanHipster',
-                'eritbh',
-            ];
-            TBCore.tbDevs = devs;
-            TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
-        });
     }
 
     // Watch for locationHref changes and sent an event with details

@@ -477,10 +477,10 @@ self.init = function () {
 
         // achievement support
         if (module === 'about') {
-            TBCore.sendEvent(window.TBCore.events.TB_ABOUT_PAGE);
+            TBCore.sendEvent(TBCore.events.TB_ABOUT_PAGE);
         }
         if (module === 'syntax') {
-            TBCore.sendEvent(window.TBCore.events.TB_SYNTAX_SETTINGS);
+            TBCore.sendEvent(TBCore.events.TB_SYNTAX_SETTINGS);
         }
 
         $('.tb-window-tabs a').removeClass('active');

@@ -4,6 +4,7 @@
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
+import * as TBCore from './tbcore.js';
 
 const logger = TBLog('TBApi');
 
@@ -223,8 +224,8 @@ export async function postToWiki (page, subreddit, data, reason, isJSON, updateA
      * @returns {Promise} Promises the data of the wiki page. If there is an
      * error reading from the page, one of the following error values may be
      * returned:
-     * - window.TBCore.WIKI_PAGE_UNKNOWN
-     * - window.TBCore.NO_WIKI_PAGE
+     * - TBCore.WIKI_PAGE_UNKNOWN
+     * - TBCore.NO_WIKI_PAGE
      * If the isJSON `param` was true, then this will be an object. Otherwise,
      * it will be the raw contents of the wiki as a string.
      */
@@ -233,7 +234,7 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
     getJSON(`/r/${subreddit}/wiki/${page}.json`).then(data => {
         const wikiData = data.data.content_md;
         if (!wikiData) {
-            resolve(window.TBCore.NO_WIKI_PAGE);
+            resolve(TBCore.NO_WIKI_PAGE);
             return;
         }
         if (isJSON) {
@@ -243,13 +244,13 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
             } catch (err) {
                 // we should really have a INVAILD_DATA error for this.
                 logger.log(err);
-                resolve(window.TBCore.NO_WIKI_PAGE);
+                resolve(TBCore.NO_WIKI_PAGE);
             }
             // Moved out of the try so random exceptions don't erase the entire wiki page
             if (parsedWikiData) {
                 resolve(parsedWikiData);
             } else {
-                resolve(window.TBCore.NO_WIKI_PAGE);
+                resolve(TBCore.NO_WIKI_PAGE);
             }
             return;
         }
@@ -258,7 +259,7 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
     }).catch(async error => {
         logger.error(`Wiki error (${subreddit}/${page}):`, error);
         if (!error.response) {
-            resolve(window.TBCore.WIKI_PAGE_UNKNOWN);
+            resolve(TBCore.WIKI_PAGE_UNKNOWN);
             return;
         }
         let reason;
@@ -269,10 +270,10 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
         }
 
         if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
-            resolve(window.TBCore.NO_WIKI_PAGE);
+            resolve(TBCore.NO_WIKI_PAGE);
         } else {
             // we don't know why it failed, we should not try to write to it.
-            resolve(window.TBCore.WIKI_PAGE_UNKNOWN);
+            resolve(TBCore.WIKI_PAGE_UNKNOWN);
         }
     });
 });

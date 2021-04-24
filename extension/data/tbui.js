@@ -690,7 +690,7 @@ export function longLoadSpinner (createOrDestroy, feedbackText, feedbackKind, fe
                 }
                 </style>`);
 
-            $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${browser.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${window.TBCore.RandomFeedback}</span></span></div>`);
+            $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${browser.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${TBCore.RandomFeedback}</span></span></div>`);
             $body.append('<div id="tb-loading"></div>');
 
             const $randomFeedbackWindow = $('body').find('#tb-loading-stuff'),

@@ -6,8 +6,6 @@ import * as TBHelpers from './tbhelpers.js';
 
 const logger = TBLog('TBCore');
 
-// Module exports
-
 /** If true, this version of Toolbox is a beta release. */
 export const betaRelease = false; // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
 
@@ -72,6 +70,35 @@ export const isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)
 export const isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
 export const isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
 
+export const events = {
+    TB_ABOUT_PAGE: 'TB_ABOUT_PAGE',
+    TB_APPROVE_THING: 'TB_APPROVE_THING',
+    TB_FLY_SNOO: 'TB_FLY_SNOO',
+    TB_KILL_SNOO: 'TB_KILL_SNOO',
+    TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND',
+    TB_SYNTAX_SETTINGS: 'TB_SYNTAX_SETTINGS',
+    TB_UPDATE_COUNTERS: 'TB_UPDATE_COUNTERS',
+};
+
+export const defaultUsernoteTypes = [
+    {key: 'gooduser', color: 'green', text: 'Good Contributor'},
+    {key: 'spamwatch', color: 'fuchsia', text: 'Spam Watch'},
+    {key: 'spamwarn', color: 'purple', text: 'Spam Warning'},
+    {key: 'abusewarn', color: 'orange', text: 'Abuse Warning'},
+    {key: 'ban', color: 'red', text: 'Ban'},
+    {key: 'permban', color: 'darkred', text: 'Permanent Ban'},
+    {key: 'botban', color: 'black', text: 'Bot Ban'},
+];
+
+export const config = {
+    ver: configSchema,
+    domainTags: '',
+    removalReasons: '',
+    modMacros: '',
+    usernoteColors: '',
+    banMacros: '',
+};
+
 // Details about the current user
 
 // If mod subs are being fetched, stores a promise that will fulfill afterwards
@@ -88,7 +115,9 @@ export async function getModSubs () {
     logger.log('getting mod subs');
 
     // If the info we need is already present, return immediately
-    if (window.TBCore.mySubs.length && window.TBCore.mySubsData.length) {
+    if (window.TBCore.mySubs && window.TBCore.mySubs.length
+        && window.TBCore.mySubsData && window.TBCore.mySubsData.length
+    ) {
         return;
     }
 
@@ -1497,35 +1526,6 @@ async function getToolboxDevs () {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
         TBCore.betaMode = false;
     }
-
-    TBCore.config = {
-        ver: TBCore.configSchema,
-        domainTags: '',
-        removalReasons: '',
-        modMacros: '',
-        usernoteColors: '',
-        banMacros: '',
-    };
-
-    TBCore.events = {
-        TB_ABOUT_PAGE: 'TB_ABOUT_PAGE',
-        TB_APPROVE_THING: 'TB_APPROVE_THING',
-        TB_FLY_SNOO: 'TB_FLY_SNOO',
-        TB_KILL_SNOO: 'TB_KILL_SNOO',
-        TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND',
-        TB_SYNTAX_SETTINGS: 'TB_SYNTAX_SETTINGS',
-        TB_UPDATE_COUNTERS: 'TB_UPDATE_COUNTERS',
-    };
-
-    TBCore.defaultUsernoteTypes = [
-        {key: 'gooduser', color: 'green', text: 'Good Contributor'},
-        {key: 'spamwatch', color: 'fuchsia', text: 'Spam Watch'},
-        {key: 'spamwarn', color: 'purple', text: 'Spam Warning'},
-        {key: 'abusewarn', color: 'orange', text: 'Abuse Warning'},
-        {key: 'ban', color: 'red', text: 'Ban'},
-        {key: 'permban', color: 'darkred', text: 'Permanent Ban'},
-        {key: 'botban', color: 'black', text: 'Bot Ban'},
-    ];
 
     // Listen to background page communication and act based on that.
     browser.runtime.onMessage.addListener(message => {

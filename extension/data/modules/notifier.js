@@ -54,7 +54,7 @@ self.register_setting('sampleSound', {
     type: 'action',
     title: 'sample sound',
     class: 'tb-sample-sound',
-    event: window.TBCore.events.TB_SAMPLE_SOUND,
+    event: TBCore.events.TB_SAMPLE_SOUND,
 });
 
 self.register_setting('messageUnreadLink', {
@@ -228,7 +228,7 @@ self.init = function () {
         });
     }
 
-    TBCore.catchEvent(window.TBCore.events.TB_SAMPLE_SOUND, () => {
+    TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
         self.log('playing sound');
 
         const audio = new Audio(NOTIFICATION_SOUND);
@@ -323,7 +323,7 @@ self.init = function () {
         self.log('updating all counters accross tabs');
         browser.runtime.sendMessage({
             action: 'tb-global',
-            globalEvent: window.TBCore.events.TB_UPDATE_COUNTERS,
+            globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
             excludeBackground: true,
             payload: {
                 unreadMessageCount: self.setting('unreadMessageCount'),
@@ -375,7 +375,7 @@ self.init = function () {
         });
     }
 
-    window.addEventListener(window.TBCore.events.TB_UPDATE_COUNTERS, event => {
+    window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
         self.log('updating counters from background');
         updateMessagesCount(event.detail.unreadMessageCount);
         updateModqueueCount(event.detail.modqueueCount);

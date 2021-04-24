@@ -674,7 +674,7 @@ self.queuetoolsOld = function () {
 
                 if (approve) {
                     TBApi.approveThing(id).then(() => {
-                        TBCore.sendEvent(window.TBCore.events.TB_APPROVE_THING);
+                        TBCore.sendEvent(TBCore.events.TB_APPROVE_THING);
                     });
                 } else {
                     TBApi.removeThing(id, spam);

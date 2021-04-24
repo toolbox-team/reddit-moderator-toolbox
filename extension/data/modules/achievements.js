@@ -230,7 +230,7 @@ self.init = function () {
 
     // toolbox Loves You: Look at the about page
     self.manager.register(`<a href="${TBCore.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
-        TBCore.catchEvent(window.TBCore.events.TB_ABOUT_PAGE, () => {
+        TBCore.catchEvent(TBCore.events.TB_ABOUT_PAGE, () => {
             self.manager.unlock(saveIndex);
         });
     });
@@ -269,7 +269,7 @@ self.init = function () {
         });
 
         // If the API is used
-        TBCore.catchEvent(window.TBCore.events.TB_APPROVE_THING, () => {
+        TBCore.catchEvent(TBCore.events.TB_APPROVE_THING, () => {
             self.manager.unlock(saveIndex, 1);
         });
     });
@@ -290,14 +290,14 @@ self.init = function () {
 
     // Found flying Snoo
     self.manager.register('Cadbury Bunny', 'Found flying Snoo.', saveIndex => {
-        TBCore.catchEvent(window.TBCore.events.TB_FLY_SNOO, () => {
+        TBCore.catchEvent(TBCore.events.TB_FLY_SNOO, () => {
             self.manager.unlock(saveIndex);
         });
     });
 
     // Killed Snoo
     self.manager.register('you bastard!', 'Killed Snoo.', saveIndex => {
-        TBCore.catchEvent(window.TBCore.events.TB_KILL_SNOO, () => {
+        TBCore.catchEvent(TBCore.events.TB_KILL_SNOO, () => {
             self.manager.unlock(saveIndex);
         });
     });

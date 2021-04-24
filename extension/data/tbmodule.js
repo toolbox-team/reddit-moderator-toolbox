@@ -217,8 +217,8 @@ function tbmodule () {
                     help_page: 'about',
                     id: 'about',
                     content: `
-                <h1 id="tb-random-about-quote">"${window.TBCore.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${window.TBCore.toolboxVersionName}</a>
+                <h1 id="tb-random-about-quote">"${TBCore.RandomQuote}"</h1>
+                <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${TBCore.toolboxVersionName}</a>
                     <h3> Open source </h3>
                     Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
                     <h3> Privacy </h3>
@@ -716,7 +716,7 @@ body {
                                 });
                             });
 
-                            TBCore.catchEvent(window.TBCore.events.TB_SYNTAX_SETTINGS, () => {
+                            TBCore.catchEvent(TBCore.events.TB_SYNTAX_SETTINGS, () => {
                                 setTimeout(() => {
                                     editorSettings.refresh();
                                 }, 5);

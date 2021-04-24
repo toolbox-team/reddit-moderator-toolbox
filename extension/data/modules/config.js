@@ -19,7 +19,7 @@ self.init = function () {
     // Set up some base variables
     const $body = $('body'),
           unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
-    let config = window.TBCore.config,
+    let config = TBCore.config,
         sortReasons = [],
         subreddit,
         postFlairTemplates;
@@ -353,7 +353,7 @@ self.init = function () {
             if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
                 self.log('Failed: wiki config');
 
-                config = window.TBCore.config;
+                config = TBCore.config;
                 showConfig(subreddit, config);
             } else {
                 config = resp;
@@ -587,7 +587,7 @@ self.init = function () {
             colors = config.usernoteColors;
         } else {
             // Default types
-            colors = window.TBCore.defaultUsernoteTypes;
+            colors = TBCore.defaultUsernoteTypes;
         }
 
         let $list;

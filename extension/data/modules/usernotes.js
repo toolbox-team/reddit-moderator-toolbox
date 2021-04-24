@@ -1517,7 +1517,7 @@ self.getSubredditColors = async function (subreddit) {
         return config.usernoteColors;
     } else {
         self.log(`  Config not retrieved for ${subreddit}, using default colors`);
-        return window.TBCore.defaultUsernoteTypes;
+        return TBCore.defaultUsernoteTypes;
     }
 };
 

@@ -731,6 +731,8 @@ let newModSubs;
 
     $('body').addClass('mod-toolbox-rd');
     // Bit hacky maybe but allows us more flexibility in specificity.
+    // TODO: Remove this and replace uses of it in CSS with duplicate classes
+    //       (e.g. `.mod-toolbox-rd.mod-toolbox-rd` as a selector)
     $('body').addClass('mod-toolbox-extra');
 
     // Add icon font

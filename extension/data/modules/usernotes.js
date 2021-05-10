@@ -924,7 +924,6 @@ self.usernotesManager = function () {
             if (r === true) {
                 self.log(`deleting notes for ${user}`);
                 delete subUsenotes.users[user];
-                TBCore.updateCache('noteCache', subUsenotes, sub);
                 self.saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`);
                 $userSpan.parent().remove();
                 TB.ui.textFeedback(`Deleted all notes for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
@@ -940,7 +939,6 @@ self.usernotesManager = function () {
 
             self.log(`deleting note for ${user}`);
             subUsenotes.users[user].notes.splice(note, 1);
-            TBCore.updateCache('noteCache', subUsenotes, sub);
             self.saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`);
             $noteSpan.remove();
             TB.ui.textFeedback(`Deleted note for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
@@ -1161,7 +1159,7 @@ self.usernotesManager = function () {
 };
 
 // Get usernotes from wiki
-self.getUserNotes = function (subreddit, callback, forceSkipCache) {
+self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
     self.log(`Getting usernotes (sub=${subreddit})`);
 
     if (!callback) {
@@ -1172,14 +1170,16 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
     }
 
     // Check cache (if not skipped)
+    const cachedNotes = await TBStorage.getCache('Utils', 'noteCache', {});
+    const cachedSubsWithNoNotes = await TBStorage.getCache('Utils', 'noNotes', []);
     if (!forceSkipCache) {
-        if (window.TBCore.noteCache[subreddit] !== undefined) {
+        if (cachedNotes[subreddit] !== undefined) {
             self.log('notes found in cache');
-            callback(true, window.TBCore.noteCache[subreddit], subreddit);
+            callback(true, cachedNotes[subreddit], subreddit);
             return;
         }
 
-        if (window.TBCore.noNotes.indexOf(subreddit) !== -1) {
+        if (cachedSubsWithNoNotes.includes(subreddit)) {
             self.log('found in NoNotes cache');
             returnFalse();
             return;
@@ -1195,27 +1195,22 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
             returnFalse(TBCore.WIKI_PAGE_UNKNOWN);
             return;
         }
-        if (resp === TBCore.NO_WIKI_PAGE) {
-            TBCore.updateCache('noNotes', subreddit, false);
-            self.log('Usernotes read error: NO_WIKI_PAGE');
+        if (resp === TBCore.NO_WIKI_PAGE || !resp) {
+            cachedSubsWithNoNotes.push(subreddit);
+            TBStorage.setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
+            self.log('Usernotes read error: NO_WIKI_PAGE or wiki empty');
             returnFalse(TBCore.NO_WIKI_PAGE);
             return;
         }
-        // // No notes exist in wiki page
-        if (resp.length < 1) {
-            TBCore.updateCache('noNotes', subreddit, false);
-            self.log('Usernotes read error: wiki empty');
-            returnFalse();
-            return;
-        }
 
-        TBStorage.purifyObject(resp);
         // Success
+        TBStorage.purifyObject(resp);
         self.log('We have notes!');
         const notes = convertNotes(resp, subreddit);
 
         // We have notes, cache them and return them.
-        TBCore.updateCache('noteCache', notes, subreddit);
+        cachedNotes[subreddit] = notes;
+        TBStorage.setCache('Utils', 'noteCache', cachedNotes);
         if (callback) {
             callback(true, notes, subreddit);
         }
@@ -1322,8 +1317,11 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
         notes.ver = TBCore.notesSchema;
     }
 
-    // Update cache
-    TBCore.updateCache('noteCache', notes, sub);
+    // Update cached notes with new notes object for this subreddit
+    TBStorage.getCache('Utils', 'noteCache', {}).then(cachedNotes => {
+        cachedNotes[sub] = notes;
+        TBStorage.setCache('Utils', 'noteCache', cachedNotes);
+    });
 
     // Deconvert notes to wiki format
     notes = deconvertNotes(notes);

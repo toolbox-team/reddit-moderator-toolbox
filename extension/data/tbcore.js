@@ -768,33 +768,10 @@ export function forEachChunkedDynamic (array, process, options) {
 }
 
 // Functions dealing with settings/cache
-
-/**
- * Updates in page cache and background page.
- * @function
- * @param {string} cacheNAme the cache to be written.
- * @param {} value the cache value to be updated
- * @param {string} subreddit when present cache is threated as an object and the
- * value will be written to subreddit property. If missing the value is pushed.
- */
-export function updateCache (cacheName, value, subreddit) {
-    logger.debug('update cache', cacheName, subreddit, value);
-
-    if (subreddit) {
-        window.TBCore[cacheName][subreddit] = value;
-    } else {
-        window.TBCore[cacheName].push(value);
-    }
-
-    TBStorage.setCache('Utils', cacheName, window.TBCore[cacheName]);
-}
-
 export function clearCache (calledFromBackground) {
     logger.log('TBCore.clearCache()');
 
-    window.TBCore.noteCache = {};
     window.TBCore.rulesCache = {};
-    window.TBCore.noNotes = [];
     window.TBCore.noRules = [];
     window.TBCore.mySubs = [];
     window.TBCore.mySubsData = [];
@@ -1426,9 +1403,7 @@ async function getToolboxDevs () {
 
     // Get other cached info
     // TODO: Remove these and replace their uses with direct cache calls
-    TBCore.noteCache = await TBStorage.getCache('Utils', 'notesCache', {});
     TBCore.rulesCache = await TBStorage.getCache('Utils', 'rulesCache', {});
-    TBCore.noNotes = await TBStorage.getCache('Utils', 'noNotes', []);
     TBCore.noRules = await TBStorage.getCache('Utils', 'noRules', []);
 
     // Update cache vars as needed.
@@ -1533,11 +1508,6 @@ async function getToolboxDevs () {
         case 'tb-cache-timeout': {
             logger.log('Timed cache update', message.payload);
             // Cache has timed out
-            if (message.payload === 'short') {
-                TBCore.noteCache = {};
-                TBCore.noNotes = [];
-            }
-
             if (message.payload === 'long') {
                 TBCore.rulesCache = {};
                 TBCore.noRules = [];

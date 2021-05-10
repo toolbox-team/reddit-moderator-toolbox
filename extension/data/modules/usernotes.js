@@ -1190,7 +1190,7 @@ self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
     TBApi.readFromWiki(subreddit, 'usernotes', true).then(resp => {
         // Errors when reading notes
         // // These errors are bad
-        if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
+        if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
             self.log('Usernotes read error: WIKI_PAGE_UNKNOWN');
             returnFalse(TBCore.WIKI_PAGE_UNKNOWN);
             return;
@@ -1198,7 +1198,7 @@ self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
         if (resp === TBCore.NO_WIKI_PAGE || !resp) {
             cachedSubsWithNoNotes.push(subreddit);
             TBStorage.setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
-            self.log('Usernotes read error: NO_WIKI_PAGE or wiki empty');
+            self.log('Usernotes read error: NO_WIKI_PAGE or wiki page empty');
             returnFalse(TBCore.NO_WIKI_PAGE);
             return;
         }

@@ -207,7 +207,7 @@ export const link = l => isNewModmail ? `https://www.reddit.com${l}` : l;
 // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
 const invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'];
 export let post_site = isModFakereddit || $('.redditname:not(.pagename) a:first').html() || ''; // This may need to be changed to regex, if this is unreliable.
-if (isModFakereddit || post_site === undefined || !post_site || invalidPostSites.indexOf(post_site) !== -1) {
+if (isModFakereddit || !post_site || invalidPostSites.indexOf(post_site) !== -1) {
     post_site = '';
 }
 
@@ -1346,7 +1346,7 @@ async function getToolboxDevs () {
         }
     } catch (error) {
         logger.warn('Failed to get user details from API, getting from cache instead.', error);
-        userDetails = TBStorage.getCache('Utils', 'userDetails');
+        userDetails = await TBStorage.getCache('Utils', 'userDetails');
     }
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
         logger.error('Toolbox does not have user details and cannot start.');
@@ -1773,7 +1773,7 @@ async function getToolboxDevs () {
     });
 
     window.dispatchEvent(new CustomEvent('_coreLoaded'));
-})(window.TBCore = window.TBCore || {});
+})();
 
 // NER support for certain cases on old Reddit
 

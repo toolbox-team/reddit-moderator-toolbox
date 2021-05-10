@@ -210,7 +210,7 @@ self.init = function () {
 
     // Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
     // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab.
-    if (TBCore.isModmailUnread || TBCore.isModmail) {
+    if (TBCore.isModmail) {
         self.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.

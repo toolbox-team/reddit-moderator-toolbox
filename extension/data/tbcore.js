@@ -293,7 +293,7 @@ export function debugInformation () {
         browser: '',
         browserVersion: '',
         platformInformation: '',
-        betaMode: window.TBCore.betaMode,
+        betaMode: TBStorage.getSetting('Utils', 'betaMode', false),
         debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
         compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
         advancedSettings: window.TBCore.advancedMode,
@@ -1369,7 +1369,6 @@ async function getToolboxDevs () {
     // Public variables
 
     TBCore.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
-    TBCore.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
     TBCore.advancedMode = TBStorage.getSetting(SETTINGS_NAME, 'advancedMode', false);
     TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
     TBCore.firstRun = false;
@@ -1490,7 +1489,6 @@ async function getToolboxDevs () {
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
         TBStorage.setSetting(SETTINGS_NAME, 'debugMode', false);
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
-        TBCore.betaMode = false;
     }
 
     // Listen to background page communication and act based on that.

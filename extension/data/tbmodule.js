@@ -79,7 +79,7 @@ function tbmodule () {
             // preload some generic variables
             //
             const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
-                  betaMode = window.TBCore.betaMode,
+                  betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
                   devMode = window.TBCore.devMode,
                   advancedMode = window.TBCore.advancedMode,
 

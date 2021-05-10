@@ -174,7 +174,7 @@ self.init = function () {
 
           modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
 
-          unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
+          unmoderatedOn = TBStorage.getSetting('Modbar', 'unmoderatedon', true), // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
           messageunreadlink = self.setting('messageUnreadLink'),
 
@@ -195,8 +195,8 @@ self.init = function () {
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
         modmailFilteredSubreddits = 'mod';
-        if (TB.storage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += `-${TB.storage.getSetting('ModMail', 'filteredsubs', []).join('-')}`;
+        if (TBStorage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += `-${TBStorage.getSetting('ModMail', 'filteredsubs', []).join('-')}`;
         }
     }
 

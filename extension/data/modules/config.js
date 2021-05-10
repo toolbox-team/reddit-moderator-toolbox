@@ -18,7 +18,7 @@ self.init = function () {
 
     // Set up some base variables
     const $body = $('body'),
-          unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
+          unManager = TBStorage.getSetting('UserNotes', 'unManagerLink', true);
     let config = TBCore.config,
         sortReasons = [],
         subreddit,
@@ -27,7 +27,7 @@ self.init = function () {
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
     function showConfig (subredditConfig, configData) {
-        TB.ui.overlay(
+        TBui.overlay(
             `toolbox Configuration - /r/${subredditConfig}`,
             [
                 {
@@ -379,7 +379,7 @@ self.init = function () {
     // Considering that this is a config page we want to be able to save whatever we do. This function takes care of that.
     function postToWiki (page, data, reason, isJSON, updateAM) {
         self.log('posting to wiki');
-        TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
+        TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
         TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(() => {
             self.log('save succ = true');
             if (page === 'config/automoderator') {
@@ -388,7 +388,7 @@ self.init = function () {
             self.log('clearing cache');
             TBCore.clearCache();
 
-            TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+            TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
         }).catch(async err => {
             self.log(err);
             if (page === 'config/automoderator') {
@@ -399,9 +399,9 @@ self.init = function () {
                 const saveError = responseJSON.special_errors[0];
                 $error.find('.errorMessage').html(TBStorage.purify(saveError));
 
-                TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback('Config not saved!', TBui.FEEDBACK_NEGATIVE);
             } else {
-                TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback(err.responseText, TBui.FEEDBACK_NEGATIVE);
             }
         });
     }
@@ -431,12 +431,12 @@ self.init = function () {
         const $textArea = $wikiContentArea.find('.edit-wikidata'),
               $saveButton = $wikiFooterArea.find('.save-wiki-data');
 
-        if (TB.storage.getSetting('Syntax', 'enabled', true)) {
+        if (TBStorage.getSetting('Syntax', 'enabled', true)) {
             $body.addClass('mod-syntax');
             let configEditor;
             let defaultMode = 'default';
-            const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
-            const enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap');
+            const selectedTheme = TBStorage.getSetting('Syntax', 'selectedTheme') || 'dracula';
+            const enableWordWrap = TBStorage.getSetting('Syntax', 'enableWordWrap');
 
             if (page === 'automoderator') {
                 defaultMode = 'text/x-yaml';
@@ -895,7 +895,7 @@ self.init = function () {
                 text = JSON.parse(text);
             } catch (e) {
                 self.log(`Error saving JSON page ${e.toString()}`);
-                TB.ui.textFeedback(`Page not saved, JSON is not correct.<br> ${e.toString()}`, TB.ui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback(`Page not saved, JSON is not correct.<br> ${e.toString()}`, TBui.FEEDBACK_NEGATIVE);
                 return;
             }
 
@@ -930,7 +930,7 @@ self.init = function () {
 
         postToWiki('toolbox', config, 'updated removal reason settings', true);
         // Let people know that settings are saved.
-        TB.ui.textFeedback('Removal reasons settings are saved', TB.ui.FEEDBACK_POSITIVE);
+        TBui.textFeedback('Removal reasons settings are saved', TBui.FEEDBACK_POSITIVE);
     });
 
     // Usernote types tab
@@ -1080,7 +1080,7 @@ self.init = function () {
 
         // Save config
         postToWiki('toolbox', config, 'Updated user note types', true);
-        TB.ui.textFeedback('User note types saved', TB.ui.FEEDBACK_POSITIVE);
+        TBui.textFeedback('User note types saved', TBui.FEEDBACK_POSITIVE);
     });
 
     // Removal reasons tab
@@ -1475,7 +1475,7 @@ self.init = function () {
         let editNote = $macroContent.find('input[name=edit-note]').val();
 
         if (macroTitle.length < 1) {
-            TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
+            TBui.textFeedback('Macro title is required', TBui.FEEDBACK_NEGATIVE);
             return;
         }
 
@@ -1584,7 +1584,7 @@ self.init = function () {
         let editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
         if (macroTitle.length < 1) {
-            TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
+            TBui.textFeedback('Macro title is required', TBui.FEEDBACK_NEGATIVE);
             return;
         }
 
@@ -1681,7 +1681,7 @@ self.init = function () {
 
         postToWiki('toolbox', config, 'updated ban macro', true);
         // Let people know that settings are saved.
-        TB.ui.textFeedback('Ban macro is saved.', TB.ui.FEEDBACK_POSITIVE);
+        TBui.textFeedback('Ban macro is saved.', TBui.FEEDBACK_POSITIVE);
     });
 }; // TBConfig.init()
 

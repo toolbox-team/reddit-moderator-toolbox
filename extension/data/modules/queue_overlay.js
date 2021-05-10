@@ -27,10 +27,10 @@ self.register_setting('overlayFromBarOld', {
 self.init = function () {
     const $body = $('body');
 
-    const modSubredditsFMod = TB.storage.getSetting('Notifier', 'modSubredditsFMod', false),
-          modSubreddits = TB.storage.getSetting('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false),
-          unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod');
+    const modSubredditsFMod = TBStorage.getSetting('Notifier', 'modSubredditsFMod', false),
+          modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
+          unmoderatedSubredditsFMod = TBStorage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false),
+          unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod');
 
     const overlayFromBarRedesign = self.setting('overlayFromBarRedesign'),
           overlayFromBarOld = self.setting('overlayFromBarOld');
@@ -126,7 +126,7 @@ self.init = function () {
 
         // There is no open overlay so we'll create a new one.
         if (!$overlay.length) {
-            $overlay = TB.ui.overlay(
+            $overlay = TBui.overlay(
                 'Toolbox queues',
                 [
                     {
@@ -227,7 +227,7 @@ self.init = function () {
 
         // No listing is open in the tab yet. Create needed elements and load iframe.
         if (!$overlay.find(`.tb-window-tab.${type} iframe.tb-queue-iframe`).length) {
-            TB.ui.longLoadSpinner(true);
+            TBui.longLoadSpinner(true);
             activeLoading.push('active');
             const $tabContent = $overlay.find(`.tb-window-tab.${type} .tb-window-content`);
             const $tbQueueUrl = $tabContent.find('.tb-queue-url');

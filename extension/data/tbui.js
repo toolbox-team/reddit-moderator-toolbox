@@ -1947,7 +1947,7 @@ $body.on('click', '.tb-load-more-comments', function () {
     // This is to make sure comment coloring still is correct.
     commentOptions.commentDepthPlus = true;
     let processCount = 0;
-    TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+    longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
     commentIDs.forEach(id => {
         const fetchUrl = `/${threadPermalink}${id}.json?limit=1500`;
         // Lets get the comments.
@@ -1964,7 +1964,7 @@ $body.on('click', '.tb-load-more-comments', function () {
             if (processCount === commentIDcount) {
                 $thisMoreComments.remove();
                 $('time.timeago').timeago();
-                TB.ui.longLoadSpinner(false);
+                longLoadSpinner(false);
             }
         });
     });

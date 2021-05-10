@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 1000;
@@ -40,7 +41,7 @@ self.register_setting('excludeGlobal', {
 
 self.register_setting('onlyshowInhover', {
     type: 'boolean',
-    default: TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
     hidden: true,
 });
 
@@ -61,7 +62,7 @@ self.runRedesign = function () {
     }
     const onlyshowInhover = self.setting('onlyshowInhover');
 
-    TB.listener.on('author', e => {
+    TBListener.on('author', e => {
         const $target = $(e.target);
 
         // As the modbutton is already accessible in the sidebar and not needed for mods we don't show it in modmail threads.
@@ -91,7 +92,7 @@ self.runRedesign = function () {
     });
 
     // event based handling of author elements.
-    TB.listener.on('userHovercard', e => {
+    TBListener.on('userHovercard', e => {
         const $target = $(e.target);
         const subreddit = e.detail.data.subreddit.name;
         const author = e.detail.data.user.username;
@@ -123,7 +124,7 @@ self.updateSavedSubs = function () {
 
         // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
-        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(window.TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
+        $popup.find('.edit-subreddits').prepend(TBui.selectMultiple(window.TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
 
         self.savedSubs.forEach(subreddit => {
             // only subs we moderate
@@ -172,7 +173,7 @@ self.init = function () {
 
         // no user?
         if (!user) {
-            TB.ui.textFeedback('No user', TB.ui.FEEDBACK_NEGATIVE);
+            TBui.textFeedback('No user', TBui.FEEDBACK_NEGATIVE);
             // abort
             return;
         }
@@ -190,7 +191,7 @@ self.init = function () {
             $appendTo = $('body');
         }
 
-        const $popup = TB.ui.popup({
+        const $popup = TBui.popup({
             title: `Mod Actions  - /u/${user}`,
             tabs: [
                 {
@@ -566,18 +567,18 @@ self.init = function () {
             } else {
                 self.log('complete');
                 $('.mod-popup').remove();
-                // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
+                // TBui.textFeedback('Mod actions complete' + subreddit, TBui.FEEDBACK_POSITIVE);
             }
         }
 
         function massAction (subs) {
             const failedSubs = [];
 
-            TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
+            TBui.longLoadSpinner(true, 'Performing mod action', TBui.FEEDBACK_NEUTRAL);
 
             TBCore.forEachChunkedRateLimit(
                 subs, 20, subreddit => {
-                    TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
+                    TBui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TBui.FEEDBACK_POSITIVE);
 
                     self.log(`performing action in: ${subreddit}`);
                     if (settingState) {
@@ -613,7 +614,7 @@ self.init = function () {
                 },
 
                 () => {
-                    TB.ui.longLoadSpinner(false);
+                    TBui.longLoadSpinner(false);
 
                     window.setTimeout(() => {
                         completeCheck(failedSubs);
@@ -627,7 +628,7 @@ self.init = function () {
     $body.on('click', '.mod-popup .message-send', function () {
         let subject,
             message;
-        TB.ui.longLoadSpinner(true);
+        TBui.longLoadSpinner(true);
         const $popup = $(this).parents('.mod-popup'),
               user = $popup.find('.user').text(),
               subreddit = $popup.find('.subreddit').text(),
@@ -638,7 +639,7 @@ self.init = function () {
         if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
             $callbackSpan.text('You forgot a subject or message');
             $callbackSpan.css('color', 'red');
-            TB.ui.longLoadSpinner(false);
+            TBui.longLoadSpinner(false);
             return;
         } else {
             subject = $subredditMessageSubject.val();
@@ -648,17 +649,17 @@ self.init = function () {
         TBApi.sendMessage(user, subject, message, subreddit).then(response => {
             if (response.json.errors.length) {
                 $callbackSpan.text(response.json.errors[1]);
-                TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
-                TB.ui.longLoadSpinner(false);
+                TBui.textFeedback(response.json.errors[1], TBui.FEEDBACK_NEGATIVE);
+                TBui.longLoadSpinner(false);
             } else {
-                TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
+                TBui.textFeedback('message sent.', TBui.FEEDBACK_POSITIVE, 1500);
                 $callbackSpan.text('message sent');
                 $callbackSpan.css('color', 'green');
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
             }
         }).catch(error => {
             $callbackSpan.text(`an error occurred: ${error[0][1]}`);
-            TB.ui.longLoadSpinner(false);
+            TBui.longLoadSpinner(false);
         });
     });
 

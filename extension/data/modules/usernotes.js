@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('User Notes');
 self.shortname = 'UserNotes';
@@ -35,7 +36,7 @@ self.register_setting('maxChars', {
 
 self.register_setting('onlyshowInhover', {
     type: 'boolean',
-    default: TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
     hidden: true,
 });
 self.init = function () {
@@ -102,7 +103,7 @@ self.usernotes = function usernotes () {
         const onlyshowInhover = self.setting('onlyshowInhover');
 
         // event based handling of author elements.
-        TB.listener.on('author', e => {
+        TBListener.on('author', e => {
             const $target = $(e.target);
             if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
                 const subreddit = e.detail.data.subreddit.name;
@@ -126,7 +127,7 @@ self.usernotes = function usernotes () {
         });
 
         // event based handling of author elements.
-        TB.listener.on('userHovercard', e => {
+        TBListener.on('userHovercard', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
@@ -316,7 +317,7 @@ self.usernotes = function usernotes () {
         } else {
             $appendTo = $('body');
         }
-        const $popup = TB.ui.popup({
+        const $popup = TBui.popup({
             title: `<div class="utagger-title">
                     <span>User Notes - <a href="${TBCore.link(`/user/${user}`)}" id="utagger-user-link">/u/${user}</a></span>
                 </div>`,
@@ -840,7 +841,7 @@ self.usernotesManager = function () {
 
                     // Check each individual user
                     // `await Promise.all()` allows requests to be sent in parallel
-                    TBui.longLoadSpinner(true, 'Checking user activity, this could take a bit', TB.ui.FEEDBACK_NEUTRAL);
+                    TBui.longLoadSpinner(true, 'Checking user activity, this could take a bit', TBui.FEEDBACK_NEUTRAL);
                     await Promise.all(Object.entries(users).map(async ([username, user]) => {
                         let accountDeleted = false;
                         let accountSuspended = false;
@@ -926,7 +927,7 @@ self.usernotesManager = function () {
                 delete subUsenotes.users[user];
                 self.saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`);
                 $userSpan.parent().remove();
-                TB.ui.textFeedback(`Deleted all notes for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
+                TBui.textFeedback(`Deleted all notes for /u/${user}`, TBui.FEEDBACK_POSITIVE);
             }
         });
 
@@ -941,7 +942,7 @@ self.usernotesManager = function () {
             subUsenotes.users[user].notes.splice(note, 1);
             self.saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`);
             $noteSpan.remove();
-            TB.ui.textFeedback(`Deleted note for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
+            TBui.textFeedback(`Deleted note for /u/${user}`, TBui.FEEDBACK_POSITIVE);
         });
 
         self.endProfile('manager-run');
@@ -949,7 +950,7 @@ self.usernotesManager = function () {
 
     // Open the usernotes manager when the context item is clicked
     $body.on('click', '#tb-un-config-link, .tb-un-config-link', async function () {
-        TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
+        TBui.longLoadSpinner(true, 'Loading usernotes', TBui.FEEDBACK_NEUTRAL);
         const sub = $(this).attr('data-subreddit');
 
         // Grab the usernotes data
@@ -971,7 +972,7 @@ self.usernotesManager = function () {
             }
         } catch (_) {
             self.error(`un status: ${status}\nnotes: ${notes}`);
-            TB.ui.longLoadSpinner(false, 'No notes found', TB.ui.FEEDBACK_NEGATIVE);
+            TBui.longLoadSpinner(false, 'No notes found', TBui.FEEDBACK_NEGATIVE);
             return;
         }
 
@@ -1076,7 +1077,7 @@ self.usernotesManager = function () {
         $overlayContent.append($pager);
 
         // Gang's all here, present the overlay
-        TB.ui.overlay(
+        TBui.overlay(
             `usernotes - /r/${sub}`,
             [
                 {
@@ -1144,7 +1145,7 @@ self.usernotesManager = function () {
 
         // Process done
         self.endProfile('manager-render');
-        TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
+        TBui.longLoadSpinner(false, 'Usernotes loaded', TBui.FEEDBACK_POSITIVE);
 
         // Set other events after all items are loaded.
         registerManagerEventListeners(sub);
@@ -1242,7 +1243,7 @@ self.getUserNotes = async function (subreddit, callback, forceSkipCache) {
                             // Upgrade notes
                             self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`, succ => {
                                 if (succ) {
-                                    TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
+                                    TBui.textFeedback('Notes saved!', TBui.FEEDBACK_POSITIVE);
                                     TBCore.clearCache();
                                     window.location.reload();
                                 }

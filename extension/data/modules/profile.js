@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('Profile Pro');
 self.shortname = 'Profile';
@@ -33,13 +34,13 @@ self.register_setting('directProfileToLegacy', {
 
 self.register_setting('subredditColor', {
     type: 'boolean',
-    default: TB.storage.getSetting('QueueTools', 'subredditColor', false),
+    default: TBStorage.getSetting('QueueTools', 'subredditColor', false),
     hidden: true,
 });
 
 self.register_setting('onlyshowInhover', {
     type: 'boolean',
-    default: TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
     hidden: true,
 });
 
@@ -387,7 +388,7 @@ self.init = function () {
 
         // Cancel search if needed.
         if (cancelSearch) {
-            TB.ui.textFeedback('Search canceled', TB.ui.FEEDBACK_NEUTRAL);
+            TBui.textFeedback('Search canceled', TBui.FEEDBACK_NEUTRAL);
             return callback(hits);
         }
         const inputURL = `/user/${user}/${type}.json`;
@@ -400,10 +401,10 @@ self.init = function () {
         }).then(data => {
             // Also cancel search here as we really don't need to go over these results.
             if (cancelSearch) {
-                TB.ui.textFeedback('Search canceled', TB.ui.FEEDBACK_NEUTRAL);
+                TBui.textFeedback('Search canceled', TBui.FEEDBACK_NEUTRAL);
                 return callback(hits);
             }
-            TB.ui.textFeedback(`Searching profile page ${pageCount} with ${data.data.children.length} items`, TB.ui.FEEDBACK_NEUTRAL);
+            TBui.textFeedback(`Searching profile page ${pageCount} with ${data.data.children.length} items`, TBui.FEEDBACK_NEUTRAL);
             TBStorage.purifyObject(data);
             data.data.children.forEach(value => {
                 let hit = false;
@@ -465,7 +466,7 @@ self.init = function () {
 
     // Initate user search
     $body.on('submit', '.tb-searchuser', function () {
-        TB.ui.longLoadSpinner(true);
+        TBui.longLoadSpinner(true);
         const $this = $(this);
         const $windowContent = $this.closest('.tb-window-content');
         const $siteTable = $windowContent.find('.tb-sitetable');
@@ -502,11 +503,11 @@ self.init = function () {
         $('.tb-cancel-profile-search').show();
         searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, 0, results => {
             $('.tb-cancel-profile-search').hide();
-            TB.ui.textFeedback('Search complete', TB.ui.FEEDBACK_POSITIVE);
+            TBui.textFeedback('Search complete', TBui.FEEDBACK_POSITIVE);
             if (results) {
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
             } else {
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
                 $siteTable.append('<div class="error">no results found</div>');
             }
 
@@ -519,7 +520,7 @@ self.init = function () {
 
     // Cancel search
     $body.on('click', '.tb-cancel-profile-search', () => {
-        TB.ui.textFeedback('Canceling search', TB.ui.FEEDBACK_NEUTRAL);
+        TBui.textFeedback('Canceling search', TBui.FEEDBACK_NEUTRAL);
         cancelSearch = true;
     });
 
@@ -598,12 +599,12 @@ self.init = function () {
         const content = options.content || '';
         const search = options.search || false;
         const searchSort = options.searchSort || false;
-        TB.ui.longLoadSpinner(true);
+        TBui.longLoadSpinner(true);
 
         let $overlay = $body.find('.tb-profile-overlay');
 
         if (!$overlay.length) {
-            $overlay = TB.ui.overlay(
+            $overlay = TBui.overlay(
                 `Toolbox profile for /u/${user}`,
                 [
                     {
@@ -665,7 +666,7 @@ self.init = function () {
         });
 
         if ($siteTable.hasClass('tb-sitetable-processed') && !renew && !after) {
-            TB.ui.longLoadSpinner(false);
+            TBui.longLoadSpinner(false);
             return;
         }
         // Prevent some issues with people selecting a new sort method while toolbox is still busy.
@@ -717,7 +718,7 @@ self.init = function () {
             $searchSort.prop('checked', searchSort);
 
             // Stop spinner to rpevent from duplicating.
-            TB.ui.longLoadSpinner(false);
+            TBui.longLoadSpinner(false);
 
             // Show options and submit the search query.
             $options.show();
@@ -736,7 +737,7 @@ self.init = function () {
                     after = data.data.after;
                 }
                 addToSiteTable(data.data.children, $siteTable, after, () => {
-                    TB.ui.longLoadSpinner(false);
+                    TBui.longLoadSpinner(false);
                     $options.show();
                 });
             }).catch(error => {
@@ -745,7 +746,7 @@ self.init = function () {
                         <h1>No activity found</h1>
                         <p>Reddit doesn't seem to have anything for this account. Try checking your subreddit's moderation log to find posts and comments from them.</p>
                     `);
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
             });
         }
     }
@@ -833,7 +834,7 @@ self.init = function () {
     });
 
     if (profileButtonEnabled) {
-        TB.listener.on('author', e => {
+        TBListener.on('author', e => {
             const $target = $(e.target);
 
             if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {
@@ -854,7 +855,7 @@ self.init = function () {
             }
         });
 
-        TB.listener.on('userHovercard', e => {
+        TBListener.on('userHovercard', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
@@ -900,7 +901,7 @@ self.init = function () {
 
                 // Finally we simply return if we have no username to work with.
             } else {
-                TB.ui.textFeedback('No user present in parameters and not on profile page.', TBui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback('No user present in parameters and not on profile page.', TBui.FEEDBACK_NEGATIVE);
                 return;
             }
 

@@ -3,6 +3,8 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBui from '../tbui.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('New Mod Mail Pro');
 self.shortname = 'NewModMail';
@@ -193,14 +195,14 @@ self.init = function () {
                 const [, modmailId, lastMessageId] = $lastReply.find('.m-link').attr('href').match(/\/mail\/.*?\/(.*?)\/(.*?)$/i);
 
                 // Show a spinner while we load stuff.
-                TB.ui.longLoadSpinner(true);
+                TBui.longLoadSpinner(true);
 
                 // Find out the last comment as of right now.
                 const {conversation, messages, modActions} = await TBApi.apiOauthGET(`/api/mod/conversations/${modmailId}`)
                     .then(response => response.json());
 
                 // Evaluate reddit response.
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
 
                 // Find new actions that we didn't have local.
                 const localLastMessageIndex = conversation.objIds.findIndex(obj => obj.id === lastMessageId);
@@ -261,7 +263,7 @@ self.init = function () {
 
                     content += '</div>';
 
-                    const $contextPopup = TB.ui.popup({
+                    const $contextPopup = TBui.popup({
                         title: 'New Activity',
                         tabs: [
                             {
@@ -420,7 +422,7 @@ self.init = function () {
                 conversationCached = false;
             });
 
-            TB.listener.on('author', event => {
+            TBListener.on('author', event => {
                 if (event.detail.type !== 'TBmodmailCommentAuthor') {
                     return;
                 }

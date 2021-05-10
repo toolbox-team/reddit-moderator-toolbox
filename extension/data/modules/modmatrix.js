@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBApi from '../tbapi.js';
 import * as TBCore from '../tbcore.js';
+import * as TBui from '../tbui.js';
 
 const self = new Module('Mod Log Matrix');
 self.shortname = 'ModMatrix'; // backwards compatibility
@@ -24,7 +25,7 @@ self.subredditModerators = null;
 self.subredditActions = null;
 self.total = 0;
 
-// These need moved into TB.ui.
+// These need moved into TBui.
 self.downSortingIcon = 'iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQklEQVQoU2NkoAAwUqCXYVQziaGHLcD+4zEDRT2u0MZmAIZafFGFbABWdYTiGWQATjWENOMNQoo1M5EYQ3DlFNkMAOsiBBL3uxzDAAAAAElFTkSuQmCC';
 self.upSortingIcon = 'iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQ0lEQVQoU2NkoAAwUqCXAaSZiVwDKLaZXIvBzsYH/gMlcarBpxmkEQawqsOlGVkjTgOwacamEasBhPyMN0BGNZOY1gDYfgQSUTVBXwAAAABJRU5ErkJggg==';
 
@@ -356,7 +357,7 @@ self.submitForm = function (form) {
 
     self.maxDate = toUTC.getTime();
     self.minDate = fromUTC.getTime();
-    TB.ui.longLoadSpinner(true);
+    TBui.longLoadSpinner(true);
     this.getRecursiveActions(null, null);
 };
 
@@ -379,7 +380,7 @@ self.getRecursiveActions = function (data, hasMoreData) {
         self.getActions(self.getRecursiveActions);
     } else {
         self.refreshTable();
-        TB.ui.longLoadSpinner(false);
+        TBui.longLoadSpinner(false);
     }
 };
 
@@ -740,7 +741,7 @@ self.init = function () {
     $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of comments</a></div>');
 
     function getComments (modlogUrl) {
-        TB.ui.longLoadSpinner(true);
+        TBui.longLoadSpinner(true);
 
         TBApi.getJSON(modlogUrl, {
             raw_json: 1,
@@ -770,7 +771,7 @@ ${renderedMarkdown}
                     $listingItem.append(comment);
                 }
             });
-            TB.ui.longLoadSpinner(false);
+            TBui.longLoadSpinner(false);
         });
     }
 

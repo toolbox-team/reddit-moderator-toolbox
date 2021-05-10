@@ -1,4 +1,5 @@
 import {Module} from '../tbmodule.js';
+import * as TBui from '../tbui.js';
 
 const self = new Module('Syntax Highlighter');
 self.shortname = 'Syntax';
@@ -159,7 +160,7 @@ self.init = function () {
 
         // In order to make save buttons work we need to hijack  and replace them.
         const tbSyntaxButtons = `<div id="tb-syntax-buttons">
-                ${TB.ui.actionButton('save', 'tb-syntax-button-save')} - ${TB.ui.actionButton('preview', 'tb-syntax-button-preview')}
+                ${TBui.actionButton('save', 'tb-syntax-button-save')} - ${TBui.actionButton('preview', 'tb-syntax-button-preview')}
             </div>`;
 
         $body.find('.sheets .buttons').before(tbSyntaxButtons);
@@ -259,7 +260,7 @@ self.init = function () {
             });
 
             // In order to make save button work we need to hijack and replace it.
-            $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
+            $('#wiki_save_button').after(TBui.actionButton('save page', 'tb-syntax-button-save-wiki'));
 
             // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
             $body.delegate('.tb-syntax-button-save-wiki', 'click', () => {

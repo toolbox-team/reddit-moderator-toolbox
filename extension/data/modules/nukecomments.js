@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('Comment Nuke');
 self.shortname = 'CommentNuke';
@@ -54,10 +55,10 @@ self.init = function () {
     $body.on('click', '.tb-nuke-button', function (event) {
         self.log('nuke button clicked.');
         if (nukeOpen) {
-            TB.ui.textFeedback('Nuke popup is already open.', TBui.FEEDBACK_NEGATIVE);
+            TBui.textFeedback('Nuke popup is already open.', TBui.FEEDBACK_NEGATIVE);
             return;
         }
-        TB.ui.longLoadSpinner(true);
+        TBui.longLoadSpinner(true);
 
         nukeOpen = true;
         removalChain = [];
@@ -78,7 +79,7 @@ self.init = function () {
             </div>`);
 
         // Pop-up
-        const $popup = TB.ui.popup({
+        const $popup = TBui.popup({
             title: 'Nuke comment chain',
             tabs: [
                 {
@@ -102,7 +103,7 @@ self.init = function () {
         TBApi.getJSON(fetchURL, {raw_json: 1}).then(data => {
             TBStorage.purifyObject(data);
             parseComments(data[1].data.children[0], postID, subreddit).then(() => {
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
                 $popup.find('.tb-nuke-feedback').text('Finished analyzing comments.');
 
                 const removalChainLength = removalChain.length;
@@ -123,7 +124,7 @@ self.init = function () {
 
         $popup.on('click', '.tb-execute-nuke, .tb-retry-nuke', function () {
             removalRunning = true;
-            TB.ui.longLoadSpinner(true);
+            TBui.longLoadSpinner(true);
             const $this = $(this);
             $this.hide();
             let commentArray;
@@ -151,7 +152,7 @@ self.init = function () {
             let removalCount = 0;
             TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
                 removalCount++;
-                TB.ui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
+                TBui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TBui.FEEDBACK_NEUTRAL);
                 if (executionType === 'remove') {
                     TBApi.removeThing(`t1_${comment}`).catch(() => {
                         missedComments.push(comment);
@@ -163,7 +164,7 @@ self.init = function () {
                 }
             }, () => {
                 removalRunning = false;
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
                 $nukeFeedback.text(`Done ${executionType === 'remove' ? 'removing' : 'locking'} comments.`);
                 const missedLength = missedComments.length;
                 if (missedLength) {
@@ -181,7 +182,7 @@ self.init = function () {
         $popup.on('click', '.close', event => {
             event.stopPropagation();
             if (removalRunning) {
-                TB.ui.textFeedback('Comment chain nuke in progress, cannot close popup.', TBui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback('Comment chain nuke in progress, cannot close popup.', TBui.FEEDBACK_NEGATIVE);
             } else {
                 $popup.remove();
                 nukeOpen = false;
@@ -248,7 +249,7 @@ self.init = function () {
     }
 
     // Add nuke buttons where needed
-    TB.listener.on('comment', e => {
+    TBListener.on('comment', e => {
         const pageType = TBCore.pageDetails.pageType;
         const $target = $(e.target);
         const subreddit = e.detail.data.subreddit.name;

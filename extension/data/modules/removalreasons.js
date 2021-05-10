@@ -2,6 +2,8 @@ import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBStorage from '../tbstorage.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('Removal Reasons');
 self.shortname = 'RReasons';
@@ -120,14 +122,14 @@ self.init = function () {
 
     // UI components
     // UI event handling
-    TB.listener.on('post', e => {
+    TBListener.on('post', e => {
         if (e.detail.data.isRemoved && TBCore.pageDetails.pageType !== 'queueListing') {
             const $target = $(e.target);
             $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
         }
     });
     if (commentReasons) {
-        TB.listener.on('comment', e => {
+        TBListener.on('comment', e => {
             if (e.detail.data.isRemoved && TBCore.pageDetails.pageType !== 'queueListing') {
                 const $target = $(e.target);
                 $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
@@ -502,7 +504,7 @@ self.init = function () {
                 // Pre-fill reason input elements which have IDs.
                 popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
                     this.id = `reason-input-${data.subreddit}-${this.id}`;
-                    this.value = await TB.storage.getCache('RReasons', this.id, this.value);
+                    this.value = await TBStorage.getCache('RReasons', this.id, this.value);
                 });
             }
 
@@ -887,7 +889,7 @@ self.init = function () {
 
     // Reason textarea/input/select changed
     $body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
-        TB.storage.setCache('RReasons', this.id, this.selectedIndex || this.value);
+        TBStorage.setCache('RReasons', this.id, this.selectedIndex || this.value);
     });
 };
 

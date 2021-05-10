@@ -310,7 +310,7 @@ self.init = function () {
 
         const title = dropdown.find('option:selected').text();
         self.log(title);
-        const $macroPopup = TB.ui.popup({
+        const $macroPopup = TBui.popup({
             title: `Mod Macro: ${title}`,
             tabs: [
                 {
@@ -352,7 +352,7 @@ self.init = function () {
                 // We split of new modmail from the rest of reddit because... well easier.
                 if (TBCore.isNewModmail) {
                     // Since we are doing things on the page that need to finish we probably should make that clear.
-                    TB.ui.longLoadSpinner(true);
+                    TBui.longLoadSpinner(true);
 
                     if ($('.ThreadViewer  .icon-mute').closest('.InfoBar__control').hasClass('m-on')) {
                         TBui.textFeedback('Reply will not be posted because the user is muted.', TBui.FEEDBACK_NEUTRAL);
@@ -395,11 +395,11 @@ self.init = function () {
                         $currentMacroPopup.remove();
                         $selectElement.prop('disabled', false);
                         $selectElement.val(MACROS);
-                        TB.ui.longLoadSpinner(false);
+                        TBui.longLoadSpinner(false);
                     }, 1500);
                 } else {
                     TBApi.postComment(info.id, editedcomment).then(response => {
-                        TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                        TBui.textFeedback('Reply posted', TBui.FEEDBACK_POSITIVE);
                         $currentMacroPopup.remove();
                         $selectElement.prop('disabled', false);
                         if (topLevel) {
@@ -412,21 +412,21 @@ self.init = function () {
 
                         if (lockreply) {
                             TBApi.lock(commentId).catch(() => {
-                                TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
+                                TBui.textFeedback('Failed to lock reply', TBui.FEEDBACK_NEGATIVE);
                             });
                         }
                         if (distinguish && !TBCore.isModmail) {
                             // Distinguish the new reply
                             TBApi.distinguishThing(commentId, sticky && topLevel).then(result => {
                                 if (!result.success) {
-                                    TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                    TBui.textFeedback('Failed to distinguish reply', TBui.FEEDBACK_NEGATIVE);
                                 }
                             }).catch(() => {
-                                TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                TBui.textFeedback('Failed to distinguish reply', TBui.FEEDBACK_NEGATIVE);
                             });
                         }
                     }).catch(() => {
-                        TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
+                        TBui.textFeedback('Failed to post reply', TBui.FEEDBACK_NEGATIVE);
                     });
 
                     if (!TBCore.isModmail && !TBCore.isNewModmail) {

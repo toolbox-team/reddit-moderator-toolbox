@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('Comments');
 self.shortname = 'Comments'; // historical precedent for settings
@@ -275,7 +276,7 @@ self.init = function () {
     if (self.setting('highlighted').length) {
         const highlighted = self.setting('highlighted');
 
-        TB.listener.on('comment', e => {
+        TBListener.on('comment', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             TBCore.getModSubs().then(() => {
@@ -364,7 +365,7 @@ self.init = function () {
             <div id="tb-sitetable"></div>`);
 
         // add the new comment list to the page.
-        const $flatViewOverlay = TB.ui.overlay(
+        const $flatViewOverlay = TBui.overlay(
             'Flatview',
             [
                 {
@@ -411,11 +412,11 @@ self.init = function () {
             });
         });
 
-        TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+        TBui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
         // construct the url from which we grab the comments json.
         const jsonurl = `${location.pathname}.json`;
-        TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
+        TBui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
         // Lets get the comments.
         const data = await TBApi.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
         TBStorage.purifyObject(data);
@@ -436,7 +437,7 @@ self.init = function () {
         TBCore.forEachChunkedDynamic(idListing, value => {
             count++;
             const msg = `Building comment ${count}/${idListing.length}`;
-            TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
+            TBui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
             const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
             $comment.find('time.timeago').timeago();
             $htmlCommentView.append($comment);
@@ -444,7 +445,7 @@ self.init = function () {
             $flatSearchCount.text(count);
             setTimeout(() => {
                 TBui.tbRedditEvent($htmlCommentView);
-                TB.ui.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
                 $body.css('overflow', 'hidden');
                 $flatViewOverlay.show();
             }, 1000);
@@ -453,7 +454,7 @@ self.init = function () {
     if (openContextInPopup) {
         // Add context button to the queue in old reddit
         if (TBCore.isOldReddit && (TBCore.isModpage || TBCore.isUserPage || TBCore.isSubCommentsPage)) {
-            TB.listener.on('comment', e => {
+            TBListener.on('comment', e => {
                 const $target = $(e.target);
                 const data = e.detail.data;
                 const commentName = data.id;
@@ -518,7 +519,7 @@ self.init = function () {
                 const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                 // Build the context popup and once that is done append it to the body.
-                TB.ui.popup({
+                TBui.popup({
                     title: contextTitle,
                     tabs: [
                         {

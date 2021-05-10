@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('History Button');
 
@@ -39,7 +40,7 @@ self.register_setting('commentCount', {
 
 self.register_setting('onlyshowInhover', {
     type: 'boolean',
-    default: TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
     hidden: true,
 });
 
@@ -67,7 +68,7 @@ self.runJsAPI = function () {
     self.log('run');
 
     const onlyshowInhover = self.setting('onlyshowInhover');
-    TB.listener.on('author', e => {
+    TBListener.on('author', e => {
         const $target = $(e.target);
         // Skip adding the button next to the username if:
         // - the onlyShowInHover preference is set,
@@ -86,7 +87,7 @@ self.runJsAPI = function () {
         self.attachHistoryButton($target, author, subreddit);
     });
 
-    TB.listener.on('userHovercard', e => {
+    TBListener.on('userHovercard', e => {
         const $target = $(e.target),
               author = e.detail.data.user.username,
               subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
@@ -238,7 +239,7 @@ self.init = function () {
                     $appendTo = $('body');
                 }
 
-                const $popup = TB.ui.popup({
+                const $popup = TBui.popup({
                     title: 'History Button',
                     tabs: [
                         {
@@ -383,7 +384,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
               },
           };
 
-    TB.ui.longLoadNonPersistent(true);
+    TBui.longLoadNonPersistent(true);
 
     TBApi.getJSON(`/user/${author}/submitted.json`, {
         after,
@@ -392,7 +393,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
     }).catch(() => {
         self.log('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
-        TB.ui.longLoadNonPersistent(false);
+        TBui.longLoadNonPersistent(false);
     }).then(d => {
         if (!d) {
             return;
@@ -413,7 +414,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
 
             user.gettingUserData = false;
 
-            TB.ui.longLoadNonPersistent(false);
+            TBui.longLoadNonPersistent(false);
             return;
         }
 
@@ -431,7 +432,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
             $submissionCount.html(TBStorage.purify(user.counters.submissions));
         }
 
-        TB.ui.longLoadNonPersistent(false);
+        TBui.longLoadNonPersistent(false);
         // For every submission, incremenet the count for the subreddit and domain by one.
         d.data.children.forEach(value => {
             const data = value.data;
@@ -689,7 +690,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
 };
 
 self.populateCommentHistory = function (after, author, thisSubreddit) {
-    TB.ui.longLoadNonPersistent(true);
+    TBui.longLoadNonPersistent(true);
 
     const user = self.fetched[author],
           $contentBox = user.popup,
@@ -709,7 +710,7 @@ self.populateCommentHistory = function (after, author, thisSubreddit) {
         limit: 100,
     }).catch(() => {
         $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
-        TB.ui.longLoadNonPersistent(false);
+        TBui.longLoadNonPersistent(false);
     }).then(d => {
         if (!d) {
             return;
@@ -764,7 +765,7 @@ self.populateCommentHistory = function (after, author, thisSubreddit) {
         $commentCount.html(TBStorage.purify(user.counters.comments));
         $commentCountOp.html(TBStorage.purify(`${user.counters.commentsOP} (${percentageOP}%)`));
 
-        TB.ui.longLoadNonPersistent(false);
+        TBui.longLoadNonPersistent(false);
     });
 };
 

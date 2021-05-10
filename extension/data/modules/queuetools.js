@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBListener from '../tblistener.js';
 
 const self = new Module('Queue Tools');
 self.shortname = 'QueueTools';
@@ -402,7 +403,7 @@ self.queuetoolsOld = function () {
                     <p><label><input type="checkbox" class="choice" name="actioned" /> [ actioned ]</label></p>
                 </div>`;
 
-            TB.ui.popup({
+            TBui.popup({
                 title: 'Select items',
                 tabs: [
                     {
@@ -836,7 +837,7 @@ self.queuetoolsOld = function () {
 
         // sort sidebars
         if (TBCore.isModFakereddit) {
-            $('.sidecontentbox:has(.subscription-box) > .title').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${TB.ui.iconSort}" />sort by items</a>`);
+            $('.sidecontentbox:has(.subscription-box) > .title').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${TBui.iconSort}" />sort by items</a>`);
         }
 
         $body.on('click', '.tb-sort-subs', () => {
@@ -865,18 +866,18 @@ self.queuetoolsOld = function () {
                 // delay = 0,
                   modSubs = [];
 
-            TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
+            TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TBui.FEEDBACK_NEUTRAL);
 
             TBCore.forEachChunked(
                 $('.subscription-box a.title'), 20, 100, elem => {
                     const $elem = $(elem),
                           sr = $elem.text();
 
-                    TB.storage.getCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
+                    TBStorage.getCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
                         const data = JSON.parse(cacheData);
 
                         modSubs.push(sr);
-                        TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
+                        TBui.textFeedback(`Getting items for: ${sr}`, TBui.FEEDBACK_POSITIVE, null, TBui.DISPLAY_BOTTOM);
 
                         // Update count and re-cache data if more than an hour old.
                         $elem.parent().append(`<a href="${TBCore.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
@@ -889,7 +890,7 @@ self.queuetoolsOld = function () {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);
-                                TB.storage.setCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
+                                TBStorage.setCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
                                 $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
                             });
                         }
@@ -897,7 +898,7 @@ self.queuetoolsOld = function () {
                 },
                 () => {
                     window.setTimeout(sortSubreddits, 2000); // wait for final callbacks
-                    TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
+                    TBui.longLoadNonPersistent(false, 'Sorting sidebar...', TBui.FEEDBACK_NEUTRAL);
                     $sortButton.html('sort by items');
                     $sortButton.css({'padding-left': '', 'padding-right': ''});
                 },
@@ -1064,7 +1065,7 @@ self.queuetoolsOld = function () {
 
     // Regex is used in multiple functions
     const regexMatchFinder = /\[(.*?)\]/g;
-    const highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
+    const highlightEnabled = TBStorage.getSetting('Comments', 'highlighted', []);
     function getAutomodActionReason (sub) {
         self.log(sub);
         TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {
@@ -1397,7 +1398,7 @@ self.init = function () {
     }
     // Show history of actions near posts.
     if (showActionReason) {
-        TB.listener.on('post', e => {
+        TBListener.on('post', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const id = e.detail.data.id;
@@ -1410,7 +1411,7 @@ self.init = function () {
             }
         });
 
-        TB.listener.on('comment', e => {
+        TBListener.on('comment', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const id = e.detail.data.id;

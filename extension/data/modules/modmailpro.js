@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBui from '../tbui.js';
 
 const self = new Module('Mod Mail Pro');
 self.shortname = 'ModMail';
@@ -57,7 +58,7 @@ self.register_setting('hideInviteSpam', {
 self.register_setting('autoLoad', {
     type: 'boolean',
     default: true,
-    hidden: !TB.storage.getSetting('Notifier', 'enabled', true),
+    hidden: !TBStorage.getSetting('Notifier', 'enabled', true),
     title: 'Automatically load new mod mail when received.',
 });
 
@@ -266,7 +267,7 @@ self.modmailpro = function () {
             $('.sitetable  .md a').attr('target', '_blank');
         }
 
-        TB.ui.longLoadNonPersistent(true);
+        TBui.longLoadNonPersistent(true);
 
         // Add support for detecting NER, realtime and LMC threads.
         addNewThreadSupport();
@@ -350,7 +351,7 @@ self.modmailpro = function () {
                 updateView();
             }
 
-            TB.ui.longLoadNonPersistent(false);
+            TBui.longLoadNonPersistent(false);
 
             // I can't actually imagine this happening.
             if ($('.message-parent:not(.mmp-processed)').length > 0) {
@@ -693,7 +694,7 @@ self.modmailpro = function () {
         // Round time
         secs = Math.round(secs * 100) / 100;
 
-        TB.ui.textFeedback(`Mod mail loaded in: ${secs} seconds`, TB.ui.FEEDBACK_POSITIVE, 2000, TB.ui.DISPLAY_BOTTOM);
+        TBui.textFeedback(`Mod mail loaded in: ${secs} seconds`, TBui.FEEDBACK_POSITIVE, 2000, TBui.DISPLAY_BOTTOM);
 
         // Profiling results
         self.endProfile('initialize');
@@ -945,7 +946,7 @@ self.autoLoad = function () {
     }
 
     // autoload depends on notifier
-    if (!TB.storage.getSetting('Notifier', 'enabled', true)) {
+    if (!TBStorage.getSetting('Notifier', 'enabled', true)) {
         return;
     }
 
@@ -971,9 +972,9 @@ self.autoLoad = function () {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (self.setting('autoLoad') && TB.storage.getSetting('Notifier', 'enabled', true)) {
+    if (self.setting('autoLoad') && TBStorage.getSetting('Notifier', 'enabled', true)) {
         setInterval(() => {
-            const count = TB.storage.getSetting('Notifier', 'modmailCount', 0);
+            const count = TBStorage.getSetting('Notifier', 'modmailCount', 0);
             if (count > 0) {
                 getNewThings(count + 2);
             }
@@ -983,8 +984,8 @@ self.autoLoad = function () {
     // Add new things
     function getNewThings (limit) {
         $(refreshLink).css(selectedCSS);
-        TB.storage.setSetting('Notifier', 'lastSeenModmail', new Date().getTime());
-        TB.storage.setSetting('Notifier', 'modmailCount', 0);
+        TBStorage.setSetting('Notifier', 'lastSeenModmail', new Date().getTime());
+        TBStorage.setSetting('Notifier', 'modmailCount', 0);
 
         self.log(`real time a gogo: ${limit}`);
         TBCore.addToSiteTable(updateURL + String(limit), resp => {

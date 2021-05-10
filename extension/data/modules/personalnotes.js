@@ -50,7 +50,7 @@ self.init = function () {
 
     // Here we create the popup containing all relevant information
     function createPersonalNotesPopup (notesPopupContent) {
-        TB.ui.popup({
+        TBui.popup({
             title: 'Personal notes',
             tabs: [
                 {
@@ -77,13 +77,13 @@ self.init = function () {
         TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false).then(resp => {
             if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
                 $editArea.val('error getting wiki data.');
-                TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback('error getting wiki data.', TBui.FEEDBACK_NEGATIVE);
                 return;
             }
 
             if (resp === TBCore.NO_WIKI_PAGE) {
                 $editArea.val('Not sure how you did this, but this is not an existing page.');
-                TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback('error getting wiki data.', TBui.FEEDBACK_NEGATIVE);
                 return;
             }
 
@@ -100,10 +100,10 @@ self.init = function () {
 
     function saveNoteWiki (page, subreddit, data, reason, newnote) {
         self.log('posting to wiki');
-        TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
+        TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
         TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false).then(() => {
             self.log('clearing cache');
-            TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+            TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
 
             if (newnote) {
                 $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
@@ -119,7 +119,7 @@ self.init = function () {
             }
         }).catch(err => {
             self.log(err.responseText);
-            TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
+            TBui.textFeedback(err.responseText, TBui.FEEDBACK_NEGATIVE);
         });
     }
 
@@ -211,7 +211,7 @@ self.init = function () {
                             createPersonalNotesPopup(notesPopupContent);
                         })
                         .catch(() => {
-                            TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
+                            TBui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TBui.FEEDBACK_NEGATIVE);
                         });
                 }
             });
@@ -253,7 +253,7 @@ self.init = function () {
             }).then(() => {
                 $this.closest('li').remove();
             }).catch(() => {
-                TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback('Could not de-list the note, try again in a bit.', TBui.FEEDBACK_NEGATIVE);
             });
         }
     });
@@ -265,7 +265,7 @@ self.init = function () {
         newNotename = TBHelpers.title_to_url(newNotename);
 
         if (notesArray.includes(newNotename)) {
-            TB.ui.textFeedback('That already is a note.', TB.ui.FEEDBACK_NEGATIVE);
+            TBui.textFeedback('That already is a note.', TBui.FEEDBACK_NEGATIVE);
         } else {
             notesArray.push(newNotename);
             saveNoteWiki(newNotename, notewiki, 'New note', 'toolbox new personal note', true);

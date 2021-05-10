@@ -281,7 +281,7 @@ self.initRemoveConfirmation = function initRemoveConfirmation () {
 
         // Don't remove if removal reasons are enabled and the button isn't for spam
         if (!$body.hasClass('tb-removal-reasons')
-            || $body.hasClass('tb-removal-reasons') && !TB.modules.RReasons.setting('commentReasons')
+            || $body.hasClass('tb-removal-reasons') && !window.TB.modules.RReasons.setting('commentReasons')
             || $button.children().first().attr('value') === 'spammed'
         ) {
             if (yes) {

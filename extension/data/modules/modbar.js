@@ -466,7 +466,7 @@ self.init = function () {
             return;
         } // Don't show the window twice
         TBCore.getModSubs().then(() => {
-            TB.showSettings();
+            window.TB.showSettings();
         });
     });
 
@@ -518,7 +518,7 @@ self.init = function () {
             setTimeout(() => {
                 // prevent tbsetting URL hash from persisting on reload.
                 history.pushState('', document.title, window.location.pathname);
-                TB.showSettings();
+                window.TB.showSettings();
                 switchTab(module);
             }, 500);
         }

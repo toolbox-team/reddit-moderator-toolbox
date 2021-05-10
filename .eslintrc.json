@@ -9,7 +9,6 @@
         "es6": true
     },
     "globals": {
-        "TB": true,
         "CodeMirror": true,
         "redditapi": true,
         "browser": true,

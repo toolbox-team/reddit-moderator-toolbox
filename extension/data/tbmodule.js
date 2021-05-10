@@ -17,11 +17,11 @@ function tbmodule () {
 
         /** @deprecated */
         get moduleList () {
-            return Object.values(TB.modules).map(mod => mod.shortname);
+            return Object.values(window.TB.modules).map(mod => mod.shortname);
         },
 
         register_module (module) {
-            this.modules[module.shortname] = module;
+            window.TB.modules[module.shortname] = module;
         },
 
         init: function tbInit () {
@@ -31,13 +31,13 @@ function tbmodule () {
                 setTimeout(() => {
                     logger.debug('TBModule has TBStorage, loading modules');
                     // call every module's init() method on page load
-                    for (let i = 0; i < TB.moduleList.length; i++) {
-                        const module = TB.modules[TB.moduleList[i]];
+                    for (let i = 0; i < window.TB.moduleList.length; i++) {
+                        const module = window.TB.modules[window.TB.moduleList[i]];
 
                         // Don't do anything with beta modules unless beta mode is enabled
                         // Need TB.setting() call for non-module settings
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
-                        if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
+                        if (!TBStorage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
                         // skip this module entirely
                             logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                             continue;
@@ -47,7 +47,7 @@ function tbmodule () {
                         // Need TB.setting() call for non-module settings
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
 
-                        if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
+                        if (!TBStorage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
                         // skip this module entirely
                             logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
                             continue;
@@ -66,14 +66,14 @@ function tbmodule () {
                     }
 
                     // Start the event listener once everything else is initialized
-                    TB.listener.start();
+                    TBListener.start();
                 }, 50);
             }
         },
 
         showSettings () {
-            const self = this,
-                  $body = $('body');
+            const $body = $('body');
+            this;
 
             //
             // preload some generic variables
@@ -83,13 +83,13 @@ function tbmodule () {
                   devMode = window.TBCore.devMode,
                   advancedMode = TBStorage.getSetting('Utils', 'advancedMode', false),
 
-                  settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
-                  shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
-                  longLength = TB.storage.getSetting('Utils', 'longLength', 45),
+                  settingSub = TBStorage.getSetting('Utils', 'settingSub', ''),
+                  shortLength = TBStorage.getSetting('Utils', 'shortLength', 15),
+                  longLength = TBStorage.getSetting('Utils', 'longLength', 45),
 
                   // last export stuff
-                  lastExport = self.modules['Modbar'].setting('lastExport'),
-                  showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
+                  lastExport = window.TB.modules['Modbar'].setting('lastExport'),
+                  showExportReminder = window.TB.modules['Modbar'].setting('showExportReminder'),
                   lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport)),
                   lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
@@ -99,7 +99,7 @@ function tbmodule () {
                 lastExportState = 'sad';
 
                 if (showExportReminder && settingSub !== '' && lastExport !== 0) {
-                    TB.ui.textFeedback(`Last toolbox settings backup: ${lastExportLabel}`, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
+                    TBui.textFeedback(`Last toolbox settings backup: ${lastExportLabel}`, TBui.FEEDBACK_NEGATIVE, 3000, TBui.DISPLAY_BOTTOM);
                 }
             } else if (lastExportDays < 15) {
                 lastExportState = 'happy';
@@ -287,7 +287,7 @@ function tbmodule () {
             // This was a clever idea, but for now it's easier to inject them
             // settingsTabs.push.apply(settingsTabs, this.generateSettings());
 
-            const $settingsDialog = TB.ui.overlay(
+            const $settingsDialog = TBui.overlay(
                 // title
                 'toolbox Settings',
                 // tabs
@@ -341,20 +341,20 @@ function tbmodule () {
                     sub = TBHelpers.cleanSubredditName(sub);
 
                     // Save the sub, first.
-                    TB.storage.setSetting('Utils', 'settingSub', sub);
+                    TBStorage.setSetting('Utils', 'settingSub', sub);
                 }
 
-                TB.storage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
+                TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
+                TBStorage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
+                TBStorage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'), false);
+                TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
 
-                self.modules['Modbar'].setting('showExportReminder', $('#showExportReminder').prop('checked'));
+                window.TB.modules['Modbar'].setting('showExportReminder', $('#showExportReminder').prop('checked'));
 
                 // save cache settings.
-                TB.storage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
+                TBStorage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
 
-                TB.storage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
+                TBStorage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
 
                 if ($('#clearcache').prop('checked')) {
                     TBCore.clearCache();
@@ -366,9 +366,9 @@ function tbmodule () {
                     $('body').css('overflow', 'auto');
                 }
 
-                TB.storage.verifiedSettingsSave(succ => {
+                TBStorage.verifiedSettingsSave(succ => {
                     if (succ) {
-                        TB.ui.textFeedback('Settings saved and verified', TB.ui.FEEDBACK_POSITIVE);
+                        TBui.textFeedback('Settings saved and verified', TBui.FEEDBACK_POSITIVE);
                         setTimeout(() => {
                             // Only reload in dev mode if we asked to.
                             if (!devMode || reload) {
@@ -376,7 +376,7 @@ function tbmodule () {
                             }
                         }, 1000);
                     } else {
-                        TB.ui.textFeedback('Save could not be verified', TB.ui.FEEDBACK_NEGATIVE);
+                        TBui.textFeedback('Save could not be verified', TBui.FEEDBACK_NEGATIVE);
                     }
                 });
             });
@@ -384,7 +384,7 @@ function tbmodule () {
             $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', e => {
                 let sub = $('input[name=settingssub]').val();
                 if (!sub) {
-                    TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
+                    TBui.textFeedback('You have not set a subreddit to backup/restore settings', TBui.FEEDBACK_NEGATIVE);
 
                     logger.debug('no setting sub');
                     return;
@@ -394,27 +394,27 @@ function tbmodule () {
                 sub = TBHelpers.cleanSubredditName(sub);
 
                 // Save the sub, first.
-                TB.storage.setSetting('Utils', 'settingSub', sub);
+                TBStorage.setSetting('Utils', 'settingSub', sub);
 
                 if ($(e.target).hasClass('tb-settings-import')) {
                     TBCore.importSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                        window.TB.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                         TBCore.clearCache();
-                        TB.storage.verifiedSettingsSave(succ => {
+                        TBStorage.verifiedSettingsSave(succ => {
                             if (succ) {
-                                TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
+                                TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
                                 setTimeout(() => {
                                     window.location.reload();
                                 }, 1000);
                             } else {
-                                TB.ui.textFeedback('Imported settings could not be verified', TB.ui.FEEDBACK_NEGATIVE);
+                                TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
                             }
                         });
                     });
                 } else {
-                    TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
+                    TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
                     TBCore.exportSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                        window.TB.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                         TBCore.clearCache();
                         window.location.reload();
                     });
@@ -444,12 +444,12 @@ function tbmodule () {
 
                 const $editSettings = $('.tb-edit-settings');
 
-                TB.storage.getSettings().then(settings => {
+                TBStorage.getSettings().then(settings => {
                     $editSettings.val(JSON.stringify(settings, null, 2));
                 });
 
                 $viewSettings.on('click', '.anonymize-settings', async () => {
-                    const anonymizedSettings = await TB.storage.getAnonymizedSettings();
+                    const anonymizedSettings = await TBStorage.getAnonymizedSettings();
                     $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
                 });
             });
@@ -464,12 +464,12 @@ function tbmodule () {
             $body.css('overflow', 'hidden');
 
             // Sort the module list alphabetically
-            this.moduleList.sort((a, b) => a.localeCompare(b)).forEach(moduleName => {
-                const module = this.modules[moduleName];
+            window.TB.moduleList.sort((a, b) => a.localeCompare(b)).forEach(moduleName => {
+                const module = window.TB.modules[moduleName];
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {
-                if (!TB.storage.getSetting('Utils', 'betaMode', false)
+                if (!TBStorage.getSetting('Utils', 'betaMode', false)
                     && module.config['betamode']
                 ) {
                     // skip this module entirely
@@ -478,7 +478,7 @@ function tbmodule () {
                 // Don't do anything with dev modules unless debug mode is enabled
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {
-                if (!TB.storage.getSetting('Utils', 'debugMode', false)
+                if (!TBStorage.getSetting('Utils', 'debugMode', false)
                     && module.config['devmode']
                 ) {
                     // skip this module entirely
@@ -561,7 +561,7 @@ function tbmodule () {
 
                     // hide beta stuff unless beta mode enabled
                     if (Object.prototype.hasOwnProperty.call(options, 'betamode')
-                        && !TB.storage.getSetting('Utils', 'betaMode', false)
+                        && !TBStorage.getSetting('Utils', 'betaMode', false)
                         && options['betamode']
                     ) {
                         continue;
@@ -569,7 +569,7 @@ function tbmodule () {
 
                     // hide dev stuff unless debug mode enabled
                     if (Object.prototype.hasOwnProperty.call(options, 'devmode')
-                        && !TB.storage.getSetting('Utils', 'debugMode', false)
+                        && !TBStorage.getSetting('Utils', 'debugMode', false)
                         && options['devmode']
                     ) {
                         continue;
@@ -606,7 +606,7 @@ function tbmodule () {
                         }
                         const event = options.event;
 
-                        $setting.append(TB.ui.actionButton(title, options.class));
+                        $setting.append(TBui.actionButton(title, options.class));
 
                         $body.on('click', `.${options.class}`, () => {
                             TBCore.sendEvent(event);
@@ -649,26 +649,26 @@ function tbmodule () {
                     case 'sublist':
                     {
                         $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.selectMultiple.apply(TB.ui, [window.TBCore.mySubs, module.setting(setting)]));
+                        $setting.append(TBui.selectMultiple.apply(TBui, [window.TBCore.mySubs, module.setting(setting)]));
                         break;
                     }
                     case 'map':
                     {
                         $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
+                        $setting.append(TBui.mapInput(options.labels, module.setting(setting)));
                         break;
                     }
                     case 'selector':
                     {
                         const v = module.setting(setting);
                         $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v === null || v === '' ? options.default : v]));
+                        $setting.append(TBui.selectSingular.apply(TBui, [options.values, v === undefined || v === null || v === '' ? options.default : v]));
                         break;
                     }
                     case 'syntaxTheme':
                     {
                         $setting.append(`${title}:<br/>`);
-                        $setting.append(TB.modules.Syntax.themeSelect);
+                        $setting.append(window.TB.modules.Syntax.themeSelect);
                         $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
                         $setting.append($(`
                     <textarea class="tb-input syntax-example" id="${module.shortname}_syntax_theme_css">
@@ -692,7 +692,7 @@ body {
                             // Syntax highlighter selection stuff
                             $body.addClass('mod-syntax');
                             let editorSettings;
-                            const enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
+                            const enableWordWrap = TBStorage.getSetting('Syntax', 'enableWordWrap', true);
                             $(`#${module.shortname}_syntax_theme_css`).each((index, elem) => {
                                 // Editor setup.
                                 editorSettings = CodeMirror.fromTextArea(elem, {
@@ -978,7 +978,7 @@ body {
 
     };
 
-    TB.Module = Module;
+    window.TB.Module = Module;
 }
 
 // Prototype for all toolbox modules
@@ -1012,7 +1012,7 @@ export function Module (name) {
         // are we setting or getting?
         if (typeof value !== 'undefined') {
             // setting
-            return TB.storage.setSetting(this.shortname, name, value, syncSetting);
+            return TBStorage.setSetting(this.shortname, name, value, syncSetting);
         } else {
             // getting
             // do we have a default?
@@ -1020,10 +1020,10 @@ export function Module (name) {
                 && Object.prototype.hasOwnProperty.call(this.settings[name], 'default')
             ) {
                 // we know what the default should be
-                return TB.storage.getSetting(this.shortname, name, this.settings[name]['default']);
+                return TBStorage.getSetting(this.shortname, name, this.settings[name]['default']);
             } else {
                 // getSetting defaults to null for default value, no need to pass it explicitly
-                return TB.storage.getSetting(this.shortname, name);
+                return TBStorage.getSetting(this.shortname, name);
             }
         }
     };

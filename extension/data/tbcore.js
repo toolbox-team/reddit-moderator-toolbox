@@ -28,7 +28,7 @@ export const notesMaxSchema = 6; // The non-default max version (to allow phase-
  */
 export function isConfigValidVersion (subreddit, config) {
     if (config.ver < configMinSchema || config.ver > configMaxSchema) {
-        TB.ui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TB.ui.FEEDBACK_NEGATIVE);
+        TBui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TBui.FEEDBACK_NEGATIVE);
         logger.error(`Failed config version check:
 \tsubreddit: ${subreddit}
 \tconfig.ver: ${config.ver}

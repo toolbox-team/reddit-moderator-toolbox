@@ -793,9 +793,7 @@ export function clearCache (calledFromBackground) {
     logger.log('TBCore.clearCache()');
 
     window.TBCore.noteCache = {};
-    window.TBCore.configCache = {};
     window.TBCore.rulesCache = {};
-    window.TBCore.noConfig = [];
     window.TBCore.noNotes = [];
     window.TBCore.noRules = [];
     window.TBCore.mySubs = [];
@@ -811,36 +809,36 @@ export function clearCache (calledFromBackground) {
     }
 }
 
-export function hasNoConfig (sub) {
-    return window.TBCore.noConfig.indexOf(sub) !== -1;
-}
-
-export function hasConfig (sub) {
-    return window.TBCore.configCache[sub] !== undefined;
-}
-
-export function getConfig (sub, callback) {
-    if (hasNoConfig(sub)) {
-        callback(false, sub);
-    } else if (hasConfig(sub)) {
-        callback(window.TBCore.configCache[sub], sub);
-    } else {
-        TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
-            if (!resp || resp === WIKI_PAGE_UNKNOWN) {
-                // Complete and utter failure
-                callback(false, sub);
-            } else if (resp === NO_WIKI_PAGE) {
-                // Subreddit not configured yet
-                updateCache('noConfig', sub, false);
-                callback(false, sub);
-            } else {
-                // It works!
-                TBStorage.purifyObject(resp);
-                updateCache('configCache', resp, sub);
-                callback(resp, sub);
-            }
-        });
+export async function getConfig (sub) {
+    // Check
+    const cachedSubsWithNoConfig = await TBStorage.getCache('Utils', 'noConfig', []);
+    if (cachedSubsWithNoConfig.includes(sub)) {
+        return undefined;
     }
+
+    const cachedConfigs = await TBStorage.getCache('Utils', 'configCache', {});
+    if (cachedConfigs[sub] !== undefined) {
+        return cachedConfigs[sub];
+    }
+
+    // Fetch config from wiki
+    const resp = await TBApi.readFromWiki(sub, 'toolbox', true);
+    if (!resp || resp === WIKI_PAGE_UNKNOWN) {
+        // Complete and utter failure
+        return undefined;
+    }
+    if (resp === NO_WIKI_PAGE) {
+        // Subreddit not configured yet, at least add it to the noConfig cache
+        cachedSubsWithNoConfig.push(sub);
+        TBStorage.setCache('Utils', 'noConfig', cachedSubsWithNoConfig);
+        return undefined;
+    }
+
+    // We have new config data from the wiki, update the config cache and return
+    TBStorage.purifyObject(resp);
+    cachedConfigs[sub] = resp;
+    TBStorage.setCache('Utils', 'configCache', cachedConfigs);
+    return resp;
 }
 
 // TODO: Move this function to tbmodule, the only place it's ever used
@@ -1428,10 +1426,8 @@ async function getToolboxDevs () {
 
     // Get other cached info
     // TODO: Remove these and replace their uses with direct cache calls
-    TBCore.configCache = await TBStorage.getCache('Utils', 'configCache', {});
     TBCore.noteCache = await TBStorage.getCache('Utils', 'notesCache', {});
     TBCore.rulesCache = await TBStorage.getCache('Utils', 'rulesCache', {});
-    TBCore.noConfig = await TBStorage.getCache('Utils', 'noConfig', []);
     TBCore.noNotes = await TBStorage.getCache('Utils', 'noNotes', []);
     TBCore.noRules = await TBStorage.getCache('Utils', 'noRules', []);
 
@@ -1539,12 +1535,10 @@ async function getToolboxDevs () {
             // Cache has timed out
             if (message.payload === 'short') {
                 TBCore.noteCache = {};
-                TBCore.noConfig = [];
                 TBCore.noNotes = [];
             }
 
             if (message.payload === 'long') {
-                TBCore.configCache = {};
                 TBCore.rulesCache = {};
                 TBCore.noRules = [];
                 TBCore.mySubs = [];

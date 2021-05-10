@@ -104,71 +104,19 @@ self.init = function () {
     //    commentReasons = self.setting('commentReasons');
 
     // Remote stuff retrieval
-    function getRemovalReasons (subreddit, callback) {
-        // Nothing to do if no toolbox config
-        if (window.TBCore.noConfig.indexOf(subreddit) !== -1) {
-            callback(false);
-            return;
+    async function getRemovalReasons (subreddit) {
+        // Get config for this sub and try to pull removal reasons from there
+        const config = await TBCore.getConfig(subreddit);
+        if (!config || !config.removalReasons) {
+            return false;
         }
 
-        self.log(`getting config: ${subreddit}`);
-        let reasons = '';
-
-        // See if we have the reasons in the cache.
-        if (window.TBCore.configCache[subreddit] !== undefined) {
-            reasons = window.TBCore.configCache[subreddit].removalReasons;
-
-            // If we need to get them from another sub, recurse.
-            if (reasons && reasons.getfrom) {
-                if (reasons.getfrom === subreddit) {
-                    self.log("Warning: 'get from' subreddit same as current subreddit. Don't do that!");
-                } else {
-                    getRemovalReasons(reasons.getfrom, callback);
-                    return;
-                }
-            }
+        // If we need to get them from another sub, recurse.
+        if (config.removalReasons.getfrom && config.removalReasons.getFrom !== subreddit) {
+            return getRemovalReasons(config.removalReasons.getfrom);
         }
 
-        // If we have removal reasons, send them back.
-        if (reasons) {
-            self.log('returning: cache');
-            callback(reasons);
-            return;
-        }
-
-        // OK, they are not cached.  Try the wiki.
-        TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
-            if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE || !resp.removalReasons) {
-                self.log('failed: wiki config');
-                callback(false);
-                return;
-            }
-
-            TBStorage.purifyObject(resp);
-
-            // We have a valid config, cache it.
-            TBCore.updateCache('configCache', resp, subreddit);
-
-            reasons = resp.removalReasons;
-
-            // Again, check if there is a fallback sub, and recurse.
-            if (reasons && reasons.getfrom) {
-                self.log('trying: get from, no cache');
-                getRemovalReasons(reasons.getfrom, callback); // this may not work.
-                return;
-            }
-
-            // Last try, or return false.
-            if (reasons) {
-                self.log('returning: no cache');
-                callback(reasons);
-                return;
-            }
-
-            self.log('failed: all');
-            TBCore.updateCache('noConfig', subreddit, false);
-            callback(false);
-        });
+        return config.removalReasons;
     }
 
     // UI components
@@ -226,7 +174,7 @@ self.init = function () {
             }
         }
 
-        TBCore.getApiThingInfo(thingID, thingSubreddit, false, info => {
+        TBCore.getApiThingInfo(thingID, thingSubreddit, false, async info => {
             // Get link/comment attributes
             const data = {
                 subreddit: info.subreddit,
@@ -267,98 +215,98 @@ self.init = function () {
             } else {
                 // Otherwise create the popup and open it
                 // Get removal reasons.
-                getRemovalReasons(data.subreddit, response => {
-                    // Removal reasons not enabled
-                    if (!response || response.reasons.length < 1) {
-                        notEnabled.push(data.subreddit);
+                let response = await getRemovalReasons(data.subreddit);
 
-                        // we're done, unless the user has always show set.
-                        if (!alwaysShow) {
-                            return;
-                        }
+                // Removal reasons not enabled
+                if (!response || response.reasons.length < 1) {
+                    notEnabled.push(data.subreddit);
 
-                        // Otherwise, setup a completely empty reason.
-                        self.log('Using custom reason');
-
-                        const customReasons = {
-                            pmsubject: '',
-                            logreason: '',
-                            header: '',
-                            footer: '',
-                            logsub: '',
-                            logtitle: '',
-                            bantitle: '',
-                            getfrom: '',
-                            reasons: [],
-                        };
-                        const reason = {
-                            text: self.setting('customRemovalReason'),
-                            flairText: '',
-                            flairCSS: '',
-                            title: '',
-                        };
-                        customReasons.reasons.push(reason);
-
-                        // Set response to our empty reason.
-                        response = customReasons;
-                    }
-
-                    // Get PM subject line
-                    data.subject = TBHelpers.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
-
-                    // Add additional data that is found in the wiki JSON.
-                    // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-                    data.logReason = TBHelpers.htmlEncode(response.logreason) || '';
-                    data.header = response.header ? TBHelpers.htmlEncode(unescape(response.header)) : '';
-                    data.footer = response.footer ? TBHelpers.htmlEncode(unescape(response.footer)) : '';
-                    data.logSub = TBHelpers.htmlEncode(response.logsub) || '';
-                    data.logTitle = TBHelpers.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
-                    data.banTitle = TBHelpers.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
-                    data.removalOption = response.removalOption;
-                    data.typeReply = response.typeReply;
-                    data.typeStickied = response.typeStickied;
-                    data.typeLockComment = response.typeLockComment;
-                    data.typeAsSub = response.typeAsSub;
-                    data.autoArchive = response.autoArchive;
-                    data.typeLockThread = response.typeLockThread;
-
-                    // Loop through the reasons... unescaping each.
-                    data.reasons = [];
-                    $(response.reasons).each(function () {
-                        data.reasons.push({
-                            text: unescape(this.text),
-                            title: TBHelpers.htmlEncode(this.title),
-                            // If it's undefined, it's an old RR - show for both comments and posts
-                            removePosts: this.removePosts === undefined ? undefined : !!this.removePosts,
-                            removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
-                            flairText: TBHelpers.htmlEncode(this.flairText),
-                            flairCSS: TBHelpers.htmlEncode(this.flairCSS),
-                            flairTemplateID: this.flairTemplateID === undefined ? '' : this.flairTemplateID,
-                        });
-                    });
-
-                    // Only show popup if there's removal reasons
-                    let removalReasonLength = 0;
-                    if (isComment) {
-                        // get all RR for comments that's True and undefined
-                        let commentRemovalReasons = data.reasons_comments;
-                        if (!commentReasons) {
-                            // user has disabled RR for comments (allow only True)
-                            commentRemovalReasons = commentRemovalReasons.filter(r => r.removeComments);
-                        }
-                        removalReasonLength = commentRemovalReasons.length;
-                    } else {
-                        removalReasonLength = data.reasons_posts.length;
-                    }
-
-                    if (!removalReasonLength) {
+                    // we're done, unless the user has always show set.
+                    if (!alwaysShow) {
                         return;
                     }
 
-                    // Open popup
-                    createPopup();
-                    openPopup();
+                    // Otherwise, setup a completely empty reason.
+                    self.log('Using custom reason');
+
+                    const customReasons = {
+                        pmsubject: '',
+                        logreason: '',
+                        header: '',
+                        footer: '',
+                        logsub: '',
+                        logtitle: '',
+                        bantitle: '',
+                        getfrom: '',
+                        reasons: [],
+                    };
+                    const reason = {
+                        text: self.setting('customRemovalReason'),
+                        flairText: '',
+                        flairCSS: '',
+                        title: '',
+                    };
+                    customReasons.reasons.push(reason);
+
+                    // Set response to our empty reason.
+                    response = customReasons;
+                }
+
+                // Get PM subject line
+                data.subject = TBHelpers.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
+
+                // Add additional data that is found in the wiki JSON.
+                // Any HTML needs to me unescaped, because we store it escaped in the wiki.
+                data.logReason = TBHelpers.htmlEncode(response.logreason) || '';
+                data.header = response.header ? TBHelpers.htmlEncode(unescape(response.header)) : '';
+                data.footer = response.footer ? TBHelpers.htmlEncode(unescape(response.footer)) : '';
+                data.logSub = TBHelpers.htmlEncode(response.logsub) || '';
+                data.logTitle = TBHelpers.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
+                data.banTitle = TBHelpers.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
+                data.removalOption = response.removalOption;
+                data.typeReply = response.typeReply;
+                data.typeStickied = response.typeStickied;
+                data.typeLockComment = response.typeLockComment;
+                data.typeAsSub = response.typeAsSub;
+                data.autoArchive = response.autoArchive;
+                data.typeLockThread = response.typeLockThread;
+
+                // Loop through the reasons... unescaping each.
+                data.reasons = [];
+                $(response.reasons).each(function () {
+                    data.reasons.push({
+                        text: unescape(this.text),
+                        title: TBHelpers.htmlEncode(this.title),
+                        // If it's undefined, it's an old RR - show for both comments and posts
+                        removePosts: this.removePosts === undefined ? undefined : !!this.removePosts,
+                        removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
+                        flairText: TBHelpers.htmlEncode(this.flairText),
+                        flairCSS: TBHelpers.htmlEncode(this.flairCSS),
+                        flairTemplateID: this.flairTemplateID === undefined ? '' : this.flairTemplateID,
+                    });
                 });
+
+                // Only show popup if there's removal reasons
+                let removalReasonLength = 0;
+                if (isComment) {
+                    // get all RR for comments that's True and undefined
+                    let commentRemovalReasons = data.reasons_comments;
+                    if (!commentReasons) {
+                        // user has disabled RR for comments (allow only True)
+                        commentRemovalReasons = commentRemovalReasons.filter(r => r.removeComments);
+                    }
+                    removalReasonLength = commentRemovalReasons.length;
+                } else {
+                    removalReasonLength = data.reasons_posts.length;
+                }
+
+                if (!removalReasonLength) {
+                    return;
+                }
+
+                // Open popup
+                createPopup();
+                openPopup();
             }
 
             function createPopup () {

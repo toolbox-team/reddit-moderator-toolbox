@@ -14,43 +14,15 @@ self.init = function () {
     const $body = $('body'),
           MACROS = 'TB-MACROS';
 
-    function getConfig (sub, callback) {
-        if (window.TBCore.noConfig.indexOf(sub) !== -1) {
-            self.log('window.TBCore.noConfig.indexOf(sub) != -1');
-            return callback(false);
+    async function getConfig (sub, callback) {
+        const config = await TBCore.getConfig(sub);
+
+        if (!config || !config.modMacros || config.modMacros.length < 1) {
+            callback(false);
+            return;
         }
 
-        // get our config.
-        if (window.TBCore.configCache[sub] !== undefined) {
-            return callback(checkConfig(window.TBCore.configCache[sub]), window.TBCore.configCache[sub].modMacros);
-        } else {
-            TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
-                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
-                    self.log('!resp || resp === TBCore.WIKI_PAGE_UNKNOWN');
-                    return callback(false);
-                }
-
-                if (resp === TBCore.NO_WIKI_PAGE) {
-                    self.log('resp === TBCore.NO_WIKI_PAGE');
-                    TBCore.updateCache('noConfig', sub, false);
-                    return callback(false);
-                }
-                TBStorage.purifyObject(resp);
-
-                // We likely have a good config, but maybe not domain tags.
-                TBCore.updateCache('configCache', resp, sub);
-                return callback(checkConfig(window.TBCore.configCache[sub]), window.TBCore.configCache[sub].modMacros);
-            });
-        }
-
-        function checkConfig (config) {
-            if (!config.modMacros || config.modMacros.length < 1) {
-                self.log('!config.modMacros || config.modMacros.length < 1');
-                return false;
-            }
-
-            return true;
-        }
+        callback(true, config.modMacros);
     }
 
     function populateSelect (selectClass, subreddit, config, type) {

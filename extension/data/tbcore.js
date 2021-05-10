@@ -771,8 +771,6 @@ export function forEachChunkedDynamic (array, process, options) {
 export function clearCache (calledFromBackground) {
     logger.log('TBCore.clearCache()');
 
-    window.TBCore.rulesCache = {};
-    window.TBCore.noRules = [];
     window.TBCore.mySubs = [];
     window.TBCore.mySubsData = [];
 
@@ -1401,11 +1399,6 @@ async function getToolboxDevs () {
     // Populate `TBCore.mySubs` and `TBCore.mySubsData`
     getModSubs();
 
-    // Get other cached info
-    // TODO: Remove these and replace their uses with direct cache calls
-    TBCore.rulesCache = await TBStorage.getCache('Utils', 'rulesCache', {});
-    TBCore.noRules = await TBStorage.getCache('Utils', 'noRules', []);
-
     // Update cache vars as needed.
     if (newLogin) {
         logger.log('Account changed');
@@ -1509,8 +1502,6 @@ async function getToolboxDevs () {
             logger.log('Timed cache update', message.payload);
             // Cache has timed out
             if (message.payload === 'long') {
-                TBCore.rulesCache = {};
-                TBCore.noRules = [];
                 TBCore.mySubs = [];
                 TBCore.mySubsData = [];
             }

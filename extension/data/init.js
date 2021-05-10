@@ -1,6 +1,7 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import {delay} from './tbhelpers.js';
+import TBModule from './tbmodule.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and
@@ -152,9 +153,9 @@ const coreLoadedPromise = new Promise(resolve => {
     ].map(async modulePath => {
         const {default: m} = await import(browser.runtime.getURL(modulePath));
         logger.debug('Registering module', m);
-        window.TB.register_module(m);
+        TBModule.register_module(m);
     }));
 
     // Once all modules are registered, call TB.init() to run them
-    window.TB.init();
+    TBModule.init();
 })();

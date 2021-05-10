@@ -1,6 +1,7 @@
 import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
 import * as TBCore from '../tbcore.js';
+import TBModule from '../tbmodule.js';
 
 const self = new Module('Better Buttons');
 self.shortname = 'BButtons';
@@ -281,7 +282,7 @@ self.initRemoveConfirmation = function initRemoveConfirmation () {
 
         // Don't remove if removal reasons are enabled and the button isn't for spam
         if (!$body.hasClass('tb-removal-reasons')
-            || $body.hasClass('tb-removal-reasons') && !window.TB.modules.RReasons.setting('commentReasons')
+            || $body.hasClass('tb-removal-reasons') && !TBModule.modules.RReasons.setting('commentReasons')
             || $button.children().first().attr('value') === 'spammed'
         ) {
             if (yes) {

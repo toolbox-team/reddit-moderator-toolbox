@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import TBModule from '../tbmodule.js';
 
 const self = new Module('Modbar');
 self.shortname = 'Modbar';
@@ -466,7 +467,7 @@ self.init = function () {
             return;
         } // Don't show the window twice
         TBCore.getModSubs().then(() => {
-            window.TB.showSettings();
+            TBModule.showSettings();
         });
     });
 
@@ -518,7 +519,7 @@ self.init = function () {
             setTimeout(() => {
                 // prevent tbsetting URL hash from persisting on reload.
                 history.pushState('', document.title, window.location.pathname);
-                window.TB.showSettings();
+                TBModule.showSettings();
                 switchTab(module);
             }, 500);
         }

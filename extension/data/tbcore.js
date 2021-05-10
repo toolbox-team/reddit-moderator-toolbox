@@ -296,7 +296,7 @@ export function debugInformation () {
         betaMode: TBStorage.getSetting('Utils', 'betaMode', false),
         debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
         compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
-        advancedSettings: window.TBCore.advancedMode,
+        advancedSettings: TBStorage.getSetting('Utils', 'advancedMode', false),
         cookiesEnabled: navigator.cookieEnabled,
     };
 
@@ -1369,7 +1369,6 @@ async function getToolboxDevs () {
     // Public variables
 
     TBCore.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
-    TBCore.advancedMode = TBStorage.getSetting(SETTINGS_NAME, 'advancedMode', false);
     TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
     TBCore.firstRun = false;
     TBCore.tbDevs = toolboxDevs;

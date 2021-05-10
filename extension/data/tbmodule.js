@@ -81,7 +81,7 @@ function tbmodule () {
             const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
                   betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
                   devMode = window.TBCore.devMode,
-                  advancedMode = window.TBCore.advancedMode,
+                  advancedMode = TBStorage.getSetting('Utils', 'advancedMode', false),
 
                   settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
                   shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
@@ -370,7 +370,7 @@ function tbmodule () {
                     if (succ) {
                         TB.ui.textFeedback('Settings saved and verified', TB.ui.FEEDBACK_POSITIVE);
                         setTimeout(() => {
-                        // Only reload in dev mode if we asked to.
+                            // Only reload in dev mode if we asked to.
                             if (!devMode || reload) {
                                 window.location.reload();
                             }
@@ -585,7 +585,7 @@ function tbmodule () {
                     // hide advanced settings, but do it via CSS so it can be overridden.
                     let displaySetting = true;
                     if (Object.prototype.hasOwnProperty.call(options, 'advanced')
-                        && options['advanced'] && !window.TBCore.advancedMode
+                        && options['advanced'] && !TBStorage.getSetting('Utils', 'advancedMode', false)
                     ) {
                         displaySetting = false;
                     }

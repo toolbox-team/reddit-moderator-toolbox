@@ -154,7 +154,7 @@ self.init = function () {
                             </li>
                         </ul>
                     </div>
-                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${window.TBCore.advancedMode ? '' : 'style="display:none;"'}>show advanced settings</a>
+                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${TBStorage.getSetting('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'}>show advanced settings</a>
                     <h3 class="rr-advanced">Advanced settings</h3>
                     <div class="rr-advanced">
                         get reason from /r/:

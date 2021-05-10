@@ -421,7 +421,7 @@ export function overlay (title, tabs, buttons, css_class, single_footer, details
             tab.disabled = typeof tab.disabled === 'boolean' ? tab.disabled : false;
             tab.help_page = typeof tab.help_page !== 'undefined' ? tab.help_page : '';
 
-            if (!window.TBCore.advancedMode && tab.advanced) {
+            if (!TBStorage.getSetting('Utils', 'advancedMode', false) && tab.advanced) {
                 continue;
             }
 

@@ -234,7 +234,7 @@ self.init = function () {
     });
 
     // When clicking the delete button
-    $body.on('click', '.tb-personal-note-delete', function () {
+    $body.on('click', '.tb-personal-note-delete', async function () {
         const $this = $(this);
         const page = $this.data('wiki');
 
@@ -248,7 +248,7 @@ self.init = function () {
                     page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,
-                    uh: window.TBCore.modhash,
+                    uh: await TBCore.getModhash(),
                 },
             }).then(() => {
                 $this.closest('li').remove();

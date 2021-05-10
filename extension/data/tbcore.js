@@ -101,6 +101,42 @@ export const config = {
 
 // Details about the current user
 
+/**
+ * A promise that will fulfill with details about the current user, or reject if
+ * user details can't be fetched (for example, if there is no logged in user).
+ * May return a cached details object if 504s are encountered.
+ * @type {Promise<object>} The JSON response returned by `GET /api/me.json`
+ */
+const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
+    try {
+        const data = await TBApi.getJSON('/api/me.json');
+        TBStorage.purifyObject(data);
+        return data;
+    } catch (error) {
+        // 504 Gateway Timeout errors can be retried
+        if (error.response && error.response.status === 504 && tries > 1) {
+            return fetchUserDetails(tries - 1);
+        }
+
+        // Throw all other errors without retrying
+        throw error;
+    }
+})()
+    // If getting details from API fails, fall back to the cached value (if any)
+    .catch(() => TBStorage.getCache('Utils', 'userDetails'));
+
+/**
+ * Gets the modhash of the currently signed-in user.
+ * @returns {Promise<string>}
+ */
+export const getModhash = () => userDetailsPromise.then(details => details.data.modhash);
+
+/**
+ * Gets the username of the currently signed-in user.
+ * @returns {Promise<string>}
+ */
+export const getCurrentUser = () => userDetailsPromise.then(details => details.data.logged);
+
 // If mod subs are being fetched, stores a promise that will fulfill afterwards
 let fetchModSubsPromise = null;
 
@@ -485,7 +521,7 @@ export function alert ({message, noteID, showClose}, callback) {
  * @param {string?} markreadid The ID of a conversation to mark as read
  * when the notification is clicked
  */
-export function notification (title, body, path, markreadid = false) {
+export async function notification (title, body, path, markreadid = false) {
     browser.runtime.sendMessage({
         action: 'tb-notification',
         native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
@@ -494,7 +530,7 @@ export function notification (title, body, path, markreadid = false) {
             body,
             // We can't use link() for this since the background page has to have an absolute URL
             url: isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
-            modHash: window.TBCore.modhash,
+            modHash: await getModhash(),
             markreadid: markreadid || false,
         },
     });
@@ -1254,26 +1290,6 @@ async function fetchModSubs (after) {
 }
 
 /**
- * Gets information about the current user from the API.
- * @param {number} [tries=3] Number of times to retry because of 504s
- * @returns {Promise<object>}
- */
-async function fetchUserDetails (tries = 3) {
-    try {
-        const data = await TBApi.getJSON('/api/me.json');
-        TBStorage.purifyObject(data);
-        return data;
-    } catch (error) {
-        if (error.response && error.response.status === 504 && tries > 1) {
-            // Always retry 504s
-            return fetchUserDetails(tries - 1);
-        } else {
-            throw error;
-        }
-    }
-}
-
-/**
  * Fetches the list of Toolbox developers from the /r/toolbox mod list.
  * @returns {Promise<void>}
  */
@@ -1308,19 +1324,8 @@ async function getToolboxDevs () {
 
 // Perform startup tasks
 (async () => {
-    // Get user details from the API, falling back to cache if necessary
-    let userDetails;
-    try {
-        userDetails = await fetchUserDetails();
-        if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
-            TBStorage.setCache('Utils', 'userDetails', userDetails);
-        } else {
-            throw new Error('Fetched user details are empty or invalid');
-        }
-    } catch (error) {
-        logger.warn('Failed to get user details from API, getting from cache instead.', error);
-        userDetails = await TBStorage.getCache('Utils', 'userDetails');
-    }
+    // Wait for user details
+    const userDetails = await userDetailsPromise;
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
         logger.error('Toolbox does not have user details and cannot start.');
         return;
@@ -1335,9 +1340,6 @@ async function getToolboxDevs () {
     //       rework them as necessary (e.g. with exported get/set functions that
     //       update an internal variable)
     const TBCore = window.TBCore = window.TBCore || {};
-
-    // We need these before we can do anything.
-    TBCore.modhash = userDetails.data.modhash;
 
     TBCore.logged = userDetails.data.name;
 
@@ -1516,7 +1518,7 @@ async function getToolboxDevs () {
     });
 
     // private functions
-    function setWikiPrivate (subreddit, page, failAlert) {
+    async function setWikiPrivate (subreddit, page, failAlert) {
         TBApi.sendRequest({
             okOnly: true,
             method: 'POST',
@@ -1525,7 +1527,7 @@ async function getToolboxDevs () {
                 page,
                 listed: true, // hrm, may need to make this a config setting.
                 permlevel: 2,
-                uh: TBCore.modhash,
+                uh: await getModhash(),
             },
         })
             // Super extra double-secret secure, just to be safe.

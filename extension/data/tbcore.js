@@ -135,7 +135,7 @@ export const getModhash = () => userDetailsPromise.then(details => details.data.
  * Gets the username of the currently signed-in user.
  * @returns {Promise<string>}
  */
-export const getCurrentUser = () => userDetailsPromise.then(details => details.data.logged);
+export const getCurrentUser = () => userDetailsPromise.then(details => details.data.name);
 
 // If mod subs are being fetched, stores a promise that will fulfill afterwards
 let fetchModSubsPromise = null;

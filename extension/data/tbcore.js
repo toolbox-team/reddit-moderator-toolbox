@@ -103,9 +103,9 @@ export const config = {
 
 /**
  * A promise that will fulfill with details about the current user, or reject if
- * user details can't be fetched (for example, if there is no logged in user).
- * May return a cached details object if 504s are encountered.
- * @type {Promise<object>} The JSON response returned by `GET /api/me.json`
+ * user details can't be fetched. May return a cached details object if multiple
+ * timeouts are encountered.
+ * @type {Promise<object | undefined>} JSON response from `/api/me.json`
  */
 const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
     try {
@@ -124,6 +124,12 @@ const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
 })()
     // If getting details from API fails, fall back to the cached value (if any)
     .catch(() => TBStorage.getCache('Utils', 'userDetails'));
+
+/**
+ * Gets details about the current user.
+ * @returns {Promise<object>}
+ */
+export const getUserDetails = () => userDetailsPromise;
 
 /**
  * Gets the modhash of the currently signed-in user.
@@ -596,8 +602,8 @@ async function fetchNewsNotes (sub) {
     return resp.notes;
 }
 
-// Fetch notes on startup and display any new
-(async () => {
+/** Fetch and display all news notes. */
+export async function displayNotes () {
     fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
 
     if (betaRelease) {
@@ -611,7 +617,7 @@ async function fetchNewsNotes (sub) {
             window.TBCore.devModeLock = true;
         });
     }
-})();
+}
 
 // Iteration helpers
 
@@ -1289,48 +1295,70 @@ async function fetchModSubs (after) {
     }
 }
 
+// If devs are being fetched, stores a promise that will fulfill afterwards
+let devsFetchPromise = null;
+
 /**
- * Fetches the list of Toolbox developers from the /r/toolbox mod list.
- * @returns {Promise<void>}
+ * Fetches the list of Toolbox developers from the /r/toolbox mod list. May
+ * return a cached list or a static fallback if the API request fails.
+ * @returns {Promise<Array<string>>}
  */
-async function getToolboxDevs () {
-    let devs;
-    try {
-        // Fetch the /r/toolbox mod list
-        const resp = await TBApi.getJSON('/r/toolbox/about/moderators.json');
-        TBStorage.purifyObject(resp);
-        devs = resp.data.children.map(child => child.name).filter(dev => dev !== 'AutoModerator');
-    } catch (_) {
-        // Something went wrong, use a hardcoded fallback list
-        devs = [
-            'agentlame',
-            'creesch',
-            'LowSociety ',
-            'TheEnigmaBlade',
-            'dakta',
-            'largenocream',
-            'psdtwk',
-            'amici_ursi',
-            'noeatnosleep',
-            'Garethp',
-            'WorseThanHipster',
-            'eritbh',
-        ];
+export async function getToolboxDevs () {
+    // Try to get from cache
+    const cachedDevs = await TBStorage.getSettingAsync('Utils', 'tbDevs', []);
+    if (cachedDevs && cachedDevs.length) {
+        return cachedDevs;
     }
 
-    window.TBCore.tbDevs = devs;
-    await TBStorage.setSettingAsync('Utils', 'tbDevs', devs);
+    // Cache didn't work - get from API instead
+    // Check if we're already in the middle of fetching - if we are, we don't
+    // want to kick off the same process multiple times
+    if (!devsFetchPromise) {
+        // Start fetching and store a Promise of the process
+        devsFetchPromise = (async () => {
+            let devs;
+            try {
+                // Fetch the /r/toolbox mod list
+                const resp = await TBApi.getJSON('/r/toolbox/about/moderators.json');
+                TBStorage.purifyObject(resp);
+                devs = resp.data.children
+                // We only care about usernames
+                    .map(child => child.name)
+                // ignore automod
+                    .filter(dev => dev !== 'AutoModerator');
+            } catch (_) {
+                // Something went wrong, use a hardcoded fallback list
+                devs = [
+                    'agentlame',
+                    'creesch',
+                    'LowSociety ',
+                    'TheEnigmaBlade',
+                    'dakta',
+                    'largenocream',
+                    'psdtwk',
+                    'amici_ursi',
+                    'noeatnosleep',
+                    'Garethp',
+                    'WorseThanHipster',
+                    'eritbh',
+                ];
+            }
+
+            // Since we didn't find the devs in cache, update the cache
+            await TBStorage.setSettingAsync('Utils', 'tbDevs', devs);
+
+            // We're done fetching - unset the promise and return
+            devsFetchPromise = null;
+            return devs;
+        })();
+    }
+
+    // Return the promise that will fulfill once we've fetched the dev list
+    return devsFetchPromise;
 }
 
 // Perform startup tasks
 (async () => {
-    // Wait for user details
-    const userDetails = await userDetailsPromise;
-    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
-        logger.error('Toolbox does not have user details and cannot start.');
-        return;
-    }
-
     // Module exports can't be reassigned asynchronously (modules that imported
     // the value already won't be updated with the new value). To preserve old
     // behavior, we create a `window.TBCore` object separate from the exported
@@ -1341,20 +1369,7 @@ async function getToolboxDevs () {
     //       update an internal variable)
     const TBCore = window.TBCore = window.TBCore || {};
 
-    TBCore.logged = userDetails.data.name;
-
-    if (window.location.hostname === 'mod.reddit.com') {
-        $('body').addClass('mod-toolbox-new-modmail');
-    }
-
-    // new profiles have some weird css going on. This remedies the weirdness...
-    window.addEventListener('TBNewPage', event => {
-        if (event.detail.pageType === 'userProfile') {
-            $('body').addClass('mod-toolbox-profile');
-        } else {
-            $('body').removeClass('mod-toolbox-profile');
-        }
-    });
+    TBCore.logged = await getCurrentUser();
 
     const SETTINGS_NAME = 'Utils';
 
@@ -1362,8 +1377,6 @@ async function getToolboxDevs () {
     let lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0);
 
     const cacheName = await TBStorage.getCache('Utils', 'cacheName', ''),
-
-          toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
           newLogin = cacheName !== TBCore.logged;
 
     // Public variables
@@ -1371,30 +1384,6 @@ async function getToolboxDevs () {
     TBCore.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
     TBCore.firstRun = false;
-    TBCore.tbDevs = toolboxDevs;
-
-    $('body').addClass('mod-toolbox-rd');
-    // Bit hacky maybe but allows us more flexibility in specificity.
-    // TODO: Remove this and replace uses of it in CSS with duplicate classes
-    //       (e.g. `.mod-toolbox-rd.mod-toolbox-rd` as a selector)
-    $('body').addClass('mod-toolbox-extra');
-
-    // Add icon font
-    $('head').append(`
-        <style>
-            @font-face {
-                font-family: 'Material Icons';
-                font-style: normal;
-                font-weight: 400;
-                src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
-                src: local('Material Icons'),
-                    local('MaterialIcons-Regular'),
-                    url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
-                    url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
-                    url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
-            }
-        </style>
-    `);
 
     // Populate `TBCore.mySubs` and `TBCore.mySubsData`
     getModSubs();
@@ -1408,32 +1397,6 @@ async function getToolboxDevs () {
         browser.runtime.sendMessage({
             action: 'tb-cache-force-timeout',
         });
-    }
-
-    // Clean up old seen items if the lists are getting too long
-
-    TBStorage.getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {
-        if (pushedunread.length > 250) {
-            pushedunread.splice(150, pushedunread.length - 150);
-            await TBStorage.setSettingAsync('Notifier', 'unreadPushed', pushedunread);
-        }
-    });
-    TBStorage.getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
-        if (pusheditems.length > 250) {
-            pusheditems.splice(150, pusheditems.length - 150);
-            await TBStorage.setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
-        }
-    });
-    TBStorage.getSettingAsync(SETTINGS_NAME, 'seenNotes', []).then(async seenNotes => {
-        if (seenNotes.length > 250) {
-            logger.log('clearing seen notes');
-            seenNotes.splice(150, seenNotes.length - 150);
-            await TBStorage.setSettingAsync(SETTINGS_NAME, 'seenNotes', seenNotes);
-        }
-    });
-
-    if (!toolboxDevs || toolboxDevs.length < 1) {
-        getToolboxDevs();
     }
 
     // Extra checks on old faults
@@ -1490,244 +1453,267 @@ async function getToolboxDevs () {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
     }
 
-    // Listen to background page communication and act based on that.
-    browser.runtime.onMessage.addListener(message => {
-        switch (message.action) {
-        case 'clearCache': {
-            clearCache(true);
-            break;
-        }
-        case 'tb-cache-timeout': {
-            logger.log('Timed cache update', message.payload);
-            // Cache has timed out
-            if (message.payload === 'long') {
-                TBCore.mySubs = [];
-                TBCore.mySubsData = [];
-            }
-
-            break;
-        }
-        default: {
-            const event = new CustomEvent(message.action, {detail: message.payload});
-            window.dispatchEvent(event);
-        }
-        }
-    });
-
-    // private functions
-    async function setWikiPrivate (subreddit, page, failAlert) {
-        TBApi.sendRequest({
-            okOnly: true,
-            method: 'POST',
-            endpoint: `/r/${subreddit}/wiki/settings/`,
-            body: {
-                page,
-                listed: true, // hrm, may need to make this a config setting.
-                permlevel: 2,
-                uh: await getModhash(),
-            },
-        })
-            // Super extra double-secret secure, just to be safe.
-            .then(() => {
-                // used if it is important for the user to know that a wiki page has not been set to private.
-                if (failAlert) {
-                    alert('error setting wiki page to mod only access');
-                    window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
-                } else {
-                    logger.log('error setting wiki page to mod only access');
-                }
-            });
-    }
-
-    // Watch for locationHref changes and sent an event with details
-    let locationHref;
-    let locationHash;
-
-    // new modmail regex matches.
-    const newMMlistingReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
-    const newMMconversationReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals|thread)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
-    const newMMcreate = /^\/mail\/create\/?$/;
-
-    // reddit regex matches.
-    const redditFrontpageReg = /^\/?(hot|new|rising|controversial)?\/?$/;
-    const subredditFrontpageReg = /^\/r\/([^/]*?)\/?(hot|new|rising|controversial)?\/?$/;
-    const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
-    const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
-    const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
-    const subredditWikiPageReg = /^\/r\/([^/]*?)\/wiki\/?(edit|revisions|settings|discussions)?\/(.+)\/?$/;
-    const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
-    const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
-    const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
-
-    // Once a change in the page hash is detected in toolbox format it will abstract the parms and send out an event.
-    function refreshHashContext () {
-        if (window.location.hash && window.location.hash !== locationHash) {
-            const locationHash = window.location.hash;
-            const hash = locationHash.substring(1);
-            // To make sure we only trigger on toolbox hashes we check that the first param starts with `tb`.
-            // This because `tbsettings` is already used for settings.
-            if (hash.startsWith('?tb')) {
-                const paramObject = {};
-                const params = hash.split('&');
-                params.forEach(param => {
-                    const keyval = param.split('=');
-                    const key = keyval[0].replace('?', ''),
-                          val = keyval[1];
-                    paramObject[key] = val;
-                });
-                setTimeout(() => {
-                    window.dispatchEvent(new CustomEvent('TBHashParams', {detail: paramObject}));
-                }, 500);
-            }
-        } else if (!window.location.hash) {
-            locationHash = null;
-        }
-    }
-
-    // Once a change is detected it will abstract all the context information from url, update TBCore variables and emit all information in an event.
-    // NOTE: this function is a work in progress, page types are added once needed. Currently supported pages where context are provided are:
-    // NewModmail: listings, conversations, create
-    // reddit frontpage: sorting
-    // subreddits: listing including sorting, submissions, submissions with permalink
-    function refreshPathContext () {
-        const samePage = locationHref === location.href;
-        if (!samePage) {
-            const oldHref = locationHref;
-            locationHref = location.href;
-
-            const contextObject = {
-                oldHref,
-                locationHref,
-                pageType: '',
-                pageDetails: {},
-            };
-
-            // new modmail
-            if (location.host === 'mod.reddit.com') {
-                if (newMMlistingReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(newMMlistingReg);
-                    contextObject.pageType = 'modmailListing';
-                    contextObject.pageDetails = {
-                        listingType: matchDetails[1],
-                    };
-                } else if (newMMconversationReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(newMMconversationReg);
-                    contextObject.pageType = 'modmailConversation';
-                    contextObject.pageDetails = {
-                        conversationType: matchDetails[1],
-                        conversationID: matchDetails[2],
-                    };
-                } else if (newMMcreate.test(location.pathname)) {
-                    contextObject.pageType = 'createModmail';
-                } else {
-                    contextObject.pageType = 'unknown';
-                }
-                // other parts of reddit.
-            } else {
-                if (redditFrontpageReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(redditFrontpageReg);
-                    contextObject.pageType = 'frontpage';
-                    contextObject.pageDetails = {
-                        sortType: matchDetails[1] || 'hot',
-                    };
-                } else if (subredditFrontpageReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(subredditFrontpageReg);
-                    contextObject.pageType = 'subredditFrontpage';
-                    contextObject.pageDetails = {
-                        subreddit: matchDetails[1],
-                        sortType: matchDetails[2] || 'hot',
-                    };
-                } else if (subredditCommentListingReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(subredditCommentListingReg);
-                    contextObject.pageType = 'subredditCommentListing';
-                    contextObject.pageDetails = {
-                        subreddit: matchDetails[1],
-                    };
-                } else if (subredditCommentsPageReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(subredditCommentsPageReg);
-                    contextObject.pageType = 'subredditCommentsPage';
-                    contextObject.pageDetails = {
-                        subreddit: matchDetails[1],
-                        submissionID: matchDetails[2],
-                        linkSafeTitle: matchDetails[3],
-                    };
-                } else if (subredditPermalinkCommentsPageReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(subredditPermalinkCommentsPageReg);
-                    contextObject.pageType = 'subredditCommentPermalink';
-                    contextObject.pageDetails = {
-                        subreddit: matchDetails[1],
-                        submissionID: matchDetails[2],
-                        linkSafeTitle: matchDetails[3],
-                        commentID: matchDetails[4],
-                    };
-                } else if (subredditWikiPageReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(subredditWikiPageReg);
-                    contextObject.pageType = 'subredditWiki';
-                    contextObject.pageDetails = {
-                        subreddit: matchDetails[1],
-                        action: matchDetails[2],
-                        page: matchDetails[3],
-                    };
-                } else if (queuePageReg.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(queuePageReg);
-                    contextObject.pageType = 'queueListing';
-                    contextObject.pageDetails = {
-                        subreddit: matchDetails[1],
-                        queueType: matchDetails[2],
-                    };
-                } else if (userProfile.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(userProfile);
-                    let listing = matchDetails[2];
-
-                    // silly new profile bussines.
-                    if (listing === 'posts') {
-                        listing = 'submitted';
-                    }
-                    if (!listing) {
-                        listing = 'overview';
-                    }
-                    contextObject.pageType = 'userProfile';
-                    contextObject.pageDetails = {
-                        user: matchDetails[1],
-                        listing,
-                    };
-                } else if (userModMessage.test(location.pathname)) {
-                    const matchDetails = location.pathname.match(userModMessage);
-                    if (matchDetails[1] === 'moderator') {
-                        contextObject.pageType = 'oldModmail';
-                        contextObject.pageDetails = {
-                            page: matchDetails[2] || 'inbox',
-                        };
-                    } else {
-                        contextObject.pageType = 'message';
-                        contextObject.pageDetails = {
-                            type: matchDetails[1],
-                        };
-                    }
-                    // "Unknown" pageType.
-                } else {
-                    contextObject.pageType = 'unknown';
-                }
-            }
-
-            pageDetails = contextObject;
-
-            // The timeout is there because locationHref can change before react is done rendering.
-            setTimeout(() => {
-                window.dispatchEvent(new CustomEvent('TBNewPage', {detail: contextObject}));
-            }, 500);
-        }
-    }
-
-    refreshPathContext();
-    refreshHashContext();
-    window.addEventListener('tb-url-changed', () => {
-        refreshPathContext();
-        refreshHashContext();
-    });
-
     window.dispatchEvent(new CustomEvent('_coreLoaded'));
 })();
+
+// Listen to background page communication and act based on that.
+browser.runtime.onMessage.addListener(message => {
+    switch (message.action) {
+    case 'clearCache': {
+        clearCache(true);
+        break;
+    }
+    case 'tb-cache-timeout': {
+        logger.log('Timed cache update', message.payload);
+        // Cache has timed out
+        if (message.payload === 'long') {
+            window.TBCore.mySubs = [];
+            window.TBCore.mySubsData = [];
+        }
+
+        break;
+    }
+    default: {
+        const event = new CustomEvent(message.action, {detail: message.payload});
+        window.dispatchEvent(event);
+    }
+    }
+});
+
+// Private function for setting wiki pages private
+async function setWikiPrivate (subreddit, page, failAlert) {
+    TBApi.sendRequest({
+        okOnly: true,
+        method: 'POST',
+        endpoint: `/r/${subreddit}/wiki/settings/`,
+        body: {
+            page,
+            listed: true, // hrm, may need to make this a config setting.
+            permlevel: 2,
+            uh: await getModhash(),
+        },
+    })
+        // Super extra double-secret secure, just to be safe.
+        .then(() => {
+            // used if it is important for the user to know that a wiki page has not been set to private.
+            if (failAlert) {
+                alert('error setting wiki page to mod only access');
+                window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
+            } else {
+                logger.log('error setting wiki page to mod only access');
+            }
+        });
+}
+
+// Page change detection
+
+// Watch for locationHref changes and sent an event with details
+let locationHref;
+let locationHash;
+
+// new modmail regex matches.
+const newMMlistingReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
+const newMMconversationReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals|thread)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
+const newMMcreate = /^\/mail\/create\/?$/;
+
+// reddit regex matches.
+const redditFrontpageReg = /^\/?(hot|new|rising|controversial)?\/?$/;
+const subredditFrontpageReg = /^\/r\/([^/]*?)\/?(hot|new|rising|controversial)?\/?$/;
+const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
+const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
+const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+const subredditWikiPageReg = /^\/r\/([^/]*?)\/wiki\/?(edit|revisions|settings|discussions)?\/(.+)\/?$/;
+const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
+const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
+const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
+
+// Once a change in the page hash is detected in toolbox format it will abstract the parms and send out an event.
+function refreshHashContext () {
+    if (window.location.hash && window.location.hash !== locationHash) {
+        const locationHash = window.location.hash;
+        const hash = locationHash.substring(1);
+        // To make sure we only trigger on toolbox hashes we check that the first param starts with `tb`.
+        // This because `tbsettings` is already used for settings.
+        if (hash.startsWith('?tb')) {
+            const paramObject = {};
+            const params = hash.split('&');
+            params.forEach(param => {
+                const keyval = param.split('=');
+                const key = keyval[0].replace('?', ''),
+                      val = keyval[1];
+                paramObject[key] = val;
+            });
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('TBHashParams', {detail: paramObject}));
+            }, 500);
+        }
+    } else if (!window.location.hash) {
+        locationHash = null;
+    }
+}
+
+// Once a change is detected it will abstract all the context information from url, update TBCore variables and emit all information in an event.
+// NOTE: this function is a work in progress, page types are added once needed. Currently supported pages where context are provided are:
+// NewModmail: listings, conversations, create
+// reddit frontpage: sorting
+// subreddits: listing including sorting, submissions, submissions with permalink
+function refreshPathContext () {
+    const samePage = locationHref === location.href;
+    if (!samePage) {
+        const oldHref = locationHref;
+        locationHref = location.href;
+
+        const contextObject = {
+            oldHref,
+            locationHref,
+            pageType: '',
+            pageDetails: {},
+        };
+
+        // new modmail
+        if (location.host === 'mod.reddit.com') {
+            if (newMMlistingReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(newMMlistingReg);
+                contextObject.pageType = 'modmailListing';
+                contextObject.pageDetails = {
+                    listingType: matchDetails[1],
+                };
+            } else if (newMMconversationReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(newMMconversationReg);
+                contextObject.pageType = 'modmailConversation';
+                contextObject.pageDetails = {
+                    conversationType: matchDetails[1],
+                    conversationID: matchDetails[2],
+                };
+            } else if (newMMcreate.test(location.pathname)) {
+                contextObject.pageType = 'createModmail';
+            } else {
+                contextObject.pageType = 'unknown';
+            }
+            // other parts of reddit.
+        } else {
+            if (redditFrontpageReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(redditFrontpageReg);
+                contextObject.pageType = 'frontpage';
+                contextObject.pageDetails = {
+                    sortType: matchDetails[1] || 'hot',
+                };
+            } else if (subredditFrontpageReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(subredditFrontpageReg);
+                contextObject.pageType = 'subredditFrontpage';
+                contextObject.pageDetails = {
+                    subreddit: matchDetails[1],
+                    sortType: matchDetails[2] || 'hot',
+                };
+            } else if (subredditCommentListingReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(subredditCommentListingReg);
+                contextObject.pageType = 'subredditCommentListing';
+                contextObject.pageDetails = {
+                    subreddit: matchDetails[1],
+                };
+            } else if (subredditCommentsPageReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(subredditCommentsPageReg);
+                contextObject.pageType = 'subredditCommentsPage';
+                contextObject.pageDetails = {
+                    subreddit: matchDetails[1],
+                    submissionID: matchDetails[2],
+                    linkSafeTitle: matchDetails[3],
+                };
+            } else if (subredditPermalinkCommentsPageReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(subredditPermalinkCommentsPageReg);
+                contextObject.pageType = 'subredditCommentPermalink';
+                contextObject.pageDetails = {
+                    subreddit: matchDetails[1],
+                    submissionID: matchDetails[2],
+                    linkSafeTitle: matchDetails[3],
+                    commentID: matchDetails[4],
+                };
+            } else if (subredditWikiPageReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(subredditWikiPageReg);
+                contextObject.pageType = 'subredditWiki';
+                contextObject.pageDetails = {
+                    subreddit: matchDetails[1],
+                    action: matchDetails[2],
+                    page: matchDetails[3],
+                };
+            } else if (queuePageReg.test(location.pathname)) {
+                const matchDetails = location.pathname.match(queuePageReg);
+                contextObject.pageType = 'queueListing';
+                contextObject.pageDetails = {
+                    subreddit: matchDetails[1],
+                    queueType: matchDetails[2],
+                };
+            } else if (userProfile.test(location.pathname)) {
+                const matchDetails = location.pathname.match(userProfile);
+                let listing = matchDetails[2];
+
+                // silly new profile bussines.
+                if (listing === 'posts') {
+                    listing = 'submitted';
+                }
+                if (!listing) {
+                    listing = 'overview';
+                }
+                contextObject.pageType = 'userProfile';
+                contextObject.pageDetails = {
+                    user: matchDetails[1],
+                    listing,
+                };
+            } else if (userModMessage.test(location.pathname)) {
+                const matchDetails = location.pathname.match(userModMessage);
+                if (matchDetails[1] === 'moderator') {
+                    contextObject.pageType = 'oldModmail';
+                    contextObject.pageDetails = {
+                        page: matchDetails[2] || 'inbox',
+                    };
+                } else {
+                    contextObject.pageType = 'message';
+                    contextObject.pageDetails = {
+                        type: matchDetails[1],
+                    };
+                }
+                // "Unknown" pageType.
+            } else {
+                contextObject.pageType = 'unknown';
+            }
+        }
+
+        pageDetails = contextObject;
+
+        // The timeout is there because locationHref can change before react is done rendering.
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('TBNewPage', {detail: contextObject}));
+        }, 500);
+    }
+}
+
+refreshPathContext();
+refreshHashContext();
+window.addEventListener('tb-url-changed', () => {
+    refreshPathContext();
+    refreshHashContext();
+});
+
+// Clean up old seen items if the lists are getting too long
+TBStorage.getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {
+    if (pushedunread.length > 250) {
+        pushedunread.splice(150, pushedunread.length - 150);
+        await TBStorage.setSettingAsync('Notifier', 'unreadPushed', pushedunread);
+    }
+});
+TBStorage.getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
+    if (pusheditems.length > 250) {
+        pusheditems.splice(150, pusheditems.length - 150);
+        await TBStorage.setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
+    }
+});
+TBStorage.getSettingAsync('Utils', 'seenNotes', []).then(async seenNotes => {
+    if (seenNotes.length > 250) {
+        logger.log('clearing seen notes');
+        seenNotes.splice(150, seenNotes.length - 150);
+        await TBStorage.setSettingAsync('Utils', 'seenNotes', seenNotes);
+    }
+});
 
 // NER support for certain cases on old Reddit
 

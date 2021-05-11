@@ -2,6 +2,7 @@ import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import {delay} from './tbhelpers.js';
 import TBModule from './tbmodule.js';
+import * as TBCore from './tbcore.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and
@@ -83,7 +84,16 @@ async function checkLoadConditions (tries = 3) {
         throw new Error('Firefox is in Incognito mode, Toolbox will not work');
     }
 
-    $body.addClass('mod-toolbox');
+    // Check that we have details about the current user
+    const userDetails = await TBCore.getUserDetails();
+    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
+        throw new Error('Failed to fetch user details');
+    }
+
+    // Write a setting and read back its value, if this fails something is wrong
+    if (await TBStorage.setSettingAsync('Utils', 'echoTest', 'echo') !== 'echo') {
+        throw new Error('Settings cannot be read/written');
+    }
 }
 
 /** A promise that will resolve once TBCore is ready. */
@@ -98,9 +108,6 @@ const coreLoadedPromise = new Promise(resolve => {
         return;
     }
 
-    // HACK: We still need to export TBLog to some stuff for legacy logging
-    window.TBLog = TBLog;
-
     // Create a logger
     const logger = TBLog('Init');
 
@@ -112,14 +119,53 @@ const coreLoadedPromise = new Promise(resolve => {
         return;
     }
 
-    // Do settings echo before anything else.  If it fails, exit toolbox.
-    if (await TBStorage.setSettingAsync('Utils', 'echoTest', 'echo') !== 'echo') {
-        alert('toolbox can not save settings\n\ntoolbox will now exit');
-        return;
+    // Add relevant CSS classes to the page
+
+    const $body = $('body');
+    $body.addClass('mod-toolbox');
+
+    if (window.location.hostname === 'mod.reddit.com') {
+        $body.addClass('mod-toolbox-new-modmail');
     }
 
-    import(browser.runtime.getURL('data/tbcore.js'));
+    // new profiles have some weird css going on. This remedies the weirdness...
+    window.addEventListener('TBNewPage', event => {
+        if (event.detail.pageType === 'userProfile') {
+            $body.addClass('mod-toolbox-profile');
+        } else {
+            $body.removeClass('mod-toolbox-profile');
+        }
+    });
+
+    $body.addClass('mod-toolbox-rd');
+    // Bit hacky maybe but allows us more flexibility in specificity.
+    // TODO: Remove this and replace uses of it in CSS with duplicate classes
+    //       (e.g. `.mod-toolbox-rd.mod-toolbox-rd` as a selector)
+    $body.addClass('mod-toolbox-extra');
+
+    // Add icon font
+    $('head').append(`
+        <style>
+            @font-face {
+                font-family: 'Material Icons';
+                font-style: normal;
+                font-weight: 400;
+                src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
+                src: local('Material Icons'),
+                    local('MaterialIcons-Regular'),
+                    url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
+                    url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
+                    url(${browser.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
+            }
+        </style>
+    `);
+
+    // Wait for TBCore to load all its legacy stuff into `window.TBCore`
+    // TODO
     await coreLoadedPromise;
+
+    // Display news
+    TBCore.displayNotes();
 
     // Load feature modules and register them
     await Promise.all([

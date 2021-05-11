@@ -244,11 +244,11 @@ self.init = function () {
 
     // Judas
     self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", saveIndex => {
-        $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
+        $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', async function () {
             const $this = $(this);
             const auth = TBCore.getThingInfo($this).author;
 
-            if (window.TBCore.tbDevs.indexOf(auth) !== -1) {
+            if ((await TBCore.getToolboxDevs()).indexOf(auth) !== -1) {
                 self.manager.unlock(saveIndex, 1);
             }
             // TODO: wait for 'yes' click.

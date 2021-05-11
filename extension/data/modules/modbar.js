@@ -88,6 +88,8 @@ self.init = function () {
     // Doing it like this because it means we don't have to mess with reddit css
     const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
 
+    debugger;
+
     if (!window.TBCore.logged || TBCore.isEmbedded) {
         return;
     }

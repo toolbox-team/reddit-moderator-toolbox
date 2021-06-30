@@ -810,8 +810,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.getThingInfo = function (sender, modCheck) {
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
-            const permaCommentLinkRegex = /(\/(r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-            const permaLinkInfoRegex = /\/(r|user)\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+            const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+            const permaLinkInfoRegex = /\/(?:r|user)\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
 
             // declare what we will need.
             const $sender = $(sender);
@@ -953,8 +953,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
             if (permalink && permaCommentLinkRegex.test(permalink)) {
                 const permalinkDetails = permalink.match(permaLinkInfoRegex);
-                postID = `t3_${permalinkDetails[3]}`;
-                permalink = permalink.replace(permaCommentLinkRegex, '$1-$4');
+                postID = `t3_${permalinkDetails[2]}`;
+                permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
             }
 
             const info = {
@@ -1065,7 +1065,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     callback(info);
                 });
             } else {
-                const permaCommentLinkRegex = /(\/(r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+                const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
                 TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
                     TBStorage.purifyObject(response);
                     const data = response.data;
@@ -1096,7 +1096,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     }
 
                     if (permalink && permaCommentLinkRegex.test(permalink)) {
-                        permalink = permalink.replace(permaCommentLinkRegex, '$1-$4');
+                        permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
                     }
 
                     if (modCheck && !TBCore.modsSub(subreddit)) {

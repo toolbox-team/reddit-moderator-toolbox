@@ -810,8 +810,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.getThingInfo = function (sender, modCheck) {
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
-            const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-            const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+            const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+            const permaLinkInfoRegex = /\/(?:r|user)\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
 
             // declare what we will need.
             const $sender = $(sender);
@@ -1065,7 +1065,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     callback(info);
                 });
             } else {
-                const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+                const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
                 TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
                     TBStorage.purifyObject(response);
                     const data = response.data;

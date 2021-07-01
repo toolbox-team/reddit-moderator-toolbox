@@ -102,6 +102,11 @@ function queryString (parameters) {
     return `?${kvStrings.join('&')}`;
 }
 
+// Ratelimiter for all oauth.reddit.com requests
+const oauthRatelimiter = new Ratelimiter();
+// Ratelimiter for all old.reddit.com requests
+const oldRedditRatelimiter = new Ratelimiter();
+
 /**
  * Creates a `FormData` object from the given set of key-value pairs.
  * @param {object} obj
@@ -176,7 +181,14 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
     // Perform the request
     let response;
     try {
-        response = await fetch(url, options);
+        if (absolute) {
+            // Absolute URLs may hit non-Reddit domains, don't try to limit them
+            response = await fetch(url, options);
+        } else if (oauth) {
+            response = await oauthRatelimiter.request(url, options);
+        } else {
+            response = await oldRedditRatelimiter.request(url, options);
+        }
     } catch (error) {
         console.error('Fetch request failed:', error);
         throw error;

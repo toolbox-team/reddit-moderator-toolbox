@@ -399,7 +399,7 @@
             }
         }
 
-        return TBApi.post('/api/friend', {
+        return TBApi.apiOauthPOST('/api/friend', {
             api_type: 'json',
             uh: TBCore.modhash,
             type: action,
@@ -409,7 +409,7 @@
             ban_message: trimmedBanMessage,
             duration: banDuration,
             ban_context: banContext,
-        });
+        }).then(response => response.json());
     };
 
     /**
@@ -464,7 +464,7 @@
      * @param {boolean?} spam If true, removes as spam
      * @returns {Promise}
      */
-    TBApi.removeThing = (id, spam = false) => TBApi.post('/api/remove', {
+    TBApi.removeThing = (id, spam = false) => TBApi.apiOauthPOST('/api/remove', {
         uh: TBCore.modhash,
         id,
         spam,
@@ -497,7 +497,7 @@
      * @param {string} id The fullname of the submission or comment
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
-    TBApi.lock = id => TBApi.post('/api/lock', {
+    TBApi.lock = id => TBApi.apiOauthPOST('/api/lock', {
         id,
         uh: TBCore.modhash,
     });

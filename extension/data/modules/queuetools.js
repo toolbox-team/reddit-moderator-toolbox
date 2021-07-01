@@ -864,7 +864,7 @@ function queuetools () {
                         TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
                         $sortButton.html('sort by items');
                         $sortButton.css({'padding-left': '', 'padding-right': ''});
-                    }
+                    },
                 );
 
                 function sortSubreddits () {
@@ -1453,7 +1453,7 @@ Action reason: ${value.data.details}
                     // Display reports in a popup
                     const {topPosition, leftPosition} = TBui.drawPosition(clickEvent);
                     const $popup = TBui.popup({
-                        title: `Ignored reports on ${author}'s ${redditEvent.detail.type.includes('comment') ? 'comment' : 'post'}`,
+                        title: `Old reports on ${author}'s ${redditEvent.detail.type.includes('comment') ? 'comment' : 'post'}`,
                         tabs: [{
                             content: reportList,
                         }],

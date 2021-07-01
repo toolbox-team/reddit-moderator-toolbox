@@ -6,9 +6,16 @@ function modmacros () {
 
     self.settings['enabled']['default'] = true;
 
+    self.register_setting('showMacroPreview', {
+        type: 'boolean',
+        default: true,
+        title: 'Show a preview of macro messages while typing.',
+    });
+
     self.init = function () {
         const $body = $('body'),
-              MACROS = 'TB-MACROS';
+              MACROS = 'TB-MACROS',
+              showMacroPreview = self.setting('showMacroPreview');
 
         function getConfig (sub, callback) {
             if (TBCore.noConfig.indexOf(sub) !== -1) {
@@ -342,8 +349,8 @@ function modmacros () {
                         title: 'Mod Macro:',
                         id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
                         tooltip: `Mod Macro:${title}`,
-                        content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea><br>
-                                    <span>${actionList}</span>`,
+                        content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea>
+                                  <div class="tb-macro-action-list">${actionList}</div>`,
                         footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`,
                     },
                 ],
@@ -364,6 +371,35 @@ function modmacros () {
                 'min-height': `${editMinHeight}px`,
                 'min-width': `${editMinWidth}px`,
             });
+
+            if (showMacroPreview) {
+                $macroPopup.on('input', '.macro-edit-area', TBHelpers.debounce(e => {
+                    let $previewArea;
+                    if ($macroPopup.find('.tb-macro-preview').length) {
+                        // Use existing preview.
+                        $previewArea = $('.tb-macro-preview');
+                    } else {
+                        // Create a new one.
+                        const $inputTextarea = $macroPopup.find('.macro-edit-area');
+                        $previewArea = $('<div class="tb-macro-preview tb-comment"></div>');
+                        $inputTextarea.after($previewArea);
+                    }
+
+                    // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                    // people pasting malicious input on advice of shitty people.
+                    const renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
+                    $previewArea.html(`
+                    <h3 class="tb-preview-heading">Preview</h3>
+                    <div class="tb-comment-body">
+                        <div class="md">
+                            ${renderedHTML}
+                        </div>
+                    </div>
+                    `);
+                }, 100));
+
+                $macroPopup.find('.macro-edit-area').trigger('input');
+            }
 
             $macroPopup.on('click', `.macro-send-${info.id}`, function () {
                 const $currentMacroPopup = $(this).closest('.macro-popup'),

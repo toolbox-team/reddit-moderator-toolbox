@@ -309,6 +309,7 @@ function notifiermod () {
             $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
             $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
             $tbNewModmailTooltip.find('#tb-new-modmail-banappeals .tb-new-mm-count').text(data.appeals);
+            $tbNewModmailTooltip.find('#tb-new-modmail-joinrequests .tb-new-mm-count').text(data.join_requests);
             $tbNewModmailTooltip.find('#tb-new-modmail-highlighted .tb-new-mm-count').text(data.highlighted);
             $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
             $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
@@ -339,7 +340,7 @@ function notifiermod () {
                 setTimeout(() => {
                     TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
                         const data = await response.json();
-                        const modmailFreshCount = data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod;
+                        const modmailFreshCount = data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod + data.join_requests;
                         self.setting('newModmailCount', modmailFreshCount);
                         self.setting('newModmailCategoryCount', data);
 
@@ -760,7 +761,7 @@ function notifiermod () {
             //
             TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
                 const data = await response.json();
-                const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod;
+                const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod + data.join_requests;
                 self.setting('newModmailCount', modmailFreshCount);
                 self.setting('newModmailCategoryCount', data);
                 updateNewModMailCount(modmailFreshCount, data);

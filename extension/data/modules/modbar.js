@@ -222,6 +222,10 @@ function modbar () {
                 <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/appeals" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Ban Appeals</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
+                <tr id="tb-new-modmail-joinrequests">
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/join_requests" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Join Requests</a></td>
+                <td class="tb-new-mm-count"></td>
+            </tr>
             <tr id="tb-new-modmail-highlighted">
                 <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Highlighted</a></td>
                 <td class="tb-new-mm-count"></td>

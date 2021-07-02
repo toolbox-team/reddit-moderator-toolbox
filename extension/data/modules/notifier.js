@@ -280,12 +280,12 @@ function notifiermod () {
             $('#tb-unmoderatedCount').text(`[${count}]`);
         }
 
-        function calculateModmailCount(countData) {
+        function calculateModmailCount (countData) {
             // Modmail directors not included in total count. For example highlighted as that will cause duplicates.
-            const excludedDirs = ['highlighted']
+            const excludedDirs = ['highlighted'];
             let modmailFreshCount = 0;
             for (const [key, count] of Object.entries(countData)) {
-                if(!excludedDirs.includes(key)) {
+                if (!excludedDirs.includes(key)) {
                     modmailFreshCount += count;
                 }
             }

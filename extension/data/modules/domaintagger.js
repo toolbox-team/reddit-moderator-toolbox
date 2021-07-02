@@ -288,10 +288,6 @@ function domaintagger () {
             });
         });
 
-        $body.on('click', '.dtagger-popup .close', function () {
-            $(this).parents('.dtagger-popup').remove();
-        });
-
         // Utilities
 
         function getThingDomain ($thing) {

@@ -209,6 +209,7 @@
         cssClass = '',
         meta,
         draggable = true,
+        closable = true,
     }) {
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         const $popup = $(`
@@ -286,6 +287,13 @@
             $popup.drag($popup.find('.tb-window-header'));
             // Don't let people drag by the buttons, that gets confusing
             $popup.find('.buttons a').on('mousedown', e => e.stopPropagation());
+        }
+
+        if (closable) {
+            $popup.on('click', '.close', event => {
+                event.stopPropagation();
+                $popup.remove();
+            });
         }
 
         return $popup;
@@ -1025,7 +1033,7 @@
               submissionAuthor = submission.data.author,
               submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
               submissionCreatedUTC = submission.data.created_utc, // unix epoch
-              submissionPermalink = submission.data.permalink,
+              submissionPermalink = TBCore.link(submission.data.permalink),
               submissionSubreddit = submission.data.subreddit,
               submissionSubredditType = submission.data.subreddit_type,
               submissionName = submission.data.name,
@@ -1328,7 +1336,7 @@
             // commentId = comment.data.id, // comment ID
               commentName = comment.data.name, // fullname t1_<comment ID>
               commentParentId = comment.data.parent_id,
-              commentPermalink = comment.data.permalink,
+              commentPermalink = TBCore.link(comment.data.permalink),
               commentSubreddit = comment.data.subreddit,
             // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
               commentSubredditType = comment.data.subreddit_type,
@@ -1372,8 +1380,19 @@
         // Do we have overview data?
         let parentHtml;
         if (commentOptions.overviewData) {
-            const linkUrl = comment.data.link_url,
-                  linkTitle = comment.data.link_title,
+            // `link_url` is the url to the linked content so can be anything for link posts.
+            // For self posts reddit's api returns the full url including the subdomain the api request is done on.
+            // As toolbox uses `old.reddit.com` for api calls this causes issues if we don't adjust for that.
+            // One edge case we can't deal with is posts linking specifically to some parts of reddit on the `old` subdomain.
+            let linkUrl = comment.data.link_url;
+            if (comment.data.link_url.startsWith('https://old.reddit.com')) {
+                // Rewrite url to be relative.
+                linkUrl = linkUrl.replace('https://old.reddit.com', '');
+                // Pass to `TBCore.link` to neatly deal with it.
+                linkUrl = TBCore.link(linkUrl);
+            }
+
+            const linkTitle = comment.data.link_title,
                   linkAuthor = comment.data.link_author;
 
             parentHtml = `

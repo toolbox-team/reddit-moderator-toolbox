@@ -124,12 +124,11 @@ function personalnotes () {
         $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
 
         // Since we have a button we can click on it!
-        $body.on('click', '#tb-personal-notes-button', async function () {
-            const $this = $(this);
+        $body.on('click', '#tb-personal-notes-button', async () => {
+            const $existingPopup = $('.personal-notes-popup');
 
             // Making sure the ui is only created once.
-            if (!$this.hasClass('tb-notes-activated')) {
-                $this.addClass('tb-notes-activated');
+            if (!$existingPopup.length) {
                 // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
                 await TBCore.getModSubs();
                 // We can't expect people to get the capitalizing right.
@@ -211,13 +210,11 @@ function personalnotes () {
                         })
                         .catch(() => {
                             TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
-                            $this.removeClass('tb-notes-activated');
                         });
                 }
             } else {
                 // The UI already exists, so let's destroy it.
-                $('.personal-notes-popup').remove();
-                $this.removeClass('tb-notes-activated');
+                $existingPopup.remove();
             }
         });
 

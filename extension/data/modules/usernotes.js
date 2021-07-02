@@ -440,10 +440,11 @@ function usernotes () {
                         let timeDiv;
 
                         if (note.link) {
-                            if (TBCore.isNewModmail && !note.link.startsWith('https://mod.reddit.com')) {
-                                note.link = `https://www.reddit.com${note.link}`;
+                                let noteLink = note.link;
+                                if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
+                                    noteLink = `https://www.reddit.com${noteLink}`;
                             }
-                            timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${note.link}">${timeString}</a></div>`;
+                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${noteLink}">${timeString}</a></div>`;
                         } else {
                             timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
                         }
@@ -513,11 +514,6 @@ function usernotes () {
                 link = info.permalink;
                 createUserPopup(subreddit, user, link, disableLink, e);
             }
-        });
-
-        // Cancel button clicked
-        $body.on('click', '.utagger-popup .close', function () {
-            $(this).parents('.utagger-popup').remove();
         });
 
         // Save or delete button clicked
@@ -886,10 +882,6 @@ function usernotes () {
                     window.location.reload();
                 });
 
-                $popup.on('click', '.close', () => {
-                    $popup.remove();
-                });
-
                 const {topPosition, leftPosition} = TBui.drawPosition(event);
                 $popup.appendTo('#tb-un-note-content-wrap').css({
                     // position: 'absolute',
@@ -915,7 +907,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.on('click', '.tb-un-delete', async function () {
+            $body.on('click', '.tb-un-delete', function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -933,7 +925,7 @@ function usernotes () {
             });
 
             // Delete individual notes for user.
-            $body.on('click', '.tb-un-notedelete', async function () {
+            $body.on('click', '.tb-un-notedelete', function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),

@@ -232,7 +232,7 @@ function tbmodule () {
                         </tr><tr>
                             <td><a href="https://www.reddit.com/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>
                             <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
-                            <td><a href="https://www.reddit.com/user/geo1088">/u/geo1088</a></td>
+                            <td><a href="https://www.reddit.com/user/eritbh">/u/eritbh</a></td>
                         </tr><tr>
                             <td><a href="https://www.reddit.com/user/SpyTec13">/u/SpyTec13</a></td>
                             <td><a href="https://www.reddit.com/user/kenman">/u/kenman</a></td>
@@ -440,10 +440,6 @@ function tbmodule () {
                 $viewSettings.on('click', '.anonymize-settings', async () => {
                     const anonymizedSettings = await TB.storage.getAnonymizedSettings();
                     $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
-                });
-
-                $viewSettings.on('click', '.close', () => {
-                    $viewSettings.remove();
                 });
             });
 

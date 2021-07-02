@@ -806,8 +806,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBCore.getThingInfo = function (sender, modCheck) {
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
-            const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-            const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+            const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+            const permaLinkInfoRegex = /\/(?:r|user)\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
 
             // declare what we will need.
             const $sender = $(sender);
@@ -1061,7 +1061,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     resolve(info);
                 });
             } else {
-                const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+                const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
                 TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
                     TBStorage.purifyObject(response);
                     const data = response.data;
@@ -1123,6 +1123,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
                         wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBCore.logged,
+                        userReports: data.children[0].data.user_reports,
+                        modReports: data.children[0].data.mod_reports,
+                        reportsIgnored: data.children[0].data.ignore_reports,
                     };
                     resolve(info);
                 });
@@ -1164,98 +1167,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             window.setTimeout(doChunk, delay);
-
-            function finish () {
-                return complete ? complete() : false;
-            }
-        };
-
-        // Chunking abused for ratelimiting
-        TBCore.forEachChunkedRateLimit = function (array, chunkSize, call, complete, start) {
-            let length,
-                limit,
-                counter;
-            const delay = 100;
-
-            if (array === null) {
-                finish();
-            } else if (chunkSize === null || chunkSize < 1) {
-                finish();
-            } else if (call === null) {
-                finish();
-            } else {
-                length = array.length;
-                limit = length > chunkSize ? 20 : 0;
-                counter = 0;
-
-                if (length < chunkSize) {
-                    chunkSize = length;
-                }
-                updateRateLimit();
-            }
-
-            function doChunk () {
-                if (counter === 0 && start) {
-                    start();
-                }
-
-                for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
-                    const ret = call(array[counter], counter, array);
-                    if (ret === false) {
-                        return window.setTimeout(finish, delay);
-                    }
-                }
-                if (counter < array.length) {
-                    window.setTimeout(updateRateLimit, delay);
-                } else {
-                    window.setTimeout(finish, delay);
-                }
-            }
-
-            function timer (count, $body, ratelimitRemaining) {
-                count -= 1;
-                if (count <= 0) {
-                    $body.find('#ratelimit-counter').empty();
-                    $body.find('#ratelimit-counter').hide();
-                    return count;
-                }
-
-                const minutes = Math.floor(count / 60);
-                const seconds = count - minutes * 60;
-
-                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
-    <br><br>
-    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
-    `);
-
-                return count;
-            }
-
-            function updateRateLimit () {
-                TBApi.getRatelimit().then(({ratelimitReset, ratelimitRemaining}) => {
-                    const $body = $('body');
-
-                    if (!$body.find('#ratelimit-counter').length) {
-                        $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
-                    }
-
-                    if (chunkSize + limit > parseInt(ratelimitRemaining)) {
-                        $body.find('#ratelimit-counter').show();
-                        let count = parseInt(ratelimitReset),
-                            counter = 0;
-
-                        counter = setInterval(() => {
-                            count = timer(count, $body, ratelimitRemaining);
-                            if (count <= 0) {
-                                clearInterval(counter);
-                                doChunk();
-                            }
-                        }, 1000);
-                    } else {
-                        doChunk();
-                    }
-                });
-            }
 
             function finish () {
                 return complete ? complete() : false;
@@ -1520,6 +1431,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                       devs = [];
 
                 children.forEach(child => {
+                    // AutoModerator seems to add itself to /r/toolbox sometimes, but it's definitely not a developer
+                    if (child.name === 'AutoModerator') {
+                        return;
+                    }
                     devs.push(child.name);
                 });
                 TBCore.tbDevs = devs;
@@ -1537,7 +1452,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     'noeatnosleep',
                     'Garethp',
                     'WorseThanHipster',
-                    'geo1088',
+                    'eritbh',
                 ];
                 TBCore.tbDevs = devs;
                 TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
@@ -1549,8 +1464,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         let locationHash;
 
         // new modmail regex matches.
-        const newMMlistingReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
-        const newMMconversationReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals|thread)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
+        const newMMlistingReg = /^\/mail\/([^/]+?)\/?$/;
+        const newMMconversationReg = /^\/mail\/([^/]+?)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
         // reddit regex matches.

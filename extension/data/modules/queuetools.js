@@ -44,6 +44,13 @@ function queuetools () {
         hidden: !self.setting('subredditColor'),
     });
 
+    self.register_setting('showReportReasons', {
+        type: 'boolean',
+        default: false,
+        beta: false,
+        title: 'Add button to show reports on posts with ignored reports.',
+    });
+
     //
     // Old reddit specific settings go below.
     //
@@ -118,14 +125,6 @@ function queuetools () {
         oldReddit: true,
     });
 
-    self.register_setting('showReportReasons', {
-        type: 'boolean',
-        default: false,
-        beta: true,
-        title: 'Add button to show reports on posts with ignored reports.',
-        oldReddit: true,
-    });
-
     self.register_setting('highlightAutomodMatches', {
         type: 'boolean',
         default: true,
@@ -155,7 +154,6 @@ function queuetools () {
               subredditColor = self.setting('subredditColor'),
               subredditColorSalt = self.setting('subredditColorSalt'),
               queueCreature = self.setting('queueCreature'),
-              showReportReasons = self.setting('showReportReasons'),
               highlightAutomodMatches = self.setting('highlightAutomodMatches'),
               groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
@@ -238,40 +236,6 @@ function queuetools () {
                 highlightedMatches();
             }
         });
-
-        if (showReportReasons && TBCore.isCommentsPage) {
-            const $ignoreReports = $('[data-event-action="unignorereports"]:first');
-            if ($ignoreReports.length > 0) {
-                let showing = false;
-                const $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
-                      reportHTML = `
-                            <ul class="report-reasons rounded" style="display: none">
-                                <li class="report-reason-title">user reports:</li>
-                            </ul>`;
-
-                $('#siteTable').find('.flat-list:first').append(reportHTML);
-
-                $ignoreReports.before($showReasons);
-
-                $body.on('click', '.tb-show-reasons', () => {
-                    if (showing) {
-                        return;
-                    }
-                    showing = !showing;
-
-                    TBApi.getReportReasons(window.location.href).then(reports => {
-                        self.log(reports.user_reports);
-                        self.log(reports.mod_reports);
-                        const $reportReasons = $('.report-reasons');
-
-                        reports.user_reports.forEach(report => {
-                            $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
-                        });
-                        $reportReasons.show();
-                    });
-                });
-            }
-        }
 
         // Add modtools buttons to page.
         function addModtools () {
@@ -896,7 +860,7 @@ function queuetools () {
                         TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
                         $sortButton.html('sort by items');
                         $sortButton.css({'padding-left': '', 'padding-right': ''});
-                    }
+                    },
                 );
 
                 function sortSubreddits () {
@@ -1200,6 +1164,7 @@ Action reason: ${value.data.details}
         // Cached data
         const showActionReason = self.setting('showActionReason'),
               expandActionReasonQueue = self.setting('expandActionReasonQueue'),
+              showReportReasons = self.setting('showReportReasons'),
               queueCreature = self.setting('queueCreature');
         // expandReports = self.setting('expandReports');
 
@@ -1431,6 +1396,81 @@ Action reason: ${value.data.details}
                     $this.text('hide recent actions');
                 }
             });
+        }
+
+        // Show button for previous ignored reports
+        if (showReportReasons) {
+            // One function handles both posts and comments
+            const addShowReportsButton = async redditEvent => {
+                // Toolbox-generated things already display ignored reports
+                if (['TBpost', 'TBcomment'].includes(redditEvent.detail.type)) {
+                    return;
+                }
+
+                // If we don't mod this subreddit, do nothing
+                const subreddit = redditEvent.detail.data.subreddit.name;
+                if (!TBCore.modsSub(subreddit)) {
+                    return;
+                }
+
+                // Fetch reports; if reports aren't ignored, do nothing
+                const {id, author} = redditEvent.detail.data;
+                const {reportsIgnored, userReports, modReports} = await new Promise(resolve => TBCore.getApiThingInfo(id, subreddit, false, resolve));
+                if (!reportsIgnored) {
+                    return;
+                }
+
+                // Create the button and add its event listener
+                const $button = document.createElement('a');
+                $button.classList.add('tb-bracket-button');
+                $button.textContent = 'show reports';
+                $button.addEventListener('click', clickEvent => {
+                    // Construct the list of reports
+                    const reportList = document.createElement('div');
+                    if (modReports.length) {
+                        const modReportList = document.createElement('ul');
+                        for (const [text, count] of modReports) {
+                            const li = document.createElement('li');
+                            li.textContent = `${count}: ${text}`;
+                            modReportList.append(li);
+                        }
+                        const title = document.createElement('b');
+                        title.append('mod reports:');
+                        reportList.append(title, modReportList);
+                    }
+                    if (userReports.length) {
+                        const userReportList = document.createElement('ul');
+                        for (const [text, author] of userReports) {
+                            const li = document.createElement('li');
+                            li.textContent = `${author}: ${text}`;
+                            userReportList.append(li);
+                        }
+                        const title = document.createElement('b');
+                        title.append('user reports:');
+                        reportList.append(title, userReportList);
+                    }
+
+                    // Display reports in a popup
+                    const {topPosition, leftPosition} = TBui.drawPosition(clickEvent);
+                    const $popup = TBui.popup({
+                        title: `Old reports on ${author}'s ${redditEvent.detail.type.includes('comment') ? 'comment' : 'post'}`,
+                        tabs: [{
+                            content: reportList,
+                        }],
+                        draggable: true,
+                    }).css({
+                        top: topPosition,
+                        left: leftPosition,
+                    }).appendTo(document.querySelector('.tb-page-overlay') || 'body');
+                    $popup.on('click', '.close', () => {
+                        $popup.remove();
+                    });
+                });
+
+                redditEvent.target.appendChild($button);
+            };
+            TB.listener.on('post', addShowReportsButton);
+            TB.listener.on('comment', addShowReportsButton);
         }
     }; // queueTools.init()
 

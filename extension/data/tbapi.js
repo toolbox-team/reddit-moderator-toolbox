@@ -679,27 +679,4 @@
         TBStorage.purifyObject(response);
         return response;
     });
-
-    /**
-     * Gets the report reasons for a post by its URL
-     * @param {string} postURL The absolute URL of a post
-     * @returns {Promise} Resolves to an object containing the reports or throws an error string
-     */
-    TBApi.getReportReasons = postURL => TBApi.getJSON(`${postURL}.json?limit=1`, {
-        uh: TBCore.modhash,
-    }).then(response => {
-        TBStorage.purifyObject(response);
-        if (typeof callback !== 'undefined') {
-            const data = response[0].data.children[0].data;
-
-            if (!data) {
-                throw 'No reports returned';
-            }
-
-            return {
-                user_reports: data.user_reports,
-                mod_reports: data.mod_reports,
-            };
-        }
-    });
 })(window.TBApi = window.TBApi || {});

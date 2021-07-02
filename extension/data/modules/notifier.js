@@ -280,6 +280,18 @@ function notifiermod () {
             $('#tb-unmoderatedCount').text(`[${count}]`);
         }
 
+        function calculateModmailCount(countData) {
+            // Modmail directors not included in total count. For example highlighted as that will cause duplicates.
+            const excludedDirs = ['highlighted']
+            let modmailFreshCount = 0;
+            for (const [key, count] of Object.entries(countData)) {
+                if(!excludedDirs.includes(key)) {
+                    modmailFreshCount += count;
+                }
+            }
+            return modmailFreshCount;
+        }
+
         // Here we update the count for new modmail. Is somewhat simpler than old modmail.
         function updateNewModMailCount (count, data) {
             // $modmail is native to reddit $tb_modmail in the modbar.
@@ -340,7 +352,7 @@ function notifiermod () {
                 setTimeout(() => {
                     TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
                         const data = await response.json();
-                        const modmailFreshCount = data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod + data.join_requests;
+                        const modmailFreshCount = calculateModmailCount(data);
                         self.setting('newModmailCount', modmailFreshCount);
                         self.setting('newModmailCategoryCount', data);
 
@@ -761,7 +773,7 @@ function notifiermod () {
             //
             TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
                 const data = await response.json();
-                const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod + data.join_requests;
+                const modmailFreshCount = calculateModmailCount(data);
                 self.setting('newModmailCount', modmailFreshCount);
                 self.setting('newModmailCategoryCount', data);
                 updateNewModMailCount(modmailFreshCount, data);

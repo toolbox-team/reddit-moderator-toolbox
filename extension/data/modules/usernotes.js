@@ -440,11 +440,11 @@ function usernotes () {
                         let timeDiv;
 
                         if (note.link) {
-                                let noteLink = note.link;
-                                if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
-                                    noteLink = `https://www.reddit.com${noteLink}`;
+                            let noteLink = note.link;
+                            if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
+                                noteLink = `https://www.reddit.com${noteLink}`;
                             }
-                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${noteLink}">${timeString}</a></div>`;
+                            timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${noteLink}">${timeString}</a></div>`;
                         } else {
                             timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
                         }
@@ -907,7 +907,7 @@ function usernotes () {
             });
 
             // Delete all notes for user.
-            $body.on('click', '.tb-un-delete', function () {
+            $body.on('click', '.tb-un-delete', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       $userSpan = $this.parent();
@@ -925,7 +925,7 @@ function usernotes () {
             });
 
             // Delete individual notes for user.
-            $body.on('click', '.tb-un-notedelete', function () {
+            $body.on('click', '.tb-un-notedelete', async function () {
                 const $this = $(this),
                       user = $this.attr('data-user'),
                       note = $this.attr('data-note'),
@@ -1075,7 +1075,7 @@ function usernotes () {
                 ],
                 [], // extra header buttons
                 'tb-un-editor', // class
-                false // single overriding footer
+                false, // single overriding footer
             ).appendTo('body');
             $body.css('overflow', 'hidden');
 

@@ -574,45 +574,45 @@ function modbutton () {
                 TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
 
                 Promise.all(subs.map(async subreddit => {
-                        TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 
-                        self.log(`performing action in: ${subreddit}`);
-                        if (settingState) {
-                            const params = {
-                                user,
-                                action,
-                                subreddit,
-                            };
+                    self.log(`performing action in: ${subreddit}`);
+                    if (settingState) {
+                        const params = {
+                            user,
+                            action,
+                            subreddit,
+                        };
 
-                            // Only send ban-related fields if performing a ban action
-                            if (action === 'banned') {
-                                params.banReason = banReason;
-                                params.banMessage = banMessage;
-                                params.banDuration = banDuration;
-                                params.banContext = banContext;
-                            }
-                            TBApi.friendUser(params).then(response => {
-                                if (response.json.errors.length) {
-                                    throw new Error('There were one or more errors banning the user');
-                                }
-                            }).catch(() => {
-                                // catches the above `errors.length` condition as well as network errors
-                                self.log('missed one');
-                                failedSubs.push(subreddit);
-                            });
-                        } else {
-                            TBApi.unfriendUser(user, action, subreddit).catch(() => {
-                                // only catches network errors because unfriend is weird
-                                self.log('missed one');
-                                failedSubs.push(subreddit);
-                            });
+                        // Only send ban-related fields if performing a ban action
+                        if (action === 'banned') {
+                            params.banReason = banReason;
+                            params.banMessage = banMessage;
+                            params.banDuration = banDuration;
+                            params.banContext = banContext;
                         }
+                        TBApi.friendUser(params).then(response => {
+                            if (response.json.errors.length) {
+                                throw new Error('There were one or more errors banning the user');
+                            }
+                        }).catch(() => {
+                            // catches the above `errors.length` condition as well as network errors
+                            self.log('missed one');
+                            failedSubs.push(subreddit);
+                        });
+                    } else {
+                        TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                            // only catches network errors because unfriend is weird
+                            self.log('missed one');
+                            failedSubs.push(subreddit);
+                        });
+                    }
                 })).then(() => {
-                        TB.ui.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
 
-                        window.setTimeout(() => {
-                            completeCheck(failedSubs);
-                        }, 2000);
+                    window.setTimeout(() => {
+                        completeCheck(failedSubs);
+                    }, 2000);
                 });
             }
         });

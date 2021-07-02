@@ -534,9 +534,9 @@ function modmacros () {
             // reset the macro button to the initial state after the popup is removed, so we do that here.
             $macroPopup.on('click', '.close', () => {
                 const $selectElement = $body.find(`#macro-dropdown-${info.id}`);
-            $selectElement.val(MACROS);
-            $selectElement.prop('disabled', false);
-        });
+                $selectElement.val(MACROS);
+                $selectElement.prop('disabled', false);
+            });
         }
 
         $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {

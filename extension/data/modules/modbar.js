@@ -308,9 +308,9 @@ function modbar () {
             </div>
             `;
 
-                $body.on('click', '#tb-toolbar-mysubs', () => {
-                    const $existingPopup = $body.find('.subreddits-you-mod-popup');
-                    if (!$existingPopup.length) {
+            $body.on('click', '#tb-toolbar-mysubs', () => {
+                const $existingPopup = $body.find('.subreddits-you-mod-popup');
+                if (!$existingPopup.length) {
                     TB.ui.popup({
                         title: 'Subreddits you moderate',
                         tabs: [
@@ -331,7 +331,7 @@ function modbar () {
                     // Focus the filter bar for convenience
                     $('#tb-livefilter-input').focus();
                 } else {
-                        $existingPopup.remove();
+                    $existingPopup.remove();
                 }
 
                 $body.find('#tb-livefilter-input').keyup(function () {

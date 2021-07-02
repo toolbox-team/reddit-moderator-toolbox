@@ -150,7 +150,7 @@ function modbutton () {
 
         self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
-        TBCore.getModSubs(() => {
+        TBCore.getModSubs().then(() => {
         // it's Go Time™!
             self.runRedesign();
         });
@@ -314,7 +314,7 @@ function modbutton () {
             // get pre-definded ban message/note
             if (subreddit) {
                 self.log('getting ban macros');
-                TBCore.getConfig(subreddit, config => {
+                TBCore.getConfig(subreddit).then(config => {
                     if (!config || !config.banMacros) {
                         return;
                     }
@@ -455,7 +455,7 @@ function modbutton () {
                     };
                     openModPopup(event, info);
                 } else {
-                    TBCore.getApiThingInfo(id, subreddit, true, info => {
+                    TBCore.getApiThingInfo(id, subreddit, true).then(info => {
                         // If the thing we're fetching info for is removed in a subreddit the current user doesn't mod,
                         // the API won't return information about it. However, we can still access such things if we're
                         // on the user's profile. In that context, we manually fill in the author since we know at least

@@ -589,10 +589,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * @param {string} options.message The text of the alert
          * @param {number} options.noteID The ID of the note we're displaying
          * @param {boolean} options.showClose Whether to show a close button
-         * @param {callback} callback callback function
-         * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
+         * @returns {Promise<boolean>} Resolves when the alert is closed. Value
+         * will be `true` if the alert was clicked, `false` if the close button
+         * was clicked or if it was closed for another reason.
          */
-        TBCore.alert = function ({message, noteID, showClose}, callback) {
+        TBCore.alert = ({message, noteID, showClose}) => new Promise(resolve => {
             const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
                 $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
@@ -604,7 +605,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 if (settingDetail.module === SETTINGS_NAME && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
                     seenNotes = settingDetail.value;
                     $noteDiv.remove();
-                    callback(false);
+                    resolve(false);
                     return;
                 }
             });
@@ -612,12 +613,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             $noteDiv.click(e => {
                 $noteDiv.remove();
                 if (e.target.className === 'note-close') {
-                    callback(false);
+                    resolve(false);
                     return;
                 }
-                callback(true);
+                resolve(true);
             });
-        };
+        });
 
         TBCore.showNote = function (note) {
             if (!note.id || !note.text) {
@@ -630,7 +631,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         message: note.text,
                         noteID: note.id,
                         showClose: false,
-                    }, resp => {
+                    }).then(resp => {
                         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
                             seenNotes.push(note.id);
                             TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
@@ -703,17 +704,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         };
 
-        TBCore.getModSubs = function (callback) {
+        TBCore.getModSubs = () => new Promise(resolve => {
             logger.log('getting mod subs');
             // If it has been more than ten minutes, refresh mod cache.
             if (TBCore.mySubs.length < 1 || TBCore.mySubsData.length < 1) {
-            // time to refresh
+                // time to refresh
                 if (gettingModSubs) {
-                // we're already fetching a new list, so enqueue the callback
+                    // we're already fetching a new list, so enqueue the callback
                     logger.log('Enqueueing getModSubs callback');
-                    getModSubsCallbacks.push(callback);
+                    getModSubsCallbacks.push(resolve);
                 } else {
-                // start the process
+                    // start the process
                     logger.log('getting new subs.');
 
                     gettingModSubs = true;
@@ -722,11 +723,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     getSubs(modMineURL);
                 }
             } else {
-            // run callback on cached sublist
+                // run callback on cached sublist
                 TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
                 TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');
                 // Go!
-                callback();
+                resolve();
             }
 
             function getSubs (URL) {
@@ -776,7 +777,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBCore.mySubs);
                     TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBCore.mySubsData);
 
-                    callback();
+                    resolve();
                     // no idea what the following shit is.
                     // Go!
                     while (getModSubsCallbacks.length > 0) {
@@ -789,22 +790,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     gettingModSubs = false;
                 }
             }
-        };
+        });
 
-        TBCore.modSubCheck = function (callback) {
-            TBCore.getModSubs(() => {
-                const subCount = TBCore.mySubsData.length;
-                let subscriberCount = 0;
-                TBCore.mySubsData.forEach(subreddit => {
-                    subscriberCount += subreddit.subscribers;
-                });
-                subscriberCount -= subCount;
-                if (subscriberCount > 25) {
-                    return callback(true);
-                } else {
-                    return callback(false);
-                }
+        TBCore.modSubCheck = async function () {
+            await TBCore.getModSubs();
+            const subCount = TBCore.mySubsData.length;
+            let subscriberCount = 0;
+            TBCore.mySubsData.forEach(subreddit => {
+                subscriberCount += subreddit.subscribers;
             });
+            subscriberCount -= subCount;
+            return subscriberCount > 25;
         };
 
         TBCore.getThingInfo = function (sender, modCheck) {
@@ -1019,7 +1015,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             return found;
         }
 
-        TBCore.getApiThingInfo = function (id, subreddit, modCheck, callback) {
+        TBCore.getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve => {
             if (id.startsWith('t4_')) {
                 const shortID = id.substr(3);
                 TBApi.getJSON(`/message/messages/${shortID}.json`).then(response => {
@@ -1062,7 +1058,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         mod: TBCore.logged,
                     };
 
-                    callback(info);
+                    resolve(info);
                 });
             } else {
                 const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
@@ -1131,10 +1127,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         modReports: data.children[0].data.mod_reports,
                         reportsIgnored: data.children[0].data.ignore_reports,
                     };
-                    callback(info);
+                    resolve(info);
                 });
             }
-        };
+        });
 
         // Prevent page lock while parsing things.  (stolen from RES)
         TBCore.forEachChunked = function (array, chunkSize, delay, call, complete, start) {
@@ -1240,7 +1236,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         // Import export methods
-        TBCore.exportSettings = function (subreddit, callback) {
+        TBCore.exportSettings = async function (subreddit) {
             const settingsObject = {};
             $(TBStorage.settings).each(function () {
                 if (this === 'Storage.settings') {
@@ -1255,64 +1251,56 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
+            await TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false);
         };
 
-        TBCore.importSettings = function (subreddit, callback) {
-            TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
-                if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
-                    logger.log('Error loading wiki page');
-                    return;
-                }
-                TBStorage.purifyObject(resp);
-                if (resp['Utils.lastversion'] < 300) {
-                    TBui.textFeedback('Cannot import from a toolbox version under 3.0');
-                    logger.log('Cannot import from a toolbox version under 3.0');
-                    return;
-                }
-
-                const doNotImport = [
-                    'oldreddit.enabled',
-                ];
-
-                Object.entries(resp).forEach(([fullKey, value]) => {
-                    const key = fullKey.split('.');
-
-                    // Do not import certain legacy settings.
-                    if (doNotImport.includes(fullKey)) {
-                        logger.log(`Skipping ${fullKey} import`);
-                    } else {
-                        TBStorage.setSetting(key[0], key[1], value, false);
-                    }
-                });
-
-                callback();
-            });
-        };
-
-        TBCore.addToSiteTable = function (URL, callback) {
-            if (!callback) {
+        TBCore.importSettings = async function (subreddit) {
+            const resp = await TBApi.readFromWiki(subreddit, 'tbsettings', true);
+            if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN || resp === TBCore.NO_WIKI_PAGE) {
+                logger.log('Error loading wiki page');
+                return;
+            }
+            TBStorage.purifyObject(resp);
+            if (resp['Utils.lastversion'] < 300) {
+                TBui.textFeedback('Cannot import from a toolbox version under 3.0');
+                logger.log('Cannot import from a toolbox version under 3.0');
                 return;
             }
 
-            if (!URL) {
-                return callback(null);
-            }
+            const doNotImport = [
+                'oldreddit.enabled',
+            ];
 
-            TBApi.getJSON(URL).then(resp => {
-                if (!resp) {
-                    return callback(null);
-                }
-                resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
-                const $sitetable = $(resp).find('#siteTable');
-                $sitetable.find('.nextprev').remove();
+            Object.entries(resp).forEach(([fullKey, value]) => {
+                const key = fullKey.split('.');
 
-                if ($sitetable.length) {
-                    callback($sitetable);
+                // Do not import certain legacy settings.
+                if (doNotImport.includes(fullKey)) {
+                    logger.log(`Skipping ${fullKey} import`);
                 } else {
-                    callback(null);
+                    TBStorage.setSetting(key[0], key[1], value, false);
                 }
             });
+        };
+
+        TBCore.addToSiteTable = async function (URL) {
+            if (!URL) {
+                return null;
+            }
+
+            let resp = await TBApi.getJSON(URL);
+            if (!resp) {
+                return null;
+            }
+            resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
+            const $sitetable = $(resp).find('#siteTable');
+            $sitetable.find('.nextprev').remove();
+
+            if ($sitetable.length) {
+                return $sitetable;
+            } else {
+                return null;
+            }
         };
 
         // Cache manipulation
@@ -1347,27 +1335,26 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             return TBCore.configCache[sub] !== undefined;
         };
 
-        TBCore.getConfig = function (sub, callback) {
+        TBCore.getConfig = async function (sub) {
             if (TBCore.hasNoConfig(sub)) {
-                callback(false, sub);
-            } else if (TBCore.hasConfig(sub)) {
-                callback(TBCore.configCache[sub], sub);
+                return false;
+            }
+            if (TBCore.hasConfig(sub)) {
+                return TBCore.configCache[sub];
+            }
+            const resp = await TBApi.readFromWiki(sub, 'toolbox', true);
+            if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
+                // Complete and utter failure
+                return false;
+            } else if (resp === TBCore.NO_WIKI_PAGE) {
+                // Subreddit not configured yet
+                TBCore.updateCache('noConfig', sub, false);
+                return false;
             } else {
-                TBApi.readFromWiki(sub, 'toolbox', true).then(resp => {
-                    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
-                        // Complete and utter failure
-                        callback(false, sub);
-                    } else if (resp === TBCore.NO_WIKI_PAGE) {
-                        // Subreddit not configured yet
-                        TBCore.updateCache('noConfig', sub, false);
-                        callback(false, sub);
-                    } else {
-                        // It works!
-                        TBStorage.purifyObject(resp);
-                        TBCore.updateCache('configCache', resp, sub);
-                        callback(resp, sub);
-                    }
-                });
+                // It works!
+                TBStorage.purifyObject(resp);
+                TBCore.updateCache('configCache', resp, sub);
+                return resp;
             }
         };
 
@@ -1769,30 +1756,33 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 (function () {
     const logger = TBLog('TBCore init');
     // wait for storage
-    function getModSubs (after, callback) {
+    async function getModSubs (after) {
         let modSubs = [];
-        TBApi.getJSON('/subreddits/mine/moderator.json', {
-            after,
-            limit: 100,
-        }).then(json => {
+        try {
+            const json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
+                after,
+                limit: 100,
+            });
             TBStorage.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
 
             if (json.data.after) {
-                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
+                const subs = await getModSubs(json.data.after);
+                return modSubs.concat(subs);
             } else {
-                return callback(modSubs);
+                return modSubs;
             }
-        }).catch(error => {
+        } catch (error) {
             logger.log('getModSubs failed', error);
             if (error.response && error.response.status === 504) {
                 logger.log('504 Timeout retrying request');
-                getModSubs(after, subs => callback(modSubs.concat(subs)));
+                const subs = await getModSubs(after);
+                return modSubs.concat(subs);
             } else {
                 modSubs = [];
-                return callback(modSubs);
+                return modSubs;
             }
-        });
+        }
     }
 
     function getUserDetails (tries = 0) {
@@ -1814,7 +1804,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     function modsubInit (cacheDetails, userDetails) {
         if (cacheDetails.moderatedSubs.length === 0) {
             logger.log('No modsubs in cache, getting mod subs before initalizing');
-            getModSubs(null, subs => {
+            getModSubs(null).then(subs => {
                 initwrapper({
                     userDetails,
                     newModSubs: subs,

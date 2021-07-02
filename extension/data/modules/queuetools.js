@@ -200,7 +200,7 @@ function queuetools () {
             $this.addClass('tb-subreddit-color');
         }
 
-        TBCore.getModSubs(() => {
+        TBCore.getModSubs().then(() => {
             if (subredditColor) {
                 self.log('adding sub colors');
                 $('.thing').each(colorSubreddits);
@@ -259,24 +259,23 @@ function queuetools () {
             $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
             // remove stuff we can't moderate (in non-mod queues only)
-            function removeUnmoddable () {
+            async function removeUnmoddable () {
                 if (!TBCore.isModpage && !TBCore.isSubCommentsPage) {
-                    TBCore.getModSubs(() => {
-                        $('.thing').each(function () {
-                            const $thing = $(this),
-                                  $sub = $thing.find('.subreddit');
+                    await TBCore.getModSubs();
+                    $('.thing').each(function () {
+                        const $thing = $(this),
+                              $sub = $thing.find('.subreddit');
 
-                            // Remove if the sub isn't moderated
-                            if ($sub.length > 0) {
-                                const sub = TBHelpers.cleanSubredditName($sub.text());
-                                if (!TBCore.modsSub(sub)) {
-                                    $thing.remove();
-                                }
-                            } else if ($thing.find('.parent').text().endsWith('[promoted post]')) {
-                                // Always remove things like sponsored links (can't mod those)
+                        // Remove if the sub isn't moderated
+                        if ($sub.length > 0) {
+                            const sub = TBHelpers.cleanSubredditName($sub.text());
+                            if (!TBCore.modsSub(sub)) {
                                 $thing.remove();
                             }
-                        });
+                        } else if ($thing.find('.parent').text().endsWith('[promoted post]')) {
+                            // Always remove things like sponsored links (can't mod those)
+                            $thing.remove();
+                        }
                     });
                 }
             }
@@ -344,12 +343,12 @@ function queuetools () {
                     <p><label><input type="checkbox" class="choice" name="links" /> submissions</label></p>
                     <p><label><input type="checkbox" class="choice" name="self" /> text posts</label></p>
                     <p><label><input type="checkbox" class="choice" name="flair" /> posts with flair</label></p>
-
+                    
                     <p class="divider"><input type="text" class="choice tb-input" name="domain" placeholder="domain..." /></p>
                     <p><input type="text" class="choice tb-input" name="user" placeholder="user..." /></p>
                     <p><input type="text" class="choice tb-input" name="title" placeholder="title..." /></p>
                     <p><input type="text" class="choice tb-input" name="subreddit" placeholder="subreddit..." /></p>
-
+                    
                     <h2 class="divider">Conditional</h2>
                     <p><input type="text" class="choice tb-input" name="pointsgt" placeholder="points >..." /></p>
                     <p><input type="text" class="choice tb-input" name="pointslt" placeholder="points <..." /></p>
@@ -1309,13 +1308,13 @@ Action reason: ${value.data.details}
             }
         }
 
-        function makeActionTable ($target, subreddit, id) {
-            TBCore.getModSubs(() => {
-                if (TBCore.modsSub(subreddit)) {
-                    getActions(subreddit, id, actions => {
-                        if (actions) {
-                            const show = $('body').hasClass('tb-show-actions');
-                            const $actionTable = $(`
+        async function makeActionTable ($target, subreddit, id) {
+            await TBCore.getModSubs();
+            if (TBCore.modsSub(subreddit)) {
+                getActions(subreddit, id, actions => {
+                    if (actions) {
+                        const show = $('body').hasClass('tb-show-actions');
+                        const $actionTable = $(`
                             <div class="tb-action-details">
                                 <span class="tb-bracket-button tb-show-action-table">${show ? 'hide' : 'show'} recent actions</span>
                                 <table class="tb-action-table">
@@ -1329,14 +1328,14 @@ Action reason: ${value.data.details}
                             </div>
                             `);
 
-                            Object.values(actions).forEach(value => {
-                                const mod = value.mod;
-                                const action = value.action;
-                                const details = value.details;
-                                const createdUTC = TBHelpers.timeConverterRead(value.created_utc);
-                                const createdTimeAgo = new Date(value.created_utc * 1000).toISOString();
+                        Object.values(actions).forEach(value => {
+                            const mod = value.mod;
+                            const action = value.action;
+                            const details = value.details;
+                            const createdUTC = TBHelpers.timeConverterRead(value.created_utc);
+                            const createdTimeAgo = new Date(value.created_utc * 1000).toISOString();
 
-                                const actionHTML = `
+                            const actionHTML = `
                                 <tr>
                                     <td>${mod}</td>
                                     <td>${action}</td>
@@ -1344,17 +1343,16 @@ Action reason: ${value.data.details}
                                     <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
                                 </tr>
                                 `;
-                                $actionTable.find('.tb-action-table').append(actionHTML);
-                            });
+                            $actionTable.find('.tb-action-table').append(actionHTML);
+                        });
 
-                            requestAnimationFrame(() => {
-                                $target.append($actionTable);
-                                $actionTable.find('time.timeago').timeago();
-                            });
-                        }
-                    });
-                }
-            });
+                        requestAnimationFrame(() => {
+                            $target.append($actionTable);
+                            $actionTable.find('time.timeago').timeago();
+                        });
+                    }
+                });
+            }
         }
         // Show history of actions near posts.
         if (showActionReason) {

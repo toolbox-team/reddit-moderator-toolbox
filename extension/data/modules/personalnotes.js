@@ -124,94 +124,94 @@ function personalnotes () {
         $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
 
         // Since we have a button we can click on it!
-        $body.on('click', '#tb-personal-notes-button', () => {
+        $body.on('click', '#tb-personal-notes-button', async () => {
             const $existingPopup = $('.personal-notes-popup');
 
             // Making sure the ui is only created once.
             if (!$existingPopup.length) {
                 // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-                TBCore.getModSubs(() => {
-                    // We can't expect people to get the capitalizing right.
-                    const mySubsLowerCase = [];
-                    $(TBCore.mySubs).each(function () {
-                        mySubsLowerCase.push(this.toLowerCase());
-                    });
+                await TBCore.getModSubs();
+                // We can't expect people to get the capitalizing right.
+                const mySubsLowerCase = [];
+                $(TBCore.mySubs).each(function () {
+                    mySubsLowerCase.push(this.toLowerCase());
+                });
 
-                    // Empty subreddit.
-                    if (notewiki === '') {
-                        notesPopupContent = '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
-                        createPersonalNotesPopup(notesPopupContent);
+                // Empty subreddit.
+                if (notewiki === '') {
+                    notesPopupContent = '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
+                    createPersonalNotesPopup(notesPopupContent);
 
-                    // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
-                    } else if (!mySubsLowerCase.includes(notewiki)) {
-                        notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
-                        createPersonalNotesPopup(notesPopupContent);
-                    } else {
-                        // build a template, we only need to insert one variable but this is cleaner and more feature proof.
-                        const notesPopupContentTemplate = `
-                    <table style="height:${popupHeight}px;"><tr>
-                        <td id="tb-personal-notes-listing">
-                            <div id="tb-personal-notes-list">
-                                {{notesList}}
-                            </div>
-                            <div id="tb-new-personal-note-div">
-                                <label for="tb-new-personal-note">
-                                    Create note:
-                                </label>
-                                <input type="text" class="tb-input" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>
-                                <input type="button" id="create-personal-note" class="tb-action-button" value="create note">
-                            </div>
+                // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
+                } else if (!mySubsLowerCase.includes(notewiki)) {
+                    notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
+                    createPersonalNotesPopup(notesPopupContent);
+                } else {
+                    // build a template, we only need to insert one variable but this is cleaner and more feature proof.
+                    const notesPopupContentTemplate = `
+                        <table style="height:${popupHeight}px;"><tr>
+                            <td id="tb-personal-notes-listing">
+                                <div id="tb-personal-notes-list">
+                                    {{notesList}}
+                                </div>
+                                <div id="tb-new-personal-note-div">
+                                    <label for="tb-new-personal-note">
+                                        Create note:
+                                    </label>
+                                    <input type="text" class="tb-input" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>
+                                    <input type="button" id="create-personal-note" class="tb-action-button" value="create note">
+                                </div>
 
-                        </td>
-                        <td id="tb-personal-notes-content">
-                            <div id="tb-personal-notes-landing">
-                                <span>Welcome to your personal notes!</span>
-                                <span class="tb-personal-notes-landing-subtitle">Click or create a note on the left to get started.</span>
-                            </div>
-                            <textarea class="tb-input" id="tb-personal-notes-editarea" ${monospace ? 'style="font-family: monospace;"' : ''}></textarea>
-                        </td>
-                    </tr></table>`;
+                            </td>
+                            <td id="tb-personal-notes-content">
+                                <div id="tb-personal-notes-landing">
+                                    <span>Welcome to your personal notes!</span>
+                                    <span class="tb-personal-notes-landing-subtitle">Click or create a note on the left to get started.</span>
+                                </div>
+                                <textarea class="tb-input" id="tb-personal-notes-editarea" ${monospace ? 'style="font-family: monospace;"' : ''}></textarea>
+                            </td>
+                        </tr></table>
+                    `;
 
-                        // Lets get a list of notes!
-                        TBApi.getJSON(`/r/${notewiki}/wiki/pages.json`)
-                            .then(json => {
-                                notesArray = [];
-                                let notesList;
-                                const count = json.data.length || 0;
+                    // Lets get a list of notes!
+                    TBApi.getJSON(`/r/${notewiki}/wiki/pages.json`)
+                        .then(json => {
+                            notesArray = [];
+                            let notesList;
+                            const count = json.data.length || 0;
 
-                                if (count === 0) {
+                            if (count === 0) {
+                                notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
+                            } else {
+                                let notecount = 0,
+                                    noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
+
+                                json.data.forEach(value => {
+                                    if (/notes\//.test(value)) {
+                                        value = value.replace('notes/', '');
+                                        notecount++;
+                                        notesArray.push(value);
+                                        noteListConstruction += TBHelpers.template(noteListTemplate, {name: value});
+                                    }
+                                });
+
+                                if (notecount === 0) {
                                     notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
                                 } else {
-                                    let notecount = 0,
-                                        noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
-
-                                    json.data.forEach(value => {
-                                        if (/notes\//.test(value)) {
-                                            value = value.replace('notes/', '');
-                                            notecount++;
-                                            notesArray.push(value);
-                                            noteListConstruction += TBHelpers.template(noteListTemplate, {name: value});
-                                        }
-                                    });
-
-                                    if (notecount === 0) {
-                                        notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
-                                    } else {
-                                        noteListConstruction += '</ul>';
-                                        notesList = noteListConstruction;
-                                    }
+                                    noteListConstruction += '</ul>';
+                                    notesList = noteListConstruction;
                                 }
+                            }
 
-                                notesPopupContent = TBHelpers.template(notesPopupContentTemplate, {
-                                    notesList,
-                                });
-                                createPersonalNotesPopup(notesPopupContent);
-                            })
-                            .catch(() => {
-                                TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
+                            notesPopupContent = TBHelpers.template(notesPopupContentTemplate, {
+                                notesList,
                             });
-                    }
-                });
+                            createPersonalNotesPopup(notesPopupContent);
+                        })
+                        .catch(() => {
+                            TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
+                        });
+                }
             } else {
                 // The UI already exists, so let's destroy it.
                 $existingPopup.remove();

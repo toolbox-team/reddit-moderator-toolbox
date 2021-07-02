@@ -372,7 +372,7 @@ function tbmodule () {
                 });
             });
 
-            $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', e => {
+            $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', async e => {
                 let sub = $('input[name=settingssub]').val();
                 if (!sub) {
                     TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
@@ -388,27 +388,25 @@ function tbmodule () {
                 TB.storage.setSetting('Utils', 'settingSub', sub);
 
                 if ($(e.target).hasClass('tb-settings-import')) {
-                    TBCore.importSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                        TBCore.clearCache();
-                        TB.storage.verifiedSettingsSave(succ => {
-                            if (succ) {
-                                TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 1000);
-                            } else {
-                                TB.ui.textFeedback('Imported settings could not be verified', TB.ui.FEEDBACK_NEGATIVE);
-                            }
-                        });
+                    await TBCore.importSettings(sub);
+                    self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                    TBCore.clearCache();
+                    TB.storage.verifiedSettingsSave(succ => {
+                        if (succ) {
+                            TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            TB.ui.textFeedback('Imported settings could not be verified', TB.ui.FEEDBACK_NEGATIVE);
+                        }
                     });
                 } else {
                     TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
-                    TBCore.exportSettings(sub, () => {
-                        self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                        TBCore.clearCache();
-                        window.location.reload();
-                    });
+                    await TBCore.exportSettings(sub);
+                    self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                    TBCore.clearCache();
+                    window.location.reload();
                 }
             });
 

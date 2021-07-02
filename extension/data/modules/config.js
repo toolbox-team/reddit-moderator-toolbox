@@ -317,25 +317,24 @@ function tbconfig () {
             window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
         });
 
-        window.addEventListener('TBNewPage', event => {
+        window.addEventListener('TBNewPage', async event => {
             if (event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
 
-                TBCore.getModSubs(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        TBui.contextTrigger('tb-config-link', {
-                            addTrigger: true,
-                            triggerText: `/r/${subreddit} config`,
-                            triggerIcon: TBui.icons.tbSubConfig,
-                            title: `toolbox configuration for /r/${subreddit}`,
-                            dataAttributes: {
-                                subreddit,
-                            },
-                        });
-                    } else {
-                        TBui.contextTrigger('tb-config-link', {addTrigger: false});
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    TBui.contextTrigger('tb-config-link', {
+                        addTrigger: true,
+                        triggerText: `/r/${subreddit} config`,
+                        triggerIcon: TBui.icons.tbSubConfig,
+                        title: `toolbox configuration for /r/${subreddit}`,
+                        dataAttributes: {
+                            subreddit,
+                        },
+                    });
+                } else {
+                    TBui.contextTrigger('tb-config-link', {addTrigger: false});
+                }
             } else {
                 TBui.contextTrigger('tb-config-link', {addTrigger: false});
             }

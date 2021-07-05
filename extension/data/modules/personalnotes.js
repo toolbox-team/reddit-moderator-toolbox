@@ -4,35 +4,37 @@ import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('Personal Notes');
-self.shortname = 'PNotes';
+export default new Module({
+    name: 'Personal Notes',
+    id: 'PNotes',
+    enabledByDefault: false,
+    settings: [
+        {
+            id: 'noteWiki',
+            title: 'Subreddit you want to use to store your personal notes.',
+            type: 'subreddit',
+            default: '',
+        },
+        {
+            id: 'popupHeight',
+            type: 'number',
+            default: 300,
+            title: 'Default height, in pixels, for the text editor',
 
-self.settings['enabled']['default'] = false;
-
-self.register_setting('noteWiki', {
-    type: 'subreddit',
-    default: '',
-    title: 'Subreddit you want to use to store your personal notes.',
-});
-self.register_setting('popupHeight', {
-    type: 'number',
-    default: 300,
-    title: 'Default height, in pixels, for the text editor',
-});
-self.register_setting('monospace', {
-    type: 'boolean',
-    default: false,
-    title: 'Use a monospace font in the text editor',
-});
-
-self.init = function () {
+        },
+        {
+            id: 'monospace',
+            type: 'boolean',
+            default: false,
+            title: 'Use a monospace font in the text editor',
+        },
+    ],
+}, function init ({noteWiki: notewiki, popupHeight, monospace}) {
+    this.info('Personal notes loaded! Success!');
     if (TBCore.isEmbedded) {
         return;
     }
-    const notewiki = self.setting('noteWiki').toLowerCase(),
-          popupHeight = self.setting('popupHeight'),
-          monospace = self.setting('monospace'),
-          $body = $('body');
+    const $body = $('body');
     let notesArray = [],
         notesPopupContent;
 
@@ -98,11 +100,11 @@ self.init = function () {
         });
     }
 
-    function saveNoteWiki (page, subreddit, data, reason, newnote) {
-        self.log('posting to wiki');
+    const saveNoteWiki = (page, subreddit, data, reason, newnote) => {
+        this.log('posting to wiki');
         TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
         TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false).then(() => {
-            self.log('clearing cache');
+            this.log('clearing cache');
             TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
 
             if (newnote) {
@@ -118,10 +120,10 @@ self.init = function () {
                 loadNoteWiki(page);
             }
         }).catch(err => {
-            self.log(err.responseText);
+            this.log(err.responseText);
             TBui.textFeedback(err.responseText, TBui.FEEDBACK_NEGATIVE);
         });
-    }
+    };
 
     // add the button to the modbar
     $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
@@ -286,6 +288,4 @@ self.init = function () {
         $(this).closest('.personal-notes-popup').remove();
         $body.find('#tb-personal-notes-button').removeClass('tb-notes-activated');
     });
-};
-
-export default self;
+});

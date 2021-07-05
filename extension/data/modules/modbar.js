@@ -5,90 +5,103 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBModule from '../tbmodule.js';
 
-const self = new Module('Modbar');
-self.shortname = 'Modbar';
-
-self.settings['enabled']['default'] = true;
-
-// How about you don't disable the modbar?  No other module should ever do this. Well except for the support module and the old reddit module..
-// So yeah it depends... But seriously normal modules should not do this.
-self.settings['enabled']['hidden'] = true; // Don't disable it, either!
-
-self.register_setting('compactHide', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Use compact mode for modbar',
-});
-self.register_setting('unmoderatedOn', {
-    type: 'boolean',
-    default: true,
-    title: 'Show icon for unmoderated',
-});
-self.register_setting('enableModSubs', {
-    type: 'boolean',
-    default: true,
-    title: 'Show Moderated Subreddits in the modbar',
-});
-self.register_setting('enableOldNewToggle', {
-    type: 'boolean',
-    default: true,
-    title: 'Include a button in the modbar to swap between old and new Reddit',
-});
-self.register_setting('shortcuts', {
-    type: 'map',
-    default: {},
-    labels: ['name', 'url'],
-    title: 'Shortcuts',
-    hidden: false,
-});
-
-// private (hidden) settings.
-self.register_setting('modbarHidden', {
-    type: 'boolean',
-    default: false,
-    hidden: true,
-});
-self.register_setting('consoleShowing', {
-    type: 'boolean',
-    default: false,
-    hidden: true,
-});
-self.register_setting('lockScroll', {
-    type: 'boolean',
-    default: false,
-    hidden: true,
-});
-self.register_setting('customCSS', {
-    type: 'code',
-    default: '',
-    hidden: true,
-});
-self.register_setting('lastExport', {
-    type: 'number',
-    default: 0,
-    hidden: true,
-});
-self.register_setting('showExportReminder', {
-    type: 'boolean',
-    default: true,
-    hidden: true,
-});
-
-self.register_setting('subredditColorSalt', {
-    type: 'text',
-    default: TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt'),
-    hidden: true,
-});
-
-self.init = function () {
+export default new Module({
+    name: 'Modbar',
+    id: 'Modbar',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'compactHide',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            title: 'Use compact mode for modbar',
+        },
+        {
+            id: 'unmoderatedOn',
+            type: 'boolean',
+            default: true,
+            title: 'Show icon for unmoderated',
+        },
+        {
+            id: 'enableModSubs',
+            type: 'boolean',
+            default: true,
+            title: 'Show Moderated Subreddits in the modbar',
+        },
+        {
+            id: 'enableOldNewToggle',
+            type: 'boolean',
+            default: true,
+            title: 'Include a button in the modbar to swap between old and new Reddit',
+        },
+        {
+            id: 'shortcuts',
+            type: 'map',
+            default: {},
+            labels: ['name', 'url'],
+            title: 'Shortcuts',
+            hidden: false,
+        },
+        {
+            id: 'modbarHidden',
+            type: 'boolean',
+            default: false,
+            hidden: true,
+        },
+        {
+            id: 'consoleShowing',
+            type: 'boolean',
+            default: false,
+            hidden: true,
+        },
+        {
+            id: 'lockScroll',
+            type: 'boolean',
+            default: false,
+            hidden: true,
+        },
+        {
+            id: 'customCSS',
+            type: 'code',
+            default: '',
+            hidden: true,
+        },
+        {
+            id: 'lastExport',
+            type: 'number',
+            default: 0,
+            hidden: true,
+        },
+        {
+            id: 'showExportReminder',
+            type: 'boolean',
+            default: true,
+            hidden: true,
+        },
+        {
+            id: 'subredditColorSalt',
+            type: 'text',
+            default: 'PJSalt',
+            hidden: true,
+        },
+    ],
+}, function init ({
+    shortcuts,
+    compactHide,
+    unmoderatedOn,
+    enableModSubs,
+    enableOldNewToggle,
+    customCSS,
+    consoleShowing,
+    modbarHidden,
+    subredditColorSalt,
+}) {
     const $body = $('body');
 
     // Footer element below the page so toolbox never should be in the way.
     // Doing it like this because it means we don't have to mess with reddit css
     const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
-
-    debugger;
 
     if (!window.TBCore.logged || TBCore.isEmbedded) {
         return;
@@ -109,15 +122,8 @@ self.init = function () {
     //
     // preload some generic variables
     //
-    const shortcuts = self.setting('shortcuts'),
-          compactHide = self.setting('compactHide'),
-          unmoderatedOn = self.setting('unmoderatedOn'),
-          enableModSubs = self.setting('enableModSubs'),
-          enableOldNewToggle = self.setting('enableOldNewToggle'),
-          customCSS = self.setting('customCSS'),
-          consoleShowing = self.setting('consoleShowing'),
 
-          debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
+    const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
 
           modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
           unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
@@ -131,8 +137,6 @@ self.init = function () {
 
           modSubredditsFMod = TBStorage.getSetting('Notifier', 'modSubredditsFMod', false),
           unmoderatedSubredditsFMod = TBStorage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
-
-    let modbarHidden = self.setting('modbarHidden');
 
     // Ready some details for new modmail linking
     const modmailLink = TBStorage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
@@ -279,12 +283,11 @@ self.init = function () {
         let subList = '',
             livefilterCount;
         const configEnabled = TBStorage.getSetting('TBConfig', 'enabled', false),
-              usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false),
-              subredditColorSalt = self.setting('subredditColorSalt');
+              usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false);
         TBCore.getModSubs().then(() => {
-            self.log('got mod subs');
-            self.log(window.TBCore.mySubs.length);
-            self.log(window.TBCore.mySubsData.length);
+            this.log('got mod subs');
+            this.log(window.TBCore.mySubs.length);
+            this.log(window.TBCore.mySubsData.length);
             $(window.TBCore.mySubsData).each(function () {
                 const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
                 subList += `
@@ -378,7 +381,7 @@ self.init = function () {
         $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">${TBui.icons.tbReload}</a>`);
 
         $body.on('click', '#tb-reload-link', () => {
-            self.log('reloading chrome');
+            this.log('reloading chrome');
             TBui.reloadToolbox();
         });
     }
@@ -398,7 +401,7 @@ self.init = function () {
         modbarHidden = true;
     }
 
-    function toggleMenuBar (hidden) {
+    const toggleMenuBar = hidden => {
         if (hidden) {
             $modBar.hide();
             $modbarhid.show();
@@ -412,8 +415,8 @@ self.init = function () {
             }
             $body.toggleClass('tb-modbar-shown', true);
         }
-        self.setting('modbarHidden', hidden);
-    }
+        this.set('modbarHidden', hidden);
+    };
 
     toggleMenuBar(modbarHidden);
 
@@ -502,7 +505,7 @@ self.init = function () {
         let module = event.detail.tbsettings;
         if (module) {
             let setting = event.detail.setting;
-            self.log(setting);
+            this.log(setting);
             module = module.toLowerCase();
 
             if (setting) {
@@ -532,9 +535,7 @@ self.init = function () {
         const tab = $(this).attr('data-module');
         switchTab(tab);
     });
-};
-
-export default self;
+});
 
 function getDirectingTo () {
     let url = window.location.href.replace(/^http:/, 'https:'),

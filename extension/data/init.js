@@ -5,33 +5,33 @@ import TBModule from './tbmodule.js';
 import * as TBCore from './tbcore.js';
 import * as TBApi from './tbapi.js';
 
-import Devtools from './modules/devtools.js';
-import Support from './modules/support.js';
+// import Devtools from './modules/devtools.js';
+// import Support from './modules/support.js';
 import Modbar from './modules/modbar.js';
-import Config from './modules/config.js';
-import BetterButtons from './modules/betterbuttons.js';
-import DomainTagger from './modules/domaintagger.js';
-import ModMatrix from './modules/modmatrix.js';
-import Syntax from './modules/syntax.js';
-import ModButton from './modules/modbutton.js';
-import General from './modules/general.js';
-import Notifier from './modules/notifier.js';
-import Usernotes from './modules/usernotes.js';
-import Comment from './modules/comment.js';
-import NewModmailPro from './modules/newmodmailpro.js';
-import ModmailPro from './modules/modmailpro.js';
-import Macros from './modules/macros.js';
+// import Config from './modules/config.js';
+// import BetterButtons from './modules/betterbuttons.js';
+// import DomainTagger from './modules/domaintagger.js';
+// import ModMatrix from './modules/modmatrix.js';
+// import Syntax from './modules/syntax.js';
+// import ModButton from './modules/modbutton.js';
+// import General from './modules/general.js';
+// import Notifier from './modules/notifier.js';
+// import Usernotes from './modules/usernotes.js';
+// import Comment from './modules/comment.js';
+// import NewModmailPro from './modules/newmodmailpro.js';
+// import ModmailPro from './modules/modmailpro.js';
+// import Macros from './modules/macros.js';
 import PersonalNotes from './modules/personalnotes.js';
-import HistoryButton from './modules/historybutton.js';
-import RemovalReasons from './modules/removalreasons.js';
-import NukeComments from './modules/nukecomments.js';
-import Troubleshooter from './modules/trouble.js';
-import Profile from './modules/profile.js';
-import QueueOverlay from './modules/queue_overlay.js';
-import FlyingSnoo from './modules/flyingsnoo.js';
-import QueueTools from './modules/queuetools.js';
-import Achievements from './modules/achievements.js';
-import OldReddit from './modules/oldreddit.js';
+// import HistoryButton from './modules/historybutton.js';
+// import RemovalReasons from './modules/removalreasons.js';
+// import NukeComments from './modules/nukecomments.js';
+// import Troubleshooter from './modules/trouble.js';
+// import Profile from './modules/profile.js';
+// import QueueOverlay from './modules/queue_overlay.js';
+// import FlyingSnoo from './modules/flyingsnoo.js';
+// import QueueTools from './modules/queuetools.js';
+// import Achievements from './modules/achievements.js';
+// import OldReddit from './modules/oldreddit.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and
@@ -198,33 +198,33 @@ const coreLoadedPromise = new Promise(resolve => {
 
     // Load feature modules and register them
     for (const m of [
-        Devtools,
-        Support,
+        // Devtools,
+        // Support,
         Modbar,
-        Config,
-        BetterButtons,
-        DomainTagger,
-        ModMatrix,
-        Syntax,
-        ModButton,
-        General,
-        Notifier,
-        Usernotes,
-        Comment,
-        NewModmailPro,
-        ModmailPro,
-        Macros,
+        // Config,
+        // BetterButtons,
+        // DomainTagger,
+        // ModMatrix,
+        // Syntax,
+        // ModButton,
+        // General,
+        // Notifier,
+        // Usernotes,
+        // Comment,
+        // NewModmailPro,
+        // ModmailPro,
+        // Macros,
         PersonalNotes,
-        HistoryButton,
-        RemovalReasons,
-        NukeComments,
-        Troubleshooter,
-        Profile,
-        QueueOverlay,
-        FlyingSnoo,
-        QueueTools,
-        Achievements,
-        OldReddit,
+        // HistoryButton,
+        // RemovalReasons,
+        // NukeComments,
+        // Troubleshooter,
+        // Profile,
+        // QueueOverlay,
+        // FlyingSnoo,
+        // QueueTools,
+        // Achievements,
+        // OldReddit,
     ]) {
         logger.debug('Registering module', m);
         TBModule.register_module(m);

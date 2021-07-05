@@ -12,35 +12,35 @@ export default new Module({
     settings: [
         {
             id: 'compactHide',
+            description: 'Use compact mode for modbar',
             type: 'boolean',
             default: false,
             advanced: true,
-            title: 'Use compact mode for modbar',
         },
         {
             id: 'unmoderatedOn',
+            description: 'Show icon for unmoderated',
             type: 'boolean',
             default: true,
-            title: 'Show icon for unmoderated',
         },
         {
             id: 'enableModSubs',
+            description: 'Show Moderated Subreddits in the modbar',
             type: 'boolean',
             default: true,
-            title: 'Show Moderated Subreddits in the modbar',
         },
         {
             id: 'enableOldNewToggle',
+            description: 'Include a button in the modbar to swap between old and new Reddit',
             type: 'boolean',
             default: true,
-            title: 'Include a button in the modbar to swap between old and new Reddit',
         },
         {
             id: 'shortcuts',
+            description: 'Shortcuts',
             type: 'map',
             default: {},
             labels: ['name', 'url'],
-            title: 'Shortcuts',
             hidden: false,
         },
         {

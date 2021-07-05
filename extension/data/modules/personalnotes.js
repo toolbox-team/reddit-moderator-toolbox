@@ -11,7 +11,7 @@ export default new Module({
     settings: [
         {
             id: 'noteWiki',
-            title: 'Subreddit you want to use to store your personal notes.',
+            description: 'Subreddit you want to use to store your personal notes.',
             type: 'subreddit',
             default: '',
         },
@@ -19,14 +19,13 @@ export default new Module({
             id: 'popupHeight',
             type: 'number',
             default: 300,
-            title: 'Default height, in pixels, for the text editor',
-
+            description: 'Default height, in pixels, for the text editor',
         },
         {
             id: 'monospace',
             type: 'boolean',
             default: false,
-            title: 'Use a monospace font in the text editor',
+            description: 'Use a monospace font in the text editor',
         },
     ],
 }, function init ({noteWiki: notewiki, popupHeight, monospace}) {

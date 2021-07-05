@@ -4,9 +4,12 @@
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
-import * as TBCore from './tbcore.js';
 
 const logger = TBLog('TBApi');
+
+// Error codes used in lots of places
+export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
+export const WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
 
 /**
  * Sends a generic HTTP request through the background page.
@@ -113,6 +116,48 @@ export const apiOauthGET = (endpoint, query) => sendRequest({
     okOnly: true,
 });
 
+/**
+ * A promise that will fulfill with details about the current user, or reject if
+ * user details can't be fetched. May return a cached details object if multiple
+ * timeouts are encountered.
+ * @type {Promise<object | undefined>} JSON response from `/api/me.json`
+ */
+const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
+    try {
+        const data = await getJSON('/api/me.json');
+        TBStorage.purifyObject(data);
+        return data;
+    } catch (error) {
+        // 504 Gateway Timeout errors can be retried
+        if (error.response && error.response.status === 504 && tries > 1) {
+            return fetchUserDetails(tries - 1);
+        }
+
+        // Throw all other errors without retrying
+        throw error;
+    }
+})()
+    // If getting details from API fails, fall back to the cached value (if any)
+    .catch(() => TBStorage.getCache('Utils', 'userDetails'));
+
+/**
+ * Gets details about the current user.
+ * @returns {Promise<object>}
+ */
+export const getUserDetails = () => userDetailsPromise;
+
+/**
+ * Gets the modhash of the currently signed-in user.
+ * @returns {Promise<string>}
+ */
+export const getModhash = () => userDetailsPromise.then(details => details.data.modhash);
+
+/**
+ * Gets the username of the currently signed-in user.
+ * @returns {Promise<string>}
+ */
+export const getCurrentUser = () => userDetailsPromise.then(details => details.data.name);
+
 //
 // Reddit 'legacy' API stuff. Still very much in use.
 //
@@ -180,7 +225,7 @@ export async function postToWiki (page, subreddit, data, reason, isJSON, updateA
             content: data,
             page,
             reason,
-            uh: await TBCore.getModhash(),
+            uh: await getModhash(),
         });
     } catch (error) {
         logger.error(error);
@@ -201,7 +246,7 @@ export async function postToWiki (page, subreddit, data, reason, isJSON, updateA
                 page,
                 listed: true, // hrm, may need to make this a config setting.
                 permlevel: 2,
-                uh: await TBCore.getModhash(),
+                uh: await getModhash(),
             },
         })
 
@@ -234,7 +279,7 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
     getJSON(`/r/${subreddit}/wiki/${page}.json`).then(data => {
         const wikiData = data.data.content_md;
         if (!wikiData) {
-            resolve(TBCore.NO_WIKI_PAGE);
+            resolve(NO_WIKI_PAGE);
             return;
         }
         if (isJSON) {
@@ -244,13 +289,13 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
             } catch (err) {
                 // we should really have a INVAILD_DATA error for this.
                 logger.log(err);
-                resolve(TBCore.NO_WIKI_PAGE);
+                resolve(NO_WIKI_PAGE);
             }
             // Moved out of the try so random exceptions don't erase the entire wiki page
             if (parsedWikiData) {
                 resolve(parsedWikiData);
             } else {
-                resolve(TBCore.NO_WIKI_PAGE);
+                resolve(NO_WIKI_PAGE);
             }
             return;
         }
@@ -259,7 +304,7 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
     }).catch(async error => {
         logger.error(`Wiki error (${subreddit}/${page}):`, error);
         if (!error.response) {
-            resolve(TBCore.WIKI_PAGE_UNKNOWN);
+            resolve(WIKI_PAGE_UNKNOWN);
             return;
         }
         let reason;
@@ -270,10 +315,10 @@ export const readFromWiki = (subreddit, page, isJSON) => new Promise(resolve => 
         }
 
         if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
-            resolve(TBCore.NO_WIKI_PAGE);
+            resolve(NO_WIKI_PAGE);
         } else {
             // we don't know why it failed, we should not try to write to it.
-            resolve(TBCore.WIKI_PAGE_UNKNOWN);
+            resolve(WIKI_PAGE_UNKNOWN);
         }
     });
 });
@@ -322,7 +367,7 @@ export const flairPost = async (postLink, subreddit, text, cssClass, templateID)
     css_class: cssClass,
     flair_template_id: templateID,
     r: subreddit,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -341,7 +386,7 @@ export const flairUser = async (user, subreddit, text, cssClass, templateID) => 
     text,
     css_class: cssClass,
     flair_template_id: templateID,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -401,7 +446,7 @@ export async function friendUser ({
 
     return post('/api/friend', {
         api_type: 'json',
-        uh: await TBCore.getModhash(),
+        uh: await getModhash(),
         type: action,
         name: user,
         r: subreddit,
@@ -426,7 +471,7 @@ export async function friendUser ({
      */
 export const unfriendUser = async (user, action, subreddit) => post('/api/unfriend', {
     api_type: 'json',
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
     type: action,
     name: user,
     r: subreddit,
@@ -443,7 +488,7 @@ export const unfriendUser = async (user, action, subreddit) => post('/api/unfrie
 export const distinguishThing = async (id, sticky) => post('/api/distinguish/yes', {
     id,
     sticky,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -454,7 +499,7 @@ export const distinguishThing = async (id, sticky) => post('/api/distinguish/yes
      */
 export const approveThing = async id => post('/api/approve', {
     id,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -465,7 +510,7 @@ export const approveThing = async id => post('/api/approve', {
      * @returns {Promise}
      */
 export const removeThing = async (id, spam = false) => post('/api/remove', {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
     id,
     spam,
 });
@@ -478,7 +523,7 @@ export const removeThing = async (id, spam = false) => post('/api/remove', {
      */
 export const markOver18 = async id => post('/api/marknsfw', {
     id,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -488,7 +533,7 @@ export const markOver18 = async id => post('/api/marknsfw', {
      * @returns {Promise}
      */
 export const unMarkOver18 = async id => post('/api/unmarknsfw', {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
     id,
 });
 
@@ -499,7 +544,7 @@ export const unMarkOver18 = async id => post('/api/unmarknsfw', {
      */
 export const lock = async id => post('/api/lock', {
     id,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -508,7 +553,7 @@ export const lock = async id => post('/api/lock', {
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
 export const unlock = async id => post('/api/unlock', {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
     id,
 });
 
@@ -524,7 +569,7 @@ export const stickyThread = async (id, num, state = true) => post('/api/set_subr
     id,
     num,
     state,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -545,7 +590,7 @@ export const postComment = async (parent, text) => {
     try {
         const response = await post('/api/comment', {
             parent,
-            uh: await TBCore.getModhash(),
+            uh: await getModhash(),
             text,
             api_type: 'json',
         });
@@ -577,7 +622,7 @@ export const postLink = async (link, title, subreddit) => {
             kind: 'link',
             resubmit: 'true',
             url: link,
-            uh: await TBCore.getModhash(),
+            uh: await getModhash(),
             title,
             sr: subreddit,
             sendreplies: 'true', // this is the default on reddit.com, so it should be our default.
@@ -614,7 +659,7 @@ export const sendMessage = async (user, subject, message, subreddit) => {
             subject: subject.substr(0, 99),
             text: message.substr(0, 10000),
             to: user,
-            uh: await TBCore.getModhash(),
+            uh: await getModhash(),
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
@@ -639,7 +684,7 @@ export const sendMessage = async (user, subject, message, subreddit) => {
 export const markMessageRead = async id => post('/api/read_message', {
     api_type: 'json',
     id,
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 });
 
 /**
@@ -648,7 +693,7 @@ export const markMessageRead = async id => post('/api/read_message', {
      * @returns {Promise} Resolves to JSON user info or rejects with error text
      */
 export const aboutUser = async user => getJSON(`/user/${user}/about.json`, {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 }).then(response => {
     TBStorage.purifyObject(response);
     return response;
@@ -660,7 +705,7 @@ export const aboutUser = async user => getJSON(`/user/${user}/about.json`, {
      * @returns {Promise} Resolves to a number or rejects an error string
      */
 export const getLastActive = async user => getJSON(`/user/${user}.json?limit=1&sort=new`, {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 }).then(response => {
     TBStorage.purifyObject(response);
     return response.data.children[0].data.created_utc;
@@ -674,7 +719,7 @@ export const getLastActive = async user => getJSON(`/user/${user}.json?limit=1&s
      * @returns {Promise} Resolves to the rules as JSON or rejects with an error string
      */
 export const getRules = async sub => getJSON(`/r/${sub}/about/rules.json`, {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 }).then(response => {
     TBStorage.purifyObject(response);
     return response;
@@ -686,7 +731,7 @@ export const getRules = async sub => getJSON(`/r/${sub}/about/rules.json`, {
      * @returns {Promise} Resolves to an object containing the reports or throws an error string
      */
 export const getReportReasons = async postURL => getJSON(`${postURL}.json?limit=1`, {
-    uh: await TBCore.getModhash(),
+    uh: await getModhash(),
 }).then(response => {
     TBStorage.purifyObject(response);
     if (typeof callback !== 'undefined') {

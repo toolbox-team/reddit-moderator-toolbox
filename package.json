@@ -30,6 +30,8 @@
         "jest-webextension-mock": "^3.5.0",
         "jsdoc": "^3.6.3",
         "nodemon": "^1.19.4",
+        "rollup": "^2.51.0",
+        "rollup-plugin-copy": "^3.4.0",
         "yargs": "^13.3.0"
     },
     "nodemonConfig": {

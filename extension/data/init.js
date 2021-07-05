@@ -3,6 +3,35 @@ import * as TBStorage from './tbstorage.js';
 import {delay} from './tbhelpers.js';
 import TBModule from './tbmodule.js';
 import * as TBCore from './tbcore.js';
+import * as TBApi from './tbapi.js';
+
+import Devtools from './modules/devtools.js';
+import Support from './modules/support.js';
+import Modbar from './modules/modbar.js';
+import Config from './modules/config.js';
+import BetterButtons from './modules/betterbuttons.js';
+import DomainTagger from './modules/domaintagger.js';
+import ModMatrix from './modules/modmatrix.js';
+import Syntax from './modules/syntax.js';
+import ModButton from './modules/modbutton.js';
+import General from './modules/general.js';
+import Notifier from './modules/notifier.js';
+import Usernotes from './modules/usernotes.js';
+import Comment from './modules/comment.js';
+import NewModmailPro from './modules/newmodmailpro.js';
+import ModmailPro from './modules/modmailpro.js';
+import Macros from './modules/macros.js';
+import PersonalNotes from './modules/personalnotes.js';
+import HistoryButton from './modules/historybutton.js';
+import RemovalReasons from './modules/removalreasons.js';
+import NukeComments from './modules/nukecomments.js';
+import Troubleshooter from './modules/trouble.js';
+import Profile from './modules/profile.js';
+import QueueOverlay from './modules/queue_overlay.js';
+import FlyingSnoo from './modules/flyingsnoo.js';
+import QueueTools from './modules/queuetools.js';
+import Achievements from './modules/achievements.js';
+import OldReddit from './modules/oldreddit.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and
@@ -85,7 +114,7 @@ async function checkLoadConditions (tries = 3) {
     }
 
     // Check that we have details about the current user
-    const userDetails = await TBCore.getUserDetails();
+    const userDetails = await TBApi.getUserDetails();
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
         throw new Error('Failed to fetch user details');
     }
@@ -168,39 +197,38 @@ const coreLoadedPromise = new Promise(resolve => {
     TBCore.displayNotes();
 
     // Load feature modules and register them
-    await Promise.all([
-        'data/modules/devtools.js',
-        'data/modules/support.js',
-        'data/modules/modbar.js',
-        'data/modules/config.js',
-        'data/modules/betterbuttons.js',
-        'data/modules/domaintagger.js',
-        'data/modules/modmatrix.js',
-        'data/modules/syntax.js',
-        'data/modules/modbutton.js',
-        'data/modules/general.js',
-        'data/modules/notifier.js',
-        'data/modules/usernotes.js',
-        'data/modules/comment.js',
-        'data/modules/newmodmailpro.js',
-        'data/modules/modmailpro.js',
-        'data/modules/macros.js',
-        'data/modules/personalnotes.js',
-        'data/modules/historybutton.js',
-        'data/modules/removalreasons.js',
-        'data/modules/nukecomments.js',
-        'data/modules/trouble.js',
-        'data/modules/profile.js',
-        'data/modules/queue_overlay.js',
-        'data/modules/flyingsnoo.js',
-        'data/modules/queuetools.js',
-        'data/modules/achievements.js',
-        'data/modules/oldreddit.js',
-    ].map(async modulePath => {
-        const {default: m} = await import(browser.runtime.getURL(modulePath));
+    for (const m of [
+        Devtools,
+        Support,
+        Modbar,
+        Config,
+        BetterButtons,
+        DomainTagger,
+        ModMatrix,
+        Syntax,
+        ModButton,
+        General,
+        Notifier,
+        Usernotes,
+        Comment,
+        NewModmailPro,
+        ModmailPro,
+        Macros,
+        PersonalNotes,
+        HistoryButton,
+        RemovalReasons,
+        NukeComments,
+        Troubleshooter,
+        Profile,
+        QueueOverlay,
+        FlyingSnoo,
+        QueueTools,
+        Achievements,
+        OldReddit,
+    ]) {
         logger.debug('Registering module', m);
         TBModule.register_module(m);
-    }));
+    }
 
     // Once all modules are registered, call TB.init() to run them
     TBModule.init();

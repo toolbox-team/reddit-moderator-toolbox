@@ -360,6 +360,8 @@ self.init = function () {
                 TBStorage.purifyObject(config);
                 if (TBCore.isConfigValidVersion(subreddit, config)) {
                     showConfig(subreddit, config);
+                } else {
+                    TBui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TBui.FEEDBACK_NEGATIVE);
                 }
             }
         });

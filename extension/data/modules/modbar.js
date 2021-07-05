@@ -379,7 +379,7 @@ self.init = function () {
 
         $body.on('click', '#tb-reload-link', () => {
             self.log('reloading chrome');
-            TBCore.reloadToolbox();
+            TBui.reloadToolbox();
         });
     }
 

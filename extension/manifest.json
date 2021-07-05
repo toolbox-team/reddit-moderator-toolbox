@@ -138,7 +138,7 @@
                 "data/styles/codemirror/themes.css"
             ],
             "js": [
-                "content_script.js",
+                "data/init.js",
                 "data/libs/tbplugins.js"
             ]
         }

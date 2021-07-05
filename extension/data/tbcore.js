@@ -1,7 +1,8 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';
-import * as TBui from './tbui.js';
+import {NO_WIKI_PAGE, WIKI_PAGE_UNKNOWN, getModhash} from './tbapi.js';
+import {icons} from './tbconstants.js';
 import * as TBHelpers from './tbhelpers.js';
 
 const logger = TBLog('TBCore');
@@ -28,7 +29,6 @@ export const notesMaxSchema = 6; // The non-default max version (to allow phase-
  */
 export function isConfigValidVersion (subreddit, config) {
     if (config.ver < configMinSchema || config.ver > configMaxSchema) {
-        TBui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TBui.FEEDBACK_NEGATIVE);
         logger.error(`Failed config version check:
 \tsubreddit: ${subreddit}
 \tconfig.ver: ${config.ver}
@@ -101,47 +101,7 @@ export const config = {
 
 // Details about the current user
 
-/**
- * A promise that will fulfill with details about the current user, or reject if
- * user details can't be fetched. May return a cached details object if multiple
- * timeouts are encountered.
- * @type {Promise<object | undefined>} JSON response from `/api/me.json`
- */
-const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
-    try {
-        const data = await TBApi.getJSON('/api/me.json');
-        TBStorage.purifyObject(data);
-        return data;
-    } catch (error) {
-        // 504 Gateway Timeout errors can be retried
-        if (error.response && error.response.status === 504 && tries > 1) {
-            return fetchUserDetails(tries - 1);
-        }
-
-        // Throw all other errors without retrying
-        throw error;
-    }
-})()
-    // If getting details from API fails, fall back to the cached value (if any)
-    .catch(() => TBStorage.getCache('Utils', 'userDetails'));
-
-/**
- * Gets details about the current user.
- * @returns {Promise<object>}
- */
-export const getUserDetails = () => userDetailsPromise;
-
-/**
- * Gets the modhash of the currently signed-in user.
- * @returns {Promise<string>}
- */
-export const getModhash = () => userDetailsPromise.then(details => details.data.modhash);
-
-/**
- * Gets the username of the currently signed-in user.
- * @returns {Promise<string>}
- */
-export const getCurrentUser = () => userDetailsPromise.then(details => details.data.name);
+export {getModhash};
 
 // If mod subs are being fetched, stores a promise that will fulfill afterwards
 let fetchModSubsPromise = null;
@@ -254,8 +214,7 @@ if (isModFakereddit || !post_site || invalidPostSites.indexOf(post_site) !== -1)
 }
 
 // Error codes used in lots of places
-export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
-export const WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
+export {NO_WIKI_PAGE, WIKI_PAGE_UNKNOWN};
 
 // Page event management
 
@@ -401,14 +360,6 @@ export function debugInformation () {
  * @property {boolean} cookiesEnabled Browser cookies enabled
  */
 
-/** Reloads the extension, then reloads the current window. */
-export function reloadToolbox () {
-    TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-    browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
-        window.location.reload();
-    });
-}
-
 // Random quote generator
 const randomQuotes = [
     "Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
@@ -493,7 +444,7 @@ export const RandomFeedback = randomTextFeedbacks[Math.floor(Math.random() * ran
 export function alert ({message, noteID, showClose}, callback) {
     const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
     if (showClose) {
-        $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
+        $noteDiv.append(`<i class="note-close tb-icons" title="Close">${icons.close}</i>`);
     }
     $noteDiv.appendTo('body');
 
@@ -536,7 +487,7 @@ export async function notification (title, body, path, markreadid = false) {
             body,
             // We can't use link() for this since the background page has to have an absolute URL
             url: isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
-            modHash: await getModhash(),
+            modHash: await TBApi.getModhash(),
             markreadid: markreadid || false,
         },
     });
@@ -596,7 +547,7 @@ export async function showNote (note) {
 async function fetchNewsNotes (sub) {
     const resp = await TBApi.readFromWiki(sub, 'tbnotes', true);
     TBStorage.purifyObject(resp);
-    if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE || resp.length < 1) {
+    if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE || resp.length < 1) {
         throw new Error(`Failed to fetch notes for /r/${sub}`);
     }
     return resp.notes;
@@ -840,11 +791,11 @@ export async function getConfig (sub) {
 
     // Fetch config from wiki
     const resp = await TBApi.readFromWiki(sub, 'toolbox', true);
-    if (!resp || resp === WIKI_PAGE_UNKNOWN) {
+    if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN) {
         // Complete and utter failure
         return undefined;
     }
-    if (resp === NO_WIKI_PAGE) {
+    if (resp === TBApi.NO_WIKI_PAGE) {
         // Subreddit not configured yet, at least add it to the noConfig cache
         cachedSubsWithNoConfig.push(sub);
         TBStorage.setCache('Utils', 'noConfig', cachedSubsWithNoConfig);
@@ -880,13 +831,13 @@ export function exportSettings (subreddit, callback) {
 // TODO: Move this function to tbmodule, the only place it's ever used
 export function importSettings (subreddit, callback) {
     TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
-        if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
+        if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
             logger.log('Error loading wiki page');
             return;
         }
         TBStorage.purifyObject(resp);
+
         if (resp['Utils.lastversion'] < 300) {
-            TBui.textFeedback('Cannot import from a toolbox version under 3.0');
             logger.log('Cannot import from a toolbox version under 3.0');
             return;
         }
@@ -1369,7 +1320,7 @@ export async function getToolboxDevs () {
     //       update an internal variable)
     const TBCore = window.TBCore = window.TBCore || {};
 
-    TBCore.logged = await getCurrentUser();
+    TBCore.logged = await TBApi.getCurrentUser();
 
     const SETTINGS_NAME = 'Utils';
 
@@ -1490,7 +1441,7 @@ async function setWikiPrivate (subreddit, page, failAlert) {
             page,
             listed: true, // hrm, may need to make this a config setting.
             permlevel: 2,
-            uh: await getModhash(),
+            uh: await TBApi.getModhash(),
         },
     })
         // Super extra double-secret secure, just to be safe.

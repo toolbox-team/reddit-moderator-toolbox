@@ -27,21 +27,21 @@ const logTypes = {
  * Executes a log of a given type.
  * @private
  * @function
- * @this {object|string} The caller, if any, a TB module or a string
+ * @param {object|string} caller The caller, if any, a TB module or a string
  * @param {string} type The name of the log type to use
  * @param {...any} args Arbitrary content passed through to the console
  */
-function log (type, ...args) {
-    // Caller is bound to `this` if there is one, let's get its name
+function log (caller, type, ...args) {
     let callerName;
-    if (!this) {
+    if (!caller) {
         callerName = 'unknown';
-    } else if (typeof this === 'object') {
+    } else if (typeof caller === 'object') {
         // If it's an object, we assume it's a module
-        callerName = this.shortname;
+        // TODO: stop using this
+        callerName = caller.shortname;
     } else {
         // Should be a string
-        callerName = this;
+        callerName = caller;
     }
     // Get the appropriate styles for this log type, and send the message
     const {color, background, text, func} = logTypes[type];
@@ -69,7 +69,7 @@ function TBLog (caller) {
     // The object gets a function for every log type
     for (const type of Object.keys(logTypes)) {
         // `this` arg is the caller, first arg is the log type
-        obj[type] = log.bind(caller, type);
+        obj[type] = log.bind(undefined, caller, type);
     }
     // This isn't a type, but we map it to debug for backwards compatibility
     // Eventually we should remove this

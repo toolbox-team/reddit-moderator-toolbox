@@ -1756,7 +1756,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 (function () {
     const logger = TBLog('TBCore init');
     // wait for storage
-    async function getModSubs (after) {
+    async function getModSubs (after = null, tries = 0) {
         let modSubs = [];
         try {
             const json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
@@ -1767,16 +1767,16 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             modSubs = modSubs.concat(json.data.children);
 
             if (json.data.after) {
-                const subs = await getModSubs(json.data.after);
+                const subs = await getModSubs(json.data.after, tries);
                 return modSubs.concat(subs);
             } else {
                 return modSubs;
             }
         } catch (error) {
             logger.log('getModSubs failed', error);
-            if (error.response && error.response.status === 504) {
+            if (error.response && error.response.status === 504 && tries < 4) {
                 logger.log('504 Timeout retrying request');
-                const subs = await getModSubs(after);
+                const subs = await getModSubs(after, tries + 1);
                 return modSubs.concat(subs);
             } else {
                 modSubs = [];
@@ -1804,7 +1804,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     function modsubInit (cacheDetails, userDetails) {
         if (cacheDetails.moderatedSubs.length === 0) {
             logger.log('No modsubs in cache, getting mod subs before initalizing');
-            getModSubs(null).then(subs => {
+            getModSubs().then(subs => {
                 initwrapper({
                     userDetails,
                     newModSubs: subs,

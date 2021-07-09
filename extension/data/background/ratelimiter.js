@@ -19,22 +19,44 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
     }
 
     /**
+     * An object containing options that modify how a request is handled.
+     * @typedef RatelimiterRequestOptions
+     * @property {boolean} options.bypassLimit If true, this request will be
+     * sent immediately even if the current ratelimit bucket is empty. Use
+     * sparingly, only for requests which block all of Toolbox, and definitely
+     * never for mass actions.
+     */
+
+    /**
      * Queues a request.
+     * @param {RatelimiterRequestOptions} options Request handling options
      * @param  {...any} fetchArgs Arguments to fetch()
      */
-    request (...fetchArgs) {
+    request (options, ...fetchArgs) {
         return new Promise((resolve, reject) => {
-            this.requestsPending.push([fetchArgs, resolve, reject]);
+            this.requestsPending.push([fetchArgs, resolve, reject, options]);
             this._processQueue();
         });
     }
 
     /**
      * Recursively sends all queued requests.
+     * @private
      */
     async _processQueue () {
         // If there are no queued requests, there's nothing to do
         if (this.requestsPending.length <= 0) {
+            return;
+        }
+
+        // Pull the next queued request and check its handling options
+        const nextRequest = this.requestsPending.shift();
+        const {bypassLimit} = nextRequest[3];
+
+        // If this request ignores the limits, send it immediately and move on
+        if (bypassLimit) {
+            this._sendRequest(...nextRequest);
+            this._processQueue();
             return;
         }
 
@@ -63,11 +85,11 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
             this.resetTimerID = null;
         }
 
-        // Shift the next request off the queue and send it
-        await this._sendRequest(...this.requestsPending.shift());
+        // Send the next request
+        await this._sendRequest(...nextRequest);
 
-        // Try another
-        return this._processQueue();
+        // Try to send another
+        this._processQueue();
     }
 
     /**
@@ -77,8 +99,11 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
      * @param {any[]} fetchArgs Arguments to fetch()
      * @param {Function} resolve Function called when the request completes
      * @param {Function} reject Function called if the request throws an error
+     * @param {RatelimiterRequestOptions} options Request handling options
      */
-    async _sendRequest (fetchArgs, resolve, reject) {
+    // This function gets the options object in case it's needed in the future.
+    // eslint-disable-next-line no-unused-vars
+    async _sendRequest (fetchArgs, resolve, reject, options) {
         // Send the request and add it to the set of in-flight requests
         const requestPromise = fetch(...fetchArgs);
         this.requestsInFlight.add(requestPromise);

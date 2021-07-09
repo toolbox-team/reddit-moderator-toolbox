@@ -5,36 +5,84 @@
  */
 class Ratelimiter { // eslint-disable-line no-unused-vars
     constructor () {
-        /** Array of data for pending requests. */
+        /**
+         * Array of data for pending requests.
+         * @type {RatelimiterPendingRequest[]}
+         */
         this.requestsPending = [];
-        /** Set of promises for in-flight requests. */
+        /**
+         * Set of promises for in-flight requests.
+         * @type {Set<Promise<Response>>}
+         */
         this.requestsInFlight = new Set();
 
-        /** The number of requests that can be sent before the limit resets */
+        /**
+         * The number of requests that can be sent before the limit resets
+         * @type {number}
+         */
         this.ratelimitRemaining = 0;
-        /** When the limit will be reset */
+        /**
+         * When the limit will be reset.
+         * @type {Date}
+         */
         this.ratelimitResetDate = new Date();
-        /** ID of the timer currently waiting for the ratelimit reset, if any */
+        /**
+         * ID of the timer currently waiting for the ratelimit reset, if any.
+         * @type {number}
+         */
         this.resetTimerID = null;
     }
 
     /**
+     * An object containing options that modify how a request is handled.
+     * @typedef RatelimiterRequestOptions
+     * @property {boolean} options.bypassLimit If true, this request will be
+     * sent immediately even if the current ratelimit bucket is empty. Use
+     * sparingly, only for requests which block all of Toolbox, and definitely
+     * never for mass actions.
+     */
+
+    /**
+     * An object containing details about a pending request.
+     * @typedef RatelimiterPendingRequest
+     * @property {any[]} fetchArgs Arguments to fetch()
+     * @property {((response: Response) => void)} resolve Function to call if
+     * the request is completed successfully
+     * @property {(error: Error) => void} reject Function to call if an error
+     * occurs while processing the request
+     * @property {RatelimiterRequestOptions} options Request handling options
+     */
+
+    /**
      * Queues a request.
+     * @param {RatelimiterRequestOptions} options Request handling options
      * @param  {...any} fetchArgs Arguments to fetch()
      */
-    request (...fetchArgs) {
+    request (options, ...fetchArgs) {
         return new Promise((resolve, reject) => {
-            this.requestsPending.push([fetchArgs, resolve, reject]);
+            this.requestsPending.push({fetchArgs, resolve, reject, options});
             this._processQueue();
         });
     }
 
     /**
      * Recursively sends all queued requests.
+     * @private
      */
     async _processQueue () {
         // If there are no queued requests, there's nothing to do
         if (this.requestsPending.length <= 0) {
+            return;
+        }
+
+        // Pull the next queued request
+        const nextRequest = this.requestsPending.shift();
+
+        // If this request ignores the limits, send it immediately and move on
+        if (nextRequest.options.bypassLimit) {
+            console.debug('Bypassing ratelimit for request:', nextRequest);
+            this._sendRequest(nextRequest);
+            this._processQueue();
             return;
         }
 
@@ -63,24 +111,22 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
             this.resetTimerID = null;
         }
 
-        // Shift the next request off the queue and send it
-        await this._sendRequest(...this.requestsPending.shift());
+        // Send the next request
+        await this._sendRequest(nextRequest);
 
-        // Try another
-        return this._processQueue();
+        // Try to send another
+        this._processQueue();
     }
 
     /**
      * Sends a request, updating ratelimit information from response headers. If
      * the response is a 429, the request is added to the front of the queue and
      * retried.
-     * @param {any[]} fetchArgs Arguments to fetch()
-     * @param {Function} resolve Function called when the request completes
-     * @param {Function} reject Function called if the request throws an error
+     * @param {RatelimiterPendingRequest} request The request to send.
      */
-    async _sendRequest (fetchArgs, resolve, reject) {
+    async _sendRequest (request) {
         // Send the request and add it to the set of in-flight requests
-        const requestPromise = fetch(...fetchArgs);
+        const requestPromise = fetch(...request.fetchArgs);
         this.requestsInFlight.add(requestPromise);
 
         // Wait for the response and then remove it from the in-flight set
@@ -89,7 +135,7 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
             response = await requestPromise;
         } catch (error) {
             // If the request rejects, we don't update the ratelimit
-            return reject(error);
+            return request.reject(error);
         } finally {
             this.requestsInFlight.delete(requestPromise);
         }
@@ -121,12 +167,12 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
         // If the response is a 429, add the request back to the front of the
         // queue and try again, and do not send back the response
         if (response.status === 429) {
-            this.requestsPending.unshift([fetchArgs, resolve, reject]);
+            this.requestsPending.unshift(request);
             return;
         }
 
         // Return the response we got
-        resolve(response);
+        request.resolve(response);
     }
 
     /**

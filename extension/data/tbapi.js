@@ -22,9 +22,21 @@
      * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
      * in an error being rejected. The error will have a `response` property
      * containing the full `Response` object.
+     * @param {boolean?} [options.bypassRatelimit] If true, the request will be
+     * sent immediately, even if the current ratelimit bucket is empty. Use
+     * sparingly, only for requests which block all of Toolbox, and definitely
+     * never for mass actions.
      * @returns {Promise} Resolves to a `Response` object or rejects an `Error`.
      */
-    TBApi.sendRequest = async ({method, endpoint, query, body, oauth, okOnly}) => {
+    TBApi.sendRequest = async ({
+        method,
+        endpoint,
+        query,
+        body,
+        oauth,
+        okOnly,
+        bypassRatelimit,
+    }) => {
         // Make the request
         const messageReply = await browser.runtime.sendMessage({
             action: 'tb-request',
@@ -34,6 +46,7 @@
             body,
             oauth,
             okOnly,
+            bypassRatelimit,
         });
 
         // The reply from that message will always be an object. It can have these keys:
@@ -61,12 +74,14 @@
      * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} data Query parameters as an object
+     * @param {object} options Additional options passed to sendRequest()
      */
-    TBApi.getJSON = (endpoint, query) => TBApi.sendRequest({
+    TBApi.getJSON = (endpoint, query, options) => TBApi.sendRequest({
         okOnly: true,
         method: 'GET',
         endpoint,
         query,
+        ...options,
     }).then(response => response.json());
 
     /**

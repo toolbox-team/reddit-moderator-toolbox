@@ -5,7 +5,10 @@
  */
 class Ratelimiter { // eslint-disable-line no-unused-vars
     constructor () {
-        /** Array of data for pending requests. */
+        /**
+         * Array of data for pending requests.
+         * @type {RatelimiterPendingRequest[]}
+         */
         this.requestsPending = [];
         /** Set of promises for in-flight requests. */
         this.requestsInFlight = new Set();
@@ -28,13 +31,24 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
      */
 
     /**
+     * An object containing details about a pending request.
+     * @typedef RatelimiterPendingRequest
+     * @property {any[]} fetchArgs Arguments to fetch()
+     * @property {((response: Response) => void)} resolve Function to call if
+     * the request is completed successfully
+     * @property {(error: Error) => void} reject Function to call if an error
+     * occurs while processing the request
+     * @property {RatelimiterRequestOptions} options Request handling options
+     */
+
+    /**
      * Queues a request.
      * @param {RatelimiterRequestOptions} options Request handling options
      * @param  {...any} fetchArgs Arguments to fetch()
      */
     request (options, ...fetchArgs) {
         return new Promise((resolve, reject) => {
-            this.requestsPending.push([fetchArgs, resolve, reject, options]);
+            this.requestsPending.push({fetchArgs, resolve, reject, options});
             this._processQueue();
         });
     }
@@ -49,13 +63,12 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
             return;
         }
 
-        // Pull the next queued request and check its handling options
+        // Pull the next queued request
         const nextRequest = this.requestsPending.shift();
-        const {bypassLimit} = nextRequest[3];
 
         // If this request ignores the limits, send it immediately and move on
-        if (bypassLimit) {
-            this._sendRequest(...nextRequest);
+        if (nextRequest.bypassLimit) {
+            this._sendRequest(nextRequest);
             this._processQueue();
             return;
         }
@@ -86,7 +99,7 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
         }
 
         // Send the next request
-        await this._sendRequest(...nextRequest);
+        await this._sendRequest(nextRequest);
 
         // Try to send another
         this._processQueue();
@@ -96,16 +109,11 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
      * Sends a request, updating ratelimit information from response headers. If
      * the response is a 429, the request is added to the front of the queue and
      * retried.
-     * @param {any[]} fetchArgs Arguments to fetch()
-     * @param {Function} resolve Function called when the request completes
-     * @param {Function} reject Function called if the request throws an error
-     * @param {RatelimiterRequestOptions} options Request handling options
+     * @param {RatelimiterPendingRequest} request The request to send.
      */
-    // This function gets the options object in case it's needed in the future.
-    // eslint-disable-next-line no-unused-vars
-    async _sendRequest (fetchArgs, resolve, reject, options) {
+    async _sendRequest (request) {
         // Send the request and add it to the set of in-flight requests
-        const requestPromise = fetch(...fetchArgs);
+        const requestPromise = fetch(...request.fetchArgs);
         this.requestsInFlight.add(requestPromise);
 
         // Wait for the response and then remove it from the in-flight set
@@ -114,7 +122,7 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
             response = await requestPromise;
         } catch (error) {
             // If the request rejects, we don't update the ratelimit
-            return reject(error);
+            return request.reject(error);
         } finally {
             this.requestsInFlight.delete(requestPromise);
         }
@@ -146,12 +154,12 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
         // If the response is a 429, add the request back to the front of the
         // queue and try again, and do not send back the response
         if (response.status === 429) {
-            this.requestsPending.unshift([fetchArgs, resolve, reject]);
+            this.requestsPending.unshift(request);
             return;
         }
 
         // Return the response we got
-        resolve(response);
+        request.resolve(response);
     }
 
     /**

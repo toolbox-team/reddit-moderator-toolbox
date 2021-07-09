@@ -10,14 +10,26 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
          * @type {RatelimiterPendingRequest[]}
          */
         this.requestsPending = [];
-        /** Set of promises for in-flight requests. */
+        /**
+         * Set of promises for in-flight requests.
+         * @type {Set<Promise<Response>>}
+         */
         this.requestsInFlight = new Set();
 
-        /** The number of requests that can be sent before the limit resets */
+        /**
+         * The number of requests that can be sent before the limit resets
+         * @type {number}
+         */
         this.ratelimitRemaining = 0;
-        /** When the limit will be reset */
+        /**
+         * When the limit will be reset.
+         * @type {Date}
+         */
         this.ratelimitResetDate = new Date();
-        /** ID of the timer currently waiting for the ratelimit reset, if any */
+        /**
+         * ID of the timer currently waiting for the ratelimit reset, if any.
+         * @type {number}
+         */
         this.resetTimerID = null;
     }
 

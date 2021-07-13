@@ -80,7 +80,6 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
 
         // If this request ignores the limits, send it immediately and move on
         if (nextRequest.options.bypassLimit) {
-            console.debug('Bypassing ratelimit for request:', nextRequest);
             this._sendRequest(nextRequest);
             this._processQueue();
             return;

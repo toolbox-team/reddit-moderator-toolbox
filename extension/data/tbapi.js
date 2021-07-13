@@ -425,7 +425,7 @@
             }
         }
 
-        return TBApi.apiOauthPOST('/api/friend', {
+        return TBApi.post('/api/friend', {
             api_type: 'json',
             uh: TBCore.modhash,
             type: action,
@@ -437,7 +437,7 @@
             ban_context: banContext,
         }, {
             bypassRatelimit,
-        }).then(response => response.json());
+        });
     };
 
     /**
@@ -495,7 +495,7 @@
      * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
      * @returns {Promise}
      */
-    TBApi.removeThing = (id, spam = false, bypassRatelimit = true) => TBApi.apiOauthPOST('/api/remove', {
+    TBApi.removeThing = (id, spam = false, bypassRatelimit = true) => TBApi.post('/api/remove', {
         uh: TBCore.modhash,
         id,
         spam,
@@ -531,7 +531,7 @@
      * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
-    TBApi.lock = (id, bypassRatelimit = true) => TBApi.apiOauthPOST('/api/lock', {
+    TBApi.lock = (id, bypassRatelimit = true) => TBApi.post('/api/lock', {
         id,
         uh: TBCore.modhash,
     }, {

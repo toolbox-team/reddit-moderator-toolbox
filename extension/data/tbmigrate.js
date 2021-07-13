@@ -6,7 +6,6 @@ const start = performance.now();
 let previousName = 'start';
 let previous = start;
 
-// eslint-disable-next-line no-redeclare
 function profileResults (name, number) {
     console.groupCollapsed('Profiling thing v5:', name, number);
     if (name === 'start') {

@@ -150,19 +150,19 @@ self.init = function () {
             commentArray = TBHelpers.saneSort(commentArray);
             const removalArrayLength = commentArray.length;
             let removalCount = 0;
-            TBCore.forEachChunkedRateLimit(commentArray, 20, comment => {
+            Promise.all(commentArray.map(async comment => {
                 removalCount++;
                 TBui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TBui.FEEDBACK_NEUTRAL);
                 if (executionType === 'remove') {
-                    TBApi.removeThing(`t1_${comment}`).catch(() => {
+                    await TBApi.removeThing(`t1_${comment}`).catch(() => {
                         missedComments.push(comment);
                     });
-                } else if (executionType === 'lock') {
-                    TBApi.lock(`t1_${comment}`).catch(() => {
+                } else {
+                    await TBApi.lock(`t1_${comment}`).catch(() => {
                         missedComments.push(comment);
                     });
                 }
-            }, () => {
+            })).then(() => {
                 removalRunning = false;
                 TBui.longLoadSpinner(false);
                 $nukeFeedback.text(`Done ${executionType === 'remove' ? 'removing' : 'locking'} comments.`);
@@ -249,31 +249,30 @@ self.init = function () {
     }
 
     // Add nuke buttons where needed
-    TBListener.on('comment', e => {
+    TBListener.on('comment', async e => {
         const pageType = TBCore.pageDetails.pageType;
         const $target = $(e.target);
         const subreddit = e.detail.data.subreddit.name;
         const commentID = e.detail.data.id.substring(3);
         const postID = e.detail.data.post.id.substring(3);
 
-        TBCore.getModSubs().then(() => {
-            // We have to mod the subreddit to show the button
-            if (!TBCore.modsSub(subreddit)) {
-                return;
-            }
-            // We also have to be on a comments page or looking at a context popup
-            if (pageType !== 'subredditCommentsPage' && pageType !== 'subredditCommentPermalink' && !$target.closest('.context-button-popup').length) {
-                return;
-            }
+        await TBCore.getModSubs();
+        // We have to mod the subreddit to show the button
+        if (!TBCore.modsSub(subreddit)) {
+            return;
+        }
+        // We also have to be on a comments page or looking at a context popup
+        if (pageType !== 'subredditCommentsPage' && pageType !== 'subredditCommentPermalink' && !$target.closest('.context-button-popup').length) {
+            return;
+        }
 
-            const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
-            if (showNextToUser && TBCore.isOldReddit) {
-                const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container .tb-frontend-container');
-                $userContainter.append(NukeButtonHTML);
-            } else {
-                $target.append(NukeButtonHTML);
-            }
-        });
+        const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
+        if (showNextToUser && TBCore.isOldReddit) {
+            const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container .tb-frontend-container');
+            $userContainter.append(NukeButtonHTML);
+        } else {
+            $target.append(NukeButtonHTML);
+        }
     });
 };
 

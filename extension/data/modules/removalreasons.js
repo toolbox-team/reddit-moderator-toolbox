@@ -138,7 +138,7 @@ self.init = function () {
     }
 
     // Open reason drop-down when we remove something as ham.
-    $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button, .tb-submission-button-remove, .tb-comment-button-remove', function (event) {
+    $('body').on('click', 'button:contains("remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button, .tb-submission-button-remove, .tb-comment-button-remove', async function (event) {
         const $button = $(this);
         let thingID,
             thingSubreddit,
@@ -175,299 +175,300 @@ self.init = function () {
             }
         }
 
-        TBCore.getApiThingInfo(thingID, thingSubreddit, false, async info => {
-            // Get link/comment attributes
-            const data = {
-                subreddit: info.subreddit,
-                fullname: info.id,
-                author: info.user,
-                title: info.title,
-                kind: info.kind,
-                mod: info.mod,
-                url: info.permalink,
-                link: info.postlink,
-                domain: info.domain,
-                body: info.body,
-                raw_body: info.raw_body,
-                uri_body: info.uri_body || encodeURIComponent(info.body),
-                uri_title: info.uri_title || encodeURIComponent(info.title),
-                reasons: [],
-                get reasons_posts () {
-                    return this.reasons.filter(r => r.removePosts || r.removePosts === undefined);
-                },
-                get reasons_comments () {
-                    return this.reasons.filter(r => r.removeComments || r.removeComments === undefined);
-                },
-            };
+        const info = await TBCore.getApiThingInfo(thingID, thingSubreddit, false);
+        // Get link/comment attributes
+        const data = {
+            subreddit: info.subreddit,
+            fullname: info.id,
+            author: info.user,
+            title: info.title,
+            kind: info.kind,
+            mod: info.mod,
+            url: info.permalink,
+            link: info.postlink,
+            domain: info.domain,
+            body: info.body,
+            raw_body: info.raw_body,
+            uri_body: info.uri_body || encodeURIComponent(info.body),
+            uri_title: info.uri_title || encodeURIComponent(info.title),
+            reasons: [],
+            get reasons_posts () {
+                return this.reasons.filter(r => r.removePosts || r.removePosts === undefined);
+            },
+            get reasons_comments () {
+                return this.reasons.filter(r => r.removeComments || r.removeComments === undefined);
+            },
+        };
 
-            // TODO: Dis ain't finished
-            // TBApi.getRules(data.subreddit).then(rules => {
-            //    self.log('getting rules');
-            //    self.log(rules);
-            // });
+        // TODO: Dis ain't finished
+        // TBApi.getRules(data.subreddit).then(rules => {
+        //    self.log('getting rules');
+        //    self.log(rules);
+        // });
 
-            // Set attributes and open reason box if one already exists for this subreddit
-            self.log('Opening popup');
-            const $popup = $(`#reason-popup-${data.subreddit}`);
-            // If the popup already exists, open it
-            if ($popup.length) {
-                // Click yes on the removal
-                openPopup();
-            } else {
-                // Otherwise create the popup and open it
-                // Get removal reasons.
-                let response = await getRemovalReasons(data.subreddit);
+        // Set attributes and open reason box if one already exists for this subreddit
+        self.log('Opening popup');
+        const $popup = $(`#reason-popup-${data.subreddit}`);
+        // If the popup already exists, open it
+        if ($popup.length) {
+            // Click yes on the removal
+            openPopup();
+        } else {
+            // Otherwise create the popup and open it
+            // Get removal reasons.
+            let response = await getRemovalReasons(data.subreddit);
 
-                // Removal reasons not enabled
-                if (!response || response.reasons.length < 1) {
-                    notEnabled.push(data.subreddit);
+            // Removal reasons not enabled
+            if (!response || response.reasons.length < 1) {
+                notEnabled.push(data.subreddit);
 
-                    // we're done, unless the user has always show set.
-                    if (!alwaysShow) {
-                        return;
-                    }
-
-                    // Otherwise, setup a completely empty reason.
-                    self.log('Using custom reason');
-
-                    const customReasons = {
-                        pmsubject: '',
-                        logreason: '',
-                        header: '',
-                        footer: '',
-                        logsub: '',
-                        logtitle: '',
-                        bantitle: '',
-                        getfrom: '',
-                        reasons: [],
-                    };
-                    const reason = {
-                        text: self.setting('customRemovalReason'),
-                        flairText: '',
-                        flairCSS: '',
-                        title: '',
-                    };
-                    customReasons.reasons.push(reason);
-
-                    // Set response to our empty reason.
-                    response = customReasons;
-                }
-
-                // Get PM subject line
-                data.subject = TBHelpers.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
-
-                // Add additional data that is found in the wiki JSON.
-                // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-                data.logReason = TBHelpers.htmlEncode(response.logreason) || '';
-                data.header = response.header ? TBHelpers.htmlEncode(unescape(response.header)) : '';
-                data.footer = response.footer ? TBHelpers.htmlEncode(unescape(response.footer)) : '';
-                data.logSub = TBHelpers.htmlEncode(response.logsub) || '';
-                data.logTitle = TBHelpers.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
-                data.banTitle = TBHelpers.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
-                data.removalOption = response.removalOption;
-                data.typeReply = response.typeReply;
-                data.typeStickied = response.typeStickied;
-                data.typeLockComment = response.typeLockComment;
-                data.typeAsSub = response.typeAsSub;
-                data.autoArchive = response.autoArchive;
-                data.typeLockThread = response.typeLockThread;
-
-                // Loop through the reasons... unescaping each.
-                data.reasons = [];
-                $(response.reasons).each(function () {
-                    data.reasons.push({
-                        text: unescape(this.text),
-                        title: TBHelpers.htmlEncode(this.title),
-                        // If it's undefined, it's an old RR - show for both comments and posts
-                        removePosts: this.removePosts === undefined ? undefined : !!this.removePosts,
-                        removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
-                        flairText: TBHelpers.htmlEncode(this.flairText),
-                        flairCSS: TBHelpers.htmlEncode(this.flairCSS),
-                        flairTemplateID: this.flairTemplateID === undefined ? '' : this.flairTemplateID,
-                    });
-                });
-
-                // Only show popup if there's removal reasons
-                let removalReasonLength = 0;
-                if (isComment) {
-                    // get all RR for comments that's True and undefined
-                    let commentRemovalReasons = data.reasons_comments;
-                    if (!commentReasons) {
-                        // user has disabled RR for comments (allow only True)
-                        commentRemovalReasons = commentRemovalReasons.filter(r => r.removeComments);
-                    }
-                    removalReasonLength = commentRemovalReasons.length;
-                } else {
-                    removalReasonLength = data.reasons_posts.length;
-                }
-
-                if (!removalReasonLength) {
+                // we're done, unless the user has always show set.
+                if (!alwaysShow) {
                     return;
                 }
 
-                // Open popup
-                createPopup();
-                openPopup();
+                // Otherwise, setup a completely empty reason.
+                self.log('Using custom reason');
+
+                const customReasons = {
+                    pmsubject: '',
+                    logreason: '',
+                    header: '',
+                    footer: '',
+                    logsub: '',
+                    logtitle: '',
+                    bantitle: '',
+                    getfrom: '',
+                    reasons: [],
+                };
+                const reason = {
+                    text: self.setting('customRemovalReason'),
+                    flairText: '',
+                    flairCSS: '',
+                    title: '',
+                };
+                customReasons.reasons.push(reason);
+
+                // Set response to our empty reason.
+                response = customReasons;
             }
 
-            function createPopup () {
-                self.log('Creating removal reason popup');
+            // Get PM subject line
+            data.subject = TBHelpers.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
 
-                // Options
-                const selectNoneDisplay = data.logSub ? '' : 'none', // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
-                      logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none', // if {reason}  is present we want to fill it.
-                      headerDisplay = data.header ? '' : 'none',
-                      footerDisplay = data.footer ? '' : 'none',
-                      removalOption = data.removalOption,
-                      typeReply = data.typeReply,
-                      typeStickied = data.typeStickied,
-                      typeLockComment = data.typeLockComment,
-                      typeAsSub = data.typeAsSub,
-                      autoArchive = data.autoArchive,
-                      typeLockThread = data.typeLockThread,
-                      leaveUpToMods = removalOption === undefined || removalOption === 'leave',
-                      forced = removalOption === 'force';
+            // Add additional data that is found in the wiki JSON.
+            // Any HTML needs to me unescaped, because we store it escaped in the wiki.
+            data.logReason = TBHelpers.htmlEncode(response.logreason) || '';
+            data.header = response.header ? TBHelpers.htmlEncode(unescape(response.header)) : '';
+            data.footer = response.footer ? TBHelpers.htmlEncode(unescape(response.footer)) : '';
+            data.logSub = TBHelpers.htmlEncode(response.logsub) || '';
+            data.logTitle = TBHelpers.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
+            data.banTitle = TBHelpers.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
+            data.removalOption = response.removalOption;
+            data.typeReply = response.typeReply;
+            data.typeStickied = response.typeStickied;
+            data.typeLockComment = response.typeLockComment;
+            data.typeAsSub = response.typeAsSub;
+            data.autoArchive = response.autoArchive;
+            data.typeLockThread = response.typeLockThread;
 
-                let reasonType = typeReply;
-                if (leaveUpToMods) {
-                    switch (self.setting('reasonType')) {
-                    case 'reply_with_a_comment_to_the_item_that_is_removed':
-                        reasonType = 'reply';
-                        break;
-                    case 'send_as_pm_(personal_message)':
-                        reasonType = 'pm';
-                        break;
-                    case 'send_as_both_pm_and_reply':
-                        reasonType = 'both';
-                        break;
-                    case 'none_(this_only_works_when_a_logsub_has_been_set)':
-                        reasonType = 'none';
-                        break;
-                    default:
-                        reasonType = 'reply';
-                        break;
-                    }
+            // Loop through the reasons... unescaping each.
+            data.reasons = [];
+            $(response.reasons).each(function () {
+                data.reasons.push({
+                    text: unescape(this.text),
+                    title: TBHelpers.htmlEncode(this.title),
+                    // If it's undefined, it's an old RR - show for both comments and posts
+                    removePosts: this.removePosts === undefined ? undefined : !!this.removePosts,
+                    removeComments: this.removeComments === undefined ? undefined : !!this.removeComments,
+                    flairText: TBHelpers.htmlEncode(this.flairText),
+                    flairCSS: TBHelpers.htmlEncode(this.flairCSS),
+                    flairTemplateID: this.flairTemplateID === undefined ? '' : this.flairTemplateID,
+                });
+            });
+
+            // Only show popup if there's removal reasons
+            let removalReasonLength = 0;
+            if (isComment) {
+                // get all RR for comments that's True and undefined
+                let commentRemovalReasons = data.reasons_comments;
+                if (!commentReasons) {
+                    // user has disabled RR for comments (allow only True)
+                    commentRemovalReasons = commentRemovalReasons.filter(r => r.removeComments);
                 }
+                removalReasonLength = commentRemovalReasons.length;
+            } else {
+                removalReasonLength = data.reasons_posts.length;
+            }
 
-                const reasonAsSub = leaveUpToMods ? self.setting('reasonAsSub') : typeAsSub;
-                const reasonAutoArchive = leaveUpToMods ? self.setting('reasonAutoArchive') : autoArchive;
-                const reasonSticky = leaveUpToMods ? self.setting('reasonSticky') : typeStickied;
-                const actionLockThread = leaveUpToMods ? self.setting('actionLock') : typeLockThread;
-                const actionLockComment = leaveUpToMods ? self.setting('actionLockComment') : typeLockComment;
+            if (!removalReasonLength) {
+                return;
+            }
 
-                // Set up markdown renderer
-                SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
-                SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id', 'placeholder', 'label', 'value');
-                const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
+            // Open popup
+            createPopup();
+            openPopup();
+        }
 
-                // Render header and footer
-                const headerText = data.header ? parser.render(data.header) : '',
-                      footerText = data.footer ? parser.render(data.footer) : '';
+        function createPopup () {
+            self.log('Creating removal reason popup');
 
-                // Make box & add reason radio buttons
-                let popup = $(`
-                    <div class="reason-popup" id="reason-popup-${data.subreddit}">
-                    <attrs />
-                    <div class="reason-popup-content">
-                    <div class="reason-popup-header">Removal reasons for /r/${data.subreddit}:</div>
-                    <div class="reason-popup-innercontent">
-                    <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBHelpers.htmlEncode(data.title)}</a></p>
-                    <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
-                        <p>
-                            <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
-                            <label id="reason-header">${headerText}</label>
-                        </p>
-                    </div>
-                    <table id="removal-reasons-table">
-                        <thead><tr>
-                            <th class="removal-toggle"></th>
-                            <th class="reason">reason</th>
-                            <th class="flair-text">flair text</th>
-                            <th class="flair-css">flair css</th>
-                        </tr></thead>
-                        <tbody id="reason-table" />
-                    </table>
-                    <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}">
-                        <p>
-                            <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />
-                            <label id="reason-footer">${footerText}</label>
-                        </p>
-                    </div>
-                    <div id="buttons">
-                    <ul>
-                        <li>
-                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
-                            <ul>
-                                <li>
-                                    <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky && data.kind === 'submission' ? 'checked' : ''}/><label for="type-stickied">Sticky the removal comment.</label>
-                                </li>
-                                <li>
-                                    <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
-                            <ul>
-                                <li>
-                                    <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub" ${reasonAsSub ? 'checked ' : ''}/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
-                                </li>
-                                <li>
-                                    <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${reasonAutoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
-                        </li>
-                        <li style="display:${selectNoneDisplay}"> /
-                            <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
-                        </li>
-                        <li>
-                            <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread && data.kind === 'submission' ? 'checked' : ''}/><label for="type-action-lock-thread">Lock the removed thread.</label>
-                        </li>
-                    </ul>
-                    </div>
-                    <div id="log-reason" style="display:${logDisplay}">
-                        <p>Log Reason(s):
-                            <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
-                        </p>
-                        <p>
-                            (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>
-                        </p>
-                    </div>
-                    </div>
-                    <div class="reason-popup-footer">
-                    <input type="hidden" name="tom_or_not" value="no-tom">
-                    <span class="status error" style="display:none">This is an easter egg.</span>
-                    <button class="save tb-action-button">send</button>
-                    <button class="no-reason tb-action-button">no reason</button>
-                    <button class="cancel tb-action-button">cancel and approve</button>
-                    </div>
-                    </div>
-                    </div>`);
+            // Options
+            const selectNoneDisplay = data.logSub ? '' : 'none', // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
+                  logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none', // if {reason}  is present we want to fill it.
+                  headerDisplay = data.header ? '' : 'none',
+                  footerDisplay = data.footer ? '' : 'none',
+                  removalOption = data.removalOption,
+                  typeReply = data.typeReply,
+                  typeStickied = data.typeStickied,
+                  typeLockComment = data.typeLockComment,
+                  typeAsSub = data.typeAsSub,
+                  autoArchive = data.autoArchive,
+                  typeLockThread = data.typeLockThread,
+                  leaveUpToMods = removalOption === undefined || removalOption === 'leave',
+                  forced = removalOption === 'force';
 
-                popup = $(popup).appendTo('body').find('attrs').attr(data).end();
+            let reasonType = typeReply;
+            if (leaveUpToMods) {
+                switch (self.setting('reasonType')) {
+                case 'reply_with_a_comment_to_the_item_that_is_removed':
+                    reasonType = 'reply';
+                    break;
+                case 'send_as_pm_(personal_message)':
+                    reasonType = 'pm';
+                    break;
+                case 'send_as_both_pm_and_reply':
+                    reasonType = 'both';
+                    break;
+                case 'none_(this_only_works_when_a_logsub_has_been_set)':
+                    reasonType = 'none';
+                    break;
+                default:
+                    reasonType = 'reply';
+                    break;
+                }
+            }
 
-                let reasons = [];
-                if (isComment) {
-                    if (commentReasons) {
-                        // show reasons with 'true' and 'undefined' for comments
-                        reasons = data.reasons_comments;
-                    } else {
-                        // show reasons with only 'true' for comments
-                        reasons = data.reasons_comments.filter(r => r.removeComments === true);
-                    }
+            const reasonAsSub = leaveUpToMods ? self.setting('reasonAsSub') : typeAsSub;
+            const reasonAutoArchive = leaveUpToMods ? self.setting('reasonAutoArchive') : autoArchive;
+            const reasonSticky = leaveUpToMods ? self.setting('reasonSticky') : typeStickied;
+            const actionLockThread = leaveUpToMods ? self.setting('actionLock') : typeLockThread;
+            const actionLockComment = leaveUpToMods ? self.setting('actionLockComment') : typeLockComment;
+
+            // Set up markdown renderer
+            SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
+            SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id', 'placeholder', 'label', 'value');
+            const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
+
+            // Render header and footer
+            const headerText = data.header ? parser.render(data.header) : '',
+                  footerText = data.footer ? parser.render(data.footer) : '';
+
+            // Make box & add reason radio buttons
+            let popup = $(`
+                <div class="reason-popup" id="reason-popup-${data.subreddit}">
+                <attrs />
+                <div class="reason-popup-content">
+                <div class="reason-popup-header">Removal reasons for /r/${data.subreddit}:</div>
+                <div class="reason-popup-innercontent">
+                <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBHelpers.htmlEncode(data.title)}</a></p>
+                <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
+                    <p>
+                        <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
+                        <label id="reason-header">${headerText}</label>
+                    </p>
+                </div>
+                <table id="removal-reasons-table">
+                    <thead><tr>
+                        <th class="removal-toggle"></th>
+                        <th class="reason">reason</th>
+                        <th class="flair-text">flair text</th>
+                        <th class="flair-css">flair css</th>
+                    </tr></thead>
+                    <tbody id="reason-table" />
+                </table>
+                <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}">
+                    <p>
+                        <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />
+                        <label id="reason-footer">${footerText}</label>
+                    </p>
+                </div>
+                <div id="buttons">
+                <ul>
+                    <li>
+                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
+                        <ul>
+                            <li>
+                                <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky && data.kind === 'submission' ? 'checked' : ''}/><label for="type-stickied">Sticky the removal comment.</label>
+                            </li>
+                            <li>
+                                <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
+                        <ul>
+                            <li>
+                                <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub" ${reasonAsSub ? 'checked ' : ''}/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                            </li>
+                            <li>
+                                <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${reasonAutoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
+                    </li>
+                    <li style="display:${selectNoneDisplay}"> /
+                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
+                    </li>
+                    <li>
+                        <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread && data.kind === 'submission' ? 'checked' : ''}/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                    </li>
+                </ul>
+                </div>
+                <div id="log-reason" style="display:${logDisplay}">
+                    <p>Log Reason(s):
+                        <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
+                    </p>
+                    <p>
+                        (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>
+                    </p>
+                </div>
+                </div>
+                <div class="reason-popup-footer">
+                <input type="hidden" name="tom_or_not" value="no-tom">
+                <span class="status error" style="display:none">This is an easter egg.</span>
+                <button class="save tb-action-button">send</button>
+                <button class="no-reason tb-action-button">no reason</button>
+                <button class="cancel tb-action-button">cancel and approve</button>
+                </div>
+                </div>
+                </div>
+            `);
+
+            popup = $(popup).appendTo('body').find('attrs').attr(data).end();
+
+            let reasons = [];
+            if (isComment) {
+                if (commentReasons) {
+                    // show reasons with 'true' and 'undefined' for comments
+                    reasons = data.reasons_comments;
                 } else {
-                    reasons = data.reasons_posts;
+                    // show reasons with only 'true' for comments
+                    reasons = data.reasons_comments.filter(r => r.removeComments === true);
                 }
+            } else {
+                reasons = data.reasons_posts;
+            }
 
-                // Render reasons and add to popup
-                $(reasons).each(function (index) {
-                    const reasonMarkdown = `${this.text}\n\n`;
-                    const reasonHtml = parser.render(reasonMarkdown);
+            // Render reasons and add to popup
+            $(reasons).each(function (index) {
+                const reasonMarkdown = `${this.text}\n\n`;
+                const reasonHtml = parser.render(reasonMarkdown);
 
-                    const tr = $(`
+                const tr = $(`
                     <tr class="selectable-reason">
                     <td class="removal-toggle">
                     <input type="checkbox" class="reason-check" name="reason-${data.subreddit}" id="reason-${data.subreddit}-${index}" />
@@ -479,52 +480,52 @@ self.init = function () {
                     </td>
                     <td class="flair-text"><span class="flair-text-span">${this.flairText ? this.flairText : ''}</span></td>
                     <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ''}</span></td>
-                    </tr>`);
+                    </tr>
+                `);
 
-                    tr.data({
-                        reasonId: index,
-                        reasonMarkdown,
-                        title: this.title,
-                        flairText: this.flairText,
-                        flairCSS: this.flairCSS,
-                        flairTemplateID: this.flairTemplateID,
-                    });
-
-                    if (this.title) {
-                        tr.find('.styled-reason.reason-content').hide();
-                        tr.find('.flair-text-span').hide();
-                        tr.find('.flair-css-span').hide();
-                    } else {
-                        tr.find('.removal-reason-title').remove();
-                    }
-
-                    popup.find('#reason-table').append(tr);
+                tr.data({
+                    reasonId: index,
+                    reasonMarkdown,
+                    title: this.title,
+                    flairText: this.flairText,
+                    flairCSS: this.flairCSS,
+                    flairTemplateID: this.flairTemplateID,
                 });
 
-                // Pre-fill reason input elements which have IDs.
-                popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
-                    this.id = `reason-input-${data.subreddit}-${this.id}`;
-                    this.value = await TBStorage.getCache('RReasons', this.id, this.value);
-                });
-            }
+                if (this.title) {
+                    tr.find('.styled-reason.reason-content').hide();
+                    tr.find('.flair-text-span').hide();
+                    tr.find('.flair-css-span').hide();
+                } else {
+                    tr.find('.removal-reason-title').remove();
+                }
 
-            function openPopup () {
-                // Reset state
-                $popup.find('attrs').attr(data);
-                $popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
-                $popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
-                $popup.find('.status').hide();// css('display: none;');
-                $popup.find('.error-highlight').removeClass('error-highlight');
-                $popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
+                popup.find('#reason-table').append(tr);
+            });
 
-                // Open popup
-                /* popup.css({
+            // Pre-fill reason input elements which have IDs.
+            popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
+                this.id = `reason-input-${data.subreddit}-${this.id}`;
+                this.value = await TBStorage.getCache('RReasons', this.id, this.value);
+            });
+        }
+
+        function openPopup () {
+            // Reset state
+            $popup.find('attrs').attr(data);
+            $popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
+            $popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
+            $popup.find('.status').hide();// css('display: none;');
+            $popup.find('.error-highlight').removeClass('error-highlight');
+            $popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
+
+            // Open popup
+            /* popup.css({
                     display: ''
                     });*/
-                $popup.show();
-                $body.css('overflow', 'hidden');
-            }
-        });
+            $popup.show();
+            $body.css('overflow', 'hidden');
+        }
     });
 
     // Popup events
@@ -715,7 +716,7 @@ self.init = function () {
         subject = TBHelpers.replaceTokens(data, subject);
         logTitle = TBHelpers.replaceTokens(data, logTitle);
 
-        TBCore.getApiThingInfo(data.fullname, data.subreddit, false, ({ham}) => {
+        TBCore.getApiThingInfo(data.fullname, data.subreddit, false).then(({ham}) => {
             if (!ham) {
                 TBApi.removeThing(data.fullname);
             }
@@ -767,123 +768,122 @@ self.init = function () {
         }
 
         // Function to send PM and comment
-        function sendRemovalMessage (logLink) {
-            TBCore.getModSubs().then(async () => {
-                // If there is no message to send, don't send one.
-                if (reasonlength < 1) {
-                    if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
-                        // We'll flair only flair, we are done here.
-                        return removePopup(popup);
+        async function sendRemovalMessage (logLink) {
+            await TBCore.getModSubs();
+            // If there is no message to send, don't send one.
+            if (reasonlength < 1) {
+                if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
+                    // We'll flair only flair, we are done here.
+                    return removePopup(popup);
+                } else {
+                    return status.text(NO_REASON_ERROR);
+                }
+            }
+
+            // Check if a valid notification type is selected
+            if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
+                popup.find('#buttons').addClass('error-highlight');
+                return status.text(NO_REPLY_TYPE_ERROR);
+            }
+
+            // Finalize the reason with optional log post link
+            if (typeof logLink !== 'undefined') {
+                reason = reason.replace('{loglink}', logLink);
+            }
+
+            // Lock thread if requested
+            if (actionLockThread) {
+                self.log(`Fullname of this link: ${data.fullname}`);
+                try {
+                    await TBApi.lock(data.fullname);
+                } catch (error) {
+                    self.error(`error locking ${data.fullname}:`, error);
+                    return status.text(LOCK_POST_ERROR);
+                }
+            }
+
+            const subredditData = window.TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
+                  notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
+                  notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
+                  notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
+
+            // Reply to submission/comment
+            if (notifyByReply) {
+                self.log('Sending removal message by comment reply.');
+                TBApi.postComment(data.fullname, reason).then(response => {
+                    if (response.json.errors.length > 0) {
+                        status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                     } else {
-                        return status.text(NO_REASON_ERROR);
-                    }
-                }
-
-                // Check if a valid notification type is selected
-                if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
-                    popup.find('#buttons').addClass('error-highlight');
-                    return status.text(NO_REPLY_TYPE_ERROR);
-                }
-
-                // Finalize the reason with optional log post link
-                if (typeof logLink !== 'undefined') {
-                    reason = reason.replace('{loglink}', logLink);
-                }
-
-                // Lock thread if requested
-                if (actionLockThread) {
-                    self.log(`Fullname of this link: ${data.fullname}`);
-                    try {
-                        await TBApi.lock(data.fullname);
-                    } catch (error) {
-                        self.error(`error locking ${data.fullname}:`, error);
-                        return status.text(LOCK_POST_ERROR);
-                    }
-                }
-
-                const subredditData = window.TBCore.mySubsData.find(s => s.subreddit === data.subreddit),
-                      notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
-                      notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
-                      notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
-
-                // Reply to submission/comment
-                if (notifyByReply) {
-                    self.log('Sending removal message by comment reply.');
-                    TBApi.postComment(data.fullname, reason).then(response => {
-                        if (response.json.errors.length > 0) {
-                            status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
-                        } else {
-                            // Distinguish the new reply, stickying if necessary
-                            TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                                if (notifyByNewModmail) {
-                                    sendNewModmail();
-                                } else if (notifyByPM) {
-                                    sendPM();
-                                } else {
-                                    removePopup(popup);
-                                }
-                            }).catch(() => {
-                                status.text(DISTINGUISH_ERROR);
-                            });
-
-                            // Lock reply if requested
-                            if (actionLockComment) {
-                                const commentId = response.json.data.things[0].data.id;
-                                self.log(`Fullname of reply: ${commentId}`);
-                                TBApi.lock(commentId).then(() => {
-                                    removePopup(popup);
-                                }).catch(() => {
-                                    status.text(LOCK_COMMENT_ERROR);
-                                });
-                            }
-                        }
-                    }).catch(() => {
-                        status.text(REPLY_ERROR);
-                    });
-                } else if (notifyByNewModmail) {
-                    sendNewModmail();
-                } else if (notifyByPM) {
-                    sendPM();
-                }
-
-                // Send PM the user
-                function sendPM () {
-                    const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
-
-                    self.log('Sending removal message by PM');
-                    TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
-                        removePopup(popup);
-                    }).catch(() => {
-                        status.text(PM_ERROR);
-                    });
-                }
-
-                function sendNewModmail () {
-                    const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
-
-                    self.log('Sending removal message by New Modmail');
-                    TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
-                        res.json().then(data => {
-                            const id = data.conversation.id;
-                            // isInternal means mod conversation - can't archive that
-                            const isInternal = data.conversation.isInternal;
-                            if (autoArchive && !isInternal) {
-                                TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
-                                    removePopup(popup);
-                                });
+                        // Distinguish the new reply, stickying if necessary
+                        TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
+                            if (notifyByNewModmail) {
+                                sendNewModmail();
+                            } else if (notifyByPM) {
+                                sendPM();
                             } else {
                                 removePopup(popup);
                             }
                         }).catch(() => {
-                            status.text(MODMAIL_ARCHIVE_ERROR);
-                            // Disable Send button as we already sent modmail successfully - avoids multiple modmails
-                            $('.save.tb-action-button').prop('disabled', true);
+                            status.text(DISTINGUISH_ERROR);
                         });
+
+                        // Lock reply if requested
+                        if (actionLockComment) {
+                            const commentId = response.json.data.things[0].data.id;
+                            self.log(`Fullname of reply: ${commentId}`);
+                            TBApi.lock(commentId).then(() => {
+                                removePopup(popup);
+                            }).catch(() => {
+                                status.text(LOCK_COMMENT_ERROR);
+                            });
+                        }
+                    }
+                }).catch(() => {
+                    status.text(REPLY_ERROR);
+                });
+            } else if (notifyByNewModmail) {
+                sendNewModmail();
+            } else if (notifyByPM) {
+                sendPM();
+            }
+
+            // Send PM the user
+            function sendPM () {
+                const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
+
+                self.log('Sending removal message by PM');
+                TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
+                    removePopup(popup);
+                }).catch(() => {
+                    status.text(PM_ERROR);
+                });
+            }
+
+            function sendNewModmail () {
+                const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
+
+                self.log('Sending removal message by New Modmail');
+                TBApi.apiOauthPOST('/api/mod/conversations', {to: data.author, isAuthorHidden: true, subject, body, srName: data.subreddit}).then(res => {
+                    res.json().then(data => {
+                        const id = data.conversation.id;
+                        // isInternal means mod conversation - can't archive that
+                        const isInternal = data.conversation.isInternal;
+                        if (autoArchive && !isInternal) {
+                            TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
+                                removePopup(popup);
+                            });
+                        } else {
+                            removePopup(popup);
+                        }
                     }).catch(() => {
-                        status.text(MODMAIL_ERROR);
+                        status.text(MODMAIL_ARCHIVE_ERROR);
+                        // Disable Send button as we already sent modmail successfully - avoids multiple modmails
+                        $('.save.tb-action-button').prop('disabled', true);
                     });
-                }
-            });
+                }).catch(() => {
+                    status.text(MODMAIL_ERROR);
+                });
+            }
         }
     });
 

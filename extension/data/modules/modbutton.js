@@ -458,7 +458,7 @@ self.init = function () {
                 };
                 openModPopup(event, info);
             } else {
-                TBCore.getApiThingInfo(id, subreddit, true, info => {
+                TBCore.getApiThingInfo(id, subreddit, true).then(info => {
                     // If the thing we're fetching info for is removed in a subreddit the current user doesn't mod,
                     // the API won't return information about it. However, we can still access such things if we're
                     // on the user's profile. In that context, we manually fill in the author since we know at least
@@ -576,51 +576,47 @@ self.init = function () {
 
             TBui.longLoadSpinner(true, 'Performing mod action', TBui.FEEDBACK_NEUTRAL);
 
-            TBCore.forEachChunkedRateLimit(
-                subs, 20, subreddit => {
-                    TBui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TBui.FEEDBACK_POSITIVE);
+            Promise.all(subs.map(async subreddit => {
+                TBui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TBui.FEEDBACK_POSITIVE);
 
-                    self.log(`performing action in: ${subreddit}`);
-                    if (settingState) {
-                        const params = {
-                            user,
-                            action,
-                            subreddit,
-                        };
+                self.log(`performing action in: ${subreddit}`);
+                if (settingState) {
+                    const params = {
+                        user,
+                        action,
+                        subreddit,
+                    };
 
-                        // Only send ban-related fields if performing a ban action
-                        if (action === 'banned') {
-                            params.banReason = banReason;
-                            params.banMessage = banMessage;
-                            params.banDuration = banDuration;
-                            params.banContext = banContext;
-                        }
-                        TBApi.friendUser(params).then(response => {
-                            if (response.json.errors.length) {
-                                throw new Error('There were one or more errors banning the user');
-                            }
-                        }).catch(() => {
-                            // catches the above `errors.length` condition as well as network errors
-                            self.log('missed one');
-                            failedSubs.push(subreddit);
-                        });
-                    } else {
-                        TBApi.unfriendUser(user, action, subreddit).catch(() => {
-                            // only catches network errors because unfriend is weird
-                            self.log('missed one');
-                            failedSubs.push(subreddit);
-                        });
+                    // Only send ban-related fields if performing a ban action
+                    if (action === 'banned') {
+                        params.banReason = banReason;
+                        params.banMessage = banMessage;
+                        params.banDuration = banDuration;
+                        params.banContext = banContext;
                     }
-                },
+                    await TBApi.friendUser(params).then(response => {
+                        if (response.json.errors.length) {
+                            throw new Error('There were one or more errors banning the user');
+                        }
+                    }).catch(() => {
+                        // catches the above `errors.length` condition as well as network errors
+                        self.log('missed one');
+                        failedSubs.push(subreddit);
+                    });
+                } else {
+                    await TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                        // only catches network errors because unfriend is weird
+                        self.log('missed one');
+                        failedSubs.push(subreddit);
+                    });
+                }
+            })).then(() => {
+                TBui.longLoadSpinner(false);
 
-                () => {
-                    TBui.longLoadSpinner(false);
-
-                    window.setTimeout(() => {
-                        completeCheck(failedSubs);
-                    }, 2000);
-                },
-            );
+                window.setTimeout(() => {
+                    completeCheck(failedSubs);
+                }, 2000);
+            });
         }
     });
 

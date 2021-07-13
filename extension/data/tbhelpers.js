@@ -718,3 +718,8 @@ export function zlibDeflate (objThing) {
     // Collapse to base64
     return btoa(objThing);
 }
+
+/**
+ * Provides an initialized SnuOwnd parser.
+ */
+export const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());

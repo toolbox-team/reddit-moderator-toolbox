@@ -78,10 +78,10 @@ self.init = function () {
     }
 
     /**
-         * Will hide or reveal mod actions in the toolbox profile overlay.
-         * @function hideModActionsThings
-         * @param {boolean} hide determines if actions should be shown or hidden.
-         */
+     * Will hide or reveal mod actions in the toolbox profile overlay.
+     * @function hideModActionsThings
+     * @param {boolean} hide determines if actions should be shown or hidden.
+     */
     function hideModActionsThings (hide) {
         const $things = $('.tb-thing');
         if (hide) {
@@ -104,22 +104,21 @@ self.init = function () {
     }
 
     /**
-         * Will hide or reveal items in the profile overlay that can't be modded.
-         * @function filterModdable
-         * @param {boolean} hide determines if items should be shown or hidden.
-         */
-    function filterModdable (hide) {
+     * Will hide or reveal items in the profile overlay that can't be modded.
+     * @function filterModdable
+     * @param {boolean} hide determines if items should be shown or hidden.
+     */
+    async function filterModdable (hide) {
         const $things = $('.tb-thing');
         if (hide) {
-            TBCore.getModSubs().then(() => {
-                TBCore.forEachChunkedDynamic($things, thing => {
-                    const $thing = $(thing);
-                    const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
-                    if (!window.TBCore.mySubs.includes(subreddit)) {
-                        $thing.addClass('tb-mod-filtered');
-                    }
-                }, {framerate: 40});
-            });
+            await TBCore.getModSubs();
+            TBCore.forEachChunkedDynamic($things, thing => {
+                const $thing = $(thing);
+                const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
+                if (!window.TBCore.mySubs.includes(subreddit)) {
+                    $thing.addClass('tb-mod-filtered');
+                }
+            }, {framerate: 40});
         } else {
             TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
@@ -129,14 +128,14 @@ self.init = function () {
     }
 
     /**
-         * Adds items to the toolbox profile overlay siteTable element
-         * @function addToSiteTable
-         * @param {array} data array of reddit things to be added in reddit API format
-         * @param {jqueryObject} $siteTable jquery object representing the siteTable
-         * @param {string} after reddit thing ID representing the start of the next page. If present will add a "load more" at the end of the siteTable
-         * @param {callback} callback callback function
-         * @returns {callback} returned when done
-         */
+     * Adds items to the toolbox profile overlay siteTable element
+     * @function addToSiteTable
+     * @param {array} data array of reddit things to be added in reddit API format
+     * @param {jqueryObject} $siteTable jquery object representing the siteTable
+     * @param {string} after reddit thing ID representing the start of the next page. If present will add a "load more" at the end of the siteTable
+     * @param {callback} callback callback function
+     * @returns {callback} returned when done
+     */
     function addToSiteTable (data, $siteTable, after, callback) {
         // prepare comment options for TBUi comment creator.
         const commentOptions = {
@@ -199,11 +198,11 @@ self.init = function () {
     }
 
     /**
-         * Adds the user's trophies to the given sidebar element.
-         * @function addTrophiesToSidebar
-         * @param {string} user reddit username
-         * @param {jqueryObject} $sidebar jquery sidebar element to which the trophies need to be added
-         */
+     * Adds the user's trophies to the given sidebar element.
+     * @function addTrophiesToSidebar
+     * @param {string} user reddit username
+     * @param {jqueryObject} $sidebar jquery sidebar element to which the trophies need to be added
+     */
     function addTrophiesToSidebar (user, $sidebar) {
         const inputURL = `/user/${user}/trophies.json`;
         TBApi.getJSON(inputURL).then(data => {
@@ -243,11 +242,11 @@ self.init = function () {
     }
 
     /**
-         * Adds the user's moderated subs to the given sidebar element.
-         * @function addModSubsToSidebar
-         * @param {string} user reddit username
-         * @param {jqueryObject} $sidebar jquery sidebar element to which the subreddits need to be added
-         */
+     * Adds the user's moderated subs to the given sidebar element.
+     * @function addModSubsToSidebar
+     * @param {string} user reddit username
+     * @param {jqueryObject} $sidebar jquery sidebar element to which the subreddits need to be added
+     */
     function addModSubsToSidebar (user, $sidebar) {
         const inputURL = `/user/${user}/moderated_subreddits.json`;
         TBApi.getJSON(inputURL).then(data => {
@@ -309,11 +308,11 @@ self.init = function () {
     }
 
     /**
-         * Creates a user sidebar element for the given overlay
-         * @function makeUserSidebar
-         * @param {string} user reddit username
-         * @param {jqueryObject} $overlay jquery overlay element to which the sidebar needs to be added
-         */
+     * Creates a user sidebar element for the given overlay
+     * @function makeUserSidebar
+     * @param {string} user reddit username
+     * @param {jqueryObject} $overlay jquery overlay element to which the sidebar needs to be added
+     */
     function makeUserSidebar (user, $overlay) {
         const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
         const inputURL = `/user/${user}/about.json`;
@@ -362,19 +361,19 @@ self.init = function () {
     }
 
     /**
-         * Searches a user profile for the given subreddit and/or string
-         * @function searchProfile
-         * @param {string} user reddit username
-         * @param {string} type the listing type that is to be searched
-         * @param {string} sortMethod the listing type that is to be searched
-         * @param {jqueryObject} $siteTable jquery siteTable element to which the search results need to be added
-         * @param {object} options search options
-         * @param {string} after reddit thing id indicating the next page
-         * @param {boolean} match indicates if there are previous
-         * @param {integer} pageCount what page we are on
-         * @param {callback} callback callback function
-         * @returns {callback} returns true when results have been found, false when none are found
-         */
+     * Searches a user profile for the given subreddit and/or string
+     * @function searchProfile
+     * @param {string} user reddit username
+     * @param {string} type the listing type that is to be searched
+     * @param {string} sortMethod the listing type that is to be searched
+     * @param {jqueryObject} $siteTable jquery siteTable element to which the search results need to be added
+     * @param {object} options search options
+     * @param {string} after reddit thing id indicating the next page
+     * @param {boolean} match indicates if there are previous
+     * @param {integer} pageCount what page we are on
+     * @param {callback} callback callback function
+     * @returns {callback} returns true when results have been found, false when none are found
+     */
     function searchProfile (user, type, sortMethod, $siteTable, options, after, match, pageCount, callback) {
         pageCount++;
         let hits = match || false;
@@ -455,11 +454,11 @@ self.init = function () {
     }
 
     /**
-         * Escapes a string so it is suitable to be inserted in to a regex match
-         * @function regExpEscape
-         * @param {string} query reddit username
-         * @returns {string} string escaped for regex use
-         */
+     * Escapes a string so it is suitable to be inserted in to a regex match
+     * @function regExpEscape
+     * @param {string} query reddit username
+     * @returns {string} string escaped for regex use
+     */
     function regExpEscape (query) {
         return query.trim().replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
     }
@@ -548,12 +547,11 @@ self.init = function () {
         });
     }
 
-    function initSearchSuggestion (subreddit) {
+    async function initSearchSuggestion (subreddit) {
         if (!$body.find('#tb-search-suggest').length) {
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-            TBCore.getModSubs().then(() => {
-                populateSearchSuggestion(subreddit);
-            });
+            await TBCore.getModSubs();
+            populateSearchSuggestion(subreddit);
         }
 
         $body.on('focus', '.tb-subredditsearch', function () {
@@ -834,7 +832,7 @@ self.init = function () {
     });
 
     if (profileButtonEnabled) {
-        TBListener.on('author', e => {
+        TBListener.on('author', async e => {
             const $target = $(e.target);
 
             if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {
@@ -844,28 +842,26 @@ self.init = function () {
                     return;
                 }
 
-                TBCore.getModSubs().then(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
-                        requestAnimationFrame(() => {
-                            $target.append(profileButton);
-                        });
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
+                    requestAnimationFrame(() => {
+                        $target.append(profileButton);
+                    });
+                }
             }
         });
 
-        TBListener.on('userHovercard', e => {
+        TBListener.on('userHovercard', async e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
 
-            TBCore.getModSubs().then(() => {
-                if (TBCore.modsSub(subreddit)) {
-                    const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
-                    $target.append(profileButton);
-                }
-            });
+            await TBCore.getModSubs();
+            if (TBCore.modsSub(subreddit)) {
+                const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
+                $target.append(profileButton);
+            }
         });
     }
 

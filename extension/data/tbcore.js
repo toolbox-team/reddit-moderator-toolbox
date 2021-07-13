@@ -438,10 +438,11 @@ export const RandomFeedback = randomTextFeedbacks[Math.floor(Math.random() * ran
  * @param {string} options.message The text of the alert
  * @param {number} options.noteID The ID of the note we're displaying
  * @param {boolean} options.showClose Whether to show a close button
- * @param {callback} callback callback function
- * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
+ * @returns {Promise<boolean>} Resolves when the alert is closed. Value
+ * will be `true` if the alert was clicked, `false` if the close button
+ * was clicked or if it was closed for another reason.
  */
-export function alert ({message, noteID, showClose}, callback) {
+export const alert = ({message, noteID, showClose}) => new Promise(resolve => {
     const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
     if (showClose) {
         $noteDiv.append(`<i class="note-close tb-icons" title="Close">${icons.close}</i>`);
@@ -452,7 +453,7 @@ export function alert ({message, noteID, showClose}, callback) {
         const settingDetail = event.detail;
         if (settingDetail.module === 'Utils' && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
             $noteDiv.remove();
-            callback(false);
+            resolve(false);
             return;
         }
     });
@@ -460,12 +461,12 @@ export function alert ({message, noteID, showClose}, callback) {
     $noteDiv.click(e => {
         $noteDiv.remove();
         if (e.target.className === 'note-close') {
-            callback(false);
+            resolve(false);
             return;
         }
-        callback(true);
+        resolve(true);
     });
-}
+});
 
 /**
  * Shows a notification, uses native browser notifications if the user
@@ -526,7 +527,7 @@ export async function showNote (note) {
         message: note.text,
         noteID: note.id,
         showClose: false,
-    }, async resp => {
+    }).then(async resp => {
         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
             // Fetch seenNotes fresh, add this note's ID, and save the result
             const seenNotes = await TBStorage.getSettingAsync('Utils', 'seenNotes', []);
@@ -891,8 +892,8 @@ export function addToSiteTable (URL, callback) {
 export function getThingInfo (sender, modCheck) {
     // First we check if we are in new modmail thread and for now we take a very simple.
     // Everything we need info for is centered around threads.
-    const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-    const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+    const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+    const permaLinkInfoRegex = /\/(?:r|user)\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
 
     // declare what we will need.
     const $sender = $(sender);
@@ -1100,7 +1101,7 @@ function findMessage (object, searchID) {
     return found;
 }
 
-export function getApiThingInfo (id, subreddit, modCheck, callback) {
+export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve => {
     if (id.startsWith('t4_')) {
         const shortID = id.substr(3);
         TBApi.getJSON(`/message/messages/${shortID}.json`).then(response => {
@@ -1143,10 +1144,10 @@ export function getApiThingInfo (id, subreddit, modCheck, callback) {
                 mod: window.TBCore.logged,
             };
 
-            callback(info);
+            resolve(info);
         });
     } else {
-        const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+        const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
         TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
             TBStorage.purifyObject(response);
             const data = response.data;
@@ -1208,11 +1209,14 @@ export function getApiThingInfo (id, subreddit, modCheck, callback) {
                 sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
                 wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
                 mod: window.TBCore.logged,
+                userReports: data.children[0].data.user_reports,
+                modReports: data.children[0].data.mod_reports,
+                reportsIgnored: data.children[0].data.ignore_reports,
             };
-            callback(info);
+            resolve(info);
         });
     }
-}
+});
 
 // Global object shenanigans
 

@@ -276,15 +276,15 @@ self.init = function () {
     if (self.setting('highlighted').length) {
         const highlighted = self.setting('highlighted');
 
-        TBListener.on('comment', e => {
+        TBListener.on('comment', async e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
-            TBCore.getModSubs().then(() => {
-                if (TBCore.modsSub(subreddit)) {
-                    $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
-                    $target.closest('.Comment').find('p').highlight(highlighted);
-                }
-            });
+
+            await TBCore.getModSubs();
+            if (TBCore.modsSub(subreddit)) {
+                $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
+                $target.closest('.Comment').find('p').highlight(highlighted);
+            }
         });
 
         $body.on('click', '.expando-button', function () {
@@ -298,16 +298,15 @@ self.init = function () {
             }
         });
 
-        window.addEventListener('TBNewPage', event => {
+        window.addEventListener('TBNewPage', async event => {
             const pageType = event.detail.pageType;
 
             if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.subreddit;
-                TBCore.getModSubs().then(() => {
-                    if (TBCore.modsSub(subreddit)) {
-                        $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
-                    }
-                });
+                await TBCore.getModSubs();
+                if (TBCore.modsSub(subreddit)) {
+                    $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
+                }
             }
         });
     }

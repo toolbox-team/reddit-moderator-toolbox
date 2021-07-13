@@ -3,15 +3,23 @@ import * as TBApi from '../tbapi.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBStorage from '../tbstorage.js';
 
 const self = new Module('Mod Macros');
 self.shortname = 'ModMacros';
 
 self.settings['enabled']['default'] = true;
 
+self.register_setting('showMacroPreview', {
+    type: 'boolean',
+    default: true,
+    title: 'Show a preview of macro messages while typing.',
+});
+
 self.init = function () {
     const $body = $('body'),
-          MACROS = 'TB-MACROS';
+          MACROS = 'TB-MACROS',
+          showMacroPreview = self.setting('showMacroPreview');
 
     async function getConfig (sub, callback) {
         const config = await TBCore.getConfig(sub);
@@ -169,56 +177,54 @@ self.init = function () {
     }
 
     if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
-        $('body').on('click', 'button:contains("Reply")', function () {
+        $('body').on('click', 'button:contains("Reply")', async function () {
             const $this = $(this);
             const $comment = $this.closest('.Comment');
             const commentDetails = $comment.find('.tb-frontend-container[data-tb-type="comment"]').data('tb-details');
             const subreddit = commentDetails.data.subreddit.name;
             const thingID = commentDetails.data.id;
 
-            TBCore.getModSubs().then(() => {
-                if (TBCore.modsSub(subreddit)) {
-                    getConfig(subreddit, (success, config) => {
-                        // if we're a mod, add macros to top level reply button.
-                        if (success && config.length > 0) {
-                            const $macro = $(`
-                                        <select class="tb-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="${thingID}">
-                                            <option value=${MACROS}>macros</option>
-                                        </select>
-                                `).appendTo($comment);
-                            $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
-                                $macro.remove();
-                            });
-                            populateSelect('.tb-macro-select', subreddit, config, 'comment');
-                        }
-                    });
-                }
-            });
+            await TBCore.getModSubs();
+            if (TBCore.modsSub(subreddit)) {
+                getConfig(subreddit, (success, config) => {
+                    // if we're a mod, add macros to top level reply button.
+                    if (success && config.length > 0) {
+                        const $macro = $(`
+                                    <select class="tb-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="${thingID}">
+                                        <option value=${MACROS}>macros</option>
+                                    </select>
+                            `).appendTo($comment);
+                        $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
+                            $macro.remove();
+                        });
+                        populateSelect('.tb-macro-select', subreddit, config, 'comment');
+                    }
+                });
+            }
         });
     }
 
-    window.addEventListener('TBNewPage', event => {
+    window.addEventListener('TBNewPage', async event => {
         if (event.detail.pageType === 'subredditCommentsPage') {
             const subreddit = event.detail.pageDetails.subreddit;
 
-            TBCore.getModSubs().then(() => {
-                if (TBCore.modsSub(subreddit)) {
-                    getConfig(subreddit, (success, config) => {
-                        // if we're a mod, add macros to top level reply button.
-                        if (success && config.length > 0) {
-                            $body.find('span:contains("Comment as")').closest('div').after(`
+            await TBCore.getModSubs();
+            if (TBCore.modsSub(subreddit)) {
+                getConfig(subreddit, (success, config) => {
+                    // if we're a mod, add macros to top level reply button.
+                    if (success && config.length > 0) {
+                        $body.find('span:contains("Comment as")').closest('div').after(`
                                     <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
                                         <option value=${MACROS}>macros</option>
                                     </select>
                                     `);
-                            populateSelect('.tb-top-macro-select', subreddit, config, 'post');
-                        }
-                    });
-                } else {
-                    // Remove all macros
-                    $body.find('.tb-macro-select').remove();
-                }
-            });
+                        populateSelect('.tb-top-macro-select', subreddit, config, 'post');
+                    }
+                });
+            } else {
+                // Remove all macros
+                $body.find('.tb-macro-select').remove();
+            }
         } else {
             // Remove all macros
             $body.find('.tb-macro-select').remove();
@@ -317,8 +323,8 @@ self.init = function () {
                     title: 'Mod Macro:',
                     id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: `Mod Macro:${title}`,
-                    content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea><br>
-                                    <span>${actionList}</span>`,
+                    content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea>
+                                  <div class="tb-macro-action-list">${actionList}</div>`,
                     footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`,
                 },
             ],
@@ -339,6 +345,35 @@ self.init = function () {
             'min-height': `${editMinHeight}px`,
             'min-width': `${editMinWidth}px`,
         });
+
+        if (showMacroPreview) {
+            $macroPopup.on('input', '.macro-edit-area', TBHelpers.debounce(e => {
+                let $previewArea;
+                if ($macroPopup.find('.tb-macro-preview').length) {
+                    // Use existing preview.
+                    $previewArea = $('.tb-macro-preview');
+                } else {
+                    // Create a new one.
+                    const $inputTextarea = $macroPopup.find('.macro-edit-area');
+                    $previewArea = $('<div class="tb-macro-preview tb-comment"></div>');
+                    $inputTextarea.after($previewArea);
+                }
+
+                // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                // people pasting malicious input on advice of shitty people.
+                const renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
+                $previewArea.html(`
+                    <h3 class="tb-preview-heading">Preview</h3>
+                    <div class="tb-comment-body">
+                        <div class="md">
+                            ${renderedHTML}
+                        </div>
+                    </div>
+                    `);
+            }, 100));
+
+            $macroPopup.find('.macro-edit-area').trigger('input');
+        }
 
         $macroPopup.on('click', `.macro-send-${info.id}`, function () {
             const $currentMacroPopup = $(this).closest('.macro-popup'),
@@ -503,15 +538,14 @@ self.init = function () {
 
         self.log(info);
 
-        getConfig(sub, (success, config) => {
+        getConfig(sub, async (success, config) => {
             if (success && config.length > 0) {
                 const macro = config[index];
 
                 if (thingID) {
-                    TBCore.getApiThingInfo(thingID, sub, false, thinginfo => {
-                        $this.attr('id', `macro-dropdown-${thinginfo.id}`);
-                        editMacro($this, thinginfo, macro, topLevel);
-                    });
+                    const thinginfo = await TBCore.getApiThingInfo(thingID, sub, false);
+                    $this.attr('id', `macro-dropdown-${thinginfo.id}`);
+                    editMacro($this, thinginfo, macro, topLevel);
                 } else {
                     // add unique id to the dropdown
                     $this.attr('id', `macro-dropdown-${info.id}`);

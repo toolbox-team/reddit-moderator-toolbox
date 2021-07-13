@@ -283,6 +283,18 @@ self.init = function () {
         $('#tb-unmoderatedCount').text(`[${count}]`);
     }
 
+    function calculateModmailCount (countData) {
+        // Modmail directors not included in total count. For example highlighted as that will cause duplicates.
+        const excludedDirs = ['highlighted'];
+        let modmailFreshCount = 0;
+        for (const [key, count] of Object.entries(countData)) {
+            if (!excludedDirs.includes(key)) {
+                modmailFreshCount += count;
+            }
+        }
+        return modmailFreshCount;
+    }
+
     // Here we update the count for new modmail. Is somewhat simpler than old modmail.
     function updateNewModMailCount (count, data) {
         // $modmail is native to reddit $tb_modmail in the modbar.
@@ -312,6 +324,7 @@ self.init = function () {
         $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
         $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
         $tbNewModmailTooltip.find('#tb-new-modmail-banappeals .tb-new-mm-count').text(data.appeals);
+        $tbNewModmailTooltip.find('#tb-new-modmail-joinrequests .tb-new-mm-count').text(data.join_requests);
         $tbNewModmailTooltip.find('#tb-new-modmail-highlighted .tb-new-mm-count').text(data.highlighted);
         $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
         $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
@@ -342,7 +355,7 @@ self.init = function () {
             setTimeout(() => {
                 TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
                     const data = await response.json();
-                    const modmailFreshCount = data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod;
+                    const modmailFreshCount = calculateModmailCount(data);
                     self.setting('newModmailCount', modmailFreshCount);
                     self.setting('newModmailCategoryCount', data);
 
@@ -753,7 +766,7 @@ self.init = function () {
         //
         TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
             const data = await response.json();
-            const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.appeals + data.new + data.inprogress + data.mod;
+            const modmailFreshCount = calculateModmailCount(data);
             self.setting('newModmailCount', modmailFreshCount);
             self.setting('newModmailCategoryCount', data);
             updateNewModMailCount(modmailFreshCount, data);

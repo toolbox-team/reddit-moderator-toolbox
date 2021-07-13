@@ -112,7 +112,6 @@ self.init = function () {
     if (TBCore.isNewModmail) {
         // Add a class to body
         $body.addClass('tb-new-modmail');
-        const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
 
         // ready some variables.
         const modMailNightmode = self.setting('modmailnightmode'),
@@ -337,7 +336,7 @@ self.init = function () {
 
                 // Render markdown and to be extra sure put it through purify to prevent possible issues with
                 // people pasting malicious input on advice of shitty people.
-                let renderedHTML = TBStorage.purify(parser.render(e.target.value));
+                let renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
                 // Fix relative urls as new modmail uses a different subdomain.
                 renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
 

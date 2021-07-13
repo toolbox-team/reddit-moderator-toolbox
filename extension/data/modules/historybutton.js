@@ -51,8 +51,8 @@ self.register_setting('includeNsfwSearches', {
 });
 
 /**
-     * Attach an [H] button to all users
-     */
+ * Attach an [H] button to all users
+ */
 
 self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H') {
     requestAnimationFrame(() => {
@@ -113,187 +113,187 @@ self.runJsAPI = function () {
 };
 
 /**
-     * Initiate the module
-     */
-self.init = function () {
+ * Initiate the module
+ */
+self.init = async function () {
     self.log('init');
     const $body = $('body');
-    TBCore.modSubCheck().then(modSubCheck => {
-        self.log(`mscheck: ${modSubCheck}`);
-        if (modSubCheck) {
-            self.log('passed');
+    if (!await TBCore.modSubCheck()) {
+        self.log('mscheck failed');
+        return;
+    }
 
-            self.runJsAPI();
+    self.log('mscheck passed');
 
-            $body.on('click', '.user-history-button, #tb-user-history', function (event) {
-                const $this = $(this);
-                const $target = $(event.currentTarget);
-                const author = $target.attr('data-author');
-                const thisSubreddit = $target.attr('data-subreddit');
+    self.runJsAPI();
 
-                const positions = TBui.drawPosition(event);
+    $body.on('click', '.user-history-button, #tb-user-history', function (event) {
+        const $this = $(this);
+        const $target = $(event.currentTarget);
+        const author = $target.attr('data-author');
+        const thisSubreddit = $target.attr('data-subreddit');
 
-                const subreddits = {submissions: {}, comments: {}},
-                      counters = {submissions: 0, comments: 0, commentsOP: 0},
-                      accounts = {},
-                      subredditList = [],
-                      domainList = [],
-                      commentSubredditList = [],
+        const positions = TBui.drawPosition(event);
 
-                      gettingUserData = true,
-                      domains = [],
-                      domainslist = [],
+        const subreddits = {submissions: {}, comments: {}},
+              counters = {submissions: 0, comments: 0, commentsOP: 0},
+              accounts = {},
+              subredditList = [],
+              domainList = [],
+              commentSubredditList = [],
 
-                      popupContent = `
-                            <div>
-                                <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
-                                <span class="karma" />
-                                <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
-                                <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
-                                <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>
-                                <br/>
-                                <span class="redditorTime"></span>
-                                <br/>
-                                <p class="tb-history-disclaimer">
-                                <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
+              gettingUserData = true,
+              domains = [],
+              domainslist = [],
 
-                                </p>
-                                <b>Available history:</b> <br>
-                                <label class="submission-count"></label> submissions
-                                <br>
-                                <span class="tb-history-comment-stats" style="display:none">
-                                <label class="comment-count"></label> comments, of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
-                                </span>
-                                </div>
-                                <div class="history-table-wrapper">
-                                <div class="table domain-table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th class="url-td">domain submitted from</th>
-                                                <th class="url-count">count</th><th class="url-percentage">%</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr><td colspan="6" class="error">loading...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="table subreddit-table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th class="url-td">subreddit submitted to</th>
-                                                <th class="url-count">count</th>
-                                                <th class="url-percentage">%</th>
-                                                <th class="url-karma">karma</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="6" class="error">loading...</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                </div>
-                                <div class="history-table-wrapper">
-                                <div class="table comment-table" style="display: none">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th class="url-td">subreddit commented in</th>
-                                                <th class="url-count">count</th>
-                                                <th class="url-percentage">%</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr><td colspan="6" class="error">loading...</td></tr>
-                                        </tbody>
-                                    </table>
+              popupContent = `
+                    <div>
+                        <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
+                        <span class="karma" />
+                        <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
+                        <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
+                        <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>
+                        <br/>
+                        <span class="redditorTime"></span>
+                        <br/>
+                        <p class="tb-history-disclaimer">
+                        <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
 
-                                </div>
-                                <div class="table account-table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th class="url-td">account submitted from</th>
-                                                <th class="url-count">count</th>
-                                                <th class="url-percentage">%</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr><td colspan="6" class="error">loading...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                </div>
-                            </div>
-                        `;
+                        </p>
+                        <b>Available history:</b> <br>
+                        <label class="submission-count"></label> submissions
+                        <br>
+                        <span class="tb-history-comment-stats" style="display:none">
+                        <label class="comment-count"></label> comments, of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
+                        </span>
+                        </div>
+                        <div class="history-table-wrapper">
+                        <div class="table domain-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="url-td">domain submitted from</th>
+                                        <th class="url-count">count</th><th class="url-percentage">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="6" class="error">loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table subreddit-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="url-td">subreddit submitted to</th>
+                                        <th class="url-count">count</th>
+                                        <th class="url-percentage">%</th>
+                                        <th class="url-karma">karma</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" class="error">loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                        <div class="history-table-wrapper">
+                        <div class="table comment-table" style="display: none">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="url-td">subreddit commented in</th>
+                                        <th class="url-count">count</th>
+                                        <th class="url-percentage">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="6" class="error">loading...</td></tr>
+                                </tbody>
+                            </table>
 
-                const $overlay = $this.closest('.tb-page-overlay');
-                let $appendTo;
-                if ($overlay.length) {
-                    $appendTo = $overlay;
-                } else {
-                    $appendTo = $('body');
-                }
+                        </div>
+                        <div class="table account-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="url-td">account submitted from</th>
+                                        <th class="url-count">count</th>
+                                        <th class="url-percentage">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="6" class="error">loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                `;
 
-                const $popup = TBui.popup({
-                    title: 'History Button',
-                    tabs: [
-                        {
-                            title: 'Tab1',
-                            tooltip: 'Tooltip shown when hovering tab.',
-                            content: popupContent,
-                            footer: '',
-                        },
-                    ],
-                    cssClass: 'history-button-popup',
-                    draggable: true,
-                }).appendTo($appendTo)
-                    .css({
-                        left: positions.leftPosition,
-                        top: positions.topPosition,
-                        display: 'block',
-                    });
+        const $overlay = $this.closest('.tb-page-overlay');
+        let $appendTo;
+        if ($overlay.length) {
+            $appendTo = $overlay;
+        } else {
+            $appendTo = $('body');
+        }
 
-                self.fetched[author] = {
-                    popup: $popup,
-                    subreddits,
-                    counters,
-                    accounts,
-                    subredditList,
-                    domainList,
-                    commentSubredditList,
-                    author,
-                    gettingUserData,
-                    domains,
-                    domainslist,
-                };
-
-                self.showAuthorInformation(author);
-                self.populateSubmissionHistory('', author, thisSubreddit);
-
-                $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
-                $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
-                $popup.on('click.comment-report', '.comment-report', function () {
-                    $(this).hide();
-                    $popup.off('click.comment-report');
-                    self.populateCommentHistory('', author, thisSubreddit);
-                });
-
-                if (self.setting('alwaysComments')) {
-                    $popup.find('.comment-report').click();
-                }
+        const $popup = TBui.popup({
+            title: 'History Button',
+            tabs: [
+                {
+                    title: 'Tab1',
+                    tooltip: 'Tooltip shown when hovering tab.',
+                    content: popupContent,
+                    footer: '',
+                },
+            ],
+            cssClass: 'history-button-popup',
+            draggable: true,
+        }).appendTo($appendTo)
+            .css({
+                left: positions.leftPosition,
+                top: positions.topPosition,
+                display: 'block',
             });
+
+        self.fetched[author] = {
+            popup: $popup,
+            subreddits,
+            counters,
+            accounts,
+            subredditList,
+            domainList,
+            commentSubredditList,
+            author,
+            gettingUserData,
+            domains,
+            domainslist,
+        };
+
+        self.showAuthorInformation(author);
+        self.populateSubmissionHistory('', author, thisSubreddit);
+
+        $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
+        $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
+        $popup.on('click.comment-report', '.comment-report', function () {
+            $(this).hide();
+            $popup.off('click.comment-report');
+            self.populateCommentHistory('', author, thisSubreddit);
+        });
+
+        if (self.setting('alwaysComments')) {
+            $popup.find('.comment-report').click();
         }
     });
 };
 
 /**
-     * Show author information (Karma, How long they've been a redditor for)
-     */
+ * Show author information (Karma, How long they've been a redditor for)
+ */
 self.showAuthorInformation = async function (author) {
     const $contentBox = self.fetched[author].popup;
 
@@ -309,8 +309,8 @@ self.showAuthorInformation = async function (author) {
 };
 
 /**
-     * Show the markdown report
-     */
+ * Show the markdown report
+ */
 self.showMarkdownReport = function (author) {
     const $contentBox = self.fetched[author].popup,
           markdownReport = $contentBox.find('.rts-report').attr('data-commentbody'),
@@ -326,12 +326,12 @@ self.showMarkdownReport = function (author) {
 };
 
 /**
-     * Populate the submission history for a user
-     *
-     * @param after A token given by reddit for paginated results, allowing us to get the next page of results
-     * @param author The author whose history we're fetching
-     * @param thisSubreddit The name of the subreddit to highlight in generated tables
-     */
+ * Populate the submission history for a user
+ *
+ * @param after A token given by reddit for paginated results, allowing us to get the next page of results
+ * @param author The author whose history we're fetching
+ * @param thisSubreddit The name of the subreddit to highlight in generated tables
+ */
 self.populateSubmissionHistory = function (after, author, thisSubreddit) {
     const user = self.fetched[author],
           $contentBox = user.popup,
@@ -635,10 +635,10 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
     }
 
     /**
-         * Take an object and add it to `self.accounts`.
-         *
-         * @param details {Object}
-         */
+     * Take an object and add it to `self.accounts`.
+     *
+     * @param details {Object}
+     */
     function addAccount (details) {
         details.url = details.url.replace('https://', 'http://');
         if (!user.accounts[details.url]) {
@@ -649,12 +649,12 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
     }
 
     /**
-         * Generate a `details` object that mimics the oembed object to be passed to `addAccount()`.
-         *
-         * @param spec {Object} from domainSpecs
-         * @param url {String}
-         * @returns {Object|undefined}
-         */
+     * Generate a `details` object that mimics the oembed object to be passed to `addAccount()`.
+     *
+     * @param spec {Object} from domainSpecs
+     * @param url {String}
+     * @returns {Object|undefined}
+     */
     function getDomainDetails (spec, url) {
         // cache the dynamic rx's
         if (!spec.rx) {

@@ -1762,11 +1762,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             const json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
                 after,
                 limit: 100,
-            }, {
-                // This function has the potential to hang Toolbox's entire load
-                // sequence, so we ignore ratelimits intentionally and rely on
-                // Reddit handling the request gracefully anyway.
-                bypassRatelimit: true,
             });
             TBStorage.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
@@ -1791,12 +1786,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     }
 
     function getUserDetails (tries = 0) {
-        return TBApi.getJSON('/api/me.json', {}, {
-            // This function has the potential to hang Toolbox's entire load
-            // sequence, so we ignore ratelimits intentionally and rely on
-            // Reddit handling the request gracefully anyway.
-            bypassRatelimit: true,
-        }).then(data => {
+        return TBApi.getJSON('/api/me.json').then(data => {
             TBStorage.purifyObject(data);
             logger.log(data);
             return data;

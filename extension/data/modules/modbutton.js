@@ -591,7 +591,7 @@ function modbutton () {
                             params.banDuration = banDuration;
                             params.banContext = banContext;
                         }
-                        TBApi.friendUser(params).then(response => {
+                        TBApi.friendUser(params, false).then(response => {
                             if (response.json.errors.length) {
                                 throw new Error('There were one or more errors banning the user');
                             }
@@ -601,7 +601,7 @@ function modbutton () {
                             failedSubs.push(subreddit);
                         });
                     } else {
-                        TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                        TBApi.unfriendUser(user, action, subreddit, false).catch(() => {
                             // only catches network errors because unfriend is weird
                             self.log('missed one');
                             failedSubs.push(subreddit);

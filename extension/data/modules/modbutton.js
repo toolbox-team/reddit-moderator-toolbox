@@ -594,7 +594,7 @@ self.init = function () {
                         params.banDuration = banDuration;
                         params.banContext = banContext;
                     }
-                    await TBApi.friendUser(params).then(response => {
+                    await TBApi.friendUser(params, false).then(response => {
                         if (response.json.errors.length) {
                             throw new Error('There were one or more errors banning the user');
                         }
@@ -604,7 +604,7 @@ self.init = function () {
                         failedSubs.push(subreddit);
                     });
                 } else {
-                    await TBApi.unfriendUser(user, action, subreddit).catch(() => {
+                    await TBApi.unfriendUser(user, action, subreddit, false).catch(() => {
                         // only catches network errors because unfriend is weird
                         self.log('missed one');
                         failedSubs.push(subreddit);

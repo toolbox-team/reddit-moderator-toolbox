@@ -154,11 +154,11 @@ self.init = function () {
                 removalCount++;
                 TBui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TBui.FEEDBACK_NEUTRAL);
                 if (executionType === 'remove') {
-                    await TBApi.removeThing(`t1_${comment}`).catch(() => {
+                        await TBApi.removeThing(`t1_${comment}`, false, false).catch(() => {
                         missedComments.push(comment);
                     });
                 } else {
-                    await TBApi.lock(`t1_${comment}`).catch(() => {
+                        await TBApi.lock(`t1_${comment}`, false).catch(() => {
                         missedComments.push(comment);
                     });
                 }

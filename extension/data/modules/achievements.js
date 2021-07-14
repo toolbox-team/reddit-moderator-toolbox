@@ -57,12 +57,12 @@ function achievements () {
                 const title = titles[i],
                       maxValue = maxValues[i];
 
-                self.log('Registering Achievement');
                 if (TBCore.devMode) {
+                    self.log('Registering Achievement');
                     self.log(`  name=${title}`);
+                    self.log(`  maxValue=${maxValue}`);
+                    self.log(`  saveIndex=${saveIndex}`);
                 } // spoilers
-                self.log(`  maxValue=${maxValue}`);
-                self.log(`  saveIndex=${saveIndex}`);
 
                 achievementsBlock.push({
                     title,
@@ -81,19 +81,13 @@ function achievements () {
             if (value === undefined) {
                 value = 1;
             }
-            self.log(`Unlocking achievement block: index=${saveIndex}, value=${value}`);
-
             const old = saves[saveIndex];
-            self.log(`  Old value: ${saves[saveIndex]}`);
             saves[saveIndex] += value;
-            self.log(`  New value: ${saves[saveIndex]}`);
 
             const achievementsBlock = achievements[saveIndex];
             let achievement;
             for (let index = 0; index < achievementsBlock.length; index++) {
-                self.log(`  Checking achievement ${index}`);
                 achievement = achievementsBlock[index];
-                self.log(`    Comparing to max value: ${achievement.maxValue}`);
                 if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
                     let title = achievement.title;
 
@@ -217,7 +211,6 @@ function achievements () {
             const now = TBHelpers.getTime(),
                   timeSince = now - lastSeen,
                   daysSince = TBHelpers.millisecondsToDays(timeSince);
-            self.log(`daysSince: ${daysSince}`);
 
             if (daysSince >= 7) {
             // self.log("you've got an award!");

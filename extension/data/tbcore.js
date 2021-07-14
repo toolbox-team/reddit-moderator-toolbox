@@ -705,17 +705,16 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBCore.getModSubs = () => new Promise(resolve => {
-            logger.log('getting mod subs');
             // If it has been more than ten minutes, refresh mod cache.
             if (TBCore.mySubs.length < 1 || TBCore.mySubsData.length < 1) {
                 // time to refresh
                 if (gettingModSubs) {
                     // we're already fetching a new list, so enqueue the callback
-                    logger.log('Enqueueing getModSubs callback');
+                    logger.log('TBCore.getModSubs: Mod subs are already being requested. Enqueueing getModSubs callback');
                     getModSubsCallbacks.push(resolve);
                 } else {
                     // start the process
-                    logger.log('getting new subs.');
+                    logger.log('TBCore.getModSubs: getting mod subs through api call.');
 
                     gettingModSubs = true;
                     TBCore.mySubs = []; // reset
@@ -723,6 +722,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     getSubs(modMineURL);
                 }
             } else {
+                logger.log('TBCore.getModSubs: Using mod subs from cache');
                 // run callback on cached sublist
                 TBCore.mySubs = TBHelpers.saneSort(TBCore.mySubs);
                 TBCore.mySubsData = TBHelpers.sortBy(TBCore.mySubsData, 'subscribers');

@@ -22,12 +22,18 @@
      * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
      * in an error being rejected. The error will have a `response` property
      * containing the full `Response` object.
-     * @param {boolean?} [options.bypassRatelimit] If true, the request will be
-     * sent immediately, even if the current ratelimit bucket is empty. Use
-     * sparingly, only for requests which block all of Toolbox, and definitely
-     * never for mass actions.
+     * @param {boolean?} [options.bypassRatelimit=true] If true, the request
+     * will be sent immediately, even if the current ratelimit bucket is empty.
      * @returns {Promise} Resolves to a `Response` object or rejects an `Error`.
      */
+    // HACK: bypassRatelimit currently defaults to true, but in the future we
+    //       should only use it sparingly. The issue is that because we share
+    //       ratelimits with the user's own Reddit actions and other extensions,
+    //       it's very easy for us to hit the limits, which causes Toolbox to
+    //       not load or load very slowly. We may not be able to resolve this
+    //       without abandoning our method of pulling authentication from the
+    //       page, in which case it may not be worth it to do anything about it
+    //       since Reddit generally still accepts requests over the limit.
     TBApi.sendRequest = async ({
         method,
         endpoint,
@@ -35,7 +41,7 @@
         body,
         oauth,
         okOnly,
-        bypassRatelimit,
+        bypassRatelimit = true,
     }) => {
         // Make the request
         const messageReply = await browser.runtime.sendMessage({
@@ -76,7 +82,7 @@
      * @param {object} data Query parameters as an object
      * @param {object} options Additional options passed to sendRequest()
      */
-    TBApi.getJSON = (endpoint, query, options) => TBApi.sendRequest({
+    TBApi.getJSON = (endpoint, query = {}, options = {}) => TBApi.sendRequest({
         okOnly: true,
         method: 'GET',
         endpoint,
@@ -90,13 +96,15 @@
      * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} body The body parameters of the request
+     * @param {object} [options] Additional options to TBApi.sendRequest
      * @returns {Promise} Resolves to response data or rejects an error
      */
-    TBApi.post = (endpoint, body) => TBApi.sendRequest({
+    TBApi.post = (endpoint, body, options = {}) => TBApi.sendRequest({
         okOnly: true,
         method: 'POST',
         endpoint,
         body,
+        ...options,
     }).then(response => response.json());
 
     /**
@@ -104,13 +112,15 @@
      * @function
      * @param {string} endpoint The endpoint to request
      * @param {object} body Body parameters as an object
+     * @param {object} [options] Additional options to TBApi.sendRequest
      */
-    TBApi.apiOauthPOST = (endpoint, body) => TBApi.sendRequest({
+    TBApi.apiOauthPOST = (endpoint, body, options = {}) => TBApi.sendRequest({
         method: 'POST',
         oauth: true,
         endpoint,
         body,
         okOnly: true,
+        ...options,
     });
 
     /**
@@ -387,6 +397,7 @@
      * or undefined for a permanent ban)
      * @param {string} [options.banContext] If banning, a fullname pointing to the
      * link or comment the user is being banned for
+     * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
      * @returns {Promise} Resolves to the JSON response body or rejects with a
      * jqXHR object
      */
@@ -398,7 +409,7 @@
         banMessage,
         banDuration,
         banContext,
-    }) {
+    }, bypassRatelimit = true) {
         let trimmedBanMessage,
             trimmedBanReason;
         if (action === 'banned') {
@@ -414,7 +425,7 @@
             }
         }
 
-        return TBApi.apiOauthPOST('/api/friend', {
+        return TBApi.post('/api/friend', {
             api_type: 'json',
             uh: TBCore.modhash,
             type: action,
@@ -424,7 +435,9 @@
             ban_message: trimmedBanMessage,
             duration: banDuration,
             ban_context: banContext,
-        }).then(response => response.json());
+        }, {
+            bypassRatelimit,
+        });
     };
 
     /**
@@ -439,12 +452,14 @@
      * @returns {Promise} Resolves to the JSON response body or rejects
      * an error.
      */
-    TBApi.unfriendUser = (user, action, subreddit) => TBApi.post('/api/unfriend', {
+    TBApi.unfriendUser = (user, action, subreddit, bypassRatelimit = true) => TBApi.post('/api/unfriend', {
         api_type: 'json',
         uh: TBCore.modhash,
         type: action,
         name: user,
         r: subreddit,
+    }, {
+        bypassRatelimit,
     });
 
     /**
@@ -477,12 +492,15 @@
      * @function
      * @param {string} id Fullname of the post or comment
      * @param {boolean?} spam If true, removes as spam
+     * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
      * @returns {Promise}
      */
-    TBApi.removeThing = (id, spam = false) => TBApi.apiOauthPOST('/api/remove', {
+    TBApi.removeThing = (id, spam = false, bypassRatelimit = true) => TBApi.post('/api/remove', {
         uh: TBCore.modhash,
         id,
         spam,
+    }, {
+        bypassRatelimit,
     });
 
     /**
@@ -510,11 +528,14 @@
     /**
      * Locks a post or comment.
      * @param {string} id The fullname of the submission or comment
+     * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
      * @returns {Promise} Resolves to response data or rejects with a jqXHR
      */
-    TBApi.lock = id => TBApi.apiOauthPOST('/api/lock', {
+    TBApi.lock = (id, bypassRatelimit = true) => TBApi.post('/api/lock', {
         id,
         uh: TBCore.modhash,
+    }, {
+        bypassRatelimit,
     });
 
     /**

@@ -240,5 +240,5 @@ messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions).
         error: true,
         message: error.message,
         response: error.response ? await serializeResponse(error.response) : undefined,
-    })
+    }),
 ));

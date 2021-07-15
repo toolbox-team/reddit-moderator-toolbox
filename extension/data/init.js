@@ -16,7 +16,7 @@ import Modbar from './modules/modbar.js';
 // import ModButton from './modules/modbutton.js';
 import General from './modules/general.js';
 // import Notifier from './modules/notifier.js';
-// import Usernotes from './modules/usernotes.js';
+import Usernotes from './modules/usernotes.js';
 // import Comment from './modules/comment.js';
 // import NewModmailPro from './modules/newmodmailpro.js';
 // import ModmailPro from './modules/modmailpro.js';
@@ -209,7 +209,7 @@ const coreLoadedPromise = new Promise(resolve => {
         // ModButton,
         General,
         // Notifier,
-        // Usernotes,
+        Usernotes,
         // Comment,
         // NewModmailPro,
         // ModmailPro,

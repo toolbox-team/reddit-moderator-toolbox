@@ -800,7 +800,7 @@ self.queuetoolsOld = function () {
 
         // sort sidebars
         if (TBCore.isModFakereddit) {
-            $('.sidecontentbox:has(.subscription-box) > .title').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${TBui.iconSort}" />sort by items</a>`);
+            $('.sidecontentbox:has(.subscription-box) > .title').append('&nbsp;<a href="javascript:;" class="tb-sort-subs">sort by items</a>');
         }
 
         $body.on('click', '.tb-sort-subs', () => {

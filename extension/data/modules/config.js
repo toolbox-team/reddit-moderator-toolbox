@@ -5,13 +5,11 @@ import * as TBApi from '../tbapi.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('toolbox Config');
-self.shortname = 'TBConfig'; // for backwards compatibility
-
-// Default settings
-self.settings['enabled']['default'] = true;
-
-self.init = function () {
+const self = new Module({
+    name: 'toolbox Config',
+    id: 'TBConfig',
+    enabledByDefault: true,
+}, () => {
     // if (!(TBCore.post_site && TBCore.isMod) && !TBCore.isModpage) {
     //    return;
     // }
@@ -1684,6 +1682,6 @@ self.init = function () {
         // Let people know that settings are saved.
         TBui.textFeedback('Ban macro is saved.', TBui.FEEDBACK_POSITIVE);
     });
-}; // TBConfig.init()
+});
 
 export default self;

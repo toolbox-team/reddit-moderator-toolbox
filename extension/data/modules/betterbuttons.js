@@ -66,7 +66,7 @@ const self = new Module({
             advanced: false,
         },
     ],
-}, ({
+}, async ({
     enableModSave,
     enableDistinguishToggle,
     removeRemoveConfirmation,
@@ -77,6 +77,7 @@ const self = new Module({
     addStickyButton,
     addCommentLockbutton,
 }) => {
+    await TBCore.getModSubs();
     if (enableModSave) {
         initModSave();
     }

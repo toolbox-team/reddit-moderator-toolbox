@@ -1,41 +1,8 @@
 import {Module} from '../tbmodule.js';
 import * as TBui from '../tbui.js';
 
-const self = new Module({
-    name: 'Syntax Highlighter',
-    id: 'Syntax',
-    enabledByDefault: true,
-    oldReddit: true,
-    settings: [
-        {
-            id: 'enableWordWrap',
-            description: 'Enable word wrap in editor',
-            type: 'boolean',
-            default: true,
-        },
-        {
-            id: 'wikiPages',
-            description: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
-            type: 'map',
-            default: {
-                'config/automoderator': 'yaml',
-                'config/stylesheet': 'css',
-                'automoderator-schedule': 'yaml',
-                'toolbox': 'json',
-            },
-            labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - otherwise, defaults to markdown. md is also explicitly an alias of markdown
-        },
-        {
-            id: 'selectedTheme',
-            description: 'Syntax highlight theme selection',
-            type: 'syntaxTheme',
-            default: 'dracula',
-        },
-    ],
-}, init);
-
 // we reference this from tbobject for settings generation
-self.themeSelect = `
+export const themeSelect = `
 <select id="theme_selector">
     <option value="3024-day">3024-day</option>
     <option value="3024-night">3024-night</option>
@@ -86,11 +53,39 @@ self.themeSelect = `
 </select>
 `;
 
-function init () {
-    const $body = $('body'),
-          selectedTheme = this.setting('selectedTheme'),
-          enableWordWrap = this.setting('enableWordWrap'),
-          wikiPages = this.setting('wikiPages');
+export default new Module({
+    name: 'Syntax Highlighter',
+    id: 'Syntax',
+    enabledByDefault: true,
+    oldReddit: true,
+    settings: [
+        {
+            id: 'enableWordWrap',
+            description: 'Enable word wrap in editor',
+            type: 'boolean',
+            default: true,
+        },
+        {
+            id: 'wikiPages',
+            description: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
+            type: 'map',
+            default: {
+                'config/automoderator': 'yaml',
+                'config/stylesheet': 'css',
+                'automoderator-schedule': 'yaml',
+                'toolbox': 'json',
+            },
+            labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - otherwise, defaults to markdown. md is also explicitly an alias of markdown
+        },
+        {
+            id: 'selectedTheme',
+            description: 'Syntax highlight theme selection',
+            type: 'syntaxTheme',
+            default: 'dracula',
+        },
+    ],
+}, ({selectedTheme, enableWordWrap, wikiPages}) => {
+    const $body = $('body');
 
     // This makes sure codemirror behaves and uses spaces instead of tabs.
     function betterTab (cm) {
@@ -125,7 +120,7 @@ function init () {
         // Class added to apply some specific css.
         $body.addClass('mod-syntax');
         // Theme selector, doesn't really belong here but gives people the opportunity to see how it looks with the css they want to edit.
-        $('.sheets .col').before(this.themeSelect);
+        $('.sheets .col').before(themeSelect);
 
         $('#theme_selector').val(selectedTheme);
 
@@ -227,7 +222,7 @@ function init () {
             $body.find('.markdownEditor-wrapper, .RESBigEditorPop, .help-toggle').remove();
 
             // Theme selector, doesn't really belong here but gives people the opportunity to see how it looks with the css they want to edit.
-            $editform.prepend(this.themeSelect);
+            $editform.prepend(themeSelect);
 
             $('#theme_selector').val(selectedTheme);
 
@@ -280,6 +275,4 @@ function init () {
             });
         }
     }
-}
-
-export default self;
+});

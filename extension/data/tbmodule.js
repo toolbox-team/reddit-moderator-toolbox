@@ -6,6 +6,8 @@ import TBListener from './tblistener.js';
 import * as TBCore from './tbcore.js';
 import * as TBConstants from './tbconstants.js';
 
+import {themeSelect as syntaxHighlighterThemeSelect} from './modules/syntax.js';
+
 const logger = TBLog('TBModule');
 
 const TBModule = {
@@ -632,7 +634,7 @@ const TBModule = {
                 case 'syntaxTheme':
                 {
                     $setting.append(`${title}:<br/>`);
-                    $setting.append(TBModule.modules.Syntax.themeSelect);
+                    $setting.append(syntaxHighlighterThemeSelect);
                     $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
                     $setting.append($(`
                     <textarea class="tb-input syntax-example" id="${module.shortname}_syntax_theme_css">

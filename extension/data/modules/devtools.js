@@ -6,38 +6,32 @@ import {escapeHTML} from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('Developer Tools');
-self.shortname = 'DevTools';
-
-// //Default settings
-self.settings['enabled']['default'] = true;
-
-self.config['betamode'] = false;
-self.config['debugMode'] = true;
-
-self.register_setting('apiHelper', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Show api button next for each element received from front-end api',
-});
-
-self.register_setting('commentUItester', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Add a button to the context menu that opens an overlay to test a variety of UI things.',
-});
-// Module init
-self.init = function () {
+export default new Module({
+    name: 'Developer Tools',
+    id: 'DevTools',
+    enabledByDefault: true,
+    debug: true,
+    settings: [
+        {
+            id: 'apiHelper',
+            description: 'Show api button next for each element received from front-end api',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+        },
+        {
+            id: 'commentUItester',
+            description: 'Add a button to the context menu that opens an overlay to test a variety of UI things.',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+        },
+    ],
+}, ({apiHelper, commentUItester}) => {
     const $body = $('body');
-
-    const apiHelper = self.setting('apiHelper'),
-          commentUItester = self.setting('commentUItester');
 
     // Function that handles
     function modifyDiv (e) {
-        self.log(e);
         const $target = $(e.target);
         $target.append(`
             <span class="tb-bracket-button tb-show-api-info">
@@ -186,6 +180,4 @@ self.init = function () {
             });
         });
     });
-};
-
-export default self;
+});

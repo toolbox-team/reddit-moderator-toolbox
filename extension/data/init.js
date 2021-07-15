@@ -7,7 +7,7 @@ import TBModule from './tbmodule.js';
 import * as TBCore from './tbcore.js';
 import * as TBApi from './tbapi.js';
 
-// import Devtools from './modules/devtools.js';
+import Devtools from './modules/devtools.js';
 // import Support from './modules/support.js';
 import Modbar from './modules/modbar.js';
 import Config from './modules/config.js';
@@ -200,7 +200,7 @@ const coreLoadedPromise = new Promise(resolve => {
 
     // Load feature modules and register them
     for (const m of [
-        // Devtools,
+        Devtools,
         // Support,
         Modbar,
         Config,

@@ -3,7 +3,7 @@ import {Module} from '../tbmodule.js';
 const self = new Module({
     name: 'General Settings',
     id: 'GenSettings',
-    enabledByDefault: true,
+    alwaysEnabled: true,
     settings: [
         {
             id: 'nativeNotifications',

@@ -4,7 +4,7 @@ import * as TBCore from '../tbcore.js';
 const self = new Module({
     name: 'Old Reddit',
     id: 'oldreddit',
-    enabledByDefault: true,
+    alwaysEnabled: true,
 }, () => {
     // Looks like we are on old reddit. Activate!
     if (TBCore.isOldReddit) {

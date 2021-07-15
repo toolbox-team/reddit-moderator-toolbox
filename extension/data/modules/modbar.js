@@ -8,7 +8,7 @@ import TBModule from '../tbmodule.js';
 export default new Module({
     name: 'Modbar',
     id: 'Modbar',
-    enabledByDefault: true,
+    alwaysEnabled: true,
     settings: [
         {
             id: 'compactHide',

@@ -51,7 +51,7 @@ const TBModule = {
                 }
 
                 // lock 'n load
-                TBStorage.getSettingAsync(module.id, 'enabled').then(enabled => {
+                module.getEnabled().then(enabled => {
                     if (!enabled) {
                         return;
                     }
@@ -472,8 +472,7 @@ const TBModule = {
             // build and inject our settings tab
             //
 
-            let moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
-                moduleIsEnabled = false;
+            let moduleHasSettingTab = false; // we set this to true later, if there's a visible setting
             const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.id.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
                   $settings = $(`
                             <div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;">
@@ -493,36 +492,37 @@ const TBModule = {
             const execAfterInject = [];
 
             // Handle module enable toggle
-            moduleIsEnabled = !!TBStorage.getSetting(module.id, 'enabled');
-            const name = module.shortname.toLowerCase();
+            if (!module.alwaysEnabled) {
+                const name = module.shortname.toLowerCase();
 
-            const $setting = $(`
-                <p id="tb-toggle_modules-${name}" class="tb-settings-p">
-                    <label><input type="checkbox" id="${module.shortname}Enabled" ${moduleIsEnabled ? ' checked="checked"' : ''}>Enable ${TBHelpers.htmlEncode(module.name)}</label>
-                            <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
-                    <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
-                        ${TBConstants.icons.tbSettingLink}
-                    </a>&nbsp;
-                    ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
-                </p>
-                <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
-                    <input type="text" class="tb-input" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
-                    <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
-                </div>
-            `);
+                const $setting = $(`
+                    <p id="tb-toggle_modules-${name}" class="tb-settings-p">
+                        <label><input type="checkbox" id="${module.shortname}Enabled" ${await module.getEnabled() ? ' checked="checked"' : ''}>Enable ${TBHelpers.htmlEncode(module.name)}</label>
+                                <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
+                        <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
+                            ${TBConstants.icons.tbSettingLink}
+                        </a>&nbsp;
+                        ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
+                    </p>
+                    <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
+                        <input type="text" class="tb-input" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
+                        <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
+                    </div>
+                `);
 
-            // Add the setting in its place to keep ABC order
-            let added = false;
-            $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
-                const $this = $(this);
-                if ($this.text().localeCompare($setting.text()) > 0) {
-                    $this.before($setting);
-                    added = true;
-                    return false;
+                // Add the setting in its place to keep ABC order
+                let added = false;
+                $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
+                    const $this = $(this);
+                    if ($this.text().localeCompare($setting.text()) > 0) {
+                        $this.before($setting);
+                        added = true;
+                        return false;
+                    }
+                });
+                if (!added) {
+                    $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
                 }
-            });
-            if (!added) {
-                $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
             }
 
             // Handle module settings
@@ -805,7 +805,7 @@ body {
             // if ($settings.find('input').length > 0) {
             if (moduleHasSettingTab) {
                 // attach tab and content
-                if (!moduleIsEnabled) {
+                if (!await module.getEnabled()) {
                     $tab.addClass('tb-module-disabled');
                     $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.');
                     $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>');
@@ -973,6 +973,8 @@ export class Module {
      * @param {string} options.id The ID of the module, used for storage keys
      * @param {boolean} [options.enabledByDefault=false] If true, the module
      * will be enabled on fresh installs
+     * @param {boolean} [options.alwaysEnabled=false] If true, the module cannot
+     * be disabled
      * @param {boolean} [options.beta=false] If true, the module will only show
      * up when beta mode is enabled
      * @param {boolean} [options.debug=false] If true, the module will only show
@@ -985,6 +987,7 @@ export class Module {
         name,
         id = name.replace(/\s/g, ''),
         enabledByDefault = false,
+        alwaysEnabled = false,
         beta = false,
         debug = false,
         settings = [],
@@ -998,6 +1001,10 @@ export class Module {
          * on fresh installs
          */
         this.enabledByDefault = enabledByDefault;
+        /**
+         * @prop {boolean} alwaysEnabled If true, the module cannot be disabled
+         */
+        this.alwaysEnabled = alwaysEnabled;
         /**
          * @prop {boolean} beta If true, the module will only show up when beta
          * mode is enabled
@@ -1093,5 +1100,31 @@ export class Module {
 
         // Call the initializer, passing the module instance the settings
         await this.initializer.call(this, initialValues);
+    }
+
+    /**
+     * Check whether or not the module is enabled.
+     * @returns {Promise<boolean>} Resolves to whether the module is enabled
+     */
+    async getEnabled () {
+        if (this.alwaysEnabled) {
+            return true;
+        }
+        return !!await TBStorage.getSettingAsync(this.id, 'enabled');
+    }
+
+    /**
+     * Enables or disables the module. This does not take effect until Toolbox
+     * is reloaded.
+     * @param {boolean} enabled True to enable the module, false to disable it
+     * @returns {Promise<boolean>} Resolves to the new enable state
+     * @throws {Error} when trying to disable a module that cannot be
+     */
+    setEnabled (enable) {
+        if (this.alwaysEnabled && !enable) {
+            throw new Error(`Cannot disable module ${this.id} which is always enabled`);
+        }
+
+        return TBStorage.setSettingAsync(this.id, 'enabled', !!enable);
     }
 }

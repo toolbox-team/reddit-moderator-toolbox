@@ -1,35 +1,38 @@
 import {Module} from '../tbmodule.js';
 import * as TBui from '../tbui.js';
 
-const self = new Module('Syntax Highlighter');
-self.shortname = 'Syntax';
-self.oldReddit = true;
-
-self.settings['enabled']['default'] = true;
-
-self.register_setting('enableWordWrap', {
-    type: 'boolean',
-    default: true,
-    title: 'Enable word wrap in editor',
-});
-self.register_setting('wikiPages', {
-    type: 'map',
-    default: {
-        'config/automoderator': 'yaml',
-        'config/stylesheet': 'css',
-        'automoderator-schedule': 'yaml',
-        'toolbox': 'json',
-    },
-    labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - otherwise, defaults to markdown. md is also explicitly an alias of markdown
-    title: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
-});
-self.register_setting('selectedTheme', {
-    type: 'syntaxTheme',
-    default: 'dracula',
-    title: 'Syntax highlight theme selection',
-});
-
-self.settings['enabled']['default'] = true; // on by default
+const self = new Module({
+    name: 'Syntax Highlighter',
+    id: 'Syntax',
+    enabledByDefault: true,
+    oldReddit: true,
+    settings: [
+        {
+            id: 'enableWordWrap',
+            description: 'Enable word wrap in editor',
+            type: 'boolean',
+            default: true,
+        },
+        {
+            id: 'wikiPages',
+            description: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
+            type: 'map',
+            default: {
+                'config/automoderator': 'yaml',
+                'config/stylesheet': 'css',
+                'automoderator-schedule': 'yaml',
+                'toolbox': 'json',
+            },
+            labels: ['page', 'language'], // language is one of [css,json,markdown,yaml] - otherwise, defaults to markdown. md is also explicitly an alias of markdown
+        },
+        {
+            id: 'selectedTheme',
+            description: 'Syntax highlight theme selection',
+            type: 'syntaxTheme',
+            default: 'dracula',
+        },
+    ],
+}, init);
 
 // we reference this from tbobject for settings generation
 self.themeSelect = `
@@ -83,7 +86,7 @@ self.themeSelect = `
 </select>
 `;
 
-self.init = function () {
+function init () {
     const $body = $('body'),
           selectedTheme = this.setting('selectedTheme'),
           enableWordWrap = this.setting('enableWordWrap'),
@@ -277,6 +280,6 @@ self.init = function () {
             });
         }
     }
-};
+}
 
 export default self;

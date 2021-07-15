@@ -65,7 +65,6 @@
                 "https://*.reddit.com/*.json-html?*"
             ],
             "js": [
-                "data/libs/browser-polyfill-0.6.0.js",
                 "data/tbmigrate.js",
                 "data/libs/jquery-3.4.1.js",
                 "data/libs/snuownd.js",

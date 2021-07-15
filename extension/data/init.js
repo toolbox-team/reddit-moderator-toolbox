@@ -1,3 +1,5 @@
+import 'webextension-polyfill';
+
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import {delay} from './tbhelpers.js';

@@ -4,8 +4,7 @@
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
     "private": true,
     "scripts": {
-        "build": "node build.js",
-        "build-watch": "nodemon --exec npm run build",
+        "build": "rollup -c rollup.config.js",
         "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
         "docs": "jsdoc -c jsdoc.json",
         "test": "jest",
@@ -57,5 +56,9 @@
         "moduleNameMapper": {
             "^@data(.*)$": "<rootDir>/extension/data$1"
         }
+    },
+    "dependencies": {
+        "@rollup/plugin-node-resolve": "^13.0.0",
+        "webextension-polyfill": "^0.8.0"
     }
 }

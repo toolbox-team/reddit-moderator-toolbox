@@ -4,13 +4,12 @@ import * as TBApi from '../tbapi.js';
 import * as TBCore from '../tbcore.js';
 import * as TBui from '../tbui.js';
 
-const self = new Module('Mod Log Matrix');
-self.shortname = 'ModMatrix'; // backwards compatibility
-self.oldReddit = true;
-
-// //Default settings
-self.settings['enabled']['default'] = true;
-self.settings['betamode'] = false;
+const self = new Module({
+    name: 'Mod Log Matrix',
+    id: 'ModMatrix',
+    enabledByDefault: true,
+    oldReddit: true,
+}, init);
 
 self.version = 2.0;
 self.limit = 500;
@@ -722,7 +721,7 @@ self.dateToUTC = function (date) {
     return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 };
 
-self.init = function () {
+function init () {
     if (!TBCore.isModLogPage) {
         return;
     }
@@ -791,6 +790,6 @@ ${renderedMarkdown}
             getComments(modlogUrl);
         }
     });
-};
+}
 
 export default self;

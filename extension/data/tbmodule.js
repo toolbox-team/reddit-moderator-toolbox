@@ -119,7 +119,6 @@ const TBModule = {
 
     async showSettings () {
         const $body = $('body');
-        this;
 
         //
         // preload some generic variables
@@ -440,7 +439,7 @@ const TBModule = {
             TBStorage.setSetting('Utils', 'settingSub', sub);
 
             if ($(e.target).hasClass('tb-settings-import')) {
-                await TBCore.importSettings(sub);
+                TBCore.importSettings(sub);
                 await TBModule.modules['Modbar'].set('lastExport', TBHelpers.getTime());
                 TBCore.clearCache();
                 TBStorage.verifiedSettingsSave(succ => {
@@ -455,7 +454,7 @@ const TBModule = {
                 });
             } else {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
-                await TBCore.exportSettings(sub);
+                TBCore.exportSettings(sub);
                 await TBModule.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
                 TBCore.clearCache();
                 window.location.reload();

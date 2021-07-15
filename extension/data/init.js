@@ -24,7 +24,7 @@ import Usernotes from './modules/usernotes.js';
 import PersonalNotes from './modules/personalnotes.js';
 // import HistoryButton from './modules/historybutton.js';
 // import RemovalReasons from './modules/removalreasons.js';
-// import NukeComments from './modules/nukecomments.js';
+import NukeComments from './modules/nukecomments.js';
 // import Troubleshooter from './modules/trouble.js';
 // import Profile from './modules/profile.js';
 // import QueueOverlay from './modules/queue_overlay.js';
@@ -217,7 +217,7 @@ const coreLoadedPromise = new Promise(resolve => {
         PersonalNotes,
         // HistoryButton,
         // RemovalReasons,
-        // NukeComments,
+        NukeComments,
         // Troubleshooter,
         // Profile,
         // QueueOverlay,

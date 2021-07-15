@@ -6,37 +6,36 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('Comment Nuke');
-self.shortname = 'CommentNuke';
-
-// Default settings
-self.settings['enabled']['default'] = false;
-self.config['betamode'] = false;
-
-self.register_setting('ignoreDistinguished', {
-    type: 'boolean',
-    default: true,
-    title: 'Ignore distinguished comments from mods and admins when nuking a chain.',
-});
-
-self.register_setting('executionType', {
-    type: 'selector',
-    values: ['remove', 'lock'],
-    default: 'remove',
-    advanced: true,
-    title: 'Default nuke type selected when nuking',
-});
-
-// Settings for old reddit only
-self.register_setting('showNextToUser', {
-    type: 'boolean',
-    default: true,
-    advanced: true,
-    title: 'Show nuke button next to the username instead of under the comment.',
-    oldReddit: true,
-});
-
-self.init = function () {
+export default new Module({
+    name: 'Comment Nuke',
+    id: 'CommentNuke',
+    enabledByDefault: false,
+    settings: [
+        {
+            id: 'ignoreDistinguished',
+            description: 'Ignore distinguished comments from mods and admins when nuking a chain.',
+            type: 'boolean',
+            default: true,
+        },
+        {
+            id: 'executionType',
+            description: 'Default nuke type selected when nuking',
+            type: 'selector',
+            values: ['remove', 'lock'],
+            default: 'remove',
+            advanced: true,
+        },
+        // Settings for old reddit only
+        {
+            id: 'showNextToUser',
+            description: 'Show nuke button next to the username instead of under the comment.',
+            oldReddit: true,
+            type: 'boolean',
+            default: true,
+            advanced: true,
+        },
+    ],
+}, function init ({ignoreDistinguished, showNextToUser, executionType}) {
     // This will contain a flat listing of all comments to be removed.
     let removalChain = [];
     // Distinguished chain
@@ -47,9 +46,7 @@ self.init = function () {
     let nukeOpen = false;
     const $body = $('body');
 
-    const ignoreDistinguished = self.setting('ignoreDistinguished'),
-          showNextToUser = self.setting('showNextToUser'),
-          executionType = self.setting('executionType');
+    const self = this;
 
     // Nuke button clicked
     $body.on('click', '.tb-nuke-button', function (event) {
@@ -154,11 +151,11 @@ self.init = function () {
                 removalCount++;
                 TBui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TBui.FEEDBACK_NEUTRAL);
                 if (executionType === 'remove') {
-                        await TBApi.removeThing(`t1_${comment}`, false, false).catch(() => {
+                    await TBApi.removeThing(`t1_${comment}`, false, false).catch(() => {
                         missedComments.push(comment);
                     });
                 } else {
-                        await TBApi.lock(`t1_${comment}`, false).catch(() => {
+                    await TBApi.lock(`t1_${comment}`, false).catch(() => {
                         missedComments.push(comment);
                     });
                 }
@@ -191,13 +188,13 @@ self.init = function () {
     });
 
     /**
-         * Will given a reddit API comment object go through the chain and put all comments
-         * @function parseComments
-         * @param {object} object Comment chain object
-         * @param {string} postID Post id the comments belong to
-         * @param {string} subreddit Subreddit the comment chain belongs to.
-         * @returns {Promise}
-         */
+     * Will given a reddit API comment object go through the chain and put all comments
+     * @function parseComments
+     * @param {object} object Comment chain object
+     * @param {string} postID Post id the comments belong to
+     * @param {string} subreddit Subreddit the comment chain belongs to.
+     * @returns {Promise}
+     */
 
     async function parseComments (object, postID, subreddit) {
         switch (object.kind) {
@@ -274,6 +271,4 @@ self.init = function () {
             $target.append(NukeButtonHTML);
         }
     });
-};
-
-export default self;
+});

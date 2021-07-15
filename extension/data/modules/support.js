@@ -2,15 +2,11 @@ import {Module} from '../tbmodule.js';
 import {template} from '../tbhelpers.js';
 import {debugInformation} from '../tbcore.js';
 
-const self = new Module('Support Module');
-self.shortname = 'support';
-
-self.settings['enabled']['default'] = true;
-
-// How about you don't disable support?  No other module should ever do this. Well except for modbar.
-self.settings['enabled']['hidden'] = true; // Don't disable it, either!
-
-self.init = function () {
+export default new Module({
+    name: 'Support Module',
+    id: 'support',
+    alwaysEnabled: true,
+}, () => {
     const $body = $('body');
     const debugTemplate = `
 
@@ -72,13 +68,10 @@ Info| &nbsp;
         }
 
         $('body').on('click', 'div.tb-insert-debug', function () {
-            self.log('Insert debug clicked!');
             const $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
             const currentComment = $commentTextArea.val();
 
             $commentTextArea.val(currentComment + submissionAddition);
         });
     }
-};
-
-export default self;
+});

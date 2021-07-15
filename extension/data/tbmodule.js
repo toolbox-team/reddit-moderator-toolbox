@@ -52,9 +52,9 @@ const TBModule = {
 
                 // lock 'n load
                 TBStorage.getSettingAsync(module.id, 'enabled').then(enabled => {
-                    // if (!enabled) {
-                    //     return;
-                    // }
+                    if (!enabled) {
+                        return;
+                    }
                     logger.debug(`Loading ${module.id} module`);
                     module.init();
                 });

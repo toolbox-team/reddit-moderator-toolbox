@@ -9,7 +9,7 @@ export default {
     input: 'extension/data/init.js',
     output: {
         file: `build/${targetPlatform}/data/init.js`,
-        sourcemap: true,
+        sourcemap: 'inline',
     },
     plugins: [
         copy({

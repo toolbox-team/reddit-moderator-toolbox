@@ -15,7 +15,7 @@ import ModMatrix from './modules/modmatrix.js';
 import Syntax from './modules/syntax.js';
 // import ModButton from './modules/modbutton.js';
 import General from './modules/general.js';
-// import Notifier from './modules/notifier.js';
+import Notifier from './modules/notifier.js';
 import Usernotes from './modules/usernotes.js';
 // import Comment from './modules/comment.js';
 // import NewModmailPro from './modules/newmodmailpro.js';
@@ -208,7 +208,7 @@ const coreLoadedPromise = new Promise(resolve => {
         Syntax,
         // ModButton,
         General,
-        // Notifier,
+        Notifier,
         Usernotes,
         // Comment,
         // NewModmailPro,

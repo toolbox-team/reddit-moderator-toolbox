@@ -4,190 +4,200 @@ import * as TBApi from '../tbapi.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('Notifier');
-self.shortname = 'Notifier';
+export default new Module({
+    name: 'Notifier',
+    id: 'Notifier',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'modSubreddits',
+            type: 'text',
+            default: 'mod',
+            advanced: false,
+            description: 'Multireddit of subs you want displayed in the modqueue counter',
+        },
+        {
+            id: 'modSubredditsFMod',
+            type: 'boolean',
+            default: false,
+            advanced: false,
+            description: 'Use /f/mod/about/modqueue/ instead.',
+        },
+        {
+            id: 'unmoderatedSubreddits',
+            type: 'text',
+            default: 'mod',
+            advanced: false,
+            description: 'Multireddit of subs you want displayed in the unmoderated counter',
+        },
+        {
+            id: 'unmoderatedSubredditsFMod',
+            type: 'boolean',
+            default: false,
+            advanced: false,
+            description: 'Use /f/mod/about/unmoderated/ instead.',
+        },
+        {
+            id: 'messageNotifications',
+            type: 'boolean',
+            default: true,
+            description: 'Get notifications for new messages',
+        },
+        {
+            id: 'messageNotificationSound',
+            type: 'boolean',
+            default: false,
+            description: "You've got mail.",
+        },
+        {
+            id: 'sampleSound',
+            type: 'action',
+            description: 'sample sound',
+            class: 'tb-sample-sound',
+            event: TBCore.events.TB_SAMPLE_SOUND,
+        },
+        {
+            id: 'messageUnreadLink',
+            type: 'boolean',
+            default: false,
+            description: 'Link to /message/unread/ if unread messages are present',
+        },
+        {
+            id: 'straightToInbox',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            description: 'When clicking a comment notification go to the inbox',
+        },
+        {
+            id: 'consolidatedMessages',
+            type: 'boolean',
+            default: true,
+            advanced: true,
+            description: 'Consolidate notifications (x new messages) instead of individual notifications',
+        },
+        {
+            id: 'modNotifications',
+            type: 'boolean',
+            default: true,
+            description: 'Get modqueue notifications',
+        },
+        {
+            id: 'unmoderatedNotifications',
+            type: 'boolean',
+            default: false,
+            description: 'Get unmoderated queue notifications',
+        },
+        {
+            id: 'checkInterval',
+            type: 'number',
+            default: 1, // 60 secs.
+            advanced: true,
+            description: 'Interval to check for new items (time in minutes).',
+        },
 
-self.settings['enabled']['default'] = true;
+        // Private storage settings.
+        {
+            id: 'unreadMessageCount',
+            type: 'number',
+            default: 0,
+            hidden: true,
+        },
+        {
+            id: 'modqueueCount',
+            type: 'number',
+            default: 0,
+            hidden: true,
+        },
+        {
+            id: 'unmoderatedCount',
+            type: 'number',
+            default: 0,
+            hidden: true,
+        },
+        {
+            id: 'modmailCount',
+            type: 'number',
+            default: 0,
+            hidden: true,
+        },
+        {
+            id: 'newModmailCount',
+            type: 'number',
+            default: 0,
+            hidden: true,
+        },
 
-// First show the options for filtering of subreddits.
-self.register_setting('modSubreddits', {
-    type: 'text',
-    default: 'mod',
-    advanced: false,
-    title: 'Multireddit of subs you want displayed in the modqueue counter',
-});
+        {
+            id: 'newModmailCategoryCount',
+            type: 'JSON',
+            default: {highlighted: 0, notifications: 0, archived: 0, new: 0, inprogress: 0, mod: 0},
+            hidden: true,
+        },
 
-self.register_setting('modSubredditsFMod', {
-    type: 'boolean',
-    default: false,
-    advanced: false,
-    title: 'Use /f/mod/about/modqueue/ instead.',
-});
-
-self.register_setting('unmoderatedSubreddits', {
-    type: 'text',
-    default: 'mod',
-    advanced: false,
-    title: 'Multireddit of subs you want displayed in the unmoderated counter',
-});
-
-self.register_setting('unmoderatedSubredditsFMod', {
-    type: 'boolean',
-    default: false,
-    advanced: false,
-    title: 'Use /f/mod/about/unmoderated/ instead.',
-});
-
-self.register_setting('messageNotifications', {
-    type: 'boolean',
-    default: true,
-    title: 'Get notifications for new messages',
-});
-
-self.register_setting('messageNotificationSound', {
-    type: 'boolean',
-    default: false,
-    title: "You've got mail.",
-});
-
-self.register_setting('sampleSound', {
-    type: 'action',
-    title: 'sample sound',
-    class: 'tb-sample-sound',
-    event: TBCore.events.TB_SAMPLE_SOUND,
-});
-
-self.register_setting('messageUnreadLink', {
-    type: 'boolean',
-    default: false,
-    title: 'Link to /message/unread/ if unread messages are present',
-});
-
-self.register_setting('straightToInbox', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'When clicking a comment notification go to the inbox',
-});
-
-self.register_setting('consolidatedMessages', {
-    type: 'boolean',
-    default: true,
-    advanced: true,
-    title: 'Consolidate notifications (x new messages) instead of individual notifications',
-});
-
-// Do we want queue notifications?
-
-self.register_setting('modNotifications', {
-    type: 'boolean',
-    default: true,
-    title: 'Get modqueue notifications',
-});
-
-self.register_setting('unmoderatedNotifications', {
-    type: 'boolean',
-    default: false,
-    title: 'Get unmoderated queue notifications',
-});
-
-self.register_setting('checkInterval', {
-    type: 'number',
-    default: 1, // 60 secs.
-    advanced: true,
-    title: 'Interval to check for new items (time in minutes).',
-});
-
-// / Private storage settings.
-self.register_setting('unreadMessageCount', {
-    type: 'number',
-    default: 0,
-    hidden: true,
-});
-self.register_setting('modqueueCount', {
-    type: 'number',
-    default: 0,
-    hidden: true,
-});
-self.register_setting('unmoderatedCount', {
-    type: 'number',
-    default: 0,
-    hidden: true,
-});
-
-self.register_setting('newModmailCount', {
-    type: 'number',
-    default: 0,
-    hidden: true,
-});
-
-self.register_setting('newModmailCategoryCount', {
-    type: 'JSON',
-    default: {highlighted: 0, notifications: 0, archived: 0, new: 0, inprogress: 0, mod: 0},
-    hidden: true,
-});
-
-self.register_setting('lastChecked', {
-    type: 'number',
-    default: -1,
-    hidden: true,
-});
-self.register_setting('lastSeenUnmoderated', {
-    type: 'number',
-    default: -1,
-    hidden: true,
-});
-self.register_setting('lastSeenModmail', {
-    type: 'number',
-    default: -1,
-    hidden: true,
-});
-self.register_setting('unreadPushed', {
-    type: 'array',
-    default: [],
-    hidden: true,
-});
-self.register_setting('modqueuePushed', {
-    type: 'array',
-    default: [],
-    hidden: true,
-});
-
-self.init = function () {
+        {
+            id: 'lastChecked',
+            type: 'number',
+            default: -1,
+            hidden: true,
+        },
+        {
+            id: 'lastSeenUnmoderated',
+            type: 'number',
+            default: -1,
+            hidden: true,
+        },
+        {
+            id: 'lastSeenModmail',
+            type: 'number',
+            default: -1,
+            hidden: true,
+        },
+        {
+            id: 'unreadPushed',
+            type: 'array',
+            default: [],
+            hidden: true,
+        },
+        {
+            id: 'modqueuePushed',
+            type: 'array',
+            default: [],
+            hidden: true,
+        },
+    ],
+}, async function init ({
+    modNotifications,
+    messageNotifications,
+    messageNotificationSound,
+    unmoderatedNotifications,
+    consolidatedMessages,
+    straightToInbox,
+    modSubreddits,
+    modSubredditsFMod,
+    unmoderatedSubreddits,
+    unmoderatedSubredditsFMod,
+    modmailSubreddits,
+    modmailSubredditsFromPro,
+    messageUnreadLink,
+    checkInterval,
+    unreadMessageCount,
+    modqueueCount,
+    unmoderatedCount,
+    newModmailCount,
+    newModmailCategoryCount,
+}) {
     if (TBCore.isEmbedded) {
         return;
     }
 
     const NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
-
-          modNotifications = self.setting('modNotifications'),
-          messageNotifications = self.setting('messageNotifications'),
-          messageNotificationSound = self.setting('messageNotificationSound'),
-          unmoderatedNotifications = self.setting('unmoderatedNotifications'),
-          consolidatedMessages = self.setting('consolidatedMessages'),
-          straightToInbox = self.setting('straightToInbox'),
-          modSubreddits = self.setting('modSubreddits'),
-          modSubredditsFMod = self.setting('modSubredditsFMod'),
-          unmoderatedSubreddits = self.setting('unmoderatedSubreddits'),
-          unmoderatedSubredditsFMod = self.setting('unmoderatedSubredditsFMod'),
-          modmailSubreddits = self.setting('modmailSubreddits'),
-
-          modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
-
-          unmoderatedOn = TBStorage.getSetting('Modbar', 'unmoderatedon', true), // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
-
-          messageunreadlink = self.setting('messageUnreadLink'),
-
-          checkInterval = TBHelpers.minutesToMilliseconds(self.setting('checkInterval')), // setting is in seconds, convert to milliseconds.
+          unmoderatedOn = await TBStorage.getSettingAsync('Modbar', 'unmoderatedon', true), // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
+          checkIntervalMillis = TBHelpers.minutesToMilliseconds(checkInterval), // setting is in seconds, convert to milliseconds.
           $body = $('body');
     let modmailFilteredSubreddits = modmailSubreddits, // wat?
         newLoad = true,
         now = new Date().getTime(),
-        unreadMessageCount = self.setting('unreadMessageCount'),
-        modqueueCount = self.setting('modqueueCount'),
-        unmoderatedCount = self.setting('unmoderatedCount'),
-        newModmailCount = self.setting('newModmailCount'),
-        newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
         messageunreadurl = '/message/inbox/',
         activeNewMMcheck = false;
@@ -195,12 +205,12 @@ self.init = function () {
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
         modmailFilteredSubreddits = 'mod';
-        if (TBStorage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += `-${TBStorage.getSetting('ModMail', 'filteredsubs', []).join('-')}`;
+        if (await TBStorage.getSettingAsync('ModMail', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += `-${await TBStorage.getSettingAsync('ModMail', 'filteredsubs', []).join('-')}`;
         }
     }
 
-    if (messageunreadlink) {
+    if (messageUnreadLink) {
         messageunreadurl = '/message/unread/';
     }
 
@@ -211,11 +221,11 @@ self.init = function () {
     // Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
     // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab.
     if (TBCore.isModmail) {
-        self.log('clearing all unread stuff');
+        this.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.
-        self.setting('lastSeenModmail', now);
-        self.setting('modmailCount', 0);
+        this.set('lastSeenModmail', now);
+        this.set('modmailCount', 0);
 
         TBApi.getJSON(`/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
             TBStorage.purifyObject(json);
@@ -229,7 +239,7 @@ self.init = function () {
     }
 
     TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
-        self.log('playing sound');
+        this.log('playing sound');
 
         const audio = new Audio(NOTIFICATION_SOUND);
         audio.play();
@@ -332,43 +342,43 @@ self.init = function () {
         $tbNewModmailCount.text(`[${count}]`);
     }
 
-    function updateAllTabs () {
-        self.log('updating all counters accross tabs');
-        browser.runtime.sendMessage({
+    const updateAllTabs = async () => {
+        this.log('updating all counters accross tabs');
+        await browser.runtime.sendMessage({
             action: 'tb-global',
             globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
             excludeBackground: true,
             payload: {
-                unreadMessageCount: self.setting('unreadMessageCount'),
-                modqueueCount: self.setting('modqueueCount'),
-                unmoderatedCount: self.setting('unmoderatedCount'),
-                modmailCount: self.setting('modmailCount'),
-                newModmailCount: self.setting('newModmailCount'),
-                newModmailCategoryCount: self.setting('newModmailCategoryCount'),
+                unreadMessageCount: await this.get('unreadMessageCount'),
+                modqueueCount: await this.get('modqueueCount'),
+                unmoderatedCount: await this.get('unmoderatedCount'),
+                modmailCount: await this.get('modmailCount'),
+                newModmailCount: await this.get('newModmailCount'),
+                newModmailCategoryCount: await this.get('newModmailCategoryCount'),
             },
         });
-    }
+    };
 
-    function newModMailCheck () {
+    const newModMailCheck = () => {
         if (!activeNewMMcheck) {
             activeNewMMcheck = true;
             setTimeout(() => {
                 TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
                     const data = await response.json();
                     const modmailFreshCount = calculateModmailCount(data);
-                    self.setting('newModmailCount', modmailFreshCount);
-                    self.setting('newModmailCategoryCount', data);
+                    this.set('newModmailCount', modmailFreshCount);
+                    this.set('newModmailCategoryCount', data);
 
                     updateNewModMailCount(modmailFreshCount, data);
                     updateAllTabs();
                     activeNewMMcheck = false;
                 }).catch(error => {
-                    self.log(error);
+                    this.log(error);
                     activeNewMMcheck = false;
                 });
             }, 500);
         }
-    }
+    };
 
     // New Modmail actions.
     // Whenever something is clicked that potentially changes the modmail count
@@ -383,13 +393,13 @@ self.init = function () {
                 .ThreadPreview__headerLeft .ThreadPreview__control,
                 .ThreadViewerHeader__right
             `, () => {
-            self.log('Checking modmail count based on click on specific element.');
+            this.log('Checking modmail count based on click on specific element.');
             newModMailCheck();
         });
     }
 
     window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
-        self.log('updating counters from background');
+        this.log('updating counters from background');
         updateMessagesCount(event.detail.unreadMessageCount);
         updateModqueueCount(event.detail.modqueueCount);
         updateUnmodCount(event.detail.unmoderatedCount);
@@ -397,26 +407,26 @@ self.init = function () {
         updateNewModMailCount(event.detail.newModmailCount, event.detail.newModmailCategoryCount);
     });
 
-    function getmessages () {
-        self.log('getting messages');
+    const getmessages = async () => {
+        this.log('getting messages');
 
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
-        const lastchecked = self.setting('lastChecked');
+        const lastchecked = await this.get('lastChecked');
 
         // Update now.
         now = TBHelpers.getTime();
 
         // Update counters.
-        unreadMessageCount = self.setting('unreadMessageCount');
-        modqueueCount = self.setting('modqueueCount');
-        unmoderatedCount = self.setting('unmoderatedCount');
-        newModmailCount = self.setting('newModmailCount');
-        newModmailCategoryCount = self.setting('newModmailCategoryCount');
+        unreadMessageCount = await this.get('unreadMessageCount');
+        modqueueCount = await this.get('modqueueCount');
+        unmoderatedCount = await this.get('unmoderatedCount');
+        newModmailCount = await this.get('newModmailCount');
+        newModmailCategoryCount = await this.get('newModmailCategoryCount');
         //
         // Update methods
         //
 
-        if (!newLoad && now - lastchecked < checkInterval) {
+        if (!newLoad && now - lastchecked < checkIntervalMillis) {
             updateMessagesCount(unreadMessageCount);
             updateModqueueCount(modqueueCount);
             updateUnmodCount(unmoderatedCount);
@@ -431,7 +441,7 @@ self.init = function () {
         let updateCounters = unmoderatedOn ? 4 : 3;
 
         // We're checking now.
-        self.setting('lastChecked', now);
+        this.set('lastChecked', now);
 
         //
         // Messages
@@ -443,7 +453,7 @@ self.init = function () {
             TBApi.getJSON(unreadcontexturl).then(jsondata => {
                 TBStorage.purifyObject(jsondata);
                 const commenttitle = jsondata[0].data.children[0].data.title;
-                if (straightToInbox && messageunreadlink) {
+                if (straightToInbox && messageUnreadLink) {
                     TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
                 } else if (straightToInbox) {
                     TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
@@ -454,10 +464,10 @@ self.init = function () {
         }
 
         // getting unread messages
-        TBApi.getJSON('/message/unread.json').then(json => {
+        TBApi.getJSON('/message/unread.json').then(async json => {
             TBStorage.purifyObject(json);
             const count = json.data.children.length || 0; // TODO: what does `|| 0` do in this case? if children is an array, length will alwaus be a number, so `|| 0` does nothing
-            self.setting('unreadMessageCount', count);
+            this.set('unreadMessageCount', count);
             updateMessagesCount(count);
 
             // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
@@ -473,7 +483,7 @@ self.init = function () {
             if (messageNotifications && count > unreadMessageCount) {
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                const pushedunread = self.setting('unreadPushed');
+                const pushedunread = await this.get('unreadPushed');
                 if (consolidatedMessages) {
                     let notificationbody,
                         messagecount = 0;
@@ -563,9 +573,9 @@ self.init = function () {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                self.setting('unreadPushed', pushedunread);
+                this.set('unreadPushed', pushedunread);
             }
-        }).catch(self.error);
+        }).catch(error => this.error(error));
 
         //
         // Modqueue
@@ -590,7 +600,7 @@ self.init = function () {
             modQueueURL = `/r/${modSubreddits}/about/modqueue`;
         }
 
-        TBApi.getJSON(`${modQueueURL}.json?limit=100`).then(json => {
+        TBApi.getJSON(`${modQueueURL}.json?limit=100`).then(async json => {
             TBStorage.purifyObject(json);
             const count = json.data.children.length || 0;
             updateModqueueCount(count);
@@ -604,7 +614,7 @@ self.init = function () {
                 // Ok let's have a look and see if there are actually new items to display
                 // set up an array in which we will load the last 100 items that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                const pusheditems = self.setting('modqueuePushed');
+                const pusheditems = await this.get('modqueuePushed');
                 if (consolidatedMessages) {
                     let notificationbody, queuecount = 0, xmoreModqueue = 0;
                     json.data.children.forEach(value => {
@@ -673,9 +683,9 @@ self.init = function () {
                 if (pusheditems.length > 100) {
                     pusheditems.splice(0, 100 - pusheditems.length);
                 }
-                self.setting('modqueuePushed', pusheditems);
+                this.set('modqueuePushed', pusheditems);
             }
-            self.setting('modqueueCount', count);
+            this.set('modqueueCount', count);
         });
 
         //
@@ -690,12 +700,12 @@ self.init = function () {
                 unModeratedURL = `/r/${unmoderatedSubreddits}/about/unmoderated`;
             }
 
-            TBApi.getJSON(`${unModeratedURL}.json?limit=100`).then(json => {
+            TBApi.getJSON(`${unModeratedURL}.json?limit=100`).then(async json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0;
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
-                    const lastSeen = self.setting('lastSeenUnmoderated');
+                    const lastSeen = await this.set('lastSeenUnmoderated');
 
                     if (consolidatedMessages) {
                         let notificationbody, queuecount = 0, xmoreUnmod = 0;
@@ -739,10 +749,10 @@ self.init = function () {
                         });
                     }
 
-                    self.setting('lastSeenUnmoderated', now);
+                    this.set('lastSeenUnmoderated', now);
                 }
 
-                self.setting('unmoderatedCount', count);
+                this.set('unmoderatedCount', count);
 
                 if (unmoderatedOn) {
                     updateUnmodCount(count);
@@ -767,8 +777,8 @@ self.init = function () {
         TBApi.apiOauthGET('/api/mod/conversations/unread/count').then(async response => {
             const data = await response.json();
             const modmailFreshCount = calculateModmailCount(data);
-            self.setting('newModmailCount', modmailFreshCount);
-            self.setting('newModmailCategoryCount', data);
+            this.set('newModmailCount', modmailFreshCount);
+            this.set('newModmailCategoryCount', data);
             updateNewModMailCount(modmailFreshCount, data);
 
             // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
@@ -777,14 +787,12 @@ self.init = function () {
                 updateAllTabs();
             }
         }).catch(error => {
-            self.log(error);
+            this.log(error);
         });
-    }
+    };
 
-    setInterval(getmessages, checkInterval);
+    setInterval(getmessages, checkIntervalMillis);
 
     getmessages();
     // Because firefox is "special" we wait a tiny bit and try again.
-};
-
-export default self;
+});

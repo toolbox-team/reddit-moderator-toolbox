@@ -950,7 +950,8 @@ export default TBModule;
  * @typedef SettingDefinition
  * @prop {string} id The setting ID, used to get and set the setting's value
  * @prop {string} description A human-readable description
- * @prop {any} default The default value of the setting
+ * @prop {any} default The default value of the setting, or a function (possibly
+ * async) that returns a default value
  * @prop {string} [storageKey] The storage key associated with the setting
  * @prop {boolean} [beta=false] If true, the setting will only show up when beta
  * mode is enabled
@@ -1051,7 +1052,11 @@ export class Module {
         // TODO: TBStorage should return `undefined` instead of `null` for unset
         //       settings, and this check should only be for `undefined`
         if (value == null) {
-            return setting.default;
+            if (typeof setting.default === 'function') {
+                return setting.default();
+            } else {
+                return setting.default;
+            }
         }
         return value;
     }

@@ -9,7 +9,7 @@ import * as TBApi from './tbapi.js';
 // import Support from './modules/support.js';
 import Modbar from './modules/modbar.js';
 // import Config from './modules/config.js';
-// import BetterButtons from './modules/betterbuttons.js';
+import BetterButtons from './modules/betterbuttons.js';
 // import DomainTagger from './modules/domaintagger.js';
 // import ModMatrix from './modules/modmatrix.js';
 // import Syntax from './modules/syntax.js';
@@ -202,7 +202,7 @@ const coreLoadedPromise = new Promise(resolve => {
         // Support,
         Modbar,
         // Config,
-        // BetterButtons,
+        BetterButtons,
         // DomainTagger,
         // ModMatrix,
         // Syntax,

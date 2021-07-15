@@ -1,69 +1,114 @@
-import {Module} from '../tbmodule.js';
+import TBModule, {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
 import * as TBCore from '../tbcore.js';
-import TBModule from '../tbmodule.js';
 
-const self = new Module('Better Buttons');
-self.shortname = 'BButtons';
-self.oldReddit = true;
-
-// Default settings
-self.settings['enabled']['default'] = true;
-
-self.register_setting('enableModSave', {
-    type: 'boolean',
-    default: false,
-    title: 'Enable mod-save button, will save and distinguish comments.',
+const self = new Module({
+    name: 'Better Buttons',
+    id: 'BButtons',
+    enabledByDefault: true,
+    oldReddit: true,
+    settings: [
+        {
+            id: 'enableModSave',
+            description: 'Enable mod-save button, will save and distinguish comments.',
+            type: 'boolean',
+            default: false,
+        },
+        {
+            id: 'enableDistinguishToggle',
+            description: 'Enable distinguish and sticky toggling.',
+            type: 'boolean',
+            default: false,
+        },
+        {
+            id: 'removeRemoveConfirmation',
+            description: 'Remove remove/approve confirmation when removing items.',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+        },
+        {
+            id: 'approveOnIgnore',
+            description: 'Auto-approve items when ignoring reports.',
+            type: 'boolean',
+            default: false,
+        },
+        {
+            id: 'ignoreOnApprove',
+            description: 'Auto-ignore reports when approving items.',
+            type: 'boolean',
+            default: false,
+        },
+        {
+            id: 'spamRemoved',
+            description: 'Show spam button on submissions removed as ham.',
+            type: 'boolean',
+            default: false,
+        },
+        {
+            id: 'hamSpammed',
+            description: 'Show remove (not spam) button on submissions removed as spam.',
+            type: 'boolean',
+            default: false,
+        },
+        {
+            id: 'addStickyButton',
+            description: 'Add sticky/unsticky buttons to post listings.',
+            type: 'boolean',
+            default: false,
+            advanced: false,
+        },
+        {
+            id: 'addCommentLockbutton',
+            description: 'Add comment lock button to comments.',
+            type: 'boolean',
+            default: true,
+            advanced: false,
+        },
+    ],
+}, ({
+    enableModSave,
+    enableDistinguishToggle,
+    removeRemoveConfirmation,
+    approveOnIgnore,
+    ignoreOnApprove,
+    spamRemoved,
+    hamSpammed,
+    addStickyButton,
+    addCommentLockbutton,
+}) => {
+    if (enableModSave) {
+        initModSave();
+    }
+    if (enableDistinguishToggle) {
+        initDistinguishToggle();
+    }
+    if (removeRemoveConfirmation) {
+        initRemoveConfirmation();
+    }
+    if (approveOnIgnore) {
+        initAutoApprove();
+    }
+    if (ignoreOnApprove) {
+        initAutoIgnoreReports();
+    }
+    if (spamRemoved || hamSpammed) {
+        initRemoveButtons({spamRemoved, hamSpammed});
+    }
+    if (addStickyButton) {
+        initStickyButtons();
+    }
+    if (addCommentLockbutton) {
+        initCommentLock();
+    }
 });
-self.register_setting('enableDistinguishToggle', {
-    type: 'boolean',
-    default: false,
-    title: 'Enable distinguish and sticky toggling.',
-});
-self.register_setting('removeRemoveConfirmation', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Remove remove/approve confirmation when removing items.',
-});
-self.register_setting('approveOnIgnore', {
-    type: 'boolean',
-    default: false,
-    title: 'Auto-approve items when ignoring reports.',
-});
-self.register_setting('ignoreOnApprove', {
-    type: 'boolean',
-    default: false,
-    title: 'Auto-ignore reports when approving items.',
-});
-self.register_setting('spamRemoved', {
-    type: 'boolean',
-    default: false,
-    title: 'Show spam button on submissions removed as ham.',
-});
-self.register_setting('hamSpammed', {
-    type: 'boolean',
-    default: false,
-    title: 'Show remove (not spam) button on submissions removed as spam.',
-});
-self.register_setting('addStickyButton', {
-    type: 'boolean',
-    default: false,
-    advanced: false,
-    title: 'Add sticky/unsticky buttons to post listings.',
-});
-self.register_setting('addCommentLockbutton', {
-    type: 'boolean',
-    default: true,
-    advanced: false,
-    title: 'Add comment lock button to comments.',
-});
+export default self;
 
 // Bread and buttons
 const $body = $('body');
 let newThingRunning = false;
 
-self.initModSave = function initModSave () {
+function initModSave () {
     if (TBCore.isModmail) {
         return;
     }
@@ -132,9 +177,9 @@ self.initModSave = function initModSave () {
         shouldSticky = true;
         $(this).closest('.usertext-buttons').find('button.save').click();
     });
-};
+}
 
-self.initDistinguishToggle = function initDistinguishToggle () {
+function initDistinguishToggle () {
     // Check for top level comments so we can add & sticky to the mix
     const stickyHtml = '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
 
@@ -260,9 +305,9 @@ self.initDistinguishToggle = function initDistinguishToggle () {
         attributes: false,
         characterData: false,
     });
-};
+}
 
-self.initRemoveConfirmation = function initRemoveConfirmation () {
+function initRemoveConfirmation () {
     self.log('Adding one-click remove events');
 
     // Approve
@@ -290,9 +335,9 @@ self.initRemoveConfirmation = function initRemoveConfirmation () {
             }
         }
     });
-};
+}
 
-self.initAutoApprove = function initAutoApprove () {
+function initAutoApprove () {
     self.log('Adding ignore reports toggle events');
 
     $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
@@ -305,9 +350,9 @@ self.initAutoApprove = function initAutoApprove () {
             }
         }
     });
-};
+}
 
-self.initAutoIgnoreReports = function initAutoIgnoreReports () {
+function initAutoIgnoreReports () {
     self.log('Adding approve toggle events');
 
     $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
@@ -319,9 +364,9 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports () {
             }
         }
     });
-};
+}
 
-self.initAddRemoveButtons = function initRemoveButtons () {
+function initRemoveButtons ({spamRemoved, hamSpammed}) {
     // only need to iterate if at least one of the options is enabled
     const $things = $('.thing.link:not(.tb-removebuttons-checked)');
     TBCore.forEachChunkedDynamic($things, item => {
@@ -330,7 +375,7 @@ self.initAddRemoveButtons = function initRemoveButtons () {
 
         const thing = TBCore.getThingInfo(item, true);
 
-        if (self.setting('spamRemoved')) {
+        if (spamRemoved) {
             // only for subreddits we mod
             // and for comments that have been removed as ham ("remove not spam")
             if (thing.subreddit && thing.ham) {
@@ -344,7 +389,7 @@ self.initAddRemoveButtons = function initRemoveButtons () {
             }
         }
 
-        if (self.setting('hamSpammed')) {
+        if (hamSpammed) {
             // only for subreddits we mod
             // and for comments that have been removed as spam ("spam" or "confirm spam")
             if (thing.subreddit && thing.spam) {
@@ -356,9 +401,9 @@ self.initAddRemoveButtons = function initRemoveButtons () {
             }
         }
     });
-};
+}
 
-self.initStickyButtons = function initStickyButtons () {
+function initStickyButtons () {
     if (!TBCore.isMod) {
         return;
     }
@@ -418,9 +463,9 @@ self.initStickyButtons = function initStickyButtons () {
             $button.parent().hide();
         });
     });
-};
+}
 
-self.initCommentLock = function () {
+function initCommentLock () {
     if (TBCore.isModmail) {
         return;
     }
@@ -482,37 +527,4 @@ self.initCommentLock = function () {
     });
 
     commentLockRun();
-};
-
-// Module init
-
-self.init = function () {
-    // Mod check first before we do anything.
-
-    if (self.setting('enableModSave')) {
-        self.initModSave();
-    }
-    if (self.setting('enableDistinguishToggle')) {
-        self.initDistinguishToggle();
-    }
-    if (self.setting('removeRemoveConfirmation')) {
-        self.initRemoveConfirmation();
-    }
-    if (self.setting('approveOnIgnore')) {
-        self.initAutoApprove();
-    }
-    if (self.setting('ignoreOnApprove')) {
-        self.initAutoIgnoreReports();
-    }
-    if (self.setting('spamRemoved') || self.setting('hamSpammed')) {
-        self.initAddRemoveButtons();
-    }
-    if (self.setting('addStickyButton')) {
-        self.initStickyButtons();
-    }
-    if (self.setting('addCommentLockbutton')) {
-        self.initCommentLock();
-    }
-};
-
-export default self;
+}

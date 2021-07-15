@@ -546,7 +546,8 @@ const TBModule = {
                 }
 
                 // hide hidden settings, ofc
-                if (options.hidden && !TBCore.devMode) {
+                // TODO: Tie to a specific setting rather than debug mode
+                if (options.hidden && !TBStorage.getSetting('Utils', 'debugMode', false)) {
                     continue;
                 }
 

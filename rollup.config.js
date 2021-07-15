@@ -14,7 +14,7 @@ export default {
         sourcemap: 'inline',
     },
     plugins: [
-        nodeResolve(),
+        // nodeResolve(),
         // Copy files not processed by Rollup over to the build directory
         copy({
             targets: [
@@ -32,13 +32,13 @@ export default {
             ],
         }),
     ],
-    onwarn (warning, warn) {
-        // Suppress warnings from dependencies (Rollup complains about
-        // webextension-polyfill using top-level `this` even though it's fine)
-        if (warning.code === 'THIS_IS_UNDEFINED') {
-            return;
-        }
-        // log other warnings to console
-        warn(warning);
-    },
+    // onwarn (warning, warn) {
+    //     // Suppress warnings from dependencies (Rollup complains about
+    //     // webextension-polyfill using top-level `this` even though it's fine)
+    //     if (warning.code === 'THIS_IS_UNDEFINED') {
+    //         return;
+    //     }
+    //     // log other warnings to console
+    //     warn(warning);
+    // },
 };

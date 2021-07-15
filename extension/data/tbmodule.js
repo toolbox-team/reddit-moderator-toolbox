@@ -1118,7 +1118,7 @@ export class Module {
         if (this.alwaysEnabled) {
             return true;
         }
-        return !!await TBStorage.getSettingAsync(this.id, 'enabled');
+        return !!await TBStorage.getSettingAsync(this.id, 'enabled', this.enabledByDefault);
     }
 
     /**

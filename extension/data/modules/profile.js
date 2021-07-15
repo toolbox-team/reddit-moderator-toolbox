@@ -115,7 +115,7 @@ self.init = function () {
             TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
-                if (!window.TBCore.mySubs.includes(subreddit)) {
+                if (!window._TBCore.mySubs.includes(subreddit)) {
                     $thing.addClass('tb-mod-filtered');
                 }
             }, {framerate: 40});
@@ -524,10 +524,10 @@ self.init = function () {
     });
 
     function populateSearchSuggestion (subreddit) {
-        if (subreddit && window.TBCore.mySubs.includes(subreddit)) {
+        if (subreddit && window._TBCore.mySubs.includes(subreddit)) {
             $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${subreddit}"><td>${subreddit}</td></td></tr>`);
         }
-        $(window.TBCore.mySubs).each(function () {
+        $(window._TBCore.mySubs).each(function () {
             if (this !== subreddit) {
                 $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
             }

@@ -76,7 +76,7 @@ self.init = function () {
 
     if (TBCore.isOldReddit) {
         TBCore.getModSubs().then(() => {
-            if (TBCore.post_site && window.TBCore.mySubs.includes(TBCore.post_site)) {
+            if (TBCore.post_site && window._TBCore.mySubs.includes(TBCore.post_site)) {
                 self.log('getting config');
                 getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.

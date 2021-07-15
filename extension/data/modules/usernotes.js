@@ -66,7 +66,7 @@ function startUsernotes ({maxChars, showDate}) {
 
     TBCore.getModSubs().then(() => {
         self.log('Got mod subs');
-        self.log(window.TBCore.mySubs);
+        self.log(window._TBCore.mySubs);
         run();
     });
 
@@ -560,7 +560,7 @@ function startUsernotes ({maxChars, showDate}) {
         let note = {
             note: noteText.trim(),
             time: new Date().getTime(),
-            mod: window.TBCore.logged,
+            mod: window._TBCore.logged,
             link,
             type,
         };

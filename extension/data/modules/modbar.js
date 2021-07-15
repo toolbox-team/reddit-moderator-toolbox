@@ -102,7 +102,7 @@ export default new Module({
     // Doing it like this because it means we don't have to mess with reddit css
     const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
 
-    if (!window.TBCore.logged || TBCore.isEmbedded) {
+    if (!window._TBCore.logged || TBCore.isEmbedded) {
         return;
     }
 
@@ -288,9 +288,9 @@ export default new Module({
               usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false);
         await TBCore.getModSubs();
         this.log('got mod subs');
-        this.log(window.TBCore.mySubs.length);
-        this.log(window.TBCore.mySubsData.length);
-        $(window.TBCore.mySubsData).each(function () {
+        this.log(window._TBCore.mySubs.length);
+        this.log(window._TBCore.mySubsData.length);
+        $(window._TBCore.mySubsData).each(function () {
             const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
             subList += `
                 <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
@@ -311,7 +311,7 @@ export default new Module({
         const modSubsPopupContent = `
             <div id="tb-my-subreddits">
                 <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-            <span class="tb-livefilter-count">${window.TBCore.mySubs.length}</span>
+            <span class="tb-livefilter-count">${window._TBCore.mySubs.length}</span>
                 <br>
                 <table id="tb-my-subreddit-list">${subList}</table>
             </div>
@@ -372,7 +372,7 @@ export default new Module({
             `);
     }
 
-    if (window.TBCore.firstRun) {
+    if (window._TBCore.firstRun) {
         $('.tb-first-run').show().css('display', 'inline-block');
     }
 

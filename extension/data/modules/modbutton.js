@@ -57,7 +57,7 @@ const $body = $('body'),
 
 self.runRedesign = function () {
     // Not a mod, don't bother.
-    if (window.TBCore.mySubs.length < 1) {
+    if (window._TBCore.mySubs.length < 1) {
         return;
     }
     const onlyshowInhover = self.setting('onlyshowInhover');
@@ -124,7 +124,7 @@ self.updateSavedSubs = function () {
 
         // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
-        $popup.find('.edit-subreddits').prepend(TBui.selectMultiple(window.TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
+        $popup.find('.edit-subreddits').prepend(TBui.selectMultiple(window._TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
 
         self.savedSubs.forEach(subreddit => {
             // only subs we moderate
@@ -136,7 +136,7 @@ self.updateSavedSubs = function () {
         });
     });
 
-    window.TBCore.mySubs.forEach(subreddit => {
+    window._TBCore.mySubs.forEach(subreddit => {
         $popups.find(`select.${self.OTHER}`).append(`<option value="${subreddit}">${subreddit}</option>`);
     });
 };
@@ -454,7 +454,7 @@ self.init = function () {
                     rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
                     sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
                     wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
-                    mod: window.TBCore.logged,
+                    mod: window._TBCore.logged,
                 };
                 openModPopup(event, info);
             } else {
@@ -542,7 +542,7 @@ self.init = function () {
                 }
 
                 if (confirmban) {
-                    const subs = window.TBCore.mySubs;
+                    const subs = window._TBCore.mySubs;
                     excludeGlobal.forEach(val => {
                         subs.splice(subs.indexOf(val), 1);
                     });

@@ -138,7 +138,7 @@ export default new Module({
 
             // We can't expect people to get the capitalizing right.
             const mySubsLowerCase = [];
-            $(window.TBCore.mySubs).each(function () {
+            $(window._TBCore.mySubs).each(function () {
                 mySubsLowerCase.push(this.toLowerCase());
             });
 

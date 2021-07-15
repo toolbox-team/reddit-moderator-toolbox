@@ -613,7 +613,7 @@ const TBModule = {
                 case 'sublist':
                 {
                     $setting.append(`${title}:<br />`);
-                    $setting.append(TBui.selectMultiple.apply(TBui, [window.TBCore.mySubs, await module.get(setting)]));
+                    $setting.append(TBui.selectMultiple.apply(TBui, [window._TBCore.mySubs, await module.get(setting)]));
                     break;
                 }
                 case 'map':

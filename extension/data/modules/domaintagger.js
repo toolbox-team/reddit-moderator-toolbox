@@ -27,7 +27,7 @@ export default new Module({
 
     TBCore.getModSubs().then(() => {
         self.log('run called from getModSubs');
-        self.log(window.TBCore.mySubs);
+        self.log(window._TBCore.mySubs);
         run(true);
     });
 

@@ -836,7 +836,7 @@ self.queuetoolsOld = function () {
                     const $elem = $(elem),
                           sr = $elem.text();
 
-                    TBStorage.getCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
+                    TBStorage.getCache('QueueTools', `${prefix + window._TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
                         const data = JSON.parse(cacheData);
 
                         modSubs.push(sr);
@@ -853,7 +853,7 @@ self.queuetoolsOld = function () {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);
-                                TBStorage.setCache('QueueTools', `${prefix + window.TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
+                                TBStorage.setCache('QueueTools', `${prefix + window._TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
                                 $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
                             });
                         }

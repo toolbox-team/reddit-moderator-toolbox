@@ -117,8 +117,8 @@ export async function getModSubs () {
     logger.log('getting mod subs');
 
     // If the info we need is already present, return immediately
-    if (window.TBCore.mySubs && window.TBCore.mySubs.length
-        && window.TBCore.mySubsData && window.TBCore.mySubsData.length
+    if (window._TBCore.mySubs && window._TBCore.mySubs.length
+        && window._TBCore.mySubsData && window._TBCore.mySubsData.length
     ) {
         return;
     }
@@ -133,8 +133,8 @@ export async function getModSubs () {
     ]);
     if (cachedModSubs.length && cachedModSubsData.length) {
         // We have modded sub info in cache, just use that
-        window.TBCore.mySubs = cachedModSubs;
-        window.TBCore.mySubsData = cachedModSubsData;
+        window._TBCore.mySubs = cachedModSubs;
+        window._TBCore.mySubsData = cachedModSubsData;
         return;
     }
 
@@ -147,10 +147,10 @@ export async function getModSubs () {
         // Set fetchModSubsPromise to a promise that will fulfill once the sub list is updated
         fetchModSubsPromise = fetchModSubs().then(subs => {
             // mySubs should contain a list of subreddit names, sorted alphabetically
-            window.TBCore.mySubs = TBHelpers.saneSort(subs.map(({data}) => data.display_name.trim()));
+            window._TBCore.mySubs = TBHelpers.saneSort(subs.map(({data}) => data.display_name.trim()));
 
             // mySubsData should contain a list of objects describing each subreddit, sorted by subscriber count
-            window.TBCore.mySubsData = TBHelpers.sortBy(subs.map(({data}) => ({
+            window._TBCore.mySubsData = TBHelpers.sortBy(subs.map(({data}) => ({
                 subreddit: data.display_name,
                 subscribers: data.subscribers,
                 over18: data.over18,
@@ -161,8 +161,8 @@ export async function getModSubs () {
             })), 'subscribers');
 
             // Update the cache
-            TBStorage.setCache('Utils', 'moderatedSubs', window.TBCore.mySubs);
-            TBStorage.setCache('Utils', 'moderatedSubsData', window.TBCore.mySubsData);
+            TBStorage.setCache('Utils', 'moderatedSubs', window._TBCore.mySubs);
+            TBStorage.setCache('Utils', 'moderatedSubsData', window._TBCore.mySubsData);
 
             // We're done fetching, unset this promise
             fetchModSubsPromise = null;
@@ -172,13 +172,13 @@ export async function getModSubs () {
     // Pass the promise back to be handled by the caller
     return fetchModSubsPromise;
 }
-export const modsSub = subreddit => window.TBCore.mySubs.includes(subreddit);
+export const modsSub = subreddit => window._TBCore.mySubs.includes(subreddit);
 
 export async function modSubCheck () {
     await getModSubs();
-    const subCount = window.TBCore.mySubsData.length;
+    const subCount = window._TBCore.mySubsData.length;
     let subscriberCount = 0;
-    window.TBCore.mySubsData.forEach(subreddit => {
+    window._TBCore.mySubsData.forEach(subreddit => {
         subscriberCount += subreddit.subscribers;
     });
     subscriberCount -= subCount;
@@ -757,8 +757,8 @@ export function forEachChunkedDynamic (array, process, options) {
 export function clearCache (calledFromBackground) {
     logger.log('TBCore.clearCache()');
 
-    window.TBCore.mySubs = [];
-    window.TBCore.mySubsData = [];
+    window._TBCore.mySubs = [];
+    window._TBCore.mySubsData = [];
 
     TBStorage.clearCache();
 
@@ -991,10 +991,10 @@ export function getThingInfo (sender, modCheck) {
             user = $entry.find('.sender a.author').text();
             // If there is only one use present and it says "to" it means that this is not the user sending the message.
             if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
-                user = window.TBCore.logged;
+                user = window._TBCore.logged;
             }
             if (user === '') {
-                user = window.TBCore.logged;
+                user = window._TBCore.logged;
                 if (!subreddit || subreddit.indexOf('/r/') < 1) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
@@ -1057,7 +1057,7 @@ export function getThingInfo (sender, modCheck) {
         rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
         sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
         wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-        mod: window.TBCore.logged,
+        mod: window._TBCore.logged,
     };
 
     return info;
@@ -1133,7 +1133,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
                 rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
                 sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
                 wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                mod: window.TBCore.logged,
+                mod: window._TBCore.logged,
             };
 
             resolve(info);
@@ -1200,7 +1200,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
                 rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
                 sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
                 wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                mod: window.TBCore.logged,
+                mod: window._TBCore.logged,
                 userReports: data.children[0].data.user_reports,
                 modReports: data.children[0].data.mod_reports,
                 reportsIgnored: data.children[0].data.ignore_reports,
@@ -1308,13 +1308,13 @@ export async function getToolboxDevs () {
 (async () => {
     // Module exports can't be reassigned asynchronously (modules that imported
     // the value already won't be updated with the new value). To preserve old
-    // behavior, we create a `window.TBCore` object separate from the exported
+    // behavior, we create a `window._TBCore` object separate from the exported
     // values of this module, and put values that need to be asynchronously
     // reassigned on it rather than exporting them.
     // TODO: Move remaining properties off this global object into exports or
     //       rework them as necessary (e.g. with exported get/set functions that
     //       update an internal variable)
-    const TBCore = window.TBCore = window.TBCore || {};
+    const TBCore = window._TBCore = window._TBCore || {};
 
     TBCore.logged = await TBApi.getCurrentUser();
 
@@ -1413,8 +1413,8 @@ browser.runtime.onMessage.addListener(message => {
         logger.log('Timed cache update', message.payload);
         // Cache has timed out
         if (message.payload === 'long') {
-            window.TBCore.mySubs = [];
-            window.TBCore.mySubsData = [];
+            window._TBCore.mySubs = [];
+            window._TBCore.mySubsData = [];
         }
 
         break;

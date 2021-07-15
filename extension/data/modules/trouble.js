@@ -163,7 +163,7 @@ self.init = function () {
         let neg_thresh = neg_thresh_pref;
 
         // lower the threashold by one for user's comments
-        if (RegExp(`/${window.TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
+        if (RegExp(`/${window._TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
             --neg_thresh;
         }
 

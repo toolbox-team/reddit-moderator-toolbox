@@ -1016,7 +1016,7 @@ self.mailDropDowns = async function () {
         $mmpMenu.append($composeSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
         $mmpMenu.append($switchSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
-        $(window.TBCore.mySubs).each(function () {
+        $(window._TBCore.mySubs).each(function () {
             $('.compose-mail').append($('<option>', {
                 value: this,
             }).text(this));

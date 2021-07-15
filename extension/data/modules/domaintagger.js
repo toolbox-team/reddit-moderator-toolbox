@@ -5,26 +5,25 @@ import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('Domain Tagger');
-self.shortname = 'DTagger';
-self.oldReddit = true;
+export default new Module({
+    name: 'Domain Tagger',
+    id: 'DTagger',
+    enabledByDefault: true,
+    oldReddit: true,
+    settings: [
+        {
+            id: 'displayType',
+            description: 'Tag location',
+            type: 'selector',
+            values: ['Title dot', 'Post border', 'Post title', 'Domain background', 'Domain border'],
+            default: 'title_dot',
+        },
+    ],
+}, function init ({displayType}) {
+    const $body = $('body');
+    const self = this;
 
-// Default settings
-self.settings['enabled']['default'] = true;
-
-self.register_setting('displayType', {
-    type: 'selector',
-    values: ['Title dot', 'Post border', 'Post title', 'Domain background', 'Domain border'],
-    default: 'title_dot',
-    title: 'Tag location',
-});
-
-self.init = function () {
-    // Get settings
-    const tagType = this.setting('displayType'),
-          $body = $('body');
-
-    $body.addClass(`tb-dt-type-${tagType}`);
+    $body.addClass(`tb-dt-type-${displayType}`);
 
     TBCore.getModSubs().then(() => {
         self.log('run called from getModSubs');
@@ -69,12 +68,9 @@ self.init = function () {
 
         // Build object lists per subreddit
         self.log('Processing things');
-        self.startProfile('build-object-list');
 
         const subs = {};
         TBCore.forEachChunkedDynamic($things, thing => {
-            self.startProfile('build-object-list-inner');
-
             const $thing = $(thing),
                   sub = $thing.attr('data-subreddit');
 
@@ -82,11 +78,8 @@ self.init = function () {
 
             subs[sub] = subs[sub] || [];
             subs[sub].push(thing);
-
-            self.endProfile('build-object-list-inner');
         }).then(() => {
             // Process subreddit objects' lists
-            self.endProfile('build-object-list');
 
             self.log('Processing subreddits');
             self.log(Object.keys(subs));
@@ -95,7 +88,6 @@ self.init = function () {
                 processSubreddit(sub, tags);
             }).then(() => {
                 self.log('Done processing things');
-                self.printProfiles();
             });
         });
     }
@@ -125,7 +117,7 @@ self.init = function () {
         function applyTag ($domain, d, $entry) {
             $domain.attr('data-color', d.color);
 
-            switch (tagType) {
+            switch (displayType) {
             case 'domain_background': {
                 const textColor = TBui.getBestTextColor(d.color);
                 $domain.addClass(`tb-dt-bg-${d.color}`);
@@ -171,10 +163,7 @@ self.init = function () {
             }
         }
 
-        self.startProfile('set-tags');
-        let done = false;
         TBCore.forEachChunkedDynamic(things, thing => {
-            self.startProfile('set-tags-inner');
             const $thing = $(thing),
                   $entry = $thing.find('.entry'),
                   $domain = $entry.find('span.domain'),
@@ -192,12 +181,6 @@ self.init = function () {
                     applyTag($domain, d, $entry);
                 }
             });
-            self.endProfile('set-tags-inner');
-            if (done) {
-                self.endProfile('set-tags');
-            }
-        }).then(() => {
-            done = true;
         });
     }
 
@@ -312,6 +295,4 @@ self.init = function () {
         self.log(`  Result = ${domain}`);
         return domain;
     }
-};
-
-export default self;
+});

@@ -10,7 +10,7 @@ import * as TBApi from './tbapi.js';
 import Modbar from './modules/modbar.js';
 // import Config from './modules/config.js';
 import BetterButtons from './modules/betterbuttons.js';
-// import DomainTagger from './modules/domaintagger.js';
+import DomainTagger from './modules/domaintagger.js';
 // import ModMatrix from './modules/modmatrix.js';
 // import Syntax from './modules/syntax.js';
 // import ModButton from './modules/modbutton.js';
@@ -189,7 +189,7 @@ const coreLoadedPromise = new Promise(resolve => {
         </style>
     `);
 
-    // Wait for TBCore to load all its legacy stuff into `window.TBCore`
+    // Wait for TBCore to load all its legacy stuff into `window._TBCore`
     // TODO
     await coreLoadedPromise;
 
@@ -203,7 +203,7 @@ const coreLoadedPromise = new Promise(resolve => {
         Modbar,
         // Config,
         BetterButtons,
-        // DomainTagger,
+        DomainTagger,
         // ModMatrix,
         // Syntax,
         // ModButton,

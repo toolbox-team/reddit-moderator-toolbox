@@ -18,7 +18,11 @@
         "url": "https://github.com/toolbox-team/reddit-moderator-toolbox.git"
     },
     "license": "Apache-2.0",
+    "dependencies": {
+        "webextension-polyfill": "^0.8.0"
+    },
     "devDependencies": {
+        "@rollup/plugin-node-resolve": "^13.0.0",
         "archiver": "^3.1.1",
         "codecov": "^3.7.1",
         "coveralls": "^3.0.7",
@@ -56,9 +60,5 @@
         "moduleNameMapper": {
             "^@data(.*)$": "<rootDir>/extension/data$1"
         }
-    },
-    "dependencies": {
-        "@rollup/plugin-node-resolve": "^13.0.0",
-        "webextension-polyfill": "^0.8.0"
     }
 }

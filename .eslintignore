@@ -2,6 +2,9 @@
 build/*
 docs/*
 
+# Old tests
+tests/*
+
 # gulp
 gulpfile.js
 

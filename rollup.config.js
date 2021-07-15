@@ -21,12 +21,12 @@ export default {
                 // The manifest
                 {src: 'extension/manifest.json', dest: 'build'},
                 // Vendor scripts that gets carried over unchanged
-                {src: 'extension/data/libs/**/*', dest: 'build/data/libs'},
+                {src: 'extension/data/libs', dest: 'build/data/libs'},
                 // Background scripts which are not yet module-based
-                {src: 'extension/data/background/**/*', dest: 'build/data/background'},
+                {src: 'extension/data/background', dest: 'build/data/background'},
                 // Non-script assets
-                {src: 'extension/data/images/**/*', dest: 'build/data/images'},
-                {src: 'extension/data/styles/**/*', dest: 'build/data/styles'},
+                {src: 'extension/data/images', dest: 'build/data/images'},
+                {src: 'extension/data/styles', dest: 'build/data/styles'},
                 // tbmigrate is weird
                 {src: 'extension/data/tbmigrate.js', dest: 'build/data'},
             ],

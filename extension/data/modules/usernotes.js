@@ -1161,7 +1161,7 @@ async function getUserNotes (subreddit, forceSkipCache) {
     if (!forceSkipCache) {
         if (cachedNotes[subreddit] !== undefined) {
             self.log('notes found in cache');
-            return TBCore.noteCache[subreddit];
+            return cachedNotes[subreddit];
         }
 
         if (cachedSubsWithNoNotes.includes(subreddit)) {

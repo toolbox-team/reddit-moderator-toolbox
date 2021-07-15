@@ -979,6 +979,9 @@ export class Module {
      * up when beta mode is enabled
      * @param {boolean} [options.debug=false] If true, the module will only show
      * up when debug mode is enabled
+     * @param {boolean} [options.oldReddit=false] If true, the module will be
+     * marked as an Old Reddit-only module in the settings interface (does not
+     * affect execution of the module's initializer)
      * @param {Array<SettingDefinition>} [options.settings=[]] Module settings
      * @param {Function} initializer The module's entry point, run automatically
      * when Toolbox loads with the module is enabled
@@ -990,6 +993,7 @@ export class Module {
         alwaysEnabled = false,
         beta = false,
         debug = false,
+        oldReddit = false,
         settings = [],
     }, initializer) {
         /** @prop {string} name The human-readable name of the module */
@@ -1016,6 +1020,12 @@ export class Module {
         */
         // debugMode, not debug, because `debug` is a logger function
         this.debugMode = debug;
+        /**
+         * @prop {boolean} oldReddit If true, the module will be marked as an
+         * Old Reddit-only module in the settings interface (does not  affect
+         * execution of the module's initializer)
+         */
+        this.oldReddit = oldReddit;
         /**
          * @prop {Function} initializer The module's entry point, run
          * automatically when Toolbox loads with the module is enabled

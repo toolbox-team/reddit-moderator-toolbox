@@ -343,7 +343,7 @@ export function debugInformation () {
         debugObject.platformInformation = browserUserAgent;
     }
     }
-    // info level is always displayed unless disabled in devmode
+    // info level is always displayed
     logger.info('Version/browser information:', debugObject);
     return debugObject;
 }
@@ -555,19 +555,11 @@ async function fetchNewsNotes (sub) {
 }
 
 /** Fetch and display all news notes. */
-export async function displayNotes () {
+export function displayNotes () {
     fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
 
     if (betaRelease) {
         fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(logger.warn);
-    }
-
-    if (await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
-        fetchNewsNotes('tb_dev').then(notes => notes.forEach(showNote)).catch(error => {
-            logger.warn(error);
-            window.TBCore.devMode = false;
-            window.TBCore.devModeLock = true;
-        });
     }
 }
 
@@ -1336,7 +1328,6 @@ export async function getToolboxDevs () {
 
     // Public variables
 
-    TBCore.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
     TBCore.firstRun = false;
 

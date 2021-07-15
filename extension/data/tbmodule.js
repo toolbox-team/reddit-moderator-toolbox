@@ -74,7 +74,6 @@ const TBModule = {
         //
         const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
               betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
-              devMode = TBCore.devMode,
               advancedMode = TBStorage.getSetting('Utils', 'advancedMode', false),
 
               settingSub = TBStorage.getSetting('Utils', 'settingSub', ''),
@@ -272,9 +271,7 @@ const TBModule = {
                     <p class="tb-settings-p"><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
                     <p class="tb-settings-p">Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>
-                    <p class="tb-settings-p" ${debugMode && !TBCore.devModeLock ? ' ' : 'style="display:none;" '}>
-                        <label><input type="checkbox" id="devMode" ${devMode ? 'checked' : ''}> DEVMODE: DON'T EVER ENABLE THIS!</label>
-                    </p>`,
+                    `,
             },
         ];
 
@@ -291,7 +288,8 @@ const TBModule = {
             // overlay main class
             'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
             // optional, overriding single footer
-            `<input class="tb-save tb-action-button" type="button" value="save">${TBCore.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
+            // FIXME: Use a dedicated setting for save and reload rather than using debug mode
+            `<input class="tb-save tb-action-button" type="button" value="save">${debugMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
         );
 
         // Add ordering attributes to the existing tabs so we can insert other special tabs around them
@@ -340,7 +338,6 @@ const TBModule = {
 
             TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
             TBStorage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
-            TBStorage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'), false);
             TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
 
             await TBModule.modules['Modbar'].set('showExportReminder', $('#showExportReminder').prop('checked'));
@@ -365,7 +362,7 @@ const TBModule = {
                     TBui.textFeedback('Settings saved and verified', TBui.FEEDBACK_POSITIVE);
                     setTimeout(() => {
                         // Only reload in dev mode if we asked to.
-                        if (!devMode || reload) {
+                        if (!debugMode || reload) {
                             window.location.reload();
                         }
                     }, 1000);
@@ -616,7 +613,7 @@ const TBModule = {
                 case 'sublist':
                 {
                     $setting.append(`${title}:<br />`);
-                    $setting.append(TBui.selectMultiple.apply(TBui, [TBCore.mySubs, await module.get(setting)]));
+                    $setting.append(TBui.selectMultiple.apply(TBui, [window.TBCore.mySubs, await module.get(setting)]));
                     break;
                 }
                 case 'map':
@@ -728,7 +725,8 @@ body {
                                 aDescr = '??????',
                                 aClass = '';
 
-                            if (module.manager.isUnlocked(saveIndex, index, save) || TBCore.devMode) {
+                            // FIXME: Use a dedicated setting instead of just using debug mode
+                            if (module.manager.isUnlocked(saveIndex, index, save) || debugMode) {
                                 const a = module.manager.getAchievement(saveIndex, index);
                                 aTitle = a.title;
                                 aDescr = a.descr;

@@ -13,7 +13,7 @@ self.shortname = 'DevTools';
 self.settings['enabled']['default'] = true;
 
 self.config['betamode'] = false;
-self.config['devmode'] = true;
+self.config['debugMode'] = true;
 
 self.register_setting('apiHelper', {
     type: 'boolean',

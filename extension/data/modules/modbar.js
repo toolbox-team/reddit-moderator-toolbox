@@ -177,7 +177,7 @@ export default new Module({
         newModmailUrl = `${newModmailBaseUrl}notifications`;
     }
 
-    // Custom CSS for devmode/testing
+    // Custom CSS for debug mode/testing
     if (customCSS) {
         $('head').append(`<style type="text/css">${customCSS}</style>`);
     }

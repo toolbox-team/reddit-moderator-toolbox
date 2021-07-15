@@ -1,6 +1,7 @@
 import {Module} from '../tbmodule.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import {getSettingAsync} from '../tbstorage.js';
 
 const self = new Module('Achievements');
 self.shortname = 'Achievements';
@@ -48,10 +49,12 @@ function Manager () {
         this.registerSeries([title], description, [target], achievement);
     };
 
-    this.registerSeries = function (titles, description, maxValues, achievement) {
+    this.registerSeries = async function (titles, description, maxValues, achievement) {
         if (saveIndex >= saves.length) {
             saves.push(0);
         }
+
+        const debugMode = await getSettingAsync('Utils', 'debugMode', false);
 
         const achievementsBlock = [];
         for (let i = 0; i < maxValues.length; i++) {
@@ -59,7 +62,7 @@ function Manager () {
                   maxValue = maxValues[i];
 
             self.log('Registering Achievement');
-            if (window.TBCore.devMode) {
+            if (debugMode) {
                 self.log(`  name=${title}`);
             } // spoilers
             self.log(`  maxValue=${maxValue}`);

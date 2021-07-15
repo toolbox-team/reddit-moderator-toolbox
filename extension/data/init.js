@@ -31,7 +31,7 @@ import PersonalNotes from './modules/personalnotes.js';
 // import FlyingSnoo from './modules/flyingsnoo.js';
 // import QueueTools from './modules/queuetools.js';
 // import Achievements from './modules/achievements.js';
-// import OldReddit from './modules/oldreddit.js';
+import OldReddit from './modules/oldreddit.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and
@@ -224,7 +224,7 @@ const coreLoadedPromise = new Promise(resolve => {
         // FlyingSnoo,
         // QueueTools,
         // Achievements,
-        // OldReddit,
+        OldReddit,
     ]) {
         logger.debug('Registering module', m);
         TBModule.register_module(m);

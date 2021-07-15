@@ -1,17 +1,48 @@
 import {Module} from '../tbmodule.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('Old reddit');
-self.shortname = 'oldreddit';
+const self = new Module({
+    name: 'Old Reddit',
+    id: 'oldreddit',
+    enabledByDefault: true,
+}, () => {
+    // Looks like we are on old reddit. Activate!
+    if (TBCore.isOldReddit) {
+        setTimeout(() => {
+            thingCrawler();
 
-// Default settings
-self.settings['enabled']['default'] = true;
+            window.addEventListener('TBNewThings', () => {
+                thingCrawler();
+            });
+        }, 500);
+    }
 
-self.config['betamode'] = false;
+    if (TBCore.isNewModmail) {
+        const $body = $('body');
 
-// How about you don't disable the general settings module?  No other module should ever do this. Well except for the support module and the old reddit module..
-// So yeah it depends... But seriously normal modules should not do this.
-self.settings['enabled']['hidden'] = true; // Don't disable it, either!
+        $body.on('click', '.icon-user', () => {
+            setTimeout(() => {
+                newModmailSidebar();
+            }, 500);
+        });
+
+        $body.on('click', '.Thread__grouped', () => {
+            setTimeout(() => {
+                newModmailConversationAuthors();
+            }, 500);
+        });
+
+        window.addEventListener('TBNewPage', event => {
+            if (event.detail.pageType === 'modmailConversation') {
+                setTimeout(() => {
+                    newModmailSidebar();
+                    newModmailConversationAuthors();
+                }, 500);
+            }
+        });
+    }
+});
+export default self;
 
 function dispatchApiEvent (element, object) {
     const apiEvent = new CustomEvent('tbReddit', {detail: object});
@@ -23,11 +54,11 @@ function dispatchApiEvent (element, object) {
 }
 
 /**
-     * Handles `thing` items as they become visible in the viewport.
-     * @function
-     * @param {IntersectionObserverEntry[]} entries
-     * @param {IntersectionObserver} observer
-     */
+ * Handles `thing` items as they become visible in the viewport.
+ * @function
+ * @param {IntersectionObserverEntry[]} entries
+ * @param {IntersectionObserver} observer
+ */
 function handleThing (entries, observer) {
     entries.forEach(entry => {
         // The observer fires for everything on page load.
@@ -196,9 +227,9 @@ function newModmailConversationAuthors () {
 }
 
 /**
-     * Makes sure to fire a jsAPI `TBuserHovercard` event for new modmail sidebar instances.
-     * @function
-     */
+ * Makes sure to fire a jsAPI `TBuserHovercard` event for new modmail sidebar instances.
+ * @function
+ */
 function newModmailSidebar () {
     setTimeout(() => {
         const $body = $('body');
@@ -234,43 +265,3 @@ function newModmailSidebar () {
         }
     }, 500);
 }
-
-self.init = function () {
-    // Looks like we are on old reddit. Activate!
-    if (TBCore.isOldReddit) {
-        setTimeout(() => {
-            thingCrawler();
-
-            window.addEventListener('TBNewThings', () => {
-                thingCrawler();
-            });
-        }, 500);
-    }
-
-    if (TBCore.isNewModmail) {
-        const $body = $('body');
-
-        $body.on('click', '.icon-user', () => {
-            setTimeout(() => {
-                newModmailSidebar();
-            }, 500);
-        });
-
-        $body.on('click', '.Thread__grouped', () => {
-            setTimeout(() => {
-                newModmailConversationAuthors();
-            }, 500);
-        });
-
-        window.addEventListener('TBNewPage', event => {
-            if (event.detail.pageType === 'modmailConversation') {
-                setTimeout(() => {
-                    newModmailSidebar();
-                    newModmailConversationAuthors();
-                }, 500);
-            }
-        });
-    }
-};
-
-export default self;

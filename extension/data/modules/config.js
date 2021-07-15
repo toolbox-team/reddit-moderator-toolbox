@@ -1253,6 +1253,18 @@ self.init = function () {
         $flairCSS.val(flairTemplate.css_class);
     });
 
+    const resetForm = () => {
+        $body.find('#tb-add-removal-reason').show();
+        $body.find('#tb-add-removal-reason-form').hide();
+        $body.find('#tb-add-removal-reason-form .edit-area').val('');
+        $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
+        $body.find('#tb-add-removal-reason-form input[name=remove-posts]').prop('checked', true);
+        $body.find('#tb-add-removal-reason-form input[name=remove-comments]').prop('checked', false);
+        $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
+        $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
+        $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
+    };
+
     // Save new reason
     $body.on('click', '#tb-add-removal-reason-form .save-new-reason', () => {
         const reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
@@ -1294,18 +1306,6 @@ self.init = function () {
         removalReasonsContent();
         resetForm();
     });
-
-    const resetForm = () => {
-        $body.find('#tb-add-removal-reason').show();
-        $body.find('#tb-add-removal-reason-form').hide();
-        $body.find('#tb-add-removal-reason-form .edit-area').val('');
-        $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
-        $body.find('#tb-add-removal-reason-form input[name=remove-posts]').prop('checked', true);
-        $body.find('#tb-add-removal-reason-form input[name=remove-comments]').prop('checked', false);
-        $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
-        $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
-        $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
-    };
 
     // cancel
     $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', resetForm);

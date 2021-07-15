@@ -1,9 +1,8 @@
-import {Module} from '../tbmodule.js';
+import TBModule, {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
-import TBModule from '../tbmodule.js';
 
 export default new Module({
     name: 'Modbar',
@@ -312,7 +311,7 @@ export default new Module({
         const modSubsPopupContent = `
             <div id="tb-my-subreddits">
                 <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-            <span class="tb-livefilter-count">${TBCore.mySubs.length}</span>
+            <span class="tb-livefilter-count">${window.TBCore.mySubs.length}</span>
                 <br>
                 <table id="tb-my-subreddit-list">${subList}</table>
             </div>

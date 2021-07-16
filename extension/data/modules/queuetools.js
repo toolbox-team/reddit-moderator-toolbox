@@ -6,161 +6,168 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('Queue Tools');
-self.shortname = 'QueueTools';
+const self = new Module({
+    name: 'Queue Tools',
+    id: 'QueueTools',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'showActionReason',
+            type: 'boolean',
+            default: true,
+            description: 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog',
+        },
+        {
+            id: 'expandActionReasonQueue',
+            type: 'boolean',
+            default: true,
+            description: 'Automatically expand the mod action table in queues',
+        },
+        {
+            id: 'expandReports',
+            type: 'boolean',
+            default: false,
+            description: 'Automatically expand reports on mod pages.',
+        },
+        {
+            id: 'queueCreature',
+            type: 'selector',
+            values: ['kitteh', 'puppy', '/r/babyelephantgifs', '/r/spiderbros', 'piggy', 'i have no soul'],
+            default: 'kitteh',
+            description: 'Queue Creature',
+        },
+        {
+            id: 'subredditColor',
+            type: 'boolean',
+            default: false,
+            description: 'Add a border to items in the queue with color unique to the subreddit name.',
+        },
+        {
+            id: 'subredditColorSalt',
+            type: 'text',
+            default: 'PJSalt',
+            description: 'Text to randomly change the subreddit color',
+            advanced: true,
+            hidden: async () => !await self.get('subredditColor'),
+        },
+        {
+            id: 'showReportReasons',
+            type: 'boolean',
+            default: false,
+            beta: false,
+            description: 'Add button to show reports on posts with ignored reports.',
+        },
+        //
+        // Old reddit specific settings go below.
+        //
+        {
+            id: 'autoActivate',
+            type: 'boolean',
+            default: true,
+            description: 'Automatically activate mass queuetools on queue pages.',
+            oldReddit: true,
+        },
+        {
+            id: 'highlightNegativePosts',
+            type: 'boolean',
+            default: false,
+            description: 'Highlight posts with a score of 0.',
+            oldReddit: true,
+        },
+        {
+            id: 'hideActionedItems',
+            type: 'boolean',
+            default: false,
+            description: 'Hide items after mod action.',
+            oldReddit: true,
+        },
+        {
+            id: 'showAutomodActionReason',
+            type: 'boolean',
+            default: true,
+            description: 'Show the action reason from automoderator below submissions and comments.',
+            oldReddit: true,
+        },
+        {
+            id: 'linkToQueues',
+            type: 'boolean',
+            default: false,
+            description: 'Link to subreddit queue on mod pages.',
+            oldReddit: true,
+        },
+        {
+            id: 'reportsOrder',
+            type: 'selector',
+            advanced: true,
+            values: ['age', 'edited', 'removed', 'score', 'reports'],
+            default: 'age',
+            description: 'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.',
+            oldReddit: true,
+        },
+        {
+            id: 'reportsThreshold',
+            type: 'number',
+            advanced: true,
+            min: 0,
+            max: null,
+            step: 1,
+            default: 0,
+            description: 'Reports threshold.',
+            oldReddit: true,
+        },
+        {
+            id: 'reportsAscending',
+            type: 'boolean',
+            advanced: true,
+            default: false,
+            description: 'Sort ascending.',
+            oldReddit: true,
+        },
+        {
+            id: 'botCheckmark',
+            type: 'list',
+            default: ['AutoModerator'],
+            description: `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
+            oldReddit: true,
+        },
+        {
+            id: 'highlightAutomodMatches',
+            type: 'boolean',
+            default: true,
+            beta: false,
+            description: 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
+            oldReddit: true,
+        },
+        {
+            id: 'groupCommentsOnModPage',
+            type: 'boolean',
+            default: false,
+            beta: true,
+            advanced: true,
+            description: 'Group comments by their parent submission when viewing mod listings.',
+            oldReddit: true,
+        },
+    ],
+}, init);
 
-self.settings['enabled']['default'] = true;
-
-self.register_setting('showActionReason', {
-    type: 'boolean',
-    default: true,
-    title: 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog',
-});
-self.register_setting('expandActionReasonQueue', {
-    type: 'boolean',
-    default: true,
-    title: 'Automatically expand the mod action table in queues',
-});
-
-self.register_setting('expandReports', {
-    type: 'boolean',
-    default: false,
-    title: 'Automatically expand reports on mod pages.',
-});
-
-self.register_setting('queueCreature', {
-    type: 'selector',
-    values: ['kitteh', 'puppy', '/r/babyelephantgifs', '/r/spiderbros', 'piggy', 'i have no soul'],
-    default: 'kitteh',
-    title: 'Queue Creature',
-});
-
-self.register_setting('subredditColor', {
-    type: 'boolean',
-    default: false,
-    title: 'Add a border to items in the queue with color unique to the subreddit name.',
-});
-
-self.register_setting('subredditColorSalt', {
-    type: 'text',
-    default: 'PJSalt',
-    title: 'Text to randomly change the subreddit color',
-    advanced: true,
-    hidden: !self.setting('subredditColor'),
-});
-
-self.register_setting('showReportReasons', {
-    type: 'boolean',
-    default: false,
-    beta: false,
-    title: 'Add button to show reports on posts with ignored reports.',
-});
-
-//
-// Old reddit specific settings go below.
-//
-
-self.register_setting('autoActivate', {
-    type: 'boolean',
-    default: true,
-    title: 'Automatically activate mass queuetools on queue pages.',
-    oldReddit: true,
-});
-
-self.register_setting('highlightNegativePosts', {
-    type: 'boolean',
-    default: false,
-    title: 'Highlight posts with a score of 0.',
-    oldReddit: true,
-});
-
-self.register_setting('hideActionedItems', {
-    type: 'boolean',
-    default: false,
-    title: 'Hide items after mod action.',
-    oldReddit: true,
-});
-
-self.register_setting('showAutomodActionReason', {
-    type: 'boolean',
-    default: true,
-    title: 'Show the action reason from automoderator below submissions and comments.',
-    oldReddit: true,
-});
-
-self.register_setting('linkToQueues', {
-    type: 'boolean',
-    default: false,
-    title: 'Link to subreddit queue on mod pages.',
-    oldReddit: true,
-});
-
-self.register_setting('reportsOrder', {
-    type: 'selector',
-    advanced: true,
-    values: ['age', 'edited', 'removed', 'score', 'reports'],
-    default: 'age',
-    title: 'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.',
-    oldReddit: true,
-});
-
-self.register_setting('reportsThreshold', {
-    type: 'number',
-    advanced: true,
-    min: 0,
-    max: null,
-    step: 1,
-    default: 0,
-    title: 'Reports threshold.',
-    oldReddit: true,
-});
-
-self.register_setting('reportsAscending', {
-    type: 'boolean',
-    advanced: true,
-    default: false,
-    title: 'Sort ascending.',
-    oldReddit: true,
-});
-
-self.register_setting('botCheckmark', {
-    type: 'list',
-    default: ['AutoModerator'],
-    title: `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
-    oldReddit: true,
-});
-
-self.register_setting('highlightAutomodMatches', {
-    type: 'boolean',
-    default: true,
-    beta: false,
-    title: 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
-    oldReddit: true,
-});
-
-self.register_setting('groupCommentsOnModPage', {
-    type: 'boolean',
-    default: false,
-    beta: true,
-    advanced: true,
-    title: 'Group comments by their parent submission when viewing mod listings.',
-    oldReddit: true,
-});
-
-self.queuetoolsOld = function () {
+self.queuetoolsOld = function ({
+    autoActivate,
+    highlightNegativePosts,
+    hideActionedItems,
+    showAutomodActionReason,
+    linkToQueues,
+    subredditColor,
+    subredditColorSalt,
+    queueCreature,
+    highlightAutomodMatches,
+    groupCommentsOnModPage,
+    botCheckmark,
+    reportsOrder,
+    reportsAscending,
+    reportsThreshold,
+    expandReports,
+}) {
     const $body = $('body');
-
-    // Cached data
-    const autoActivate = self.setting('autoActivate'),
-          highlightNegativePosts = self.setting('highlightNegativePosts'),
-          hideActionedItems = self.setting('hideActionedItems'),
-          showAutomodActionReason = self.setting('showAutomodActionReason'),
-          linkToQueues = self.setting('linkToQueues'),
-          subredditColor = self.setting('subredditColor'),
-          subredditColorSalt = self.setting('subredditColorSalt'),
-          queueCreature = self.setting('queueCreature'),
-          highlightAutomodMatches = self.setting('highlightAutomodMatches'),
-          groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     let QUEUE_URL = '';
@@ -244,15 +251,13 @@ self.queuetoolsOld = function () {
 
     // Add modtools buttons to page.
     function addModtools () {
-        let listingOrder = self.setting('reportsOrder'),
+        let listingOrder = reportsOrder,
             allSelected = false,
-            sortAscending = self.setting('reportsAscending');
+            sortAscending = reportsAscending;
 
         const numberRX = /-?\d+/,
-              reportsThreshold = self.setting('reportsThreshold'),
               viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
               viewingreports = !!location.pathname.match(/\/about\/reports/),
-              expandReports = self.setting('expandReports'),
               EXPAND_TITLE = 'expand reports',
               COLLAPSE_TITLE = 'collapse reports';
 
@@ -497,8 +502,8 @@ self.queuetoolsOld = function () {
                 sortAscending = !sortAscending;
             }
 
-            self.setting('reportsAscending', sortAscending);
-            self.setting('reportsOrder', order);
+            self.set('reportsAscending', sortAscending);
+            self.set('reportsOrder', order);
 
             $sortOrder.text(order);
             sortThings(order, sortAscending);
@@ -691,14 +696,14 @@ self.queuetoolsOld = function () {
             }
 
             $(this).val(threshold);
-            self.setting('reportsThreshold', threshold);
+            self.set('reportsThreshold', threshold);
 
             const $allThings = $('.thing');
             setThreshold($allThings);
         });
 
         function setThreshold (things) {
-            const threshold = self.setting('reportsThreshold');
+            const threshold = reportsThreshold;
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold) {
                     $(this).closest('.thing').hide();
@@ -1142,7 +1147,7 @@ Action reason: ${value.data.details}
     }
 
     // Let's make bot approved posts stand out!
-    const selectors = self.setting('botCheckmark').map(bot => `img.approval-checkmark[title*="approved by ${bot}"]`);
+    const selectors = botCheckmark.map(bot => `img.approval-checkmark[title*="approved by ${bot}"]`);
     if (selectors.length && TBCore.isMod) {
         $('head').append(`
                 <style>
@@ -1158,19 +1163,21 @@ Action reason: ${value.data.details}
     }
 };
 
-self.init = function () {
+function init (options) {
     if (TBCore.isOldReddit) {
-        self.queuetoolsOld();
+        self.queuetoolsOld(options);
     }
     const $body = $('body');
     const modlogCache = {};
 
     // Cached data
-    const showActionReason = self.setting('showActionReason'),
-          expandActionReasonQueue = self.setting('expandActionReasonQueue'),
-          showReportReasons = self.setting('showReportReasons'),
-          queueCreature = self.setting('queueCreature');
-    // expandReports = self.setting('expandReports');
+    const {
+        showActionReason,
+        expandActionReasonQueue,
+        showReportReasons,
+        queueCreature,
+        // expandReports,
+    } = options;
 
     // If the queue creature element is on page it will fade it out first and then remove the element.
     function createCreature () {
@@ -1475,6 +1482,6 @@ self.init = function () {
         TBListener.on('post', addShowReportsButton);
         TBListener.on('comment', addShowReportsButton);
     }
-}; // queueTools.init()
+} // queueTools.init()
 
 export default self;

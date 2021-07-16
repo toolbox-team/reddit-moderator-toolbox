@@ -50,7 +50,6 @@ const self = new Module({
         },
     ],
 }, function init (initialSettings) {
-    this.info('init is run');
     startUsernotesManager.call(this, initialSettings);
     startUsernotes.call(this, initialSettings);
 });
@@ -61,8 +60,6 @@ function startUsernotes ({maxChars, showDate}) {
           $body = $('body');
     const self = this;
     let firstRun = true;
-
-    self.info('Running hi');
 
     TBCore.getModSubs().then(() => {
         self.log('Got mod subs');

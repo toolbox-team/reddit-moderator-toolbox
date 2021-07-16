@@ -677,7 +677,8 @@ const TBModule = {
                 {
                     const v = await module.get(setting);
                     $setting.append(`${title}:<br />`);
-                    $setting.append(TBui.selectSingular.apply(TBui, [options.values, v === undefined || v === null || v === '' ? options.default : v]));
+                    const values = typeof options.values === 'function' ? await options.values() : options.values;
+                    $setting.append(TBui.selectSingular.apply(TBui, [values, v === undefined || v === null || v === '' ? options.default : v]));
                     break;
                 }
                 case 'syntaxTheme':

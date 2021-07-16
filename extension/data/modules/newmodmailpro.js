@@ -6,76 +6,86 @@ import * as TBCore from '../tbcore.js';
 import * as TBui from '../tbui.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('New Mod Mail Pro');
-self.shortname = 'NewModMail';
-
-// //Default settings
-self.settings['enabled']['default'] = true;
-self.config['betamode'] = false;
-
-self.register_setting('modmaillink', {
-    type: 'selector',
-    values: ['All modmail', 'Inbox', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
-    default: 'all_modmail',
-    title: 'Change the modmail link to open a different modmail view by default.',
-});
-
-self.register_setting('openmailtab', {
-    type: 'boolean',
-    default: true,
-    title: 'Open modmail in a new tab.',
-});
-
-self.register_setting('lastreplytypecheck', {
-    type: 'boolean',
-    default: true,
-    title: 'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. ',
-});
-
-self.register_setting('modmailnightmode', {
-    type: 'boolean',
-    default: false,
-    title: 'Open modmail in nightmode',
-});
-
-self.register_setting('searchhelp', {
-    type: 'boolean',
-    default: true,
-    title: 'Add button next to search that opens a help popup explaining all search options.',
-});
-
-self.register_setting('noReplyAsSelf', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
-});
-
-self.register_setting('showModmailPreview', {
-    type: 'boolean',
-    default: true,
-    title: 'Show a preview of modmail messages while typing.',
-});
-
-self.register_setting('clickableReason', {
-    type: 'boolean',
-    default: true,
-    title: 'Make links in ban and mute reasons clickable.',
-});
-
-self.register_setting('checkForNewMessages', {
-    type: 'boolean',
-    default: true,
-    title: 'Check whether there has been new activity in a modmail thread before submitting replies.',
-});
-
-self.register_setting('sourceButton', {
-    type: 'boolean',
-    default: true,
-    title: 'Displays a "Show Source" button allowing you to display the message source in markdown.',
-});
-
-self.init = function () {
+export default new Module({
+    name: 'New Mod Mail Pro',
+    id: 'NewModMail',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'modmaillink',
+            type: 'selector',
+            values: ['All modmail', 'Inbox', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
+            default: 'all_modmail',
+            description: 'Change the modmail link to open a different modmail view by default.',
+        },
+        {
+            id: 'openmailtab',
+            type: 'boolean',
+            default: true,
+            description: 'Open modmail in a new tab.',
+        },
+        {
+            id: 'lastreplytypecheck',
+            type: 'boolean',
+            default: true,
+            description: 'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. ',
+        },
+        {
+            id: 'modmailnightmode',
+            type: 'boolean',
+            default: false,
+            description: 'Open modmail in nightmode',
+        },
+        {
+            id: 'searchhelp',
+            type: 'boolean',
+            default: true,
+            description: 'Add button next to search that opens a help popup explaining all search options.',
+        },
+        {
+            id: 'noReplyAsSelf',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            description: 'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
+        },
+        {
+            id: 'showModmailPreview',
+            type: 'boolean',
+            default: true,
+            description: 'Show a preview of modmail messages while typing.',
+        },
+        {
+            id: 'clickableReason',
+            type: 'boolean',
+            default: true,
+            description: 'Make links in ban and mute reasons clickable.',
+        },
+        {
+            id: 'checkForNewMessages',
+            type: 'boolean',
+            default: true,
+            description: 'Check whether there has been new activity in a modmail thread before submitting replies.',
+        },
+        {
+            id: 'sourceButton',
+            type: 'boolean',
+            default: true,
+            description: 'Displays a "Show Source" button allowing you to display the message source in markdown.',
+        },
+    ],
+}, ({
+    modmailnightmode: modMailNightmode,
+    lastreplytypecheck: lastReplyTypeCheck,
+    searchhelp,
+    noReplyAsSelf,
+    showModmailPreview,
+    clickableReason,
+    checkForNewMessages,
+    sourceButton,
+    modmaillink: modmaillink,
+    openmailtab: openMailTab,
+}) => {
     const $body = $('body');
 
     function switchAwayFromReplyAsSelf () {
@@ -87,9 +97,9 @@ self.init = function () {
     }
 
     /**
-         * Searches for ban reason elements on page and makes included links clickable.
-         * @function
-         */
+     * Searches for ban reason elements on page and makes included links clickable.
+     * @function
+     */
     function reasonClickable () {
         const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen)');
         if ($reasons.length) {
@@ -113,16 +123,6 @@ self.init = function () {
         // Add a class to body
         $body.addClass('tb-new-modmail');
 
-        // ready some variables.
-        const modMailNightmode = self.setting('modmailnightmode'),
-              lastReplyTypeCheck = self.setting('lastreplytypecheck'),
-              searchhelp = self.setting('searchhelp'),
-              noReplyAsSelf = self.setting('noReplyAsSelf'),
-              showModmailPreview = self.setting('showModmailPreview'),
-              clickableReason = self.setting('clickableReason'),
-              checkForNewMessages = self.setting('checkForNewMessages'),
-              sourceButton = self.setting('sourceButton');
-
         // Lifted from reddit source.
         const actionTypeMap = [
             'highlighted this conversation',
@@ -137,28 +137,28 @@ self.init = function () {
         ];
 
         /**
-             * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the
-             * button, we want to perform our own handling. However, in order to actually submit a reply once we're done
-             * with our own checks, we need to trigger the event again and let Reddit handle it normally.
-             */
+         * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the
+         * button, we want to perform our own handling. However, in order to actually submit a reply once we're done
+         * with our own checks, we need to trigger the event again and let Reddit handle it normally.
+         */
         let shouldHijackClickHandler = true;
 
         /**
-             * Submits the reply form, bypassing the submission button click. Should only be
-             * called from the handleSubmitButtonClick handler or embedded functions.
-             * @function
-             */
+         * Submits the reply form, bypassing the submission button click. Should only be
+         * called from the handleSubmitButtonClick handler or embedded functions.
+         * @function
+         */
         const submitReplyForm = () => {
             shouldHijackClickHandler = false;
             $body.find('.ThreadViewerReplyForm__replyButton').click();
         };
 
         /**
-             * Handles a click on the modmail thread submit button. Depending on settings, will
-             * check if the reply type is different and if new comments have been made in the
-             * meantime.
-             * @function
-             */
+         * Handles a click on the modmail thread submit button. Depending on settings, will
+         * check if the reply type is different and if new comments have been made in the
+         * meantime.
+         * @function
+         */
         const handleSubmitButtonClick = async () => {
             // First, check if the reply type is different.
             if (lastReplyTypeCheck) {
@@ -476,8 +476,6 @@ self.init = function () {
     // Below all stuff we do when we are NOT on new modmail.
     if (!TBCore.isNewModmail) {
         // ready some variables.
-        const modmailLink = self.setting('modmaillink'),
-              openMailTab = self.setting('openmailtab');
 
         // Let's mess around with the link to modmail.
         const $newModmailLinkElement = $('#new_modmail'),
@@ -489,7 +487,7 @@ self.init = function () {
         }
 
         // let's replace urls.
-        switch (modmailLink) {
+        switch (modmaillink) {
         case 'all_modmail':
             $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
 
@@ -522,6 +520,4 @@ self.init = function () {
             $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
         }
     }
-};
-
-export default self;
+});

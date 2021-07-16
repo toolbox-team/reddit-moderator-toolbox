@@ -82,7 +82,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
     self.spamRemoved = spamRemoved;
     self.hamSpammed = hamSpammed;
 
-    function run () {
+    async function run () {
         //
         //  Do stuff with removed comments
         //
@@ -117,6 +117,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
             const $things = $('.thing.comment:not(.tb-comments-checked)');
+            await TBCore.getModSubs();
             TBCore.forEachChunkedDynamic($things, item => {
                 const $thing = $(item);
                 $thing.addClass('tb-comments-checked');

@@ -26,7 +26,7 @@ import HistoryButton from './modules/historybutton.js';
 import RemovalReasons from './modules/removalreasons.js';
 import NukeComments from './modules/nukecomments.js';
 import Troubleshooter from './modules/trouble.js';
-// import Profile from './modules/profile.js';
+import Profile from './modules/profile.js';
 // import QueueOverlay from './modules/queue_overlay.js';
 // import FlyingSnoo from './modules/flyingsnoo.js';
 // import QueueTools from './modules/queuetools.js';
@@ -219,7 +219,7 @@ const coreLoadedPromise = new Promise(resolve => {
         RemovalReasons,
         NukeComments,
         Troubleshooter,
-        // Profile,
+        Profile,
         // QueueOverlay,
         // FlyingSnoo,
         // QueueTools,

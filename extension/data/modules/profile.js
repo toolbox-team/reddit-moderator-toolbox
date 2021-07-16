@@ -6,56 +6,55 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('Profile Pro');
-self.shortname = 'Profile';
-
-// //Default settings
-self.settings['enabled']['default'] = true;
-
-self.config['betamode'] = false;
-
-self.register_setting('alwaysTbProfile', {
-    type: 'boolean',
-    default: false,
-    title: 'Always open toolbox profile overlay on reddit profiles.',
-});
-
-self.register_setting('profileButtonEnabled', {
-    type: 'boolean',
-    default: true,
-    title: 'Show profile button next to usernames in subs you mod. Allows you to quickly open the toolbox profile on that page.',
-});
-
-self.register_setting('directProfileToLegacy', {
-    type: 'boolean',
-    default: false,
-    title: 'Open legacy user overview when clicking on profile links.',
-});
-
-self.register_setting('subredditColor', {
-    type: 'boolean',
-    default: TBStorage.getSetting('QueueTools', 'subredditColor', false),
-    hidden: true,
-});
-
-self.register_setting('onlyshowInhover', {
-    type: 'boolean',
-    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
-    hidden: true,
-});
-
-self.init = function () {
+export default new Module({
+    name: 'Profile Pro',
+    id: 'Profile',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'alwaysTbProfile',
+            type: 'boolean',
+            default: false,
+            description: 'Always open toolbox profile overlay on reddit profiles.',
+        },
+        {
+            id: 'profileButtonEnabled',
+            type: 'boolean',
+            default: true,
+            description: 'Show profile button next to usernames in subs you mod. Allows you to quickly open the toolbox profile on that page.',
+        },
+        {
+            id: 'directProfileToLegacy',
+            type: 'boolean',
+            default: false,
+            description: 'Open legacy user overview when clicking on profile links.',
+        },
+        {
+            id: 'subredditColor',
+            type: 'boolean',
+            default: () => TBStorage.getSettingAsync('QueueTools', 'subredditColor', false),
+            hidden: true,
+        },
+        {
+            id: 'onlyshowInhover',
+            type: 'boolean',
+            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            hidden: true,
+        },
+    ],
+}, function init ({
+    alwaysTbProfile,
+    directProfileToLegacy,
+    subredditColor,
+    profileButtonEnabled,
+    onlyshowInhover,
+}) {
     const $body = $('body');
     let filterModThings = false;
     let hideModActions = false;
     let cancelSearch = true;
     const listingTypes = ['overview', 'submitted', 'comments'];
-
-    const alwaysTbProfile = self.setting('alwaysTbProfile'),
-          directProfileToLegacy = self.setting('directProfileToLegacy'),
-          subredditColor = self.setting('subredditColor'),
-          profileButtonEnabled = self.setting('profileButtonEnabled'),
-          onlyshowInhover = self.setting('onlyshowInhover');
+    const self = this;
 
     // When profile links are clicked open them in the legacy view directly
     if (directProfileToLegacy) {
@@ -921,6 +920,4 @@ self.init = function () {
             makeProfile(user, listing, options);
         }
     });
-};
-
-export default self;
+});

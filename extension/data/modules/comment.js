@@ -6,74 +6,81 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('Comments');
-self.shortname = 'Comments'; // historical precedent for settings
+const self = new Module({
+    name: 'Comments',
+    id: 'Comments',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'commentsAsFullPage',
+            type: 'boolean',
+            default: false,
+            advanced: false,
+            description: 'Always open comments as new page (instead of lightbox).',
+        },
+        {
+            id: 'openContextInPopup',
+            type: 'boolean',
+            default: true,
+            beta: false,
+            description: 'Add a link to comments where appropiate to open the context in a popup on page.',
+        },
+        {
+            id: 'highlighted',
+            type: 'list',
+            default: [],
+            description: 'Highlight keywords. Keywords should entered separated by a comma without spaces.',
+        },
+        // Settings for old reddit only
+        {
+            id: 'hideRemoved',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            description: 'Hide removed comments by default.',
+            oldReddit: true,
+        },
+        {
+            id: 'approveComments',
+            type: 'boolean',
+            default: false,
+            description: 'Show approve button on all comments.',
+            oldReddit: true,
+        },
+        {
+            id: 'spamRemoved',
+            type: 'boolean',
+            default: false,
+            description: 'Show spam button on comments removed as ham.',
+            oldReddit: true,
+        },
+        {
+            id: 'hamSpammed',
+            type: 'boolean',
+            default: false,
+            description: 'Show remove (not spam) button on comments removed as spam.',
+            oldReddit: true,
+        },
+        {
+            id: 'showHideOld',
+            type: 'boolean',
+            default: true,
+            advanced: false,
+            description: 'Show button to hide old comments.',
+            oldReddit: true,
+        },
+    ],
+}, init);
 
-self.settings['enabled']['default'] = true;
-
-self.register_setting('commentsAsFullPage', {
-    type: 'boolean',
-    default: false,
-    advanced: false,
-    title: 'Always open comments as new page (instead of lightbox).',
-});
-
-self.register_setting('openContextInPopup', {
-    type: 'boolean',
-    default: true,
-    beta: false,
-    title: 'Add a link to comments where appropiate to open the context in a popup on page.',
-});
-
-self.register_setting('highlighted', {
-    type: 'list',
-    default: [],
-    title: 'Highlight keywords. Keywords should entered separated by a comma without spaces.',
-});
-
-// Settings for old reddit only
-self.register_setting('hideRemoved', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Hide removed comments by default.',
-    oldReddit: true,
-});
-self.register_setting('approveComments', {
-    type: 'boolean',
-    default: false,
-    title: 'Show approve button on all comments.',
-    oldReddit: true,
-});
-self.register_setting('spamRemoved', {
-    type: 'boolean',
-    default: false,
-    title: 'Show spam button on comments removed as ham.',
-    oldReddit: true,
-});
-self.register_setting('hamSpammed', {
-    type: 'boolean',
-    default: false,
-    title: 'Show remove (not spam) button on comments removed as spam.',
-    oldReddit: true,
-});
-self.register_setting('showHideOld', {
-    type: 'boolean',
-    default: true,
-    advanced: false,
-    title: 'Show button to hide old comments.',
-    oldReddit: true,
-});
-
-self.initOldReddit = function () {
+self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved, hamSpammed}) {
     const $body = $('body');
     //
     // preload some generic variables
     //
-    self.hideRemoved = self.setting('hideRemoved');
-    self.approveComments = self.setting('approveComments');
-    self.spamRemoved = self.setting('spamRemoved');
-    self.hamSpammed = self.setting('hamSpammed');
+    self.hideRemoved = hideRemoved;
+    self.approveComments = approveComments;
+    self.spamRemoved = spamRemoved;
+    self.hamSpammed = hamSpammed;
 
     function run () {
         //
@@ -213,7 +220,7 @@ self.initOldReddit = function () {
     });
 
     // hide old comments
-    if (self.setting('showHideOld')) {
+    if (await self.get('showHideOld')) {
         const NO_HIGHLIGHTING = 'no highlighting',
               $commentvisits = $('#comment-visits');
 
@@ -251,14 +258,19 @@ self.initOldReddit = function () {
     }
 };
 
-const commentsAsFullPage = self.setting('commentsAsFullPage');
-const openContextInPopup = self.setting('openContextInPopup');
-
-self.init = function () {
+function init ({
+    commentsAsFullPage,
+    openContextInPopup,
+    hideRemoved,
+    approveComments,
+    spamRemoved,
+    hamSpammed,
+    highlighted,
+}) {
     const $body = $('body');
 
     if (TBCore.isOldReddit) {
-        self.initOldReddit();
+        self.initOldReddit({hideRemoved, approveComments, spamRemoved, hamSpammed});
     }
     // Do not open lightbox but go to full comment page.
     if (commentsAsFullPage && !TBCore.isOldReddit && !TBCore.isNewModmail) {
@@ -273,9 +285,7 @@ self.init = function () {
         });
     }
 
-    if (self.setting('highlighted').length) {
-        const highlighted = self.setting('highlighted');
-
+    if (highlighted.length) {
         TBListener.on('comment', async e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
@@ -542,6 +552,6 @@ self.init = function () {
             });
         });
     }
-};
+}
 
 export default self;

@@ -5,67 +5,85 @@ import * as TBCore from '../tbcore.js';
 import * as TBStorage from '../tbstorage.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('Removal Reasons');
-self.shortname = 'RReasons';
+export default new Module({
+    name: 'Removal Reasons',
+    shortname: 'RReasons',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'commentReasons',
+            type: 'boolean',
+            default: false,
+            description: 'Enable removal reasons for comments.',
+        },
+        {
+            id: 'alwaysShow',
+            type: 'boolean',
+            default: false,
+            description: 'Show an empty removal reason box for subreddits that don\'t have removal reasons.',
+        },
+        // Storage settings.
+        {
+            id: 'reasonType',
+            type: 'selector',
+            values: ['Reply with a comment to the item that is removed', 'Send as PM (personal message)', 'Send as both PM and reply', 'None (This only works when a logsub has been set)'],
+            default: 'reply',
+            description: 'Method of sending removal reasons.',
+        },
+        {
+            id: 'reasonAsSub',
+            type: 'boolean',
+            default: false,
+            advanced: false,
+            description: 'Send removal reasons as a subreddit. <b>Note:</b> these will appear in modmail and potentially clutter it up.',
+        },
+        {
+            id: 'reasonAutoArchive',
+            type: 'boolean',
+            default: false,
+            advanced: false,
+            description: 'Auto-archive sent modmail pm. <b>Note:</b> Only works on new modmail.',
+        },
+        {
+            id: 'reasonSticky',
+            type: 'boolean',
+            default: false,
+            description: 'Leave removal reasons as a sticky comment.',
+        },
+        {
+            id: 'actionLock',
+            type: 'boolean',
+            default: false,
+            description: 'Lock threads after leaving a removal reason.',
+        },
+        {
+            id: 'actionLockComment',
+            type: 'boolean',
+            default: false,
+            description: 'Lock removal reasons when replying as a comment.',
+        },
+        // Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
+        // May make this a user setting, one day.
+        {
+            id: 'customRemovalReason',
+            type: 'string',
+            default: '%3Ctextarea%20id%3D%22customTextarea%22%20%20class%3D%22tb-input%22%20placeholder%3D%22Enter%20Custom%20reason%22%3E%3C/textarea%3E',
+            hidden: true,
+        },
+    ],
+}, function init ({
+    alwaysShow,
+    commentReasons,
+    customRemovalReason,
+    reasonType: reasonTypeSetting,
+    reasonAsSub: reasonAsSubSetting,
+    reasonAutoArchive: reasonAutoArchiveSetting,
+    reasonSticky: reasonStickySetting,
+    actionLock: actionLockSetting,
+    actionLockComment: actionLockCommentSetting,
+}) {
+    const self = this;
 
-self.settings['enabled']['default'] = true;
-
-self.register_setting('commentReasons', {
-    type: 'boolean',
-    default: false,
-    title: 'Enable removal reasons for comments.',
-});
-self.register_setting('alwaysShow', {
-    type: 'boolean',
-    default: false,
-    title: 'Show an empty removal reason box for subreddits that don\'t have removal reasons.',
-});
-
-// Storage settings.
-self.register_setting('reasonType', {
-    type: 'selector',
-    values: ['Reply with a comment to the item that is removed', 'Send as PM (personal message)', 'Send as both PM and reply', 'None (This only works when a logsub has been set)'],
-    default: 'reply',
-    title: 'Method of sending removal reasons.',
-});
-
-self.register_setting('reasonAsSub', {
-    type: 'boolean',
-    default: false,
-    advanced: false,
-    title: 'Send removal reasons as a subreddit. <b>Note:</b> these will appear in modmail and potentially clutter it up.',
-});
-
-self.register_setting('reasonAutoArchive', {
-    type: 'boolean',
-    default: false,
-    advanced: false,
-    title: 'Auto-archive sent modmail pm. <b>Note:</b> Only works on new modmail.',
-});
-self.register_setting('reasonSticky', {
-    type: 'boolean',
-    default: false,
-    title: 'Leave removal reasons as a sticky comment.',
-});
-self.register_setting('actionLock', {
-    type: 'boolean',
-    default: false,
-    title: 'Lock threads after leaving a removal reason.',
-});
-self.register_setting('actionLockComment', {
-    type: 'boolean',
-    default: false,
-    title: 'Lock removal reasons when replying as a comment.',
-});
-// Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
-// May make this a user setting, one day.
-self.register_setting('customRemovalReason', {
-    type: 'string',
-    default: '%3Ctextarea%20id%3D%22customTextarea%22%20%20class%3D%22tb-input%22%20placeholder%3D%22Enter%20Custom%20reason%22%3E%3C/textarea%3E',
-    hidden: true,
-});
-
-self.init = function () {
     // Check if removal reasons are runnable
     if (TBCore.isModmail) {
         self.log('Disabled because modmail');
@@ -97,12 +115,6 @@ self.init = function () {
 
     // Cached data
     const notEnabled = [];
-
-    // Settings.
-    const alwaysShow = self.setting('alwaysShow'),
-          commentReasons = self.setting('commentReasons');
-
-    //    commentReasons = self.setting('commentReasons');
 
     // Remote stuff retrieval
     async function getRemovalReasons (subreddit) {
@@ -242,7 +254,7 @@ self.init = function () {
                     reasons: [],
                 };
                 const reason = {
-                    text: self.setting('customRemovalReason'),
+                    text: customRemovalReason,
                     flairText: '',
                     flairCSS: '',
                     title: '',
@@ -330,7 +342,7 @@ self.init = function () {
 
             let reasonType = typeReply;
             if (leaveUpToMods) {
-                switch (self.setting('reasonType')) {
+                switch (reasonTypeSetting) {
                 case 'reply_with_a_comment_to_the_item_that_is_removed':
                     reasonType = 'reply';
                     break;
@@ -349,11 +361,11 @@ self.init = function () {
                 }
             }
 
-            const reasonAsSub = leaveUpToMods ? self.setting('reasonAsSub') : typeAsSub;
-            const reasonAutoArchive = leaveUpToMods ? self.setting('reasonAutoArchive') : autoArchive;
-            const reasonSticky = leaveUpToMods ? self.setting('reasonSticky') : typeStickied;
-            const actionLockThread = leaveUpToMods ? self.setting('actionLock') : typeLockThread;
-            const actionLockComment = leaveUpToMods ? self.setting('actionLockComment') : typeLockComment;
+            const reasonAsSub = leaveUpToMods ? reasonAsSubSetting : typeAsSub;
+            const reasonAutoArchive = leaveUpToMods ? reasonAutoArchiveSetting : autoArchive;
+            const reasonSticky = leaveUpToMods ? reasonStickySetting : typeStickied;
+            const actionLockThread = leaveUpToMods ? actionLockSetting : typeLockThread;
+            const actionLockComment = leaveUpToMods ? actionLockCommentSetting : typeLockComment;
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -891,6 +903,4 @@ self.init = function () {
     $body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
         TBStorage.setCache('RReasons', this.id, this.selectedIndex || this.value);
     });
-};
-
-export default self;
+});

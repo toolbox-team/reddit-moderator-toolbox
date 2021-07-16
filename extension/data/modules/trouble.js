@@ -1,69 +1,63 @@
 import {Module} from '../tbmodule.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('Trouble Shooter');
-self.shortname = 'Trouble';
-self.oldReddit = true;
-
-// Default settings
-self.settings['enabled']['default'] = false;
-self.config['betamode'] = false;
-
-self.register_setting('highlightAuto', {
-    type: 'boolean',
-    default: false,
-    title: 'Highlight comments automatically',
-});
-
-self.register_setting('negHighlightThreshold', {
-    type: 'number',
-    default: 0,
-    title: 'Negative comment highlight score threshold',
-});
-
-self.register_setting('highlightControversy', {
-    type: 'boolean',
-    default: true,
-    title: 'Highlight controversial comments',
-});
-
-self.register_setting('expandOnLoad', {
-    type: 'boolean',
-    default: false,
-    title: 'Expand all downvoted/controversial comments on page load',
-});
-
-self.register_setting('sortOnMoreChildren', {
-    type: 'boolean',
-    default: false,
-    title: 'Continue to sort children on "load more comments"',
-});
-
-self.register_setting('displayNChildren', {
-    type: 'boolean',
-    default: true,
-    title: 'Always display the number of children a comment has.',
-});
-
-self.register_setting('displayNChildrenTop', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Display the number of children a comment has in the upper left.  This may change the normal flow of the comments page slightly.',
-});
+const self = new Module({
+    name: 'Trouble Shooter',
+    id: 'Trouble',
+    oldReddit: true,
+    settings: [
+        {
+            id: 'highlightAuto',
+            type: 'boolean',
+            default: false,
+            description: 'Highlight comments automatically',
+        },
+        {
+            id: 'negHighlightThreshold',
+            type: 'number',
+            default: 0,
+            description: 'Negative comment highlight score threshold',
+        },
+        {
+            id: 'highlightControversy',
+            type: 'boolean',
+            default: true,
+            description: 'Highlight controversial comments',
+        },
+        {
+            id: 'expandOnLoad',
+            type: 'boolean',
+            default: false,
+            description: 'Expand all downvoted/controversial comments on page load',
+        },
+        {
+            id: 'sortOnMoreChildren',
+            type: 'boolean',
+            default: false,
+            description: 'Continue to sort children on "load more comments"',
+        },
+        {
+            id: 'displayNChildren',
+            type: 'boolean',
+            default: true,
+            description: 'Always display the number of children a comment has.',
+        },
+        {
+            id: 'displayNChildrenTop',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            description: 'Display the number of children a comment has in the upper left.  This may change the normal flow of the comments page slightly.',
+        },
+    ],
+}, init);
+export default self;
 
 self.sorted = false;
 self.pending = [];
 
-self.init = function () {
-    const neg_thresh_pref = self.setting('negHighlightThreshold'),
-          highlightControversy = self.setting('highlightControversy'),
-          expand = self.setting('expandOnLoad'),
-          auto = self.setting('highlightAuto'),
-          sortOnMoreChildren = self.setting('sortOnMoreChildren'),
-          nChildren = self.setting('displayNChildren'),
-          nChildrenTop = self.setting('displayNChildrenTop'),
-          $body = $('body'),
+function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highlightAuto, sortOnMoreChildren, displayNChildren, displayNChildrenTop}) {
+    const $body = $('body'),
           $buttons = $('<div id="tb-trouble-buttons">'),
           $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start);
     let $sitetable;
@@ -84,7 +78,7 @@ self.init = function () {
 
     $sitetable.before($buttons);
 
-    if (auto) {
+    if (highlightAuto) {
         start();
     } else {
         $buttons.append($init_btn);
@@ -97,10 +91,10 @@ self.init = function () {
         if (highlightControversy) {
             $body.addClass('tb-controversy-hl');
         }
-        if (nChildren) {
+        if (displayNChildren) {
             $body.addClass('tb-nchildren');
         }
-        if (nChildrenTop) {
+        if (displayNChildrenTop) {
             $body.addClass('tb-nchildrentop');
         }
 
@@ -120,7 +114,7 @@ self.init = function () {
 
         run();
 
-        if (expand) {
+        if (expandOnLoad) {
             $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
         }
     }
@@ -134,7 +128,7 @@ self.init = function () {
             self.pending.pop()();
         }
 
-        if (expand) {
+        if (expandOnLoad) {
             $('.thing.tb-controversy, .thing.tb-ncontroversy').not('.tb-pc-proc').each(uncollapseThing);
         }
 
@@ -160,7 +154,7 @@ self.init = function () {
     function score () {
         const $this = $(this),
               $thing = $this.closest('.thing');
-        let neg_thresh = neg_thresh_pref;
+        let neg_thresh = negHighlightThreshold;
 
         // lower the threashold by one for user's comments
         if (RegExp(`/${window._TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
@@ -234,6 +228,5 @@ self.init = function () {
     Include below threshold comments when the score is hidden?
 
     */
-};
+}
 
-export default self;

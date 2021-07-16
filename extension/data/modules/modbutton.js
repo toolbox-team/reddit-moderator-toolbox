@@ -733,9 +733,9 @@ function modbutton () {
             TBApi.flairUser(user, subreddit, text, css_class, templateID).then(() => {
                 TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
             }).catch(error => {
-                self.log(error.responseText);
-                TBui.textFeedback(error.responseText, TBui.FEEDBACK_NEGATIVE);
-                $status.text(error.responseText);
+                self.error('Error saving user flair:', error);
+                TBui.textFeedback(`failed to save user flair: ${error.message}`, TBui.FEEDBACK_NEGATIVE);
+                $status.text(`error: ${error.message}`);
             });
         });
     };

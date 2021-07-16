@@ -9,58 +9,64 @@ import TBListener from '../tblistener.js';
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 1000;
 
-const self = new Module('Mod Button');
-self.shortname = 'ModButton';
+const self = new Module({
+    name: 'Mod Button',
+    id: 'ModButton',
+    enabledByDefault: true,
+    settings: [
 
-self.settings['enabled']['default'] = true;
-
-self.register_setting('savedSubs', {
-    type: 'sublist',
-    default: [],
-    title: 'Saved subs (for quick access)',
-});
-
-self.register_setting('rememberLastAction', {
-    type: 'boolean',
-    default: false,
-    title: 'Remember last action',
-});
-self.register_setting('globalButton', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Enable Global Action button',
-});
-self.register_setting('excludeGlobal', {
-    type: 'sublist',
-    default: [],
-    advanced: true,
-    title: 'Exclude subs from Global Actions',
-    hidden: !self.setting('globalButton'),
-});
-
-self.register_setting('onlyshowInhover', {
-    type: 'boolean',
-    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
-    hidden: true,
-});
-
-// private storage
-self.register_setting('lastAction', {
-    type: 'text',
-    default: 'ban',
-    hidden: true,
-});
+        {
+            id: 'savedSubs',
+            type: 'sublist',
+            default: [],
+            title: 'Saved subs (for quick access)',
+        },
+        {
+            id: 'rememberLastAction',
+            type: 'boolean',
+            default: false,
+            title: 'Remember last action',
+        },
+        {
+            id: 'globalButton',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            title: 'Enable Global Action button',
+        },
+        {
+            id: 'excludeGlobal',
+            type: 'sublist',
+            default: [],
+            advanced: true,
+            title: 'Exclude subs from Global Actions',
+        },
+        // private storage
+        {
+            id: 'onlyshowInhover',
+            type: 'boolean',
+            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            hidden: true,
+        },
+        {
+            id: 'lastAction',
+            type: 'text',
+            default: 'ban',
+            hidden: true,
+        },
+    ],
+}, init);
+export default self;
 
 const $body = $('body'),
       titleText = 'Perform various mod actions on this user';
 
-self.runRedesign = function () {
+self.runRedesign = async function () {
     // Not a mod, don't bother.
     if (window._TBCore.mySubs.length < 1) {
         return;
     }
-    const onlyshowInhover = self.setting('onlyshowInhover');
+    const onlyshowInhover = await self.get('onlyshowInhover');
 
     TBListener.on('author', e => {
         const $target = $(e.target);
@@ -141,15 +147,11 @@ self.updateSavedSubs = function () {
     });
 };
 
-self.init = function () {
+function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
     self.saveButton = 'Save';
     self.OTHER = 'other-sub';
 
-    self.savedSubs = self.setting('savedSubs');
-
-    const rememberLastAction = self.setting('rememberLastAction'),
-          showglobal = self.setting('globalButton'),
-          excludeGlobal = self.setting('excludeGlobal');
+    self.savedSubs = savedSubs;
 
     let userFlairTemplates; // we need those in 2 functions and I don't think fetching twice is a good idea
 
@@ -165,7 +167,7 @@ self.init = function () {
         const $benbutton = $(benbutton);
         self.log('displaying mod button popup');
 
-        const lastaction = self.setting('lastAction');
+        const lastaction = await self.get('lastAction');
 
         const subreddit = info.subreddit,
               user = info.user,
@@ -227,7 +229,7 @@ self.init = function () {
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
                 <button class="save tb-action-button">${self.saveButton}</button>
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? '' : 'style="display:none!important;"'}>Global Action</button>`,
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${globalButton ? '' : 'style="display:none!important;"'}>Global Action</button>`,
                 },
                 {
                     title: 'User Flair',
@@ -289,7 +291,7 @@ self.init = function () {
 
         // If we're doing global actions, add the button for that
         // (there's a display none in the style attribute if this is disabled)
-        if (showglobal) {
+        if (globalButton) {
             const $globalButton = $popup.find('.global-button');
 
             // unless we're doing a ban, because global bans are evil
@@ -493,7 +495,7 @@ self.init = function () {
 
         const banMessage = $popup.find('textarea.ban-message').val();
 
-        self.setting('lastAction', actionName);
+        self.set('lastAction', actionName);
 
         if (action === 'banned') {
             if (banReason.length > MAX_BAN_REASON_LENGTH) {
@@ -741,6 +743,4 @@ self.init = function () {
             $status.text(error.responseText);
         });
     });
-};
-
-export default self;
+}

@@ -13,7 +13,7 @@ import BetterButtons from './modules/betterbuttons.js';
 import DomainTagger from './modules/domaintagger.js';
 import ModMatrix from './modules/modmatrix.js';
 import Syntax from './modules/syntax.js';
-// import ModButton from './modules/modbutton.js';
+import ModButton from './modules/modbutton.js';
 import General from './modules/general.js';
 import Notifier from './modules/notifier.js';
 import Usernotes from './modules/usernotes.js';
@@ -206,7 +206,7 @@ const coreLoadedPromise = new Promise(resolve => {
         DomainTagger,
         ModMatrix,
         Syntax,
-        // ModButton,
+        ModButton,
         General,
         Notifier,
         Usernotes,

@@ -3,22 +3,24 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import {getSettingAsync} from '../tbstorage.js';
 
-const self = new Module('Achievements');
-self.shortname = 'Achievements';
-
-// Default settings
-self.settings['enabled']['default'] = true;
-
-self.register_setting('save', {
-    type: 'achievement_save',
-    default: '',
-});
-
-self.register_setting('lastSeen', {
-    type: 'number',
-    default: TBHelpers.getTime(),
-    hidden: true,
-});
+const self = new Module({
+    name: 'Achievements',
+    id: 'Achievements',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'save',
+            type: 'achievement_save',
+            default: '',
+        },
+        {
+            id: 'lastSeen',
+            type: 'number',
+            default: () => TBHelpers.getTime(),
+            hidden: true,
+        },
+    ],
+}, init);
 
 // This isn't really a module you do things with - we sort it to the bottom
 // of the settings list
@@ -34,8 +36,8 @@ function Manager () {
 
     const achievements = [];
 
-    this.init = function () {
-        const save = self.setting('save');
+    this.init = async function () {
+        const save = await self.get('save');
         if (save.length > 0) {
             saves = this.decodeSave(save);
         }
@@ -130,7 +132,7 @@ function Manager () {
             }
         });
         save = btoa(save);
-        self.setting('save', save);
+        self.set('save', save);
     };
 
     // Utilities
@@ -194,11 +196,8 @@ self.manager = new Manager();
 self.manager.init();
 
 // Init module
-self.init = function () {
+function init ({lastSeen}) {
     const $body = $('body');
-
-    // Individual achievement stuff
-    const lastSeen = self.setting('lastSeen');
 
     // Achievement definitions
     self.log('Registering achievements');
@@ -228,7 +227,7 @@ self.init = function () {
             self.manager.unlock(saveIndex);
         }
 
-        self.setting('lastSeen', now);
+        self.set('lastSeen', now);
     });
 
     // toolbox Loves You: Look at the about page
@@ -311,6 +310,6 @@ self.init = function () {
             self.manager.unlock(saveIndex);
         }
     });
-};
+}
 
 export default self;

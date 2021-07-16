@@ -6,49 +6,50 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import TBListener from '../tblistener.js';
 
-const self = new Module('History Button');
-
-self.shortname = 'HButton';
+const self = new Module({
+    name: 'History Button',
+    id: 'HButton',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'rtsComment',
+            type: 'boolean',
+            default: true,
+            description: 'Post user summary when submitting spam reports',
+        },
+        {
+            id: 'alwaysComments',
+            type: 'boolean',
+            default: true,
+            advanced: true,
+            description: 'Load comment history immediately',
+        },
+        {
+            id: 'commentCount',
+            type: 'selector',
+            values: ['100', '200', '300', '400', '500', '600', '700', '800', '900', '1000'],
+            default: '1000',
+            advanced: true,
+            description: 'Number of comments to retrieve per user history',
+        },
+        {
+            id: 'onlyshowInhover',
+            type: 'boolean',
+            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            hidden: true,
+        },
+        {
+            id: 'includeNsfwSearches',
+            type: 'boolean',
+            default: false,
+            description: 'Include NSFW submissions in searches',
+        },
+    ],
+}, init);
 
 // This should be a setting, methinks.
 self.SPAM_REPORT_SUB = 'spam';
-
-self.settings['enabled']['default'] = true;
-
 self.fetched = {};// fetched histories
-
-self.register_setting('rtsComment', {
-    type: 'boolean',
-    default: true,
-    title: 'Post user summary when submitting spam reports',
-});
-
-self.register_setting('alwaysComments', {
-    type: 'boolean',
-    default: true,
-    advanced: true,
-    title: 'Load comment history immediately',
-});
-
-self.register_setting('commentCount', {
-    type: 'selector',
-    values: ['100', '200', '300', '400', '500', '600', '700', '800', '900', '1000'],
-    default: '1000',
-    advanced: true,
-    title: 'Number of comments to retrieve per user history',
-});
-
-self.register_setting('onlyshowInhover', {
-    type: 'boolean',
-    default: TBStorage.getSetting('GenSettings', 'onlyshowInhover', true),
-    hidden: true,
-});
-
-self.register_setting('includeNsfwSearches', {
-    type: 'boolean',
-    default: false,
-    title: 'Include NSFW submissions in searches',
-});
 
 /**
  * Attach an [H] button to all users
@@ -64,10 +65,9 @@ self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H
     });
 };
 
-self.runJsAPI = function () {
+self.runJsAPI = function ({onlyshowInhover}) {
     self.log('run');
 
-    const onlyshowInhover = self.setting('onlyshowInhover');
     TBListener.on('author', e => {
         const $target = $(e.target);
         // Skip adding the button next to the username if:
@@ -115,7 +115,7 @@ self.runJsAPI = function () {
 /**
  * Initiate the module
  */
-self.init = async function () {
+async function init (options) {
     self.log('init');
     const $body = $('body');
     if (!await TBCore.modSubCheck()) {
@@ -125,7 +125,7 @@ self.init = async function () {
 
     self.log('mscheck passed');
 
-    self.runJsAPI();
+    self.runJsAPI(options);
 
     $body.on('click', '.user-history-button, #tb-user-history', function (event) {
         const $this = $(this);
@@ -275,21 +275,21 @@ self.init = async function () {
         };
 
         self.showAuthorInformation(author);
-        self.populateSubmissionHistory('', author, thisSubreddit);
+        self.populateSubmissionHistory('', author, thisSubreddit, options);
 
         $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
-        $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
+        $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author, options));
         $popup.on('click.comment-report', '.comment-report', function () {
             $(this).hide();
             $popup.off('click.comment-report');
-            self.populateCommentHistory('', author, thisSubreddit);
+            self.populateCommentHistory('', author, thisSubreddit, options);
         });
 
-        if (self.setting('alwaysComments')) {
+        if (options.alwaysComments) {
             $popup.find('.comment-report').click();
         }
     });
-};
+}
 
 /**
  * Show author information (Karma, How long they've been a redditor for)
@@ -332,7 +332,7 @@ self.showMarkdownReport = function (author) {
  * @param author The author whose history we're fetching
  * @param thisSubreddit The name of the subreddit to highlight in generated tables
  */
-self.populateSubmissionHistory = function (after, author, thisSubreddit) {
+self.populateSubmissionHistory = function (after, author, thisSubreddit, options) {
     const user = self.fetched[author],
           $contentBox = user.popup,
           $rtsLink = $contentBox.find('.rts-report'),
@@ -425,7 +425,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
         // There's still more subsmissions to load, so we're going to run again
         if (after) {
             $submissionCount.html(TBStorage.purify(`Loading... (${user.counters.submissions})`));
-            self.populateSubmissionHistory(after, author, thisSubreddit);
+            self.populateSubmissionHistory(after, author, thisSubreddit, options);
         } else {
             // All of the submissions have been loaded at this point
             user.gettingUserData = false;
@@ -502,7 +502,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
         // Are there more domains than are shown?
         let moreDomains = 0;
 
-        const maybeNsfwParam = self.setting('includeNsfwSearches') ? '&include_over_18=on' : '';
+        const maybeNsfwParam = options.includeNsfwSearches ? '&include_over_18=on' : '';
 
         // Append all domains to the table and to the report comment
         user.domainList.forEach((domain, index) => {
@@ -689,7 +689,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit) {
     }
 };
 
-self.populateCommentHistory = function (after, author, thisSubreddit) {
+self.populateCommentHistory = function (after, author, thisSubreddit, options) {
     TBui.longLoadNonPersistent(true);
 
     const user = self.fetched[author],
@@ -734,8 +734,8 @@ self.populateCommentHistory = function (after, author, thisSubreddit) {
 
         const after = d.data.after;
 
-        if (after && user.counters.comments < Number(self.setting('commentCount'))) {
-            self.populateCommentHistory(after, author, thisSubreddit);
+        if (after && user.counters.comments < Number(options.commentCount)) {
+            self.populateCommentHistory(after, author, thisSubreddit, options);
         }
 
         user.commentSubredditList.sort((a, b) => user.subreddits.comments[b].count - user.subreddits.comments[a].count);
@@ -772,10 +772,10 @@ self.populateCommentHistory = function (after, author, thisSubreddit) {
 /**
  * Report the use to /r/spam
  */
-self.reportAuthorToSpam = function (author) {
+self.reportAuthorToSpam = function (author, options) {
     const user = self.fetched[author],
           $contentBox = user.popup,
-          rtsComment = self.setting('rtsComment'),
+          rtsComment = options.rtsComment,
           $rtsLink = $contentBox.find('.rts-report'),
           rtsNativeLink = $rtsLink.get(0),
           commentBody = rtsNativeLink.getAttribute('data-commentbody');

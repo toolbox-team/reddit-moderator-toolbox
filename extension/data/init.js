@@ -22,7 +22,7 @@ import NewModmailPro from './modules/newmodmailpro.js';
 import ModmailPro from './modules/modmailpro.js';
 import Macros from './modules/macros.js';
 import PersonalNotes from './modules/personalnotes.js';
-// import HistoryButton from './modules/historybutton.js';
+import HistoryButton from './modules/historybutton.js';
 // import RemovalReasons from './modules/removalreasons.js';
 import NukeComments from './modules/nukecomments.js';
 // import Troubleshooter from './modules/trouble.js';
@@ -215,7 +215,7 @@ const coreLoadedPromise = new Promise(resolve => {
         ModmailPro,
         Macros,
         PersonalNotes,
-        // HistoryButton,
+        HistoryButton,
         // RemovalReasons,
         NukeComments,
         // Troubleshooter,

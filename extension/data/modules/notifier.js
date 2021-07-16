@@ -205,7 +205,7 @@ export default new Module({
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
         modmailFilteredSubreddits = 'mod';
-        if (await TBStorage.getSettingAsync('ModMail', 'filteredsubs', []).length > 0) {
+        if ((await TBStorage.getSettingAsync('ModMail', 'filteredsubs', [])).length > 0) {
             modmailFilteredSubreddits += `-${await TBStorage.getSettingAsync('ModMail', 'filteredsubs', []).join('-')}`;
         }
     }

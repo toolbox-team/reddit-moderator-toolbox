@@ -20,7 +20,7 @@ import Usernotes from './modules/usernotes.js';
 import Comment from './modules/comment.js';
 import NewModmailPro from './modules/newmodmailpro.js';
 import ModmailPro from './modules/modmailpro.js';
-// import Macros from './modules/macros.js';
+import Macros from './modules/macros.js';
 import PersonalNotes from './modules/personalnotes.js';
 // import HistoryButton from './modules/historybutton.js';
 // import RemovalReasons from './modules/removalreasons.js';
@@ -213,7 +213,7 @@ const coreLoadedPromise = new Promise(resolve => {
         Comment,
         NewModmailPro,
         ModmailPro,
-        // Macros,
+        Macros,
         PersonalNotes,
         // HistoryButton,
         // RemovalReasons,

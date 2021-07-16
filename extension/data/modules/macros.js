@@ -5,21 +5,22 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import * as TBStorage from '../tbstorage.js';
 
-const self = new Module('Mod Macros');
-self.shortname = 'ModMacros';
-
-self.settings['enabled']['default'] = true;
-
-self.register_setting('showMacroPreview', {
-    type: 'boolean',
-    default: true,
-    title: 'Show a preview of macro messages while typing.',
-});
-
-self.init = function () {
+export default new Module({
+    name: 'Mod Macros',
+    shortname: 'ModMacros',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'showMacroPreview',
+            description: 'Show a preview of macro messages while typing.',
+            type: 'boolean',
+            default: true,
+        },
+    ],
+}, function init ({showMacroPreview}) {
     const $body = $('body'),
-          MACROS = 'TB-MACROS',
-          showMacroPreview = self.setting('showMacroPreview');
+          self = this,
+          MACROS = 'TB-MACROS';
 
     async function getConfig (sub, callback) {
         const config = await TBCore.getConfig(sub);
@@ -554,6 +555,4 @@ self.init = function () {
             }
         });
     });
-};
-
-export default self;
+});

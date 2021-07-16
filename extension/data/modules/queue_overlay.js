@@ -3,37 +3,32 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import * as TBCore from '../tbcore.js';
 
-const self = new Module('Queue Overlay');
-self.shortname = 'queueOverlay';
-
-// Default settings
-self.settings['enabled']['default'] = true;
-
-self.config['betamode'] = false;
-
-self.register_setting('overlayFromBarRedesign', {
-    type: 'boolean',
-    default: true,
-    title: 'In redesign when clicking queue and unmoderated icons open the old reddit variants in an overlay.',
-});
-
-self.register_setting('overlayFromBarOld', {
-    type: 'boolean',
-    default: false,
-    oldReddit: true,
-    title: 'Open queue and unmoderated in overlay when clicking on them from the modbar.',
-});
-
-self.init = function () {
+export default new Module({
+    name: 'Queue Overlay',
+    id: 'queueOverlay',
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'overlayFromBarRedesign',
+            type: 'boolean',
+            default: true,
+            title: 'In redesign when clicking queue and unmoderated icons open the old reddit variants in an overlay.',
+        },
+        {
+            id: 'overlayFromBarOld',
+            type: 'boolean',
+            default: false,
+            oldReddit: true,
+            title: 'Open queue and unmoderated in overlay when clicking on them from the modbar.',
+        },
+    ],
+}, async ({overlayFromBarRedesign, overlayFromBarOld}) => {
     const $body = $('body');
 
-    const modSubredditsFMod = TBStorage.getSetting('Notifier', 'modSubredditsFMod', false),
-          modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubredditsFMod = TBStorage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false),
-          unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod');
-
-    const overlayFromBarRedesign = self.setting('overlayFromBarRedesign'),
-          overlayFromBarOld = self.setting('overlayFromBarOld');
+    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
+          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
+          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false),
+          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
 
     // Array used to keep track of loading iframes so that when the overlay gets closed we can properly stop all long load animations.
     let activeLoading = [];
@@ -70,12 +65,12 @@ self.init = function () {
     }
 
     /**
-         * Figures out what listing path to use and adds the multireddit representation to the input field on the respective tab.
-         * @function figureOutMulti
-         * @param {jqueryObject} $tbQueueUrl input element which will hold the multireddit representation
-         * @param {string} type the listing type
-         * @returns {string} the listing path to be used in overlays
-         */
+     * Figures out what listing path to use and adds the multireddit representation to the input field on the respective tab.
+     * @function figureOutMulti
+     * @param {jqueryObject} $tbQueueUrl input element which will hold the multireddit representation
+     * @param {string} type the listing type
+     * @returns {string} the listing path to be used in overlays
+     */
     function figureOutMulti ($tbQueueUrl, type, subreddit) {
         let listUrl;
         if (subreddit) {
@@ -93,13 +88,13 @@ self.init = function () {
     }
 
     /**
-         * Reload the iframe belonging to a queue listing based on latest data.
-         * @function reloadIframe
-         * @param {jqueryObject} $reloadListing reload button on the listing tab.
-         * @param {jqueryObject} $tbQueueUrl input element which will hold the multireddit representation
-         * @param {jqueryObject} $iframe iframe element to be reloaded
-         * @param {string} type listing type
-         */
+     * Reload the iframe belonging to a queue listing based on latest data.
+     * @function reloadIframe
+     * @param {jqueryObject} $reloadListing reload button on the listing tab.
+     * @param {jqueryObject} $tbQueueUrl input element which will hold the multireddit representation
+     * @param {jqueryObject} $iframe iframe element to be reloaded
+     * @param {string} type listing type
+     */
     function reloadIframe ($reloadListing, $tbQueueUrl, $iframe, type) {
         $reloadListing.addClass('loading');
         TBui.longLoadSpinner(true);
@@ -114,13 +109,13 @@ self.init = function () {
     }
 
     /**
-         * Creates the queue overlay or adds data to it if it is already open.
-         * @function makeQueueOverlay
-         * @param {string} type listing type
-         * @param {object} options
-         * @param {string} options.subreddit optional, when not given the user's toolbox settings for the listing will be used.
-         * @param {boolean} options.overwrite when true will set the base over the overlay to the given subreddit and will reload the tab with this data.
-         */
+     * Creates the queue overlay or adds data to it if it is already open.
+     * @function makeQueueOverlay
+     * @param {string} type listing type
+     * @param {object} options
+     * @param {string} options.subreddit optional, when not given the user's toolbox settings for the listing will be used.
+     * @param {boolean} options.overwrite when true will set the base over the overlay to the given subreddit and will reload the tab with this data.
+     */
     function makeQueueOverlay (type, {subreddit, overwrite}) {
         let $overlay = $body.find('.tb-queue-overlay');
 
@@ -304,6 +299,4 @@ self.init = function () {
             });
         });
     }
-};
-
-export default self;
+});

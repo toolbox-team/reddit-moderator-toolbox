@@ -4,165 +4,201 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import * as TBui from '../tbui.js';
 
-const self = new Module('Mod Mail Pro');
-self.shortname = 'ModMail';
-self.oldReddit = true;
+const self = new Module({
+    name: 'Mod Mail Pro',
+    id: 'ModMail',
+    oldReddit: true,
+    enabledByDefault: true,
+    settings: [
+        {
+            id: 'inboxStyle',
+            type: 'selector',
+            values: async () => {
+                const values = [
+                    'All',
+                    'Priority',
+                    'Filtered',
+                    'Replied',
+                    'Unread',
+                    'Unanswered',
+                ];
+                // Allow default bot view IF user has filterBots enabled.
+                if (await self.get('filterBots')) {
+                    values.push('Bots');
+                }
+                return values;
+            },
+            default: 'Priority',
+            title: 'Default inbox view',
+        },
+        {
+            id: 'filteredSubs',
+            type: 'sublist',
+            default: [],
+            title: 'Subreddits to filter from priority view.',
+        },
+        {
+            id: 'defaultCollapse',
+            type: 'boolean',
+            default: false,
+            title: 'Collapse all mod mail threads by default.',
+        },
+        {
+            id: 'noRedModmail',
+            type: 'boolean',
+            default: true,
+            title: 'Show removed threads with red titles.',
+        },
+        {
+            id: 'highlightNew',
+            type: 'boolean',
+            default: true,
+            title: 'Highlight new threads and replies.',
+        },
+        {
+            id: 'expandReplies',
+            type: 'boolean',
+            default: false,
+            title: 'Expand all replies when expanding threads.',
+        },
+        {
+            id: 'hideInviteSpam',
+            type: 'boolean',
+            default: false,
+            title: 'Filter mod invited and added threads.',
+        },
+        {
+            id: 'autoLoad',
+            type: 'boolean',
+            default: true,
+            hidden: async () => !await TBStorage.getSettingAsync('Notifier', 'enabled', true),
+            title: 'Automatically load new mod mail when received.',
+        },
+        {
+            id: 'fadeRecipient',
+            type: 'boolean',
+            default: true,
+            title: 'Fade the recipient of a modmail so it is much more clear who sent it.',
+        },
+        {
+            id: 'subredditColor',
+            type: 'boolean',
+            default: false,
+            title: 'Add a left border to modmail conversations with a color unique to the subreddit name.',
+        },
+        {
+            id: 'resThreadedModmail',
+            type: 'boolean',
+            default: false,
+            title: 'Style threaded modmail in a similar style as RES does for comments.',
+        },
+        {
+            id: 'subredditColorSalt',
+            type: 'text',
+            default: 'PJSalt',
+            title: 'Text to randomly change the subreddit color',
+            advanced: true,
+            hidden: async () => !await self.get('subredditColor'),
+        },
+        {
+            id: 'customLimit',
+            type: 'number',
+            default: 0, // 0 = ueser's default.
+            advanced: true,
+            title: 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings',
+        },
+        {
+            id: 'filterBots',
+            type: 'boolean',
+            default: false,
+            advanced: true,
+            title: 'Filter bots from priority view',
+        },
+        {
+            id: 'botsToFilter',
+            type: 'list',
+            default: ['AutoModerator'],
+            title: 'Bots to filter from priority view. Bot names should entered separated by a comma without spaces',
+            hidden: async () => !await self.get('filterBots'),
+        },
+        {
+            id: 'newTabLinks',
+            type: 'boolean',
+            default: false,
+            title: 'Open links in modmail comments in new tab',
+        },
 
-// //Default settings
-self.settings['enabled']['default'] = true;
-self.config['betamode'] = false;
+        // Private setting storage
+        {
+            id: 'lastVisited',
+            type: 'number',
+            default: new Date().getTime(),
+            hidden: true,
+        },
+        {
+            id: 'replied',
+            type: 'array',
+            default: [],
+            hidden: true,
+        },
+        {
+            id: 'threadProcessRate',
+            type: 'number',
+            default: 100,
+            hidden: true,
+        },
+        {
+            id: 'entryProcessRate',
+            type: 'number',
+            default: 50,
+            hidden: true,
+        },
+        {
+            id: 'chunkProcessSize',
+            type: 'number',
+            default: 2,
+            hidden: true,
+        },
+        {
+            id: 'twoPhaseProcessing',
+            type: 'boolean',
+            default: true,
+            hidden: true,
+        },
+    ],
+}, init);
 
-self.register_setting('inboxStyle', {
-    type: 'selector',
-    values: ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered'],
-    default: 'priority',
-    title: 'Default inbox view',
-});
-
-self.register_setting('filteredSubs', {
-    type: 'sublist',
-    default: [],
-    title: 'Subreddits to filter from priority view.',
-});
-
-self.register_setting('defaultCollapse', {
-    type: 'boolean',
-    default: false,
-    title: 'Collapse all mod mail threads by default.',
-});
-
-self.register_setting('noRedModmail', {
-    type: 'boolean',
-    default: true,
-    title: 'Show removed threads with red titles.',
-});
-
-self.register_setting('highlightNew', {
-    type: 'boolean',
-    default: true,
-    title: 'Highlight new threads and replies.',
-});
-
-self.register_setting('expandReplies', {
-    type: 'boolean',
-    default: false,
-    title: 'Expand all replies when expanding threads.',
-});
-
-self.register_setting('hideInviteSpam', {
-    type: 'boolean',
-    default: false,
-    title: 'Filter mod invited and added threads.',
-});
-
-self.register_setting('autoLoad', {
-    type: 'boolean',
-    default: true,
-    hidden: !TBStorage.getSetting('Notifier', 'enabled', true),
-    title: 'Automatically load new mod mail when received.',
-});
-
-self.register_setting('fadeRecipient', {
-    type: 'boolean',
-    default: true,
-    title: 'Fade the recipient of a modmail so it is much more clear who sent it.',
-});
-
-self.register_setting('subredditColor', {
-    type: 'boolean',
-    default: false,
-    title: 'Add a left border to modmail conversations with a color unique to the subreddit name.',
-});
-
-self.register_setting('resThreadedModmail', {
-    type: 'boolean',
-    default: false,
-    title: 'Style threaded modmail in a similar style as RES does for comments.',
-});
-
-self.register_setting('subredditColorSalt', {
-    type: 'text',
-    default: 'PJSalt',
-    title: 'Text to randomly change the subreddit color',
-    advanced: true,
-    hidden: !self.setting('subredditColor'),
-});
-
-self.register_setting('customLimit', {
-    type: 'number',
-    default: 0, // 0 = ueser's default.
-    advanced: true,
-    title: 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings',
-});
-
-self.register_setting('filterBots', {
-    type: 'boolean',
-    default: false,
-    advanced: true,
-    title: 'Filter bots from priority view',
-});
-
-self.register_setting('botsToFilter', {
-    type: 'list',
-    default: ['AutoModerator'],
-    title: 'Bots to filter from priority view. Bot names should entered separated by a comma without spaces',
-    hidden: !self.setting('filterBots'),
-});
-
-self.register_setting('newTabLinks', {
-    type: 'boolean',
-    default: false,
-    title: 'Open links in modmail comments in new tab',
-});
-
-// / Private setting storage
-self.register_setting('lastVisited', {
-    type: 'number',
-    default: new Date().getTime(),
-    hidden: true,
-});
-self.register_setting('replied', {
-    type: 'array',
-    default: [],
-    hidden: true,
-});
-self.register_setting('threadProcessRate', {
-    type: 'number',
-    default: 100,
-    hidden: true,
-});
-self.register_setting('entryProcessRate', {
-    type: 'number',
-    default: 50,
-    hidden: true,
-});
-self.register_setting('chunkProcessSize', {
-    type: 'number',
-    default: 2,
-    hidden: true,
-});
-self.register_setting('twoPhaseProcessing', {
-    type: 'boolean',
-    default: true,
-    hidden: true,
-});
-
-// Allow default bot view IF user has filterBots enabled.
-if (self.setting('filterBots')) {
-    self.settings['inboxStyle']['values'] = ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered', 'Bots'];
-}
-
-self.init = function () {
+function init (options) {
     if (!TBCore.isModmail) {
         return;
     }
 
-    this.modmailpro();
-    this.autoLoad();
-    this.mailDropDowns();
-};
+    this.modmailpro(options);
+    this.autoLoad(options);
+    this.mailDropDowns(options);
+}
 
-self.modmailpro = function () {
+self.modmailpro = function ({
+    lastVisited,
+    expandReplies,
+    noRedModmail,
+    hideInviteSpam,
+    highlightNew,
+    fadeRecipient,
+    subredditColor,
+    subredditColorSalt,
+    resThreadedModmail,
+    threadProcessRate,
+    entryProcessRate,
+    chunkProcessSize,
+    twoPhaseProcessing,
+    filterBots,
+    botsToFilter,
+    filteredSubs,
+    newTabLinks,
+    inboxStyle,
+    defaultCollapse,
+}) {
     const $body = $('body');
 
     const ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered', BOTS = 'bots';
@@ -171,30 +207,13 @@ self.modmailpro = function () {
     const INVITE = 'moderator invited',
           ADDED = 'moderator added',
           now = new Date().getTime(),
-          lastVisited = self.setting('lastVisited'),
-          expandReplies = self.setting('expandReplies'),
-          noRedModmail = self.setting('noRedModmail'),
-          hideInviteSpam = self.setting('hideInviteSpam'),
-          highlightNew = self.setting('highlightNew'),
-          fadeRecipient = self.setting('fadeRecipient'),
-          subredditColor = self.setting('subredditColor'),
-          subredditColorSalt = self.setting('subredditColorSalt'),
-          resThreadedModmail = self.setting('resThreadedModmail'),
-          threadProcessRate = self.setting('threadProcessRate'),
-          entryProcessRate = self.setting('entryProcessRate'),
-          chunkProcessSize = self.setting('chunkProcessSize'),
-          twoPhaseProcessing = self.setting('twoPhaseProcessing'),
-          filterBots = self.setting('filterBots'),
-          botsToFilter = self.setting('botsToFilter'),
-          filteredSubs = self.setting('filteredSubs'),
-          newTabLinks = self.setting('newTabLinks'),
           unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), // TBCore.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
           moreCommentThreads = [],
           unreadThreads = [],
           unansweredThreads = [];
-    let inbox = self.setting('inboxStyle'),
+    let inbox = inboxStyle,
         newCount = 0,
-        collapsed = self.setting('defaultCollapse'),
+        collapsed = defaultCollapse,
         sentFromMMP = false,
         newThreadSupport = false;
     self.endProfile('settings-access');
@@ -323,7 +342,7 @@ self.modmailpro = function () {
         }
 
         function fastComplete () {
-            self.setting('lastVisited', now);
+            self.set('lastVisited', now);
 
             if (highlightNew) {
                 highlightNewThreads($unprocessedThreads);
@@ -715,7 +734,7 @@ self.modmailpro = function () {
         updateView();
     }
 
-    function updateView () {
+    async function updateView () {
         switch (inbox.toLowerCase()) {
         case PRIORITY:
             $priorityLink.closest('li').addClass('selected');
@@ -727,7 +746,7 @@ self.modmailpro = function () {
             break;
         case REPLIED:
             $repliedLink.closest('li').addClass('selected');
-            showThreads(getRepliedThreads(), true);
+            showThreads(await getRepliedThreads(), true);
             break;
         case UNREAD:
             $unreadLink.closest('li').addClass('selected');
@@ -777,11 +796,11 @@ self.modmailpro = function () {
             threads = $('.message-parent');
         }
 
-        threads.each(function () {
+        threads.each(async function () {
             const $this = $(this),
                   id = $this.data('fullname');
 
-            if (getRepliedThreads().includes(id)) {
+            if (await getRepliedThreads().includes(id)) {
                 $this.find('.tb-replied-tag').html(' Replied');
                 $this.removeClass('invitespam'); // it's not spam if we replied.
             }
@@ -789,7 +808,7 @@ self.modmailpro = function () {
     }
 
     function getRepliedThreads () {
-        return self.setting('replied');
+        return self.get('replied');
     }
 
     function getBotThreads () {
@@ -879,17 +898,17 @@ self.modmailpro = function () {
     }
 
     // / EVENTS ///
-    $body.on('click', '.save', e => {
+    $body.on('click', '.save', async e => {
         const $parent = $(e.target).closest('.message-parent'),
               id = $parent.data('fullname'),
-              replied = getRepliedThreads();
+              replied = await getRepliedThreads();
 
         // Add sub to filtered subs.
         if (!replied.includes(id) && id !== null) {
             replied.push(id);
         }
 
-        self.setting('replied', replied);
+        self.set('replied', replied);
 
         // Update UI
         $parent.addClass('has-replies');
@@ -939,7 +958,7 @@ self.modmailpro = function () {
     });
 };
 
-self.autoLoad = function () {
+self.autoLoad = function ({autoLoad}) {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) {
         return;
@@ -972,7 +991,7 @@ self.autoLoad = function () {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (self.setting('autoLoad') && TBStorage.getSetting('Notifier', 'enabled', true)) {
+    if (autoLoad && TBStorage.getSetting('Notifier', 'enabled', true)) {
         setInterval(() => {
             const count = TBStorage.getSetting('Notifier', 'modmailCount', 0);
             if (count > 0) {

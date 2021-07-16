@@ -19,7 +19,7 @@ import Notifier from './modules/notifier.js';
 import Usernotes from './modules/usernotes.js';
 import Comment from './modules/comment.js';
 import NewModmailPro from './modules/newmodmailpro.js';
-// import ModmailPro from './modules/modmailpro.js';
+import ModmailPro from './modules/modmailpro.js';
 // import Macros from './modules/macros.js';
 import PersonalNotes from './modules/personalnotes.js';
 // import HistoryButton from './modules/historybutton.js';
@@ -212,7 +212,7 @@ const coreLoadedPromise = new Promise(resolve => {
         Usernotes,
         Comment,
         NewModmailPro,
-        // ModmailPro,
+        ModmailPro,
         // Macros,
         PersonalNotes,
         // HistoryButton,

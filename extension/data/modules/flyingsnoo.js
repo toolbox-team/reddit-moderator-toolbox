@@ -4,14 +4,11 @@ import * as TBCore from '../tbcore.js';
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety
 // @copyright  2014+, LowSociety
-const self = new Module('Userpage');
-self.shortname = 'Userpage';
-
-// //Default settings
-self.settings['enabled']['default'] = true;
-self.settings['enabled']['hidden'] = true; // it's an easter egg.
-
-self.init = function () {
+export default new Module({
+    name: 'Userpage',
+    id: 'Userpage',
+    alwaysEnabled: true,
+}, () => {
     if (TBCore.isNewModmail) {
         return;
     }
@@ -131,6 +128,4 @@ self.init = function () {
         keepFlying = true;
         startFlying();
     });
-};
-
-export default self;
+});

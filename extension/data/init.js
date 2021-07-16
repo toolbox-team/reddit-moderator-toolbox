@@ -28,7 +28,7 @@ import NukeComments from './modules/nukecomments.js';
 import Troubleshooter from './modules/trouble.js';
 import Profile from './modules/profile.js';
 import QueueOverlay from './modules/queue_overlay.js';
-// import FlyingSnoo from './modules/flyingsnoo.js';
+import FlyingSnoo from './modules/flyingsnoo.js';
 import QueueTools from './modules/queuetools.js';
 // import Achievements from './modules/achievements.js';
 import OldReddit from './modules/oldreddit.js';
@@ -221,7 +221,7 @@ const coreLoadedPromise = new Promise(resolve => {
         Troubleshooter,
         Profile,
         QueueOverlay,
-        // FlyingSnoo,
+        FlyingSnoo,
         QueueTools,
         // Achievements,
         OldReddit,

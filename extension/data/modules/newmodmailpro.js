@@ -32,12 +32,6 @@ function newmodmailpro () {
         title: 'Open modmail in nightmode',
     });
 
-    self.register_setting('searchhelp', {
-        type: 'boolean',
-        default: true,
-        title: 'Add button next to search that opens a help popup explaining all search options.',
-    });
-
     self.register_setting('noReplyAsSelf', {
         type: 'boolean',
         default: false,
@@ -104,7 +98,6 @@ function newmodmailpro () {
             // ready some variables.
             const modMailNightmode = self.setting('modmailnightmode'),
                   lastReplyTypeCheck = self.setting('lastreplytypecheck'),
-                  searchhelp = self.setting('searchhelp'),
                   noReplyAsSelf = self.setting('noReplyAsSelf'),
                   showModmailPreview = self.setting('showModmailPreview'),
                   clickableReason = self.setting('clickableReason'),
@@ -204,31 +197,6 @@ function newmodmailpro () {
                     </div>
                     `);
                 }, 100));
-            }
-
-            if (searchhelp) {
-                const $header = $body.find('.Header');
-                const $helpButton = $('<a href="javascript:;" class="tb-search-help tb-bracket-button" title="Open help popup" style="">?</a>').appendTo($header);
-                const $searchButton = $body.find('.Search__button');
-
-                let helpButtonLeft = $searchButton.offset().left - 28;
-
-                $helpButton.css({
-                    left: `${helpButtonLeft}px`,
-                });
-
-                $(window).on('resize', () => {
-                    helpButtonLeft = $searchButton.offset().left - 28;
-
-                    $helpButton.css({
-                        left: `${helpButtonLeft}px`,
-                    });
-                });
-
-                $helpButton.on('click', e => {
-                    e.preventDefault();
-                    window.open('https://mods.reddithelp.com/hc/en-us/articles/360018564511', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-                });
             }
 
             // If we have any settings that interfere with the message 'submission', register the listener.

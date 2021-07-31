@@ -161,6 +161,20 @@ html.tb-nightmode,
     margin-left: 5px;
 }
 
+
+/* Typing indicators and new message indicators
+*/
+
+.ThreadViewer__typingIndicator .ThreadTypingIndicator
+{
+    outline: solid #46d160 2px;
+    padding: 2px;
+}
+
+.Thread__newMessageIndicatorBubble {
+    border: solid #46d160 2px;
+}
+
 /* misc fixes.
 */
 

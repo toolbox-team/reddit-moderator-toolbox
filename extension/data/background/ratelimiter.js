@@ -3,7 +3,7 @@
 /**
  * Ratelimit handler supporting parallel in-flight requests.
  */
-class Ratelimiter { // eslint-disable-line no-unused-vars
+class Ratelimiter { // eslint-disable-line no-unused-vars,no-redeclare
     constructor () {
         /**
          * Array of data for pending requests.
@@ -59,6 +59,9 @@ class Ratelimiter { // eslint-disable-line no-unused-vars
      * @param  {...any} fetchArgs Arguments to fetch()
      */
     request (options, ...fetchArgs) {
+        // Hard disable ratelimiting by making all requests bypass limits.
+        options.bypassLimit = true;
+
         return new Promise((resolve, reject) => {
             this.requestsPending.push({fetchArgs, resolve, reject, options});
             this._processQueue();

@@ -123,7 +123,7 @@ class Ratelimiter { // eslint-disable-line no-unused-vars,no-redeclare
     /**
      * Sends a request, updating ratelimit information from response headers. If
      * the response is a 429, the request is added to the front of the queue and
-     * retried.
+     * retried after the next reset.
      * @param {RatelimiterPendingRequest} request The request to send.
      */
     async _sendRequest (request) {
@@ -151,16 +151,24 @@ class Ratelimiter { // eslint-disable-line no-unused-vars,no-redeclare
             const newRatelimitRemaining = parseInt(response.headers.get('x-ratelimit-remaining'), 10);
             const newRatelimitResetDate = new Date(Date.now() + parseFloat(response.headers.get('x-ratelimit-reset')) * 1000);
 
-            // With parallel requests, we could get responses out of order, so
-            // we can't rely on the most recent response we got being the most
-            // up-to-date. Instead, we
-            if (newRatelimitRemaining < this.ratelimitRemaining || newRatelimitResetDate > this.ratelimitResetDate) {
-                this.ratelimitRemaining = newRatelimitRemaining;
-            }
+            // NOTE: Responses can be received in a different order than the
+            //       requests were dispatched, which leads to race conditions.
+            //       To avoid this, we only accept values from two types of
+            //       responses:
+            //       - Responses whose reset date is further into the future
+            //         than before, and
+            //       - Responses whose reset date is the same as before and
+            //         whose limit remaining is lower.
+            //       These rules are designed to mitigate the impact of out-of-
+            //       order responses on our state; even if several responses are
+            //       received out of order, our state will still match the
+            //       server state after all responses are processed.
 
-            // ratelimit reset date should only get further into the future
             if (newRatelimitResetDate > this.ratelimitResetDate) {
                 this.ratelimitResetDate = newRatelimitResetDate;
+                this.ratelimitRemaining = newRatelimitRemaining;
+            } else if (newRatelimitResetDate === this.ratelimitResetDate && newRatelimitRemaining < this.ratelimitRemaining) {
+                this.ratelimitRemaining = newRatelimitRemaining;
             }
 
             console.debug('request completed', {remaining: this.ratelimitRemaining, reset: this.ratelimitResetDate, pending: this.requestsPending.length, inFlight: this.requestsInFlight.size});

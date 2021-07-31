@@ -57,12 +57,6 @@ function newmodmailpro () {
         title: 'Make links in ban and mute reasons clickable.',
     });
 
-    self.register_setting('checkForNewMessages', {
-        type: 'boolean',
-        default: true,
-        title: 'Check whether there has been new activity in a modmail thread before submitting replies.',
-    });
-
     self.register_setting('sourceButton', {
         type: 'boolean',
         default: true,
@@ -114,21 +108,7 @@ function newmodmailpro () {
                   noReplyAsSelf = self.setting('noReplyAsSelf'),
                   showModmailPreview = self.setting('showModmailPreview'),
                   clickableReason = self.setting('clickableReason'),
-                  checkForNewMessages = self.setting('checkForNewMessages'),
                   sourceButton = self.setting('sourceButton');
-
-            // Lifted from reddit source.
-            const actionTypeMap = [
-                'highlighted this conversation',
-                'un-highlighted this conversation',
-                'archived this conversation',
-                'un-archived this conversation',
-                'reported user to admins',
-                'muted user',
-                'un-muted user',
-                'banned user',
-                'unbanned user',
-            ];
 
             /**
              * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the
@@ -153,7 +133,7 @@ function newmodmailpro () {
              * meantime.
              * @function
              */
-            const handleSubmitButtonClick = async () => {
+            const handleSubmitButtonClick = () => {
                 // First, check if the reply type is different.
                 if (lastReplyTypeCheck) {
                     // Get all mod replies and see if they are something we need to warn the user about.
@@ -178,123 +158,6 @@ function newmodmailpro () {
                             // Not ok, do nothing.
                             return;
                         }
-                    }
-                }
-
-                // Next, check if any messages have been posted in the meantime.
-                const $lastReply = $body.find('.Thread__messages .Thread__message').last();
-                if (lastReplyTypeCheck && $lastReply) {
-                    // Find the ID of the modmail and of the message.
-                    const [, modmailId, lastMessageId] = $lastReply.find('.m-link').attr('href').match(/\/mail\/.*?\/(.*?)\/(.*?)$/i);
-
-                    // Show a spinner while we load stuff.
-                    TB.ui.longLoadSpinner(true);
-
-                    // Find out the last comment as of right now.
-                    const {conversation, messages, modActions} = await TBApi.apiOauthGET(`/api/mod/conversations/${modmailId}`)
-                        .then(response => response.json());
-
-                    // Evaluate reddit response.
-                    TB.ui.longLoadSpinner(false);
-
-                    // Find new actions that we didn't have local.
-                    const localLastMessageIndex = conversation.objIds.findIndex(obj => obj.id === lastMessageId);
-
-                    // It could be that there were actions after the last message. We will need to check for those,
-                    // since they don't have an ID but we want to avoid showing them twice. We will count the number
-                    // of actions taken after the last message in the DOM, then add those to the index.
-                    const numberOfActionsAfterLastMessage = $lastReply.nextAll('.Thread__modAction').length;
-
-                    const newMessagesAndActions = conversation.objIds.slice(localLastMessageIndex + numberOfActionsAfterLastMessage + 1);
-
-                    // If there are any, prompt.
-                    if (newMessagesAndActions.length) {
-                        // Construct a popup showing the new messages and asking for a confirm.
-                        let content = `
-                            <div class="header">
-                                New replies to modmail thread since page load, continue posting your reply?
-                            </div>
-
-                            <div class="activity">
-                        `;
-
-                        // Add entries for new activity.
-                        for (const activity of newMessagesAndActions) {
-                            // Message
-                            if (activity.key === 'messages') {
-                                const message = messages[activity.id];
-
-                                content += `
-                                    <div class='new-message'>
-                                        <div class='meta'>
-                                            <a href='https://reddit.com/u/${message.author.name}' class='${message.author.isMod ? 'mod' : ''}' target='_blank'>${message.author.name}</a>
-                                            •
-                                            <time class='timeago' datetime='${message.date}'></time>
-                                            ${message.author.isHidden ? '<span class="internal">(sent as subreddit)</span>' : ''}
-                                            ${message.isInternal ? '<span class="internal">(private moderator note)</span>' : ''}
-                                        </div>
-
-                                        <div class='content'>
-                                            ${message.body}
-                                        </div>
-                                    </div>
-                                `;
-                            }
-
-                            // Mod action
-                            if (activity.key === 'modActions') {
-                                const action = modActions[activity.id];
-
-                                content += `
-                                    <div class='new-action'>
-                                        <a href='https://reddit.com/u/${action.author.name}' class='${action.author.isMod ? 'mod' : ''}' target='_blank'>${action.author.name}</a>
-                                        <span class='action'> ${actionTypeMap[action.actionTypeId]}</span>
-                                    </div>
-                                `;
-                            }
-                        }
-
-                        content += '</div>';
-
-                        const $contextPopup = TB.ui.popup({
-                            title: 'New Activity',
-                            tabs: [
-                                {
-                                    title: 'New Activity',
-                                    tooltip: 'Tab with new modmail activity.',
-                                    content,
-                                    footer: `
-                                        <input type="button" class="tb-action-button close" value="Cancel">
-                                        <input type="button" class="tb-action-button submit" value="Post reply">
-                                    `,
-                                },
-                            ],
-                            cssClass: 'new-modmail-activity-popup',
-                            draggable: true,
-                        }).appendTo($body)
-                            // Position in the center-top of the page.
-                            .css({
-                                left: ($body.width() - 600) / 2,
-                                top: 100,
-                                display: 'block',
-                            });
-
-                        // Ensure that the time ago for new messages updates appropriately.
-                        $('time.timeago').timeago();
-
-                        // Handle popup submission.
-                        $contextPopup.on('click', '.submit', () => {
-                            $contextPopup.remove();
-                            submitReplyForm();
-                        });
-
-                        // Handle popup removal if we navigate away.
-                        window.addEventListener('TBNewPage', () => {
-                            $contextPopup.remove();
-                        });
-
-                        // Don't submit now. We submit from the popup, or not at all.
-                        return;
                     }
                 }
 
@@ -369,7 +232,7 @@ function newmodmailpro () {
             }
 
             // If we have any settings that interfere with the message 'submission', register the listener.
-            if (TBCore.isNewMMThread && (lastReplyTypeCheck || checkForNewMessages)) {
+            if (TBCore.isNewMMThread && lastReplyTypeCheck) {
                 $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {
                     if (shouldHijackClickHandler) {
                         // This click is manual, so we prevent the event from reaching Reddit and perform our checks to

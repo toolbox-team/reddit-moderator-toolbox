@@ -114,8 +114,13 @@ function createZip (browser) {
 }
 
 async function doZips () {
-    await createZip('firefox');
-    await createZip('chrome');
+    try {
+        await createZip('firefox');
+        await createZip('chrome');
+    } catch (e) {
+        console.error(e);
+    }
+
 }
 
 doZips();

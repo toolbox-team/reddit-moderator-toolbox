@@ -367,6 +367,10 @@ function tbconfig () {
             $body.css('overflow', 'auto');
 
             $('.tb-config-color-chooser').remove();
+            config = TBCore.config;
+            sortReasons = [];
+            subreddit = null;
+            postFlairTemplates = null;
         });
 
         // now we can play around!

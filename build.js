@@ -120,7 +120,6 @@ async function doZips () {
     } catch (e) {
         console.error(e);
     }
-
 }
 
 doZips();

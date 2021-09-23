@@ -1,109 +1,162 @@
-'use strict';
-function tbmodule () {
-    window.TB = {
-        ui: TBui,
-        storage: TBStorage,
-        listener: TBListener,
+import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
+import * as TBui from './tbui.js';
+import * as TBHelpers from './tbhelpers.js';
+import TBListener from './tblistener.js';
+import * as TBCore from './tbcore.js';
+import * as TBConstants from './tbconstants.js';
 
-        modules: {},
-        moduleList: [],
+// This is here to fix a circular dependency issue if it's put in the syntax highlighter module
+export const syntaxHighlighterThemeSelect = `
+<select id="theme_selector">
+    <option value="3024-day">3024-day</option>
+    <option value="3024-night">3024-night</option>
+    <option value="abcdef">abcdef</option>
+    <option value="ambiance">ambiance</option>
+    <option value="base16-dark">base16-dark</option>
+    <option value="base16-light">base16-light</option>
+    <option value="bespin">bespin</option>
+    <option value="blackboard">blackboard</option>
+    <option value="cobalt">cobalt</option>
+    <option value="colorforth">colorforth</option>
+    <option value="dracula">dracula</option>
+    <option value="eclipse">eclipse</option>
+    <option value="elegant">elegant</option>
+    <option value="erlang-dark">erlang-dark</option>
+    <option value="hopscotch">hopscotch</option>
+    <option value="icecoder">icecoder</option>
+    <option value="isotope">isotope</option>
+    <option value="lesser-dark">lesser-dark</option>
+    <option value="liquibyte">liquibyte</option>
+    <option value="material">material</option>
+    <option value="mbo">mbo</option>
+    <option value="mdn-like">mdn-like</option>
+    <option value="midnight">midnight</option>
+    <option value="monokai">monokai</option>
+    <option value="neat">neat</option>
+    <option value="neo">neo</option>
+    <option value="night">night</option>
+    <option value="panda-syntax">panda-syntax</option>
+    <option value="paraiso-dark">paraiso-dark</option>
+    <option value="paraiso-light">paraiso-light</option>
+    <option value="pastel-on-dark">pastel-on-dark</option>
+    <option value="railscasts">railscasts</option>
+    <option value="rubyblue">rubyblue</option>
+    <option value="seti">seti</option>
+    <option value="solarized dark">solarized dark</option>
+    <option value="solarized light">solarized light</option>
+    <option value="the-matrix">the-matrix</option>
+    <option value="tomorrow-night-bright">tomorrow-night-bright</option>
+    <option value="tomorrow-night-eighties">tomorrow-night-eighties</option>
+    <option value="ttcn">ttcn</option>
+    <option value="twilight">twilight</option>
+    <option value="vibrant-ink">vibrant-ink</option>
+    <option value="xq-dark">xq-dark</option>
+    <option value="xq-light">xq-light</option>
+    <option value="yeti">yeti</option>
+    <option value="zenburn">zenburn</option>
+</select>
+`;
 
-        register_module (module) {
-            this.moduleList.push(module.shortname);
-            this.modules[module.shortname] = module;
-        },
+const logger = TBLog('TBModule');
 
-        init: function tbInit () {
-            profileResults('tbInit', performance.now());
-            initLoop();
+const TBModule = {
+    modules: {},
 
-            function initLoop () {
-                setTimeout(() => {
-                    $.log('TBModule has TBStorage, loading modules', false, 'TBinit');
-                    // call every module's init() method on page load
-                    for (let i = 0; i < TB.moduleList.length; i++) {
-                        const module = TB.modules[TB.moduleList[i]];
+    /** @deprecated */
+    get moduleList () {
+        return Object.values(TBModule.modules).map(mod => mod.shortname);
+    },
 
-                        // Don't do anything with beta modules unless beta mode is enabled
-                        // Need TB.setting() call for non-module settings
-                        // if (!TB.setting('betamode') && module.setting('betamode')) {
-                        if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
-                        // skip this module entirely
-                            $.log(`Beta  mode not enabled. Skipping ${module.name} module`, false, 'TBinit');
-                            continue;
-                        }
+    register_module (module) {
+        // TODO: compatibility; remove when we stop using `shortname`
+        module.shortname = module.id;
 
-                        // Don't do anything with dev modules unless debug mode is enabled
-                        // Need TB.setting() call for non-module settings
-                        // if (!TB.setting('betamode') && module.setting('betamode')) {
+        TBModule.modules[module.shortname] = module;
+    },
 
-                        if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
-                        // skip this module entirely
-                            $.log(`Debug mode not enabled. Skipping ${module.name} module`, false, 'TBinit');
-                            continue;
-                        }
+    init: function tbInit () {
+        setTimeout(() => {
+            logger.debug('TBModule has TBStorage, loading modules');
+            // call every module's init() method on page load
+            for (let i = 0; i < TBModule.moduleList.length; i++) {
+                const module = TBModule.modules[TBModule.moduleList[i]];
 
-                        if (!TBCore.isOldReddit && module.oldReddit) {
-                            $.log(`Module not suitable for new reddit. Skipping ${module.name} module`, false, 'TBinit');
-                            continue;
-                        }
-
-                        // lock 'n load
-                        if (module.setting('enabled')) {
-                            $.log(`Loading ${module.name} module`, false, 'TBinit');
-                            module.init();
-                        }
-                    }
-
-                    // Start the event listener once everything else is initialized
-                    TB.listener.start();
-                    profileResults('tbInitDone', performance.now());
-                }, 50);
-            }
-        },
-
-        showSettings () {
-            const self = this,
-                  $body = $('body');
-
-            //
-            // preload some generic variables
-            //
-            const debugMode = TBCore.debugMode,
-                  betaMode = TBCore.betaMode,
-                  devMode = TBCore.devMode,
-                  advancedMode = TBCore.advancedMode,
-
-                  settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
-                  shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
-                  longLength = TB.storage.getSetting('Utils', 'longLength', 45),
-
-                  // last export stuff
-                  lastExport = self.modules['Modbar'].setting('lastExport'),
-                  showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
-                  lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport)),
-                  lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
-
-            let lastExportState = '';
-
-            if (lastExportDays > 30 || lastExport === 0) {
-                lastExportState = 'sad';
-
-                if (showExportReminder && settingSub !== '' && lastExport !== 0) {
-                    TB.ui.textFeedback(`Last toolbox settings backup: ${lastExportLabel}`, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
+                // Don't do anything with beta modules unless beta mode is enabled
+                if (!TBStorage.getSetting('Utils', 'betaMode', false) && module.beta) {
+                    // skip this module entirely
+                    logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
+                    continue;
                 }
-            } else if (lastExportDays < 15) {
-                lastExportState = 'happy';
+
+                // Don't do anything with dev modules unless debug mode is enabled
+                if (!TBStorage.getSetting('Utils', 'debugMode', false) && module.debugMode) {
+                    // skip this module entirely
+                    logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
+                    continue;
+                }
+
+                // FIXME: implement environment switches in modules
+                if (!TBCore.isOldReddit && module.oldReddit) {
+                    logger.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
+                    continue;
+                }
+
+                // lock 'n load
+                module.getEnabled().then(enabled => {
+                    if (!enabled) {
+                        return;
+                    }
+                    logger.debug(`Loading ${module.id} module`);
+                    module.init();
+                });
             }
 
-            // Template for 'general settings'.
-            const displayNone = 'display: none;';
-            let coreSettingsContent = '';
+            // Start the event listener once everything else is initialized
+            TBListener.start();
+        }, 50);
+    },
 
-            const coreSettings = [
-                {
-                    settingName: 'settingssub',
-                    content: `
+    async showSettings () {
+        const $body = $('body');
+
+        //
+        // preload some generic variables
+        //
+        const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
+              betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
+              advancedMode = TBStorage.getSetting('Utils', 'advancedMode', false),
+
+              settingSub = TBStorage.getSetting('Utils', 'settingSub', ''),
+              shortLength = TBStorage.getSetting('Utils', 'shortLength', 15),
+              longLength = TBStorage.getSetting('Utils', 'longLength', 45),
+
+              // last export stuff
+              lastExport = await TBModule.modules['Modbar'].get('lastExport'),
+              showExportReminder = await TBModule.modules['Modbar'].get('showExportReminder'),
+              lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport)),
+              lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
+
+        let lastExportState = '';
+
+        if (lastExportDays > 30 || lastExport === 0) {
+            lastExportState = 'sad';
+
+            if (showExportReminder && settingSub !== '' && lastExport !== 0) {
+                TBui.textFeedback(`Last toolbox settings backup: ${lastExportLabel}`, TBui.FEEDBACK_NEGATIVE, 3000, TBui.DISPLAY_BOTTOM);
+            }
+        } else if (lastExportDays < 15) {
+            lastExportState = 'happy';
+        }
+
+        // Template for 'general settings'.
+        const displayNone = 'display: none;';
+        let coreSettingsContent = '';
+
+        const coreSettings = [
+            {
+                settingName: 'settingssub',
+                content: `
                         Backup/restore toolbox settings to a wiki page:<br>
                         <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBHelpers.htmlEncode(unescape(settingSub))}">
                         <input class="tb-settings-export tb-action-button" type="button" value="backup">
@@ -111,58 +164,58 @@ function tbmodule () {
                         <b> Important:</b> This will reload the page without saving!
                         <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>
                         `,
-                    display: '',
-                },
-                {
-                    settingName: 'showexportreminder',
-                    content: `<label><input type="checkbox" id="showExportReminder" ${showExportReminder ? 'checked' : ''}> Show reminder after 30 days of no backup.</label>`,
-                    display: '',
-                },
-                {
-                    settingName: 'debugmode',
-                    content: `<label><input type="checkbox" id="debugMode" ${debugMode ? 'checked' : ''}> Enable debug mode</label>`,
-                    display: advancedMode ? '' : displayNone,
-                },
-                {
-                    settingName: 'betamode',
-                    content: `<label><input type="checkbox" id="betaMode" ${betaMode ? 'checked' : ''}> Enable beta features</label>`,
-                    display: '',
-                },
-                {
-                    settingName: 'advancedmode',
-                    content: `<label><input type="checkbox" id="advancedMode" ${advancedMode ? 'checked' : ''}> Show advanced settings</label>`,
-                    display: '',
-                },
-                {
-                    settingName: 'longlength',
-                    content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
+                display: '',
+            },
+            {
+                settingName: 'showexportreminder',
+                content: `<label><input type="checkbox" id="showExportReminder" ${showExportReminder ? 'checked' : ''}> Show reminder after 30 days of no backup.</label>`,
+                display: '',
+            },
+            {
+                settingName: 'debugmode',
+                content: `<label><input type="checkbox" id="debugMode" ${debugMode ? 'checked' : ''}> Enable debug mode</label>`,
+                display: advancedMode ? '' : displayNone,
+            },
+            {
+                settingName: 'betamode',
+                content: `<label><input type="checkbox" id="betaMode" ${betaMode ? 'checked' : ''}> Enable beta features</label>`,
+                display: '',
+            },
+            {
+                settingName: 'advancedmode',
+                content: `<label><input type="checkbox" id="advancedMode" ${advancedMode ? 'checked' : ''}> Show advanced settings</label>`,
+                display: '',
+            },
+            {
+                settingName: 'longlength',
+                content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
                         <input type="number" class="tb-input" name="longLength" value="${longLength}">`,
-                    display: advancedMode ? '' : displayNone,
-                },
-                {
-                    settingName: 'shortlength',
-                    content: `Cache subreddit user notes time (in minutes):<br>
+                display: advancedMode ? '' : displayNone,
+            },
+            {
+                settingName: 'shortlength',
+                content: `Cache subreddit user notes time (in minutes):<br>
                       <input type="number" class="tb-input" name="shortLength" value="${shortLength}">`,
-                    display: advancedMode ? '' : displayNone,
-                },
-                {
-                    settingName: 'clearcache',
-                    content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other reddit tabs before clearing your cache.)</label>',
-                    display: '',
-                },
-                {
-                    settingName: 'showsettings',
-                    content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
-                    display: '',
-                },
-            ];
+                display: advancedMode ? '' : displayNone,
+            },
+            {
+                settingName: 'clearcache',
+                content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other reddit tabs before clearing your cache.)</label>',
+                display: '',
+            },
+            {
+                settingName: 'showsettings',
+                content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
+                display: '',
+            },
+        ];
 
-            coreSettings.forEach(({settingName, content, display}) => {
-                coreSettingsContent += `
+        coreSettings.forEach(({settingName, content, display}) => {
+            coreSettingsContent += `
                 <p id="tb-toolbox-${settingName}" class="tb-settings-p" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
-                    ${TBui.icons.tbSettingLink}
+                    ${TBConstants.icons.tbSettingLink}
                     </a>&nbsp;
                 </p>
                 <div style="display: none;" class="tb-setting-input tb-setting-input-${settingName}">
@@ -170,44 +223,44 @@ function tbmodule () {
                     <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting=${settingName}">
                 </div>
                 `;
-            });
+        });
 
-            $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
-                const $this = $(this),
-                      tbSet = $this.attr('data-setting'),
-                      $inputSetting = $(`.tb-setting-input-${tbSet}`);
+        $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
+            const $this = $(this),
+                  tbSet = $this.attr('data-setting'),
+                  $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
-                if ($inputSetting.is(':visible')) {
-                    $this.css('opacity', '0.5');
-                    $inputSetting.hide();
-                } else {
-                    $this.css('opacity', '1');
-                    $inputSetting.show(function () {
-                        $(this).find('input:first-child').select();
-                    });
-                }
-            });
+            if ($inputSetting.is(':visible')) {
+                $this.css('opacity', '0.5');
+                $inputSetting.hide();
+            } else {
+                $this.css('opacity', '1');
+                $inputSetting.show(function () {
+                    $(this).find('input:first-child').select();
+                });
+            }
+        });
 
-            const settingsTabs = [
-                {
-                    title: 'Core Settings',
-                    tooltip: 'Edit toolbox core settings',
-                    help_page: 'toolbox',
-                    id: 'toolbox',
-                    content: coreSettingsContent,
-                },
-                {
-                    title: 'Toggle Modules',
-                    tooltip: 'Enable/disable individual modules',
-                    help_page: 'toggle-modules',
-                    content: '', // this gets propagated magically
-                },
-                {
-                    title: 'About',
-                    tooltip: '',
-                    help_page: 'about',
-                    id: 'about',
-                    content: `
+        const settingsTabs = [
+            {
+                title: 'Core Settings',
+                tooltip: 'Edit toolbox core settings',
+                help_page: 'toolbox',
+                id: 'toolbox',
+                content: coreSettingsContent,
+            },
+            {
+                title: 'Toggle Modules',
+                tooltip: 'Enable/disable individual modules',
+                help_page: 'toggle-modules',
+                content: '', // this gets propagated magically
+            },
+            {
+                title: 'About',
+                tooltip: '',
+                help_page: 'about',
+                id: 'about',
+                content: `
                 <h1 id="tb-random-about-quote">"${TBCore.RandomQuote}"</h1>
                 <h3>About:</h3> <a href="${TBCore.link('/r/toolbox')}" target="_blank">/r/toolbox ${TBCore.toolboxVersionName}</a>
                     <h3> Open source </h3>
@@ -269,35 +322,34 @@ function tbmodule () {
                     <p class="tb-settings-p"><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
                     <p class="tb-settings-p">Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>
-                    <p class="tb-settings-p" ${debugMode && !TBCore.devModeLock ? ' ' : 'style="display:none;" '}>
-                        <label><input type="checkbox" id="devMode" ${devMode ? 'checked' : ''}> DEVMODE: DON'T EVER ENABLE THIS!</label>
-                    </p>`,
-                },
-            ];
+                    `,
+            },
+        ];
 
-            // This was a clever idea, but for now it's easier to inject them
-            // settingsTabs.push.apply(settingsTabs, this.generateSettings());
+        // This was a clever idea, but for now it's easier to inject them
+        // settingsTabs.push.apply(settingsTabs, this.generateSettings());
 
-            const $settingsDialog = TB.ui.overlay(
-                // title
-                'toolbox Settings',
-                // tabs
-                settingsTabs,
-                // extra header buttons TODO: make this generic
-                `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBui.icons.help}</i></a>`,
-                // overlay main class
-                'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
-                // optional, overriding single footer
-                `<input class="tb-save tb-action-button" type="button" value="save">${TBCore.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
-            );
+        const $settingsDialog = TBui.overlay(
+            // title
+            'toolbox Settings',
+            // tabs
+            settingsTabs,
+            // extra header buttons TODO: make this generic
+            `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
+            // overlay main class
+            'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
+            // optional, overriding single footer
+            // FIXME: Use a dedicated setting for save and reload rather than using debug mode
+            `<input class="tb-save tb-action-button" type="button" value="save">${debugMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
+        );
 
-            // Add ordering attributes to the existing tabs so we can insert other special tabs around them
-            $settingsDialog.find('a[data-module="toolbox"]').attr('data-order', 1);
-            $settingsDialog.find('a[data-module="toggle_modules"]').attr('data-order', 3);
-            $settingsDialog.find('a[data-module="about"]').attr('data-order', 2);
+        // Add ordering attributes to the existing tabs so we can insert other special tabs around them
+        $settingsDialog.find('a[data-module="toolbox"]').attr('data-order', 1);
+        $settingsDialog.find('a[data-module="toggle_modules"]').attr('data-order', 3);
+        $settingsDialog.find('a[data-module="about"]').attr('data-order', 2);
 
-            // This div contains the module links, separate from everything else
-            const $moduleCategory = $(`
+        // This div contains the module links, separate from everything else
+        const $moduleCategory = $(`
                 <div class="tb-window-tabs-category">
                     <h2 class="tb-window-tabs-header">Modules</h2>
                 </div>
@@ -305,183 +357,172 @@ function tbmodule () {
             // TODO: this basically hardcodes where in the list the modules
             // category goes, but if we wanted it to not be hardcoded then we'd
             // have to rewrite how this window is generated, so it's good enough
-            $settingsDialog.find('a[data-module="about"]').before($moduleCategory);
+        $settingsDialog.find('a[data-module="about"]').before($moduleCategory);
 
-            $settingsDialog.on('click', '.tb-help-main', e => {
-                const settingsDialog = e.delegateTarget;
-                const page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
-                window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-            });
+        $settingsDialog.on('click', '.tb-help-main', e => {
+            const settingsDialog = e.delegateTarget;
+            const page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
+            window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        });
 
-            $settingsDialog.on('click', '> .tb-window .buttons .close', () => {
-                $settingsDialog.remove();
-                // Settings can go on top of other overlays.
-                if (!$('body').find('.tb-page-overlay').length) {
-                    $('body').css('overflow', 'auto');
-                }
-            });
+        $settingsDialog.on('click', '> .tb-window .buttons .close', () => {
+            $settingsDialog.remove();
+            // Settings can go on top of other overlays.
+            if (!$('body').find('.tb-page-overlay').length) {
+                $('body').css('overflow', 'auto');
+            }
+        });
 
-            $settingsDialog.on('click', '.tb-save, .tb-save-reload', e => {
-                const settingsDialog = e.delegateTarget,
-                      reload = $(e.target).hasClass('tb-save-reload');
+        $settingsDialog.on('click', '.tb-save, .tb-save-reload', async e => {
+            const settingsDialog = e.delegateTarget,
+                  reload = $(e.target).hasClass('tb-save-reload');
 
-                // save export sub
-                let sub = $('input[name=settingssub]').val();
-                if (sub) {
-                // Just to be safe.
-                    sub = TBHelpers.cleanSubredditName(sub);
-
-                    // Save the sub, first.
-                    TB.storage.setSetting('Utils', 'settingSub', sub);
-                }
-
-                TB.storage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
-
-                self.modules['Modbar'].setting('showExportReminder', $('#showExportReminder').prop('checked'));
-
-                // save cache settings.
-                TB.storage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
-
-                TB.storage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
-
-                if ($('#clearcache').prop('checked')) {
-                    TBCore.clearCache();
-                }
-
-                $(settingsDialog).remove();
-                // Settings can go on top of other overlays.
-                if (!$('body').find('.tb-page-overlay').length) {
-                    $('body').css('overflow', 'auto');
-                }
-
-                TB.storage.verifiedSettingsSave(succ => {
-                    if (succ) {
-                        TB.ui.textFeedback('Settings saved and verified', TB.ui.FEEDBACK_POSITIVE);
-                        setTimeout(() => {
-                        // Only reload in dev mode if we asked to.
-                            if (!devMode || reload) {
-                                window.location.reload();
-                            }
-                        }, 1000);
-                    } else {
-                        TB.ui.textFeedback('Save could not be verified', TB.ui.FEEDBACK_NEGATIVE);
-                    }
-                });
-            });
-
-            $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', async e => {
-                let sub = $('input[name=settingssub]').val();
-                if (!sub) {
-                    TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
-
-                    $.log('no setting sub');
-                    return;
-                }
-
+            // save export sub
+            let sub = $('input[name=settingssub]').val();
+            if (sub) {
                 // Just to be safe.
                 sub = TBHelpers.cleanSubredditName(sub);
 
                 // Save the sub, first.
-                TB.storage.setSetting('Utils', 'settingSub', sub);
+                TBStorage.setSetting('Utils', 'settingSub', sub);
+            }
 
-                if ($(e.target).hasClass('tb-settings-import')) {
-                    await TBCore.importSettings(sub);
-                    self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                    TBCore.clearCache();
-                    TB.storage.verifiedSettingsSave(succ => {
-                        if (succ) {
-                            TB.ui.textFeedback('Settings imported and verified, reloading page', TB.ui.FEEDBACK_POSITIVE);
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
-                        } else {
-                            TB.ui.textFeedback('Imported settings could not be verified', TB.ui.FEEDBACK_NEGATIVE);
+            TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
+            TBStorage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
+            TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
+
+            await TBModule.modules['Modbar'].set('showExportReminder', $('#showExportReminder').prop('checked'));
+
+            // save cache settings.
+            TBStorage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
+
+            TBStorage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
+
+            if ($('#clearcache').prop('checked')) {
+                TBCore.clearCache();
+            }
+
+            $(settingsDialog).remove();
+            // Settings can go on top of other overlays.
+            if (!$('body').find('.tb-page-overlay').length) {
+                $('body').css('overflow', 'auto');
+            }
+
+            TBStorage.verifiedSettingsSave(succ => {
+                if (succ) {
+                    TBui.textFeedback('Settings saved and verified', TBui.FEEDBACK_POSITIVE);
+                    setTimeout(() => {
+                        // Only reload in dev mode if we asked to.
+                        if (!debugMode || reload) {
+                            window.location.reload();
                         }
-                    });
+                    }, 1000);
                 } else {
-                    TB.ui.textFeedback(`Backing up settings to /r/${sub}`, TB.ui.FEEDBACK_NEUTRAL);
-                    await TBCore.exportSettings(sub);
-                    self.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
-                    TBCore.clearCache();
-                    window.location.reload();
+                    TBui.textFeedback('Save could not be verified', TBui.FEEDBACK_NEGATIVE);
                 }
             });
+        });
 
-            $settingsDialog.on('click', '#showRawSettings', () => {
-                // Don't show multiple popups at once
-                if ($('.tb-raw-settings').length) {
-                    return;
-                }
+        $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', async e => {
+            let sub = $('input[name=settingssub]').val();
+            if (!sub) {
+                TBui.textFeedback('You have not set a subreddit to backup/restore settings', TBui.FEEDBACK_NEGATIVE);
 
-                const $viewSettings = TBui.popup({
-                    title: 'toolbox raw setting display',
-                    tabs: [
-                        {
-                            title: '',
-                            tooltip: '',
-                            content: `
+                logger.debug('no setting sub');
+                return;
+            }
+
+            // Just to be safe.
+            sub = TBHelpers.cleanSubredditName(sub);
+
+            // Save the sub, first.
+            TBStorage.setSetting('Utils', 'settingSub', sub);
+
+            if ($(e.target).hasClass('tb-settings-import')) {
+                TBCore.importSettings(sub);
+                await TBModule.modules['Modbar'].set('lastExport', TBHelpers.getTime());
+                TBCore.clearCache();
+                TBStorage.verifiedSettingsSave(succ => {
+                    if (succ) {
+                        TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
+                    }
+                });
+            } else {
+                TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
+                TBCore.exportSettings(sub);
+                await TBModule.modules['Modbar'].setting('lastExport', TBHelpers.getTime());
+                TBCore.clearCache();
+                window.location.reload();
+            }
+        });
+
+        $settingsDialog.on('click', '#showRawSettings', () => {
+            // Don't show multiple popups at once
+            if ($('.tb-raw-settings').length) {
+                return;
+            }
+
+            const $viewSettings = TBui.popup({
+                title: 'toolbox raw setting display',
+                tabs: [
+                    {
+                        title: '',
+                        tooltip: '',
+                        content: `
                                 <textarea class="tb-input tb-edit-settings" rows="20" cols="60" readonly></textarea>
                             `,
-                            footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">',
-                        },
-                    ],
-                    cssClass: 'tb-raw-settings',
-                }).appendTo($settingsDialog);
+                        footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">',
+                    },
+                ],
+                cssClass: 'tb-raw-settings',
+            }).appendTo($settingsDialog);
 
-                const $editSettings = $('.tb-edit-settings');
+            const $editSettings = $('.tb-edit-settings');
 
-                TB.storage.getSettings().then(settings => {
-                    $editSettings.val(JSON.stringify(settings, null, 2));
-                });
-
-                $viewSettings.on('click', '.anonymize-settings', async () => {
-                    const anonymizedSettings = await TB.storage.getAnonymizedSettings();
-                    $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
-                });
+            TBStorage.getSettings().then(settings => {
+                $editSettings.val(JSON.stringify(settings, null, 2));
             });
 
-            $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
-                const module = $(this).attr('data-module');
-                window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+            $viewSettings.on('click', '.anonymize-settings', async () => {
+                const anonymizedSettings = await TBStorage.getAnonymizedSettings();
+                $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
             });
+        });
 
-            // Lock 'n load
-            $settingsDialog.appendTo('body').show();
-            $body.css('overflow', 'hidden');
+        $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
+            const module = $(this).attr('data-module');
+            window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        });
 
-            // Sort the module list alphabetically
-            this.moduleList.sort((a, b) => a.localeCompare(b)).forEach(moduleName => {
-                const module = this.modules[moduleName];
-                // Don't do anything with beta modules unless beta mode is enabled
-                // Need TB.setting() call for non-module settings
-                // if (!TB.setting('betamode') && module.setting('betamode')) {
-                if (!TB.storage.getSetting('Utils', 'betaMode', false)
-                    && module.config['betamode']
-                ) {
-                    // skip this module entirely
-                    return;
-                }
-                // Don't do anything with dev modules unless debug mode is enabled
-                // Need TB.setting() call for non-module settings
-                // if (!TB.setting('betamode') && module.setting('betamode')) {
-                if (!TB.storage.getSetting('Utils', 'debugMode', false)
-                    && module.config['devmode']
-                ) {
-                    // skip this module entirely
-                    return;
-                }
+        // Lock 'n load
+        $settingsDialog.appendTo('body').show();
+        $body.css('overflow', 'hidden');
 
-                //
-                // build and inject our settings tab
-                //
+        // Sort the module list alphabetically
+        TBModule.moduleList.sort((a, b) => a.localeCompare(b)).forEach(async moduleName => {
+            const module = TBModule.modules[moduleName];
+            // Don't do anything with beta modules unless beta mode is enabled
+            if (!TBStorage.getSetting('Utils', 'betaMode', false) && module.beta) {
+                return;
+            }
 
-                let moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
-                    moduleIsEnabled = false;
-                const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.shortname.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
-                      $settings = $(`
+            // Don't do anything with dev modules unless debug mode is enabled
+            if (!TBStorage.getSetting('Utils', 'debugMode', false) && module.debugMode) {
+                return;
+            }
+
+            //
+            // build and inject our settings tab
+            //
+
+            let moduleHasSettingTab = false; // we set this to true later, if there's a visible setting
+            const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.id.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
+                  $settings = $(`
                             <div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;">
                                 <div class="tb-window-content">
                                     <div class="tb-settings"></div>
@@ -492,174 +533,160 @@ function tbmodule () {
                             </div>
                       `);
 
-                $tab.data('module', module.shortname);
-                $tab.data('help_page', module.shortname);
+            $tab.data('module', module.id);
+            $tab.data('help_page', module.shortname);
 
-                const $body = $('body');
-                const execAfterInject = [];
-                for (let j = 0; j < module.settingsList.length; j++) {
-                    const setting = module.settingsList[j],
-                          options = module.settings[setting];
-                    let $setting;
+            const $body = $('body');
+            const execAfterInject = [];
 
-                    // "enabled" will eventually be special, but for now it just shows up like any other setting
-                    // if (setting == "enabled") {
-                    //     continue;
-                    // }
+            // Handle module enable toggle
+            if (!module.alwaysEnabled) {
+                const name = module.shortname.toLowerCase();
 
-                    // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
-                    if (setting === 'enabled') {
-                        moduleIsEnabled = module.setting(setting) ? true : false;
-                        if (Object.prototype.hasOwnProperty.call(options, 'hidden') && options['hidden'] && !TBCore.devMode) {
-                            continue;
-                        }
-                        const name = module.shortname.toLowerCase();
+                const $setting = $(`
+                    <p id="tb-toggle_modules-${name}" class="tb-settings-p">
+                        <label><input type="checkbox" id="${module.shortname}Enabled" ${await module.getEnabled() ? ' checked="checked"' : ''}>Enable ${TBHelpers.htmlEncode(module.name)}</label>
+                                <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
+                        <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
+                            ${TBConstants.icons.tbSettingLink}
+                        </a>&nbsp;
+                        ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
+                    </p>
+                    <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
+                        <input type="text" class="tb-input" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
+                        <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
+                    </div>
+                `);
 
-                        $setting = $(`
-                            <p id="tb-toggle_modules-${name}" class="tb-settings-p">
-                                <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ' checked="checked"' : ''}>${options.title}</label>
-                                        <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
-                                <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
-                                    ${TBui.icons.tbSettingLink}
-                                </a>&nbsp;
-                                ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
-                            </p>
-                            <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
-                                <input type="text" class="tb-input" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
-                                <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
-                            </div>
-                        `);
-
-                        // Add the setting in its place to keep ABC order
-                        let added = false;
-                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
-                            const $this = $(this);
-                            if ($this.text().localeCompare($setting.text()) > 0) {
-                                $this.before($setting);
-                                added = true;
-                                return false;
-                            }
-                        });
-                        if (!added) {
-                            $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
-                        }
-
-                        // Don't add this to the module's own settings page
-                        continue;
+                // Add the setting in its place to keep ABC order
+                let added = false;
+                $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
+                    const $this = $(this);
+                    if ($this.text().localeCompare($setting.text()) > 0) {
+                        $this.before($setting);
+                        added = true;
+                        return false;
                     }
+                });
+                if (!added) {
+                    $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
+                }
+            }
 
-                    // hide beta stuff unless beta mode enabled
-                    if (Object.prototype.hasOwnProperty.call(options, 'betamode')
-                        && !TB.storage.getSetting('Utils', 'betaMode', false)
-                        && options['betamode']
-                    ) {
-                        continue;
-                    }
+            // Handle module settings
+            for (const options of module.settings.values()) {
+                const setting = options.id;
+                let $setting;
 
-                    // hide dev stuff unless debug mode enabled
-                    if (Object.prototype.hasOwnProperty.call(options, 'devmode')
-                        && !TB.storage.getSetting('Utils', 'debugMode', false)
-                        && options['devmode']
-                    ) {
-                        continue;
-                    }
+                // "enabled" will eventually be special, but for now it just shows up like any other setting
+                // if (setting == "enabled") {
+                //     continue;
+                // }
 
-                    // hide hidden settings, ofc
-                    if (Object.prototype.hasOwnProperty.call(options, 'hidden')
-                        && options['hidden'] && !TBCore.devMode
-                    ) {
-                        continue;
-                    }
+                // hide beta stuff unless beta mode enabled
+                if (options.beta && !TBStorage.getSetting('Utils', 'betaMode', false)) {
+                    continue;
+                }
 
-                    // hide advanced settings, but do it via CSS so it can be overridden.
-                    let displaySetting = true;
-                    if (Object.prototype.hasOwnProperty.call(options, 'advanced')
-                        && options['advanced'] && !TBCore.advancedMode
-                    ) {
-                        displaySetting = false;
-                    }
+                // hide debug stuff unless debug mode enabled
+                if (options.debug && !TBStorage.getSetting('Utils', 'debugMode', false)) {
+                    continue;
+                }
 
-                    moduleHasSettingTab = true;
+                // hide hidden settings, ofc
+                // TODO: Tie to a specific setting rather than debug mode
+                if (options.hidden && !TBStorage.getSetting('Utils', 'debugMode', false)) {
+                    continue;
+                }
 
-                    // blank slate
-                    $setting = $(`<p  class="tb-settings-p" ${displaySetting ? '' : 'style="display:none;"'}></p>`);
-                    const title = options.title ? options.title : `(${setting})`;
-                    let noWrap = false;
+                // hide advanced settings, but do it via CSS so it can be overridden.
+                let displaySetting = true;
+                if (options.advanced && !TBStorage.getSetting('Utils', 'advancedMode', false)) {
+                    displaySetting = false;
+                }
 
-                    // automagical handling of input types
-                    switch (options.type) {
-                    case 'action':
-                    {
-                        if (!options.event || !options.class) {
-                            break;
-                        }
-                        const event = options.event;
+                moduleHasSettingTab = true;
 
-                        $setting.append(TB.ui.actionButton(title, options.class));
+                // blank slate
+                $setting = $(`<p  class="tb-settings-p" ${displaySetting ? '' : 'style="display:none;"'}></p>`);
+                const title = options.description;
+                let noWrap = false;
 
-                        $body.on('click', `.${options.class}`, () => {
-                            TBCore.sendEvent(event);
-                        });
-
+                // automagical handling of input types
+                switch (options.type) {
+                case 'action':
+                {
+                    if (!options.event || !options.class) {
                         break;
                     }
-                    case 'boolean':
-                    {
-                        $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(` ${title}`));
-                        break;
-                    }
-                    case 'number':
-                    {
-                        $setting.append($('<label>').append($('<input type="number" class="tb-input" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(` ${title}`));
-                        break;
-                    }
-                    case 'array':
-                    case 'JSON':
-                    {
-                        const json = JSON.stringify(module.setting(setting), null, 0);
-                        $setting.append(`${title}:<br />`);
-                        $setting.append($('<textarea class="tb-input" rows="3" cols="80">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
-                        break;
-                    }
-                    case 'code':
-                    {
-                        $setting.append(`${title}:<br />`);
-                        $setting.append($('<textarea class="tb-input" rows="25" cols="80">').val(module.setting(setting)));
-                        break;
-                    }
-                    case 'subreddit':
-                    case 'text':
-                    case 'list':
-                    {
-                        $setting.append(`${title}:<br />`);
-                        $setting.append($('<input type="text" class="tb-input" />').val(module.setting(setting)));
-                        break;
-                    }
-                    case 'sublist':
-                    {
-                        $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TBCore.mySubs, module.setting(setting)]));
-                        break;
-                    }
-                    case 'map':
-                    {
-                        $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
-                        break;
-                    }
-                    case 'selector':
-                    {
-                        const v = module.setting(setting);
-                        $setting.append(`${title}:<br />`);
-                        $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v === null || v === '' ? options.default : v]));
-                        break;
-                    }
-                    case 'syntaxTheme':
-                    {
-                        $setting.append(`${title}:<br/>`);
-                        $setting.append(TB.modules.Syntax.themeSelect);
-                        $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
-                        $setting.append($(`
+                    const event = options.event;
+
+                    $setting.append(TBui.actionButton(title, options.class));
+
+                    $body.on('click', `.${options.class}`, () => {
+                        TBCore.sendEvent(event);
+                    });
+
+                    break;
+                }
+                case 'boolean':
+                {
+                    $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', await module.get(setting))).append(` ${title}`));
+                    break;
+                }
+                case 'number':
+                {
+                    $setting.append($('<label>').append($('<input type="number" class="tb-input" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(await module.get(setting))).append(` ${title}`));
+                    break;
+                }
+                case 'array':
+                case 'JSON':
+                {
+                    const json = JSON.stringify(await module.get(setting), null, 0);
+                    $setting.append(`${title}:<br />`);
+                    $setting.append($('<textarea class="tb-input" rows="3" cols="80">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
+                    break;
+                }
+                case 'code':
+                {
+                    $setting.append(`${title}:<br />`);
+                    $setting.append($('<textarea class="tb-input" rows="25" cols="80">').val(await module.get(setting)));
+                    break;
+                }
+                case 'subreddit':
+                case 'text':
+                case 'list':
+                {
+                    $setting.append(`${title}:<br />`);
+                    $setting.append($('<input type="text" class="tb-input" />').val(await module.get(setting)));
+                    break;
+                }
+                case 'sublist':
+                {
+                    $setting.append(`${title}:<br />`);
+                    $setting.append(TBui.selectMultiple.apply(TBui, [window._TBCore.mySubs, await module.get(setting)]));
+                    break;
+                }
+                case 'map':
+                {
+                    $setting.append(`${title}:<br />`);
+                    $setting.append(TBui.mapInput(options.labels, await module.get(setting)));
+                    break;
+                }
+                case 'selector':
+                {
+                    const v = await module.get(setting);
+                    $setting.append(`${title}:<br />`);
+                    const values = typeof options.values === 'function' ? await options.values() : options.values;
+                    $setting.append(TBui.selectSingular.apply(TBui, [values, v === undefined || v === null || v === '' ? options.default : v]));
+                    break;
+                }
+                case 'syntaxTheme':
+                {
+                    $setting.append(`${title}:<br/>`);
+                    $setting.append(syntaxHighlighterThemeSelect);
+                    $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
+                    $setting.append($(`
                     <textarea class="tb-input syntax-example" id="${module.shortname}_syntax_theme_css">
 /* This is just some example code*/
 body {
@@ -677,428 +704,487 @@ body {
 }
 /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n
                     </textarea>`));
-                        execAfterInject.push(() => {
-                            // Syntax highlighter selection stuff
-                            $body.addClass('mod-syntax');
-                            let editorSettings;
-                            const enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
-                            $(`#${module.shortname}_syntax_theme_css`).each((index, elem) => {
-                                // Editor setup.
-                                editorSettings = CodeMirror.fromTextArea(elem, {
-                                    mode: 'text/css',
-                                    autoCloseBrackets: true,
-                                    lineNumbers: true,
-                                    theme: module.setting(setting),
-                                    extraKeys: {
-                                        'Ctrl-Alt-F': 'findPersistent',
-                                        'Ctrl-Space': 'autocomplete',
-                                        'F11' (cm) {
-                                            cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-                                        },
-                                        'Esc' (cm) {
-                                            if (cm.getOption('fullScreen')) {
-                                                cm.setOption('fullScreen', false);
-                                            }
-                                        },
+                    execAfterInject.push(async () => {
+                        // Syntax highlighter selection stuff
+                        $body.addClass('mod-syntax');
+                        let editorSettings;
+                        const enableWordWrap = TBStorage.getSetting('Syntax', 'enableWordWrap', true);
+                        $(`#${module.shortname}_syntax_theme_css`).each(async (index, elem) => {
+                            // Editor setup.
+                            editorSettings = CodeMirror.fromTextArea(elem, {
+                                mode: 'text/css',
+                                autoCloseBrackets: true,
+                                lineNumbers: true,
+                                theme: await module.get(setting),
+                                extraKeys: {
+                                    'Ctrl-Alt-F': 'findPersistent',
+                                    'Ctrl-Space': 'autocomplete',
+                                    'F11' (cm) {
+                                        cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                                     },
-                                    lineWrapping: enableWordWrap,
-                                });
-                            });
-
-                            TBCore.catchEvent(TBCore.events.TB_SYNTAX_SETTINGS, () => {
-                                setTimeout(() => {
-                                    editorSettings.refresh();
-                                }, 5);
-                            });
-
-                            $(`#${module.shortname}_syntax_theme`).val(module.setting(setting));
-                            $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
-                                const thingy = $(this);
-                                setTimeout(() => {
-                                    editorSettings.setOption('theme', thingy.val());
-                                }, 0);
+                                    'Esc' (cm) {
+                                        if (cm.getOption('fullScreen')) {
+                                            cm.setOption('fullScreen', false);
+                                        }
+                                    },
+                                },
+                                lineWrapping: enableWordWrap,
                             });
                         });
-                        break;
-                    }
-                    case 'achievement_save':
-                    {
-                        noWrap = true;
 
-                        $.log('----------', false, 'TBModule');
-                        $.log('GENERATING ACHIEVEMENT PAGE', false, 'TBModule');
-                        const total = module.manager.getAchievementTotal(),
-                              unlocked = module.manager.getUnlockedCount();
+                        TBCore.catchEvent(TBCore.events.TB_SYNTAX_SETTINGS, () => {
+                            setTimeout(() => {
+                                editorSettings.refresh();
+                            }, 5);
+                        });
 
-                        $.log(`  total=${total}`, false, 'TBModule');
-                        $.log(`  unlocked=${unlocked}`, false, 'TBModule');
+                        $(`#${module.shortname}_syntax_theme`).val(await module.get(setting));
+                        $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
+                            const thingy = $(this);
+                            setTimeout(() => {
+                                editorSettings.setOption('theme', thingy.val());
+                            }, 0);
+                        });
+                    });
+                    break;
+                }
+                case 'achievement_save':
+                {
+                    noWrap = true;
 
-                        $setting = $('<div>').attr('class', 'achievements');
-                        $setting.append($('<h1>').text('Mod Achievements'));
-                        $setting.append($('<p class="tb-settings-p">').text(`${unlocked} of ${total} unlocked`));
-                        $setting.append('<br />');
+                    logger.debug('----------');
+                    logger.debug('GENERATING ACHIEVEMENT PAGE');
+                    const total = module.manager.getAchievementTotal(),
+                          unlocked = module.manager.getUnlockedCount();
 
-                        let save = module.setting(setting);
-                        save = module.manager.decodeSave(save);
+                    logger.debug(`  total=${total}`);
+                    logger.debug(`  unlocked=${unlocked}`);
 
-                        const $list = $('<div>').attr('class', 'achievements-list');
-                        for (let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
-                            $.log(`  saveIndex: ${saveIndex}`, false, 'TBModule');
-                            for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
-                                $.log(`  index: ${index}`, false, 'TBModule');
-                                let aTitle = '???',
-                                    aDescr = '??????',
-                                    aClass = '';
+                    $setting = $('<div>').attr('class', 'achievements');
+                    $setting.append($('<h1>').text('Mod Achievements'));
+                    $setting.append($('<p class="tb-settings-p">').text(`${unlocked} of ${total} unlocked`));
+                    $setting.append('<br />');
 
-                                if (module.manager.isUnlocked(saveIndex, index, save) || TBCore.devMode) {
-                                    const a = module.manager.getAchievement(saveIndex, index);
-                                    aTitle = a.title;
-                                    aDescr = a.descr;
-                                    aClass = 'unlocked';
-                                }
+                    let save = await module.get(setting);
+                    save = module.manager.decodeSave(save);
 
-                                const $a = $('<div>').attr('class', `achievement ${aClass}`);
-                                $a.append($('<p>').attr('class', 'title').html(TBStorage.purify(aTitle)));
-                                $a.append($('<p>').attr('class', 'description').text(aDescr));
-                                $list.append($a);
+                    const $list = $('<div>').attr('class', 'achievements-list');
+                    for (let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
+                        logger.debug(`  saveIndex: ${saveIndex}`);
+                        for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
+                            logger.debug(`  index: ${index}`);
+                            let aTitle = '???',
+                                aDescr = '??????',
+                                aClass = '';
+
+                            // FIXME: Use a dedicated setting instead of just using debug mode
+                            if (module.manager.isUnlocked(saveIndex, index, save) || debugMode) {
+                                const a = module.manager.getAchievement(saveIndex, index);
+                                aTitle = a.title;
+                                aDescr = a.descr;
+                                aClass = 'unlocked';
                             }
+
+                            const $a = $('<div>').attr('class', `achievement ${aClass}`);
+                            $a.append($('<p>').attr('class', 'title').html(TBStorage.purify(aTitle)));
+                            $a.append($('<p>').attr('class', 'description').text(aDescr));
+                            $list.append($a);
                         }
-                        $setting.append($list);
+                    }
+                    $setting.append($list);
 
-                        break;
-                    }
-                    default:
-                    {
-                        // what in the world would we do here? maybe raw JSON?
-                        // yes, we do raw JSON
-                        const json = JSON.stringify(module.setting(setting), null, 0);
-                        $setting.append(`${title}:<br />`);
-                        $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
-                        break;
-                    }
-                    }
-                    if (!noWrap) {
-                        const moduleName = module.shortname.toLowerCase(),
-                              settingName = setting.toLowerCase(),
-                              linkClass = `tb-setting-link-${settingName}`,
-                              inputClass = `tb-setting-input-${settingName}`,
-                              redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
-                              internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
+                    break;
+                }
+                default:
+                {
+                    // what in the world would we do here? maybe raw JSON?
+                    // yes, we do raw JSON
+                    const json = JSON.stringify(await module.get(setting), null, 0);
+                    $setting.append(`${title}:<br />`);
+                    $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
+                    break;
+                }
+                }
+                if (!noWrap) {
+                    const moduleName = module.shortname.toLowerCase(),
+                          settingName = setting.toLowerCase(),
+                          linkClass = `tb-setting-link-${settingName}`,
+                          inputClass = `tb-setting-input-${settingName}`,
+                          redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
+                          internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
-                        $setting.append(`&nbsp;<a ${displaySetting ? '' : 'style="display:none;"'
-                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${TBui.icons.tbSettingLink}</a>` +
+                    $setting.append(`&nbsp;<a ${displaySetting ? '' : 'style="display:none;"'
+                    } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${TBConstants.icons.tbSettingLink}</a>` +
                             `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${internetLink}"/></div>`);
 
-                        $setting = $('<span>').attr('class', 'setting-item').append($setting);
-                        $setting.attr('id', `tb-${moduleName}-${settingName}`);
-                        $setting.attr('data-module', module.shortname);
-                        $setting.attr('data-setting', setting);
+                    $setting = $('<span>').attr('class', 'setting-item').append($setting);
+                    $setting.attr('id', `tb-${moduleName}-${settingName}`);
+                    $setting.attr('data-module', module.shortname);
+                    $setting.attr('data-setting', setting);
 
-                        // TODO: somebody document this
-                        $body.on('click', `.${linkClass}`, function () {
-                            const $this = $(this),
-                                  tbSet = $this.attr('data-setting');
+                    // TODO: somebody document this
+                    $body.on('click', `.${linkClass}`, function () {
+                        const $this = $(this),
+                              tbSet = $this.attr('data-setting');
 
-                            const $inputSetting = $(`.tb-setting-input-${tbSet}`);
+                        const $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
-                            if ($inputSetting.is(':visible')) {
-                                $inputSetting.hide();
-                                $this.css('opacity', '0.5');
-                            } else {
-                                $this.css('opacity', '1');
-                                $inputSetting.show(function () {
-                                    $(this).select();
-                                });
+                        if ($inputSetting.is(':visible')) {
+                            $inputSetting.hide();
+                            $this.css('opacity', '0.5');
+                        } else {
+                            $this.css('opacity', '1');
+                            $inputSetting.show(function () {
+                                $(this).select();
+                            });
+                        }
+                    });
+                }
+
+                if (options.oldReddit) {
+                    const $oldRedditSettings = $settings.find('.tb-window-content .tb-oldreddit-settings');
+                    $oldRedditSettings.append($setting);
+                    $oldRedditSettings.show();
+                } else {
+                    $settings.find('.tb-window-content .tb-settings').append($setting);
+                }
+            }
+
+            // if ($settings.find('input').length > 0) {
+            if (moduleHasSettingTab) {
+                // attach tab and content
+                if (!await module.getEnabled()) {
+                    $tab.addClass('tb-module-disabled');
+                    $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.');
+                    $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>');
+                }
+
+                if (module.oldReddit) {
+                    $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
+                }
+                $('.tb-settings .tb-window-tabs-wrapper').append($settings);
+                if (module.sort) {
+                    $tab.attr('data-order', module.sort.order);
+                    // If the module specifies a sort, then we do that
+                    if (module.sort.location === 'beforeModules') {
+                        // Loop through the tabs above the modules list
+                        $settingsDialog.find('.tb-window-tabs > *').each(function () {
+                            const $existingTab = $(this);
+                            if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
+                                // We found a tab bigger than us! We should be before it.
+                                $existingTab.before($tab);
+                                // Break out of the loop since we're done.
+                                return false;
+                            } else if ($existingTab.is('div')) {
+                                // We hit the module list! If it hasn't been added yet, add it here.
+                                $existingTab.before($tab);
+                                // Break the loop so we don't go into the bottom elements.
+                                return false;
                             }
                         });
-                    }
-
-                    if (options.oldReddit) {
-                        const $oldRedditSettings = $settings.find('.tb-window-content .tb-oldreddit-settings');
-                        $oldRedditSettings.append($setting);
-                        $oldRedditSettings.show();
-                    } else {
-                        $settings.find('.tb-window-content .tb-settings').append($setting);
-                    }
-                }
-
-                // if ($settings.find('input').length > 0) {
-                if (moduleHasSettingTab) {
-                    // attach tab and content
-                    if (!moduleIsEnabled) {
-                        $tab.addClass('tb-module-disabled');
-                        $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.');
-                        $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>');
-                    }
-
-                    if (module.oldReddit) {
-                        $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
-                    }
-                    $('.tb-settings .tb-window-tabs-wrapper').append($settings);
-                    if (module.sort) {
-                        $tab.attr('data-order', module.sort.order);
-                        // If the module specifies a sort, then we do that
-                        if (module.sort.location === 'beforeModules') {
-                            // Loop through the tabs above the modules list
-                            $settingsDialog.find('.tb-window-tabs > *').each(function () {
-                                const $existingTab = $(this);
-                                if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
-                                    // We found a tab bigger than us! We should be before it.
-                                    $existingTab.before($tab);
-                                    // Break out of the loop since we're done.
-                                    return false;
-                                } else if ($existingTab.is('div')) {
-                                    // We hit the module list! If it hasn't been added yet, add it here.
-                                    $existingTab.before($tab);
-                                    // Break the loop so we don't go into the bottom elements.
-                                    return false;
-                                }
-                            });
-                        } else if (module.sort.location === 'afterModules') {
-                            // Loop through the tabs below the modules list
-                            let added = false;
-                            $settingsDialog.find('.tb-window-tabs > div ~ a').each(function () {
-                                const $existingTab = $(this);
-                                if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
-                                    // We found a tab bigger than us!
-                                    $existingTab.before($tab);
-                                    added = true;
-                                    // We're added, so we don't need to continue
-                                    return false;
-                                }
-                            });
-                            if (!added) {
-                                // Not added yet? To the bottom we go.
-                                $('.tb-window-tabs').append($tab);
+                    } else if (module.sort.location === 'afterModules') {
+                        // Loop through the tabs below the modules list
+                        let added = false;
+                        $settingsDialog.find('.tb-window-tabs > div ~ a').each(function () {
+                            const $existingTab = $(this);
+                            if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
+                                // We found a tab bigger than us!
+                                $existingTab.before($tab);
+                                added = true;
+                                // We're added, so we don't need to continue
+                                return false;
                             }
+                        });
+                        if (!added) {
+                            // Not added yet? To the bottom we go.
+                            $('.tb-window-tabs').append($tab);
                         }
-                    } else {
-                        // Modules without a special sort just get added here
-                        $moduleCategory.append($tab);
-                    }
-
-                    // stuff to exec after inject:
-                    for (let i = 0; i < execAfterInject.length; i++) {
-                        execAfterInject[i]();
                     }
                 } else {
-                    // module has no settings, for now don't inject a tab
+                    // Modules without a special sort just get added here
+                    $moduleCategory.append($tab);
                 }
 
-                // we use a jQuery hack to stick this bind call at the top of the queue,
-                // so that it runs before the bind call in notifier.js
-                // this way we don't have to touch notifier.js to make it work.
-                //
-                // We get one additional click handler for each module that gets injected.
-                // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
-                $('.tb-settings').bindFirst('click', '.tb-save', () => {
-                    // handle module enable/disable on Toggle Modules first
-                    const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
-                    module.setting('enabled', $moduleEnabled);
+                // stuff to exec after inject:
+                for (let i = 0; i < execAfterInject.length; i++) {
+                    execAfterInject[i]();
+                }
+            } else {
+                // module has no settings, for now don't inject a tab
+            }
 
-                    // handle the regular settings tab
-                    const $settings_page = $(`.tb-window-tab.${module.shortname.toLowerCase()} .tb-window-content`);
+            // we use a jQuery hack to stick this bind call at the top of the queue,
+            // so that it runs before the bind call in notifier.js
+            // this way we don't have to touch notifier.js to make it work.
+            //
+            // We get one additional click handler for each module that gets injected.
+            // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
+            $('.tb-settings').bindFirst('click', '.tb-save', () => {
+                // handle module enable/disable on Toggle Modules first
+                const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
+                TBStorage.setSetting(module.id, 'enabled', $moduleEnabled);
 
-                    $settings_page.find('span.setting-item').each(function () {
-                        const $this = $(this);
-                        let value = '';
+                // handle the regular settings tab
+                const $settings_page = $(`.tb-window-tab.${module.shortname.toLowerCase()} .tb-window-content`);
 
-                        // automagically parse input types
-                        switch (module.settings[$this.data('setting')].type) {
-                        case 'action':
-                            // this never needs to be saved.
-                            break;
-                        case 'boolean':
-                            value = $this.find('input').prop('checked');
-                            break;
-                        case 'number':
-                            value = JSON.parse($this.find('input').val());
-                            break;
-                        case 'array':
-                        case 'JSON':
-                            value = JSON.parse($this.find('textarea').val());
-                            break;
-                        case 'code':
-                            value = $this.find('textarea').val();
-                            break;
-                        case 'subreddit':
-                            value = TBHelpers.cleanSubredditName($this.find('input').val());
-                            break;
-                        case 'text':
-                            value = $this.find('input').val();
-                            break;
-                        case 'list':
-                            value = $this.find('input').val().split(',').map(str => str.trim()).clean('');
-                            break;
-                        case 'sublist':
-                            value = [];
-                            $this.find('.selected-list option').each(function () {
-                                value.push($(this).val());
-                            });
-                            break;
-                        case 'map':
-                            value = {};
-                            $this.find('.tb-map-input-table tbody tr').each(function () {
-                                const key = escape($(this).find('input[name=key]').val()).trim(),
-                                      val = escape($(this).find('input[name=value]').val()).trim();
+                $settings_page.find('span.setting-item').each(function () {
+                    const $this = $(this);
+                    let value = '';
 
-                                if (key !== '' || val !== '') {
-                                    value[key] = val;
-                                }
-                            });
-                            break;
-                        case 'selector':
-                            value = $this.find('.selector').val();
-                            break;
-                        case 'syntaxTheme':
-                            value = $this.find(`#${module.shortname}_syntax_theme`).val();
-                            break;
-                        default:
-                            value = JSON.parse($this.find('textarea').val());
-                            break;
-                        }
-                        module.setting($this.data('setting'), value, false);
-                    });
+                    // automagically parse input types
+                    switch (module.settings.get($this.data('setting')).type) {
+                    case 'action':
+                        // this never needs to be saved.
+                        break;
+                    case 'boolean':
+                        value = $this.find('input').prop('checked');
+                        break;
+                    case 'number':
+                        value = JSON.parse($this.find('input').val());
+                        break;
+                    case 'array':
+                    case 'JSON':
+                        value = JSON.parse($this.find('textarea').val());
+                        break;
+                    case 'code':
+                        value = $this.find('textarea').val();
+                        break;
+                    case 'subreddit':
+                        value = TBHelpers.cleanSubredditName($this.find('input').val());
+                        break;
+                    case 'text':
+                        value = $this.find('input').val();
+                        break;
+                    case 'list':
+                        value = $this.find('input').val().split(',').map(str => str.trim()).clean('');
+                        break;
+                    case 'sublist':
+                        value = [];
+                        $this.find('.selected-list option').each(function () {
+                            value.push($(this).val());
+                        });
+                        break;
+                    case 'map':
+                        value = {};
+                        $this.find('.tb-map-input-table tbody tr').each(function () {
+                            const key = escape($(this).find('input[name=key]').val()).trim(),
+                                  val = escape($(this).find('input[name=value]').val()).trim();
+
+                            if (key !== '' || val !== '') {
+                                value[key] = val;
+                            }
+                        });
+                        break;
+                    case 'selector':
+                        value = $this.find('.selector').val();
+                        break;
+                    case 'syntaxTheme':
+                        value = $this.find(`#${module.shortname}_syntax_theme`).val();
+                        break;
+                    default:
+                        value = JSON.parse($this.find('textarea').val());
+                        break;
+                    }
+                    module.set($this.data('setting'), value, false);
                 });
             });
-        },
-    };
-
-    // Prototype for all toolbox modules
-    TB.Module = function Module (name) {
-    // PUBLIC: Module Metadata
-        this.name = name;
-
-        this.config = {
-            betamode: false,
-            devmode: false,
-        };
-
-        this.settings = {};
-        this.settingsList = [];
-
-        this.register_setting = function register_setting (name, setting) {
-            this.settingsList.push(name);
-            this.settings[name] = setting;
-        };
-
-        this.register_setting('enabled', { // this one serves as an example as well as the absolute minimum setting that every module has
-            type: 'boolean',
-            default: false,
-            betamode: false, // optional
-            hidden: false, // optional
-            title: `Enable ${this.name}`,
         });
+    },
+};
+export default TBModule;
 
-        // PUBLIC: settings interface
-        this.setting = function (name, value, syncSetting = true) {
-        // are we setting or getting?
-            if (typeof value !== 'undefined') {
-            // setting
-                return TB.storage.setSetting(this.shortname, name, value, syncSetting);
-            } else {
-            // getting
-            // do we have a default?
-                if (Object.prototype.hasOwnProperty.call(this.settings, name)
-                && Object.prototype.hasOwnProperty.call(this.settings[name], 'default')
-                ) {
-                // we know what the default should be
-                    return TB.storage.getSetting(this.shortname, name, this.settings[name]['default']);
-                } else {
-                // getSetting defaults to null for default value, no need to pass it explicitly
-                    return TB.storage.getSetting(this.shortname, name);
-                }
-            }
-        };
+/**
+ * An object representing a single setting. Additional properties may be used
+ * for settings of different `type`s.
+ * @typedef SettingDefinition
+ * @prop {string} id The setting ID, used to get and set the setting's value
+ * @prop {string} description A human-readable description
+ * @prop {any} default The default value of the setting, or a function (possibly
+ * async) that returns a default value
+ * @prop {string} [storageKey] The storage key associated with the setting
+ * @prop {boolean} [beta=false] If true, the setting will only show up when beta
+ * mode is enabled
+ * @prop {boolean} [debug=false] If true, the setting will only show up when
+ * debug mode is enabled
+ * @prop {boolean} [advanced=false] If true, the setting will only show up when
+ * advanced mode is enabled
+ * @prop {boolean} [hidden=false] If true, the setting will not be configurable
+ * or visible to users (can be used for module-specific persistent storage)
+ */
 
-        // Logging utilities
-        Object.assign(this, TBLog(this));
+/** A Toolbox feature module that can be enabled and disabled by the user. */
+export class Module {
+    /**
+     * Defines a module.
+     * @param {object} options
+     * @param {string} options.name The human-readable name of the module
+     * @param {string} options.id The ID of the module, used for storage keys
+     * @param {boolean} [options.enabledByDefault=false] If true, the module
+     * will be enabled on fresh installs
+     * @param {boolean} [options.alwaysEnabled=false] If true, the module cannot
+     * be disabled
+     * @param {boolean} [options.beta=false] If true, the module will only show
+     * up when beta mode is enabled
+     * @param {boolean} [options.debug=false] If true, the module will only show
+     * up when debug mode is enabled
+     * @param {boolean} [options.oldReddit=false] If true, the module will be
+     * marked as an Old Reddit-only module in the settings interface (does not
+     * affect execution of the module's initializer)
+     * @param {Array<SettingDefinition>} [options.settings=[]] Module settings
+     * @param {Function} initializer The module's entry point, run automatically
+     * when Toolbox loads with the module is enabled
+     */
+    constructor ({
+        name,
+        id = name.replace(/\s/g, ''),
+        enabledByDefault = false,
+        alwaysEnabled = false,
+        beta = false,
+        debug = false,
+        oldReddit = false,
+        settings = [],
+    }, initializer) {
+        /** @prop {string} name The human-readable name of the module */
+        this.name = name;
+        /** @prop {string} id The ID of the module, used for storage keys */
+        this.id = id;
+        /**
+         * @prop {boolean} enabledByDefault If true, the module will be enabled
+         * on fresh installs
+         */
+        this.enabledByDefault = enabledByDefault;
+        /**
+         * @prop {boolean} alwaysEnabled If true, the module cannot be disabled
+         */
+        this.alwaysEnabled = alwaysEnabled;
+        /**
+         * @prop {boolean} beta If true, the module will only show up when beta
+         * mode is enabled
+         */
+        this.beta = beta;
+        /**
+         * @prop {boolean} debugMode If true, the module will only show up when
+         * debug mode is enabled
+        */
+        // debugMode, not debug, because `debug` is a logger function
+        this.debugMode = debug;
+        /**
+         * @prop {boolean} oldReddit If true, the module will be marked as an
+         * Old Reddit-only module in the settings interface (does not  affect
+         * execution of the module's initializer)
+         */
+        this.oldReddit = oldReddit;
+        /**
+         * @prop {Function} initializer The module's entry point, run
+         * automatically when Toolbox loads with the module is enabled
+         */
+        this.initializer = initializer;
 
-        // Profiling
-
-        const profile = new Map(),
-              startTimes = new Map();
-
-        this.startProfile = function (key) {
-            if (!TBCore.debugMode) {
-                return;
-            }
-
-            startTimes.set(key, performance.now());
-
-            if (!profile.has(key)) {
-                // New key: add a new profile
-                profile.set(key, {time: 0, calls: 1});
-            } else {
-                // Existing key: increment calls
-                profile.get(key).calls++;
-            }
-        };
-
-        this.endProfile = function (key) {
-            if (!TBCore.debugMode) {
-                return;
-            }
-
-            // Never started profiling for the key
-            if (!startTimes.has(key)) {
-                return;
-            }
-
-            // Get spent time
-            const diff = performance.now() - startTimes.get(key);
-            startTimes.delete(key);
-
-            // Must have been started, so the object exists
-            profile.get(key).time += diff;
-        };
-
-        this.getProfiles = function () {
-            return profile;
-        };
-
-        this.getProfile = function (key) {
-            return profile.get(key);
-        };
-
-        this.printProfiles = function () {
-            this.log(`Profiling results: ${this.name}`);
-            this.log('--------------------------');
-            const loopthis = this;
-            this.getProfiles().forEach((profile, key) => {
-                loopthis.log(`${key}:`);
-                loopthis.log(`\tTime  = ${profile.time.toFixed(4)}`);
-                loopthis.log(`\tCalls = ${profile.calls}`);
+        // Register settings
+        /** @prop {Map<string, SettingDefinition>} settings Module settings */
+        this.settings = new Map();
+        for (const setting of settings) {
+            this.settings.set(setting.id, {
+                description: `(${setting.id})`,
+                storageKey: `${id}.${setting.id}`,
+                beta: false,
+                debug: false,
+                advanced: false,
+                hidden: false,
+                ...setting,
             });
-            this.log('--------------------------');
-        };
+        }
 
-        // PUBLIC: placeholder init(), just in case
-        this.init = function init () {
-        // pass
-        };
-    };
+        // Add logging functions
+        Object.assign(this, TBLog(this));
+    }
 
-    TB.Module.prototype = {
-        _shortname: '',
-        get shortname () {
-            // return name.trim().toLowerCase().replace(' ', '_');
-            return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(/\s/g, '');
-        },
-        set shortname (val) {
-            this._shortname = val;
-        },
-    };
+    /**
+     * Gets the value of a setting.
+     * @param {string} id The ID of the setting to get
+     * @returns {Promise<any>} Resolves to the current value of the setting
+     */
+    async get (id) {
+        const setting = this.settings.get(id);
+        if (!setting) {
+            throw new TypeError(`Module ${this.name} does not have a setting ${id} to get`);
+        }
+
+        // TBStorage doesn't actually accept straight storage keys, so we have
+        // to split the key into a module name and the rest of the key
+        const mod = setting.storageKey.split('.')[0];
+        const value = await TBStorage.getSettingAsync(mod, setting.storageKey.slice(mod.length + 1));
+
+        // TODO: TBStorage should return `undefined` instead of `null` for unset
+        //       settings, and this check should only be for `undefined`
+        if (value == null) {
+            if (typeof setting.default === 'function') {
+                return setting.default();
+            } else {
+                return setting.default;
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Sets the value of a setting.
+     * @param {string} id The ID of the setting to get
+     * @param {any} value The new setting value
+     * @returns {Promise<any>} Resolves to the new value when complete
+     */
+    set (id, value) {
+        const setting = this.settings.get(id);
+        if (!setting) {
+            throw new TypeError(`Module ${this.name} does not have a setting ${id} to set`);
+        }
+
+        // TBStorage doesn't actually accept straight storage keys, so we have
+        // to split the key into a module name and the rest of the key
+        const mod = setting.storageKey.split('.')[0];
+        return TBStorage.setSettingAsync(mod, setting.storageKey.slice(mod.length + 1), value);
+    }
+
+    /**
+     * "Starts" the module by calling its initializer.
+     * @returns {Promise<void>} Resolves when the initializer is completed
+     */
+    async init () {
+        // Read the current values of all registered settings
+        const initialValues = Object.create(null);
+        await Promise.all([...this.settings.values()].map(async setting => {
+            initialValues[setting.id] = await this.get(setting.id);
+        }));
+
+        // Call the initializer, passing the module instance the settings
+        await this.initializer.call(this, initialValues);
+    }
+
+    /**
+     * Check whether or not the module is enabled.
+     * @returns {Promise<boolean>} Resolves to whether the module is enabled
+     */
+    async getEnabled () {
+        if (this.alwaysEnabled) {
+            return true;
+        }
+        return !!await TBStorage.getSettingAsync(this.id, 'enabled', this.enabledByDefault);
+    }
+
+    /**
+     * Enables or disables the module. This does not take effect until Toolbox
+     * is reloaded.
+     * @param {boolean} enabled True to enable the module, false to disable it
+     * @returns {Promise<boolean>} Resolves to the new enable state
+     * @throws {Error} when trying to disable a module that cannot be
+     */
+    setEnabled (enable) {
+        if (this.alwaysEnabled && !enable) {
+            throw new Error(`Cannot disable module ${this.id} which is always enabled`);
+        }
+
+        return TBStorage.setSettingAsync(this.id, 'enabled', !!enable);
+    }
 }
-
-window.addEventListener('TBCoreLoaded', () => {
-    profileResults('moduleStart', performance.now());
-
-    $.log('TBModule has TBCore', false, 'TBinit');
-    tbmodule();
-    profileResults('moduleLoaded', performance.now());
-    const event = new CustomEvent('TBModuleLoaded');
-    window.dispatchEvent(event);
-});

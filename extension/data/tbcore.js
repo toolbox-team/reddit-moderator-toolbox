@@ -923,7 +923,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         }
                     }
                 }
-                const approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '';
+                const approved_text = $entry.find('.approval-checkmark').attr('title') || '';
                 approved_by = approved_text.match(/by\s(.+?)\s/) || '';
             }
 

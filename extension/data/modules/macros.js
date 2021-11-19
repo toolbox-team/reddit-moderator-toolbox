@@ -261,7 +261,10 @@ function modmacros () {
                   approve = macro.approve,
                   ban = macro.ban,
                   mute = macro.mute,
-                  distinguish = macro.distinguish === undefined ? true : macro.distinguish,
+                  // Comments can only be stickied by being distinguished, so
+                  // always distinguish if sticky is also set. If distinguish is
+                  // not present, distinguish it to support legacy behavior.
+                  distinguish = macro.sticky || macro.distinguish === undefined ? true : macro.distinguish,
                   // saved as lockthread for legacy reasons
                   lockitem = macro.lockthread,
                   lockreply = macro.lockreply,

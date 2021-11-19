@@ -159,7 +159,7 @@ export default new Module({
             if (entry.kind === 't1') {
                 const $comment = TBui.makeSingleComment(entry, commentOptions);
                 if (entry.highlight) {
-                    $comment.find('.md p').highlight(entry.highlight, '', true);
+                    $comment.find('.md').highlight(entry.highlight, '', true);
                 }
                 $siteTable.append($comment);
                 $('time.timeago').timeago();

@@ -203,7 +203,8 @@ function newModmailConversationAuthors () {
             `).insertAfter($this.find('.Message__divider').eq(0));
         const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
 
-        const author = $this.find('.Message__header .Message__author').text().substring(2);
+        const authorHref = $this.find('.Message__header .Message__author').attr('href');
+        const author = authorHref === undefined ? '[deleted]' : authorHref.replace(/.*\/user\/([^/]+).*/, '$1');
         const idDetails = $this.find('.m-link').attr('href').match(/\/mail\/.*?\/(.*?)\/(.*?)$/i);
 
         const detailObject = {

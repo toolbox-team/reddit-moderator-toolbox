@@ -391,7 +391,8 @@ export default new Module({
             });
         }
 
-        if (modMailNightmode) {
+            // Apply nightmode only when on and reddit native dark mode isn't enabled.
+            if (modMailNightmode && !$body.hasClass('theme-dark')) {
             // Let's make sure RES nightmode doesn't mess things up.
             $('html, body').removeClass('res-nightmode');
 

@@ -1061,11 +1061,11 @@ Action reason: ${value.data.details}
                     // If the general one is enabled we switch it of for a second to first apply the match and then the general one again
 
                     if (highlightEnabled.length > 0) {
-                        $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).removeHighlight();
-                        $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
-                        $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(highlightEnabled);
+                        $body.find(`.thing[data-fullname="${targetFullName}"] .md`).removeHighlight();
+                        $body.find(`.thing[data-fullname="${targetFullName}"] .md`).highlight(matchesArray, '', true);
+                        $body.find(`.thing[data-fullname="${targetFullName}"] .md`).highlight(highlightEnabled);
                     } else {
-                        $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
+                        $body.find(`.thing[data-fullname="${targetFullName}"] .md`).highlight(matchesArray, '', true);
                     }
                 }
             });
@@ -1096,12 +1096,12 @@ Action reason: ${value.data.details}
                         $this.closest('.thing').find('a.title').highlight(matchesArray, '', true);
                         $this.closest('.thing').find('a.title').highlight(highlightEnabled);
 
-                        $this.closest('.thing').find('.md p').removeHighlight();
-                        $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
-                        $this.closest('.thing').find('.md p').highlight(highlightEnabled);
+                        $this.closest('.thing').find('.md').removeHighlight();
+                        $this.closest('.thing').find('.md').highlight(matchesArray, '', true);
+                        $this.closest('.thing').find('.md').highlight(highlightEnabled);
                     } else {
                         $this.closest('.thing').find('a.title').highlight(matchesArray, '', true);
-                        $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
+                        $this.closest('.thing').find('.md').highlight(matchesArray, '', true);
                     }
                 }
             }

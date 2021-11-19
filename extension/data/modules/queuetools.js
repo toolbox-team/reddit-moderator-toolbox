@@ -343,12 +343,12 @@ function queuetools () {
                     <p><label><input type="checkbox" class="choice" name="links" /> submissions</label></p>
                     <p><label><input type="checkbox" class="choice" name="self" /> text posts</label></p>
                     <p><label><input type="checkbox" class="choice" name="flair" /> posts with flair</label></p>
-                    
+
                     <p class="divider"><input type="text" class="choice tb-input" name="domain" placeholder="domain..." /></p>
                     <p><input type="text" class="choice tb-input" name="user" placeholder="user..." /></p>
                     <p><input type="text" class="choice tb-input" name="title" placeholder="title..." /></p>
                     <p><input type="text" class="choice tb-input" name="subreddit" placeholder="subreddit..." /></p>
-                    
+
                     <h2 class="divider">Conditional</h2>
                     <p><input type="text" class="choice tb-input" name="pointsgt" placeholder="points >..." /></p>
                     <p><input type="text" class="choice tb-input" name="pointslt" placeholder="points <..." /></p>
@@ -1051,11 +1051,11 @@ Action reason: ${value.data.details}
                         // If the general one is enabled we switch it of for a second to first apply the match and then the general one again
 
                         if (highlightEnabled.length > 0) {
-                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).removeHighlight();
-                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
-                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(highlightEnabled);
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md`).removeHighlight();
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md`).highlight(matchesArray, '', true);
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md`).highlight(highlightEnabled);
                         } else {
-                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md`).highlight(matchesArray, '', true);
                         }
                     }
                 });
@@ -1086,12 +1086,12 @@ Action reason: ${value.data.details}
                             $this.closest('.thing').find('a.title').highlight(matchesArray, '', true);
                             $this.closest('.thing').find('a.title').highlight(highlightEnabled);
 
-                            $this.closest('.thing').find('.md p').removeHighlight();
-                            $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
-                            $this.closest('.thing').find('.md p').highlight(highlightEnabled);
+                            $this.closest('.thing').find('.md').removeHighlight();
+                            $this.closest('.thing').find('.md').highlight(matchesArray, '', true);
+                            $this.closest('.thing').find('.md').highlight(highlightEnabled);
                         } else {
                             $this.closest('.thing').find('a.title').highlight(matchesArray, '', true);
-                            $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
+                            $this.closest('.thing').find('.md').highlight(matchesArray, '', true);
                         }
                     }
                 }

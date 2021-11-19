@@ -39,28 +39,35 @@ import OldReddit from './modules/oldreddit.js';
  * @returns {Promise<boolean>}
  */
 async function checkReset () {
-    if (window.location.href.includes('/r/tb_reset/comments/26jwfh')) {
-        if (!confirm('This will reset all your toolbox settings. Would you like to proceed?')) {
-            return false;
-        }
-
-        // Clear local extension storage if we have access to extension storage
-        await browser.storage.local.remove('tbsettings');
-
-        // Clear background page localStorage (stores cache information)
-        await browser.runtime.sendMessage({
-            action: 'tb-cache',
-            method: 'clear',
-        });
-
-        // Delay for one second to be extra sure everything has been processed
-        await delay(1000);
-
-        // Send the user to the confirmation page
-        const domain = window.location.hostname.split('.')[0];
-        window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
-        return true;
+    // Toolbox resets your settings if you open this one specific post
+    if (!window.location.href.includes('/r/tb_reset/comments/26jwfh')) {
+        return false;
     }
+
+    // Confirm with the user before proceeding
+    if (!confirm('This will reset all your toolbox settings. Would you like to proceed?')) {
+        return false;
+    }
+
+    // Clear local extension storage if we have access to extension storage
+    await browser.storage.local.remove('tbsettings');
+
+    // Clear background page localStorage (stores cache information)
+    await browser.runtime.sendMessage({
+        action: 'tb-cache',
+        method: 'clear',
+    });
+
+    // Delay for one second to be extra sure everything has been processed
+    await delay(1000);
+
+    // Send the user to the confirmation page
+    const domain = window.location.hostname.split('.')[0];
+    window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
+
+    // This should theoretically never be reached, but in case it is, cancel all
+    // other init behaviors
+    return true;
 }
 
 /**

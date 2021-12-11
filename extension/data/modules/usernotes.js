@@ -1045,6 +1045,10 @@ function usernotes () {
                     <div class="tb-un-info">
                         <span class="tb-info">There are ${userCount} users with ${noteCount} notes.</span>
                         <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
+                        <select name="tb-un-filter" id="tb-un-filter" class="selector tb-action-button">
+                            <option value="all" default>All</option>
+                            ${colors.map(op => `<option value=${op.key}>${op.text}</option>`).join('')}
+                        </select>
                         <br><br>
                         <button id="tb-un-prune-sb" class="tb-general-button">Prune deleted/suspended profiles</button>
                     </div></br></br>
@@ -1082,6 +1086,7 @@ function usernotes () {
             // Variables to store the filter text
             let userText = '';
             let contentText = '';
+            let filterKey = 'all';
 
             // Creates a new pager with the correct filtered items and replace
             // the current one with the new one, debounced because typing delay
@@ -1104,7 +1109,7 @@ function usernotes () {
                     }
 
                     return true;
-                });
+                }).filter(user => user.notes.filter(notes => filterKey === 'all' || notes.type === filterKey).length > 0);
 
                 // Create the new pager
                 const $newPager = TBui.pagerForItems({
@@ -1126,6 +1131,10 @@ function usernotes () {
             });
             $body.find('#tb-unote-contents-search').keyup(function () {
                 contentText = $(this).val();
+                refreshPager();
+            });
+            $body.find('#tb-un-filter').change(function () {
+                filterKey = $(this).val();
                 refreshPager();
             });
 

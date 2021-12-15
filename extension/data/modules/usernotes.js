@@ -1047,7 +1047,7 @@ function usernotes () {
                         <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
                         <select name="tb-un-filter" id="tb-un-filter" class="selector tb-action-button">
                             <option value="all" default>All</option>
-                            ${colors.map(op => `<option value=${op.key}>${op.text}</option>`).join('')}
+                            ${colors.map(op => `<option value=${TBHelpers.htmlEncode(op.key)}>${TBHelpers.htmlEncode(op.text)}</option>`).join('')}
                         </select>
                         <br><br>
                         <button id="tb-un-prune-sb" class="tb-general-button">Prune deleted/suspended profiles</button>
@@ -1095,8 +1095,18 @@ function usernotes () {
                 // notes based on `userText` and `contentText`
                 const filteredData = allUsers.map(user => ({
                     name: user.name,
-                    // Filter out notes not matching `contentText`
-                    notes: user.notes.filter(note => note.note.toLowerCase().includes(contentText.toLowerCase())),
+                    // Filter out notes not matching `contentText` as well as filtering out keys
+                    notes: user.notes.filter(note => {
+                        if (!note.note.toLowerCase().includes(contentText.toLowerCase())) {
+                            return false;
+                        }
+
+                        if (filterKey !== 'all' && filterKey !== note.type) {
+                            return false;
+                        }
+
+                        return true;
+                    }),
                 })).filter(user => {
                     // Filter out users not matching `userText`
                     if (userText && !user.name.toLowerCase().includes(userText.toLowerCase())) {
@@ -1109,7 +1119,7 @@ function usernotes () {
                     }
 
                     return true;
-                }).filter(user => user.notes.filter(notes => filterKey === 'all' || notes.type === filterKey).length > 0);
+                });
 
                 // Create the new pager
                 const $newPager = TBui.pagerForItems({

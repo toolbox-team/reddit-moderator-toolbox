@@ -1047,6 +1047,10 @@ function startUsernotesManager ({unManagerLink}) {
                     <div class="tb-un-info">
                         <span class="tb-info">There are ${userCount} users with ${noteCount} notes.</span>
                         <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
+                        <select name="tb-un-filter" id="tb-un-filter" class="selector tb-action-button">
+                            <option value="all" default>All</option>
+                            ${colors.map(op => `<option value=${TBHelpers.htmlEncode(op.key)}>${TBHelpers.htmlEncode(op.text)}</option>`).join('')}
+                        </select>
                         <br><br>
                         <button id="tb-un-prune-sb" class="tb-general-button">Prune deleted/suspended profiles</button>
                     </div></br></br>
@@ -1084,6 +1088,7 @@ function startUsernotesManager ({unManagerLink}) {
         // Variables to store the filter text
         let userText = '';
         let contentText = '';
+        let filterKey = 'all';
 
         // Creates a new pager with the correct filtered items and replace
         // the current one with the new one, debounced because typing delay
@@ -1092,8 +1097,18 @@ function startUsernotesManager ({unManagerLink}) {
             // notes based on `userText` and `contentText`
             const filteredData = allUsers.map(user => ({
                 name: user.name,
-                // Filter out notes not matching `contentText`
-                notes: user.notes.filter(note => note.note.toLowerCase().includes(contentText.toLowerCase())),
+                // Filter out notes not matching `contentText` as well as filtering out keys
+                notes: user.notes.filter(note => {
+                    if (!note.note.toLowerCase().includes(contentText.toLowerCase())) {
+                        return false;
+                    }
+
+                    if (filterKey !== 'all' && filterKey !== note.type) {
+                        return false;
+                    }
+
+                    return true;
+                }),
             })).filter(user => {
                 // Filter out users not matching `userText`
                 if (userText && !user.name.toLowerCase().includes(userText.toLowerCase())) {
@@ -1128,6 +1143,10 @@ function startUsernotesManager ({unManagerLink}) {
         });
         $body.find('#tb-unote-contents-search').keyup(function () {
             contentText = $(this).val();
+            refreshPager();
+        });
+        $body.find('#tb-un-filter').change(function () {
+            filterKey = $(this).val();
             refreshPager();
         });
 

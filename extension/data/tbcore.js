@@ -360,6 +360,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBStorage.setSetting('QueueTools', 'reportsThreshold', 0);
             }
 
+            // Some new modmail settings were removed in 5.7.0
+            if (lastVersion < 50700) {
+                TBStorage.setSetting('NewModMail', 'searchhelp', undefined);
+                TBStorage.setSetting('NewModMail', 'checkForNewMessages', undefined);
+            }
+
             // End: version changes.
 
             // This is a super extra check to make sure the wiki page for settings export really is private.

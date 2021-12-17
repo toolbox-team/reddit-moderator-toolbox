@@ -43,13 +43,4 @@ export default ['chrome', 'firefox'].map(platform => ({
             ],
         }),
     ],
-    // onwarn (warning, warn) {
-    //     // Suppress warnings from dependencies (Rollup complains about
-    //     // webextension-polyfill using top-level `this` even though it's fine)
-    //     if (warning.code === 'THIS_IS_UNDEFINED') {
-    //         return;
-    //     }
-    //     // log other warnings to console
-    //     warn(warning);
-    // },
 }));

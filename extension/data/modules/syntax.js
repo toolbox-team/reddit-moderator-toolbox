@@ -1,4 +1,5 @@
-import {Module, syntaxHighlighterThemeSelect as themeSelect} from '../tbmodule.js';
+import {Module} from '../tbmodule.js';
+import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.js';
 import * as TBui from '../tbui.js';
 
 export default new Module({

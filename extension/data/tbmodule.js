@@ -387,7 +387,7 @@ const TBModule = {
             TBStorage.setSetting('Utils', 'settingSub', sub);
 
             if ($(e.target).hasClass('tb-settings-import')) {
-                TBCore.importSettings(sub);
+                await TBCore.importSettings(sub);
                 await TBModule.modules['Modbar'].set('lastExport', TBHelpers.getTime());
                 TBCore.clearCache();
                 TBStorage.verifiedSettingsSave(succ => {

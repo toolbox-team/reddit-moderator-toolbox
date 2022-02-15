@@ -840,35 +840,32 @@ export function exportSettings (subreddit, callback) {
 }
 
 // TODO: Move this function to tbmodule, the only place it's ever used
-export function importSettings (subreddit, callback) {
-    TBApi.readFromWiki(subreddit, 'tbsettings', true).then(resp => {
-        if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-            logger.log('Error loading wiki page');
-            return;
+export async function importSettings (subreddit) {
+    const resp = await TBApi.readFromWiki(subreddit, 'tbsettings', true);
+    if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
+        logger.log('Error loading wiki page');
+        return;
+    }
+    TBStorage.purifyObject(resp);
+
+    if (resp['Utils.lastversion'] < 300) {
+        logger.log('Cannot import from a toolbox version under 3.0');
+        return;
+    }
+
+    const doNotImport = [
+        'oldreddit.enabled',
+    ];
+
+    Object.entries(resp).forEach(([fullKey, value]) => {
+        const key = fullKey.split('.');
+
+        // Do not import certain legacy settings.
+        if (doNotImport.includes(fullKey)) {
+            logger.log(`Skipping ${fullKey} import`);
+        } else {
+            TBStorage.setSetting(key[0], key[1], value, false);
         }
-        TBStorage.purifyObject(resp);
-
-        if (resp['Utils.lastversion'] < 300) {
-            logger.log('Cannot import from a toolbox version under 3.0');
-            return;
-        }
-
-        const doNotImport = [
-            'oldreddit.enabled',
-        ];
-
-        Object.entries(resp).forEach(([fullKey, value]) => {
-            const key = fullKey.split('.');
-
-            // Do not import certain legacy settings.
-            if (doNotImport.includes(fullKey)) {
-                logger.log(`Skipping ${fullKey} import`);
-            } else {
-                TBStorage.setSetting(key[0], key[1], value, false);
-            }
-        });
-
-        callback();
     });
 }
 

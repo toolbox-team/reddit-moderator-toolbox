@@ -433,6 +433,7 @@ function removalreasons () {
                             <th class="reason">reason</th>
                             <th class="flair-text">flair text</th>
                             <th class="flair-css">flair css</th>
+                            <th class="sort">sort</th>
                         </tr></thead>
                         <tbody id="reason-table" />
                     </table>
@@ -528,6 +529,10 @@ function removalreasons () {
                     </td>
                     <td class="flair-text"><span class="flair-text-span">${this.flairText ? this.flairText : ''}</span></td>
                     <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ''}</span></td>
+                    <td class="removal-reasons-sort-buttons">
+                    <a href="javascript:;" class="tb-live-sort-up tb-icons">${TBui.icons.sortUp}</a>
+                    <a href="javascript:;" class="tb-live-sort-down tb-icons">${TBui.icons.sortDown}</a>
+                    </td>
                     </tr>`);
 
                     tr.data({
@@ -587,6 +592,9 @@ function removalreasons () {
 
         // Selection/deselection of removal reasons
         $body.on('click', '.selectable-reason', function (e) {
+            if ($(e.target).is('.tb-live-sort-up')) {
+                return;
+            }
             const $this = $(this);
             const checkBox = $this.find('.reason-check'),
                   isChecked = checkBox.is(':checked'),
@@ -615,6 +623,33 @@ function removalreasons () {
                     $this.find('.flair-text-span').hide();
                     $this.find('.flar-css-span').hide();
                 }
+            }
+        });
+
+        // live sorting of removal reasons
+        $body.on('click', '.reason-popup .tb-live-sort-up', function () {
+            const $row = $(this).closest('tr'),
+                  $prev = $row.prev();
+
+            if ($prev && $prev.length > 0) {
+                $row.fadeOut(100, () => {
+                    $row.detach();
+                    $row.insertBefore($prev);
+                    $row.fadeIn(300);
+                });
+            }
+        });
+
+        $body.on('click', '.reason-popup  .tb-live-sort-down ', function () {
+            const $row = $(this).closest('tr'),
+                  $next = $row.next();
+
+            if ($next && $next.length > 0) {
+                $row.fadeOut(100, () => {
+                    $row.detach();
+                    $row.insertAfter($next);
+                    $row.fadeIn(300);
+                });
             }
         });
 

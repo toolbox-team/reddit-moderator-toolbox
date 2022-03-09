@@ -252,3 +252,14 @@
     margin: 4px 0 0 3px !important;
     display: inline;
 }
+
+
+.mod-toolbox-rd .reason-popup td.removal-reasons-sort-buttons {
+    width: 45px;
+}
+
+.mod-toolbox-rd .reason-popup .selectable-reason:last-of-type a.tb-live-sort-down,
+.mod-toolbox-rd .reason-popup .selectable-reason:first-of-type a.tb-live-sort-up {
+    display: none !important;
+}
+

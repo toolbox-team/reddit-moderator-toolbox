@@ -103,6 +103,7 @@ function handleThing (entries, observer) {
                             permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
                             subreddit: {
                                 name: info.subreddit,
+                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },
@@ -121,6 +122,7 @@ function handleThing (entries, observer) {
                             },
                             subreddit: {
                                 name: info.subreddit,
+                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },
@@ -143,6 +145,7 @@ function handleThing (entries, observer) {
                             id: info.id,
                             subreddit: {
                                 name: info.subreddit,
+                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },
@@ -165,6 +168,7 @@ function handleThing (entries, observer) {
                             },
                             subreddit: {
                                 name: info.subreddit,
+                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },

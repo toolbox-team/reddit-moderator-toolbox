@@ -94,7 +94,7 @@ function updateModNotesBadge ($badge, {
         return;
     }
 
-    $badge.textContent = '';
+    $badge.empty();
     $badge.append(`
         something dynamically generated from notes array
     `);

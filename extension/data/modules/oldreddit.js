@@ -98,6 +98,7 @@ function handleThing (entries, observer) {
                         type: 'TBpost',
                         data: {
                             author: info.author || '[deleted]',
+                            authorID: info.userID || null,
                             id: info.id,
                             isRemoved: info.ham || info.spam,
                             permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
@@ -117,6 +118,7 @@ function handleThing (entries, observer) {
                         type: 'TBpostAuthor',
                         data: {
                             author: info.author || '[deleted]',
+                            authorID: info.userID || null,
                             post: {
                                 id: info.id,
                             },
@@ -138,6 +140,7 @@ function handleThing (entries, observer) {
                         type: 'TBcommentOldReddit',
                         data: {
                             author: info.author || '[deleted]',
+                            authorID: info.userID || null,
                             post: {
                                 id: info.postID,
                             },
@@ -160,6 +163,7 @@ function handleThing (entries, observer) {
                         type: 'TBcommentAuthor',
                         data: {
                             author: info.author || '[deleted]',
+                            authorID: info.userID || null,
                             post: {
                                 id: info.postID,
                             },
@@ -257,6 +261,7 @@ function newModmailSidebar () {
                     data: {
                         user: {
                             username: info.user || '[deleted]',
+                            id: info.userID || null,
                         },
                         contextID: info.id,
                         subreddit: {

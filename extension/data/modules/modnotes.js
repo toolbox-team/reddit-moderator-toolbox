@@ -2,6 +2,7 @@ import {Module} from '../tbmodule.js';
 import {getModSubs, modsSub} from '../tbcore.js';
 import {htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
+import {actionButton, drawPosition, popup} from '../tbui.js';
 import TBListener from '../tblistener.js';
 
 /**
@@ -93,6 +94,63 @@ function updateModNotesBadge ($badge, {
         `);
     }
 }
+/**
+ * Creates a mod note popup for the given information.
+ * @param {object} data Data associated with the popup
+ * @param {string} data.user Name of the relevant user
+ * @param {string} data.subreddit Name of the relevant subreddit
+ */
+function createModNotesPopup ({
+    user,
+    subreddit,
+    notes,
+}) {
+    const $popup = popup({
+        title: `Mod notes for /u/${user} in /r/${subreddit}`,
+        tabs: [{
+            title: 'All Activity',
+            content: `
+                    <p class="error">loading...</p>
+                `,
+            footer: actionButton('dab', 'tb-modnote-dab'),
+        }],
+        cssClass: 'tb-modnote-popup',
+    });
+    $popup.attr('data-user', user);
+    $popup.attr('data-subreddit', subreddit);
+
+    updateModNotesPopup($popup, {
+        notes,
+    });
+
+    return $popup;
+}
+
+function updateModNotesPopup ($popup, {
+    notes,
+}) {
+    const $content = $popup.find('.tb-window-content');
+    $content.empty();
+    if (!notes) {
+        $content.append(`
+                <p class="error">
+                    Error fetching mod notes
+                </p>
+            `);
+        return;
+    }
+
+    if (!notes.length) {
+        $content.append(`
+                <p>
+                    No notes
+                </p>
+            `);
+        return;
+    }
+
+    $content.append($('<pre>').text(JSON.stringify(notes, null, 2)));
+}
 
 export default new Module({
     name: 'Mod Notes',
@@ -128,9 +186,32 @@ export default new Module({
                 user: e.detail.data.author,
                 subreddit: e.detail.data.subreddit.name,
             });
-            $badge.on('click', () => {
+            $badge.on('click', async clickEvent => {
                 // TODO: open popup with more information for this user
                 this.info(`clicked badge for /u/${author} in /r/${subreddit}`);
+
+                // Fetch all usernotes for this user
+                let notes;
+                try {
+                    // TODO: store these somewhere persistent so they can be
+                    //       added to later if the user wants to load more
+                    notes = await TBApi.getModNotes(subreddit, author);
+                } catch (error) {
+                    self.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}`, error);
+                }
+
+                // Create, position, and display popup
+                const positions = drawPosition(clickEvent);
+                createModNotesPopup({
+                    user: author,
+                    subreddit,
+                    notes,
+                })
+                    .css({
+                        top: positions.topPosition,
+                        left: positions.leftPosition,
+                    })
+                    .appendTo($('body'));
             });
             $badge.appendTo($target);
         }

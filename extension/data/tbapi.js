@@ -736,18 +736,6 @@ export const aboutUser = async user => getJSON(`/user/${user}/about.json`, {
 });
 
 /**
- * Gets information about a subreddit.
- * @param {string} subreddit The name of the subreddit
- * @returns {Promise} Resolves to JSON user info or rejects with error text
- */
-export const aboutSubreddit = async subreddit => getJSON(`/r/${subreddit}/about.json`, {
-    uh: await getModhash(),
-}).then(response => {
-    TBStorage.purifyObject(response);
-    return response;
-});
-
-/**
  * Gets the timestamp of the last public activity on the user's profile.
  * @param {string} user The user to look for
  * @returns {Promise} Resolves to a number or rejects an error string
@@ -796,9 +784,9 @@ export const getReportReasons = async postURL => getJSON(`${postURL}.json?limit=
     }
 });
 
-export const getModNotes = (subredditID, userID) => apiOauthGET('/api/mod/notes', {
-    subreddit_id: subredditID,
-    user_id: userID,
+export const getModNotes = (subreddit, user) => apiOauthGET('/api/mod/notes', {
+    subreddit,
+    user,
 }).then(response => response.json()).then(response => {
     TBStorage.purifyObject(response);
     return response.mod_notes;

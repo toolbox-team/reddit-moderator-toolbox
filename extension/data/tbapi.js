@@ -784,9 +784,10 @@ export const getReportReasons = async postURL => getJSON(`${postURL}.json?limit=
     }
 });
 
-export const getModNotes = (subreddit, user) => apiOauthGET('/api/mod/notes', {
+export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/notes', {
     subreddit,
     user,
+    before,
     limit: 100,
 }).then(response => response.json()).then(response => {
     TBStorage.purifyObject(response);

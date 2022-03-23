@@ -98,13 +98,11 @@ function handleThing (entries, observer) {
                         type: 'TBpost',
                         data: {
                             author: info.author || '[deleted]',
-                            authorID: info.userID || null,
                             id: info.id,
                             isRemoved: info.ham || info.spam,
                             permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
                             subreddit: {
                                 name: info.subreddit,
-                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },
@@ -118,13 +116,11 @@ function handleThing (entries, observer) {
                         type: 'TBpostAuthor',
                         data: {
                             author: info.author || '[deleted]',
-                            authorID: info.userID || null,
                             post: {
                                 id: info.id,
                             },
                             subreddit: {
                                 name: info.subreddit,
-                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },
@@ -140,7 +136,6 @@ function handleThing (entries, observer) {
                         type: 'TBcommentOldReddit',
                         data: {
                             author: info.author || '[deleted]',
-                            authorID: info.userID || null,
                             post: {
                                 id: info.postID,
                             },
@@ -148,7 +143,6 @@ function handleThing (entries, observer) {
                             id: info.id,
                             subreddit: {
                                 name: info.subreddit,
-                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },
@@ -163,7 +157,6 @@ function handleThing (entries, observer) {
                         type: 'TBcommentAuthor',
                         data: {
                             author: info.author || '[deleted]',
-                            authorID: info.userID || null,
                             post: {
                                 id: info.postID,
                             },
@@ -172,7 +165,6 @@ function handleThing (entries, observer) {
                             },
                             subreddit: {
                                 name: info.subreddit,
-                                id: info.subredditID,
                                 type: info.subredditType,
                             },
                         },

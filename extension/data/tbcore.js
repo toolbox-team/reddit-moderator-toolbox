@@ -907,7 +907,6 @@ export function getThingInfo (sender, modCheck) {
     const $body = $('body');
 
     let subreddit,
-        subredditID,
         permalink,
         permalink_newmodmail,
         domain,
@@ -921,7 +920,6 @@ export function getThingInfo (sender, modCheck) {
         spam,
         ham,
         user,
-        userID,
         approved_by,
         $textBody,
         subredditType;
@@ -965,9 +963,7 @@ export function getThingInfo (sender, modCheck) {
 
         subredditType = $thing.attr('data-subreddit-type');
         user = $entry.find('.author:first').text() || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
-        userID = $thing.attr('data-subreddit-fullname');
-        subreddit = $thing.attr('data-subreddit') || post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
-        subredditID = $thing.attr('data-subreddit-fullname');
+        subreddit = $thing.attr('data-subreddit') || TBCore.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
         permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
         domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
         id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
@@ -1032,7 +1028,6 @@ export function getThingInfo (sender, modCheck) {
     // Not a mod, reset current sub.
     if (modCheck && !modsSub(subreddit)) {
         subreddit = '';
-        subredditID = '';
     }
 
     if (user === '[deleted]') {
@@ -1054,9 +1049,7 @@ export function getThingInfo (sender, modCheck) {
     const info = {
         subreddit,
         subredditType,
-        subredditID,
         user,
-        userID,
         author: user,
         permalink,
         permalink_newmodmail: permalink_newmodmail || permalink,

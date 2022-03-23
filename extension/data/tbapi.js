@@ -784,6 +784,13 @@ export const getReportReasons = async postURL => getJSON(`${postURL}.json?limit=
     }
 });
 
+/**
+ * Fetches a page of mod notes for the given user in the given subreddit.
+ * @param {string} subreddit The name of the subreddit
+ * @param {*} user The name of a user
+ * @param {*} before ID of a mod note to search before (for pagination)
+ * @returns {Promise} Resolves to an array of note objects or rejects an error
+ */
 export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/notes', {
     subreddit,
     user,

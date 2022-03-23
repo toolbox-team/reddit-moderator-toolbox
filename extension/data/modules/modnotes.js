@@ -15,7 +15,7 @@ function createModNotesBadge ({
     user,
     subreddit,
     label = 'NN',
-    notes,
+    notes = [],
 }) {
     const $badge = $(`
         <a
@@ -42,32 +42,54 @@ function createModNotesBadge ({
     return $badge;
 }
 
-// TODO: actually do some useful display
+/**
+ * An object mapping modnote labels to display colors. All colors are from
+ * the default Toolbox usernote type colors, except the HELPFUL_USER label
+ * which doesn't have an analogue in Toolbox usernotes.
+ * @constant {object}
+ */
+const labelColors = {
+    BOT_BAN: 'black',
+    PERMA_BAN: 'darkred',
+    BAN: 'red',
+    ABUSE_WARNING: 'orange',
+    SPAM_WARNING: 'purple',
+    SPAM_WATCH: 'fuschia',
+    SOLID_CONTRIBUTOR: 'green',
+    HELPFUL_USER: 'lightseagreen',
+};
+
 function updateModNotesBadge ($badge, {
     user,
     subreddit,
-    notes,
+    notes = [],
 }) {
-    if (!notes || !notes.length) {
+    // Get only mod notes, not other mod actions
+    const manualNotes = notes.filter(note => note.type === 'NOTE');
+    if (!manualNotes.length) {
         $badge.text($badge.attr('data-label'));
         return;
     }
 
+    // The latest note is the first in the array; look up its color
+    const latestNote = manualNotes[0];
+    const noteColor = labelColors[latestNote.user_note_data.label];
+
     $badge.empty();
-
-    // Get only the notes left by mods with custom text
-    const manualNotes = notes.filter(note => note.type === 'NOTE');
-
-    if (!manualNotes.length) {
-        $badge.append('nothing');
-        return;
-    }
-
     $badge.append(`
-        <span class="tb-modnote-preview">
-            ${htmlEncode(manualNotes[0].user_note_data.note)}
-        </span>
-    `);
+            <b style="${noteColor ? `color: ${noteColor}` : ''}">
+                ${htmlEncode(latestNote.user_note_data.note)}
+            </b>
+        `);
+
+    // If there are more mod notes, list how many more
+    if (manualNotes.length > 1) {
+        $badge.append(`
+            <span class="tb-modnote-more-counter">
+                (+${manualNotes.length - 1})
+            </span>
+        `);
+    }
 }
 
 export default new Module({

@@ -1,5 +1,6 @@
 import {Module} from '../tbmodule.js';
 import {getModSubs, modsSub} from '../tbcore.js';
+import {htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
 import TBListener from '../tblistener.js';
 
@@ -26,8 +27,6 @@ function createModNotesBadge ({
             data-subreddit="${subreddit}"
             data-label="${label}"
         >
-            ${label}
-        </a>
     `);
 
     // NOTE: Right now this call probably looks useless, but it will be nice
@@ -50,13 +49,24 @@ function updateModNotesBadge ($badge, {
     notes,
 }) {
     if (!notes || !notes.length) {
-        $badge.textContent = $badge.attr('data-label');
+        $badge.text($badge.attr('data-label'));
         return;
     }
 
     $badge.empty();
+
+    // Get only the notes left by mods with custom text
+    const manualNotes = notes.filter(note => note.type === 'NOTE');
+
+    if (!manualNotes.length) {
+        $badge.append('nothing');
+        return;
+    }
+
     $badge.append(`
-        something dynamically generated from notes array
+        <span class="tb-modnote-preview">
+            ${htmlEncode(manualNotes[0].user_note_data.note)}
+        </span>
     `);
 }
 

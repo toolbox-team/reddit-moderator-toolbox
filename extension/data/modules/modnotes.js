@@ -27,6 +27,9 @@ const labelColors = {
  * @param {string} data.user Name of the relevant user
  * @param {string} data.subreddit Name of the relevant subreddit
  * @param {string} data.label Text shown in the badge if there are no notes
+ * @param {object} [data.note] The most recent mod note left on the user
+ * @param {number} [data.noteCount] The number of total notes for the user
+ * @returns {jQuery} The created badge
  */
 function createModNotesBadge ({
     user,
@@ -55,6 +58,13 @@ function createModNotesBadge ({
     return $badge;
 }
 
+/**
+ * Updates mod note badges in place with the given information.
+ * @param {jQuery} $badge The badge(s) to update
+ * @param {object} data Data associated with the badge
+ * @param {object} [data.note] The most recent mod note left on the user
+ * @param {number} [data.noteCount] The number of total notes for the user
+ */
 function updateModNotesBadge ($badge, {
     note,
     noteCount,

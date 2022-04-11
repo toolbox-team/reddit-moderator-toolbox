@@ -1011,7 +1011,7 @@ function startUsernotesManager ({unManagerLink}) {
                         <div class="tb-un-note-details">
                             <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
                             <span class="note">
-                                <span class="note-type">[${color.text}]</span>
+                                <span class="note-type" ${color.key !== 'none' ? `style="color:${TBHelpers.htmlEncode(color.color)}"` : ''}>[${color.text}]</span>
                                 <a class="note-content" href="${val.link}">${val.note}</a>
                             </span>
                             <span>-</span>

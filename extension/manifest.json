@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "5.6.4",
-    "version_name": "5.6.4: \"Deleting Dodo\"",
+    "version": "5.6.5",
+    "version_name": "5.6.5: \"Deleting Dodo\"",
     "incognito": "split",
     "browser_specific_settings": {
         "gecko": {

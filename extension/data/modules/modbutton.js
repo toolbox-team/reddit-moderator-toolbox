@@ -1,7 +1,7 @@
 'use strict';
 
 const MAX_BAN_REASON_LENGTH = 300;
-const MAX_BAN_MESSAGE_LENGTH = 1000;
+const MAX_BAN_MESSAGE_LENGTH = 5000;
 
 function modbutton () {
     const self = new TB.Module('Mod Button');

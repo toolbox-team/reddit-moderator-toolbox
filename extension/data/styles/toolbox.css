@@ -2058,7 +2058,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .theme-dark.mod-toolbox-rd .tb-window .tb-general-button:hover,
 .theme-dark.mod-toolbox-rd .tb-window .tb-action-button,
 .theme-dark.mod-toolbox-rd .tb-window .tb-bracket-button,
-.theme-dark.mod-toolbox-rd .tb-window .tb-action-table 
+.theme-dark.mod-toolbox-rd .tb-window .tb-action-table
 {
     filter: invert(0%);
 }
@@ -2098,7 +2098,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 
 
 .res-nightmode .mod-toolbox-rd .tb-input.tb-input,
-.theme-dark.mod-toolbox-rd .tb-input.tb-input 
+.theme-dark.mod-toolbox-rd .tb-input.tb-input
 {
     color: #ffffff;
     background-color: #000;
@@ -2112,14 +2112,14 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 }
 
 .res-nightmode .mod-toolbox-rd .tb-highlight,
-.theme-dark.mod-toolbox-rd .tb-highlight 
+.theme-dark.mod-toolbox-rd .tb-highlight
 {
     background-color: rgb(156, 156, 65);
     color: #fff;
 }
 
 .res-nightmode .mod-toolbox-rd .action-reason,
-.theme-dark.mod-toolbox-rd .action-reason 
+.theme-dark.mod-toolbox-rd .action-reason
 {
     background-color: #56565680;
 }

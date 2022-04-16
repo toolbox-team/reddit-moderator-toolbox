@@ -80,10 +80,10 @@ function updateModNotesBadge ($badge, {
 
     $badge.empty();
     $badge.append(`
-            <b style="${noteColor ? `color: ${noteColor}` : ''}">
-                ${htmlEncode(note.user_note_data.note)}
-            </b>
-        `);
+        <b style="${noteColor ? `color: ${noteColor}` : ''}">
+            ${htmlEncode(note.user_note_data.note)}
+        </b>
+    `);
 
     // If there are more mod notes, list how many more
     if (noteCount > 1) {
@@ -110,8 +110,8 @@ function createModNotesPopup ({
         tabs: [{
             title: 'All Activity',
             content: `
-                    <p class="error">loading...</p>
-                `,
+                <p class="error">loading...</p>
+            `,
             footer: actionButton('dab', 'tb-modnote-dab'),
         }],
         cssClass: 'tb-modnote-popup',
@@ -133,19 +133,19 @@ function updateModNotesPopup ($popup, {
     $content.empty();
     if (!notes) {
         $content.append(`
-                <p class="error">
-                    Error fetching mod notes
-                </p>
-            `);
+            <p class="error">
+                Error fetching mod notes
+            </p>
+        `);
         return;
     }
 
     if (!notes.length) {
         $content.append(`
-                <p>
-                    No notes
-                </p>
-            `);
+            <p>
+                No notes
+            </p>
+        `);
         return;
     }
 

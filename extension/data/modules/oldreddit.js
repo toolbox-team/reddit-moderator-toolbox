@@ -253,7 +253,6 @@ function newModmailSidebar () {
                     data: {
                         user: {
                             username: info.user || '[deleted]',
-                            id: info.userID || null,
                         },
                         contextID: info.id,
                         subreddit: {

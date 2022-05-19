@@ -5,9 +5,10 @@
 [![DeepScan grade](https://deepscan.io/api/teams/5774/projects/7592/branches/79819/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5774&pid=7592&bid=79819)
 [![chrome web store version](https://img.shields.io/chrome-web-store/v/jhjpjhhkcbkmgdkahnckfboefnkgghpo?logo=googlechrome&logoColor=fff)][webstore]
 [![mozilla add-ons version](https://img.shields.io/amo/v/reddit-moderator-toolbox?logo=firefoxbrowser&logoColor=fff)][amo]
+[![edge extension version](https://img.shields.io/badge/dynamic/json?label=edge%20add-on&prefix=v&query=%24.version&url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Fnolhfmoadpbgfeonfnjlcfmhhkmdlfcl)][edgestore]
 [![Discord](https://img.shields.io/discord/535490452066009090?color=7373d7&label=discord&logo=discord&logoColor=fff)][discord]
 
-A set of tools to be used by moderators on Reddit in order to make their jobs easier. Install toolbox [from the Chrome Webstore][webstore] or [from the Mozilla add-ons store][amo], or read the [user documentation](https://www.reddit.com/r/toolbox/w/docs).
+A set of tools to be used by moderators on Reddit in order to make their jobs easier. Install toolbox from [the Chrome Webstore][webstore], [the Mozilla add-ons store][amo], or [the Edge add-ons store][edge-store], or read the [user documentation][user-docs].
 
 ## Reporting issues and feature requests
 
@@ -23,7 +24,11 @@ All Toolbox subreddit settings and data are stored in subreddit wikis through ve
 
 [webstore]: https://chrome.google.com/webstore/detail/moderator-toolbox-for-red/jhjpjhhkcbkmgdkahnckfboefnkgghpo
 [amo]: https://addons.mozilla.org/en-US/firefox/addon/reddit-moderator-toolbox/
+[edge-store]: https://microsoftedge.microsoft.com/addons/detail/moderator-toolbox-for-red/nolhfmoadpbgfeonfnjlcfmhhkmdlfcl
+
 [discord]: https://discord.gg/8fGCykQ
+[user-docs]: https://www.reddit.com/r/toolbox/w/docs
+
 [nodejs]: https://nodejs.org/
 [contributing]: /CONTRIBUTING.md
 [third-party-docs]: https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Subreddit-Wikis

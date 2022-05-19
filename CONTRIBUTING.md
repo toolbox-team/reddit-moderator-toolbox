@@ -51,35 +51,29 @@ You can find the documentation for all this on the following locations:
 - `extension/data/modules/`: Contains the individual toolbox modules.
 - `extension/data/styles/`: Contains all CSS
 
-## Building
+## Building, testing, and dev scripts
 
-(FIXME: I think this section is outdated)
-
-Building is only needed if you want to test in Firefox as the build process makes some changes to `extension/manifest.json` for firefox. For Chrome and other chromium based browsers the building steps below are not needed.
-
-Building the extension is relatively easy through [Node.js](https://nodejs.org/en/).
+Building the extension is relatively easy through [Node.js](https://nodejs.org/en/). We use [Rollup](https://www.rollupjs.org/) to bundle the extension's Javascript code and manually copy over assets including images and the `manifest.json` file via [rollup-plugin-copy](https://www.npmjs.com/package/rollup-plugin-copy). Additionally, some browser-specific processing is applied to the manifest to work around some browser-specific incompatibilities. Build output goes to `build/chrome` and `build/firefox`.
 
 ```sh
 $ npm install          # Install dependencies
-$ npm run build        # Build extension .zip files for Chrome and Firefox
-$ npm run build-watch  # Automatically rebuild on file changes
+$ npm run build        # Build extension
+$ npm run build:watch  # Automatically rebuild on file changes
 $ npm run docs         # Build documentation of internal interfaces
 ```
 
-Once you've built a .zip for your platform, you're ready to test! Remember to reload the extension between builds.
+Once you've built the extension, you can load it up in your browser for testing:
 
-## Testing on Chrome
+## Testing on Chromium-Based browsers
 
-**Note:** It is not needed to build for chrome as it can be run directly from source.
-
-- Go to `chrome://extensions`.
+- Go to `chrome://extensions` (`edge://extensions`, etc.).
 - Check the "Developer mode" checkbox if it's not already checked.
 - Click the "Load unpacked extension..." button.
-- Load the `extension` directory.
+- Chromium asks for the extension directory, so load the `build/chrome` directory.
 
-## Testing on Firefox (Developer or Nightly Editions)
+## Testing on Firefox
 
-- Go to `about:addons`.
-- Click the gear button.
-- Click "Install Add-On From File...".
-- Load the `/build/toolbox_v<version>_firefox.zip` file.
+- Go to `about:debugging`.
+- Click "This Firefox" in the sidebar.
+- Click "Load Temporary Add-on...".
+- Firefox asks for a zip or the manifest file, so load the `build/firefox/manifest.json` file.

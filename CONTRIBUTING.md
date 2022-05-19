@@ -1,57 +1,59 @@
 # Contributor guidelines
 
-Thinking about contributing to toolbox? Awesome! Here is some information to get you started! 
+Thinking about contributing to toolbox? Awesome! We accept a variety of different types of contributions:
 
-## Reporting bugs 
+## Issues and Ideas
 
-We ask that you first make a post in the [/r/toolbox](https://www.reddit.com/r/toolbox) subreddit before submitting an issue here. This in order to keep clutter out of the issues on github as much as possible. 
+We welcome bug reports and feature requests. Please submit those to [/r/toolbox](https://www.reddit.com/r/toolbox) rather than creating a Github issue unless you've already talked to us about your issue or idea, to help us minimize clutter.
 
-## Contributing documentation
+## Documentation
 
-You don't need to be a programmer to contribute! User documentation is something that can almost always be improved. So if you want to contribute and can't contribute code have a look at the [/r/toolbox documentation pages](https://www.reddit.com/r/toolbox/wiki) 
+Our [user documentation pages](https://www.reddit.com/r/toolbox/wiki) can always use help, and contributing doesn't require coding knowledge! If you know how to use Toolbox and want to help the project, check out our docs wiki.
 
-## Contributing code 
+We also accept edits to [our Github wiki](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki), which holds documentation for our internal processes and for third-party developers looking to integrate toolbox settings and data into their tools. Working on it will require a fair bit of techincal knowledge, but we welcome feedback and changes there as well.
 
-New contributions to toolbox are always welcome, there are some guidelines we ask you to follow. 
+## Contributing Code
 
-### Code/Programming style guidelines 
+We review and accept pull requests for new features and bug fixes. Here's some information that will be useful for developers looking to get started:
 
-Since toolbox is a project that receives contributions from multiple people from various programming backgrounds it is important to be aware of style conventions. Our programming style guidelines aim is to make it easier for someone who starts work on toolbox to familiarize themselves with the style conventions agreed upon in toolbox.
+### Code/Programming style guidelines
 
-The document can be found [in this wiki article](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Programming-style-guide).
+Since toolbox is a project that receives contributions from multiple people from various programming backgrounds, it's important to be aware of style conventions. We have [a dev wiki article](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Programming-style-guide) that explains some of our setup.
 
-### Contributing completely new functionality 
+### Contributing completely new functionality
 
-We welcome new functionality, however it is always possible that someone is already working on something you have thought up or that we have not implemented something deliberately. So if you are considering coding new functionality it is always a good idea to first check. Simply make an issue here on GitHub or [contact the team on Discord or IRC](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Contacting-the-toolbox-team)
+We welcome new functionality, however it is always possible that someone is already working on something you have thought up or that we have not implemented something deliberately. So if you are considering coding new functionality it is always a good idea to first check. Simply make an issue here on GitHub or [contact the team on Discord or IRC](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Contacting-the-toolbox-team).
 
 ### Existing utility functions
 
-We have a lot of utility functions in toolbox ready to be used for background operations as well as interface building. So when you need a specific sort of function it is always a good idea make sure to check if it does not already exist. 
+We have a lot of utility functions in toolbox ready to be used for background operations as well as interface building. So when you need a specific sort of function it is always a good idea make sure to check if it does not already exist.
 
 You can find the documentation for all this on the following locations:
 
-- [JSDoc source code documentation](https://toolbox-team.github.io/source-docs/) Note: Not yet entirely complete, more documentation for code is an ongoing effort. 
-- [Toolbox module documentation](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Toolbox-Module-Structure) details how the general toolbox module structure works. 
-- Team members on Discord. We try to keep the documentation updated but it very much is a work in progress. So when things are unclear don't be afraid to simply ask. 
+- [JSDoc source code documentation](https://toolbox-team.github.io/source-docs/) Note: Not yet entirely complete, more documentation for code is an ongoing effort.
+- [Toolbox module documentation](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Toolbox-Module-Structure) details how the general toolbox module structure works.
+- Team members on Discord. We try to keep the documentation updated but it very much is a work in progress. So when things are unclear don't be afraid to simply ask.
 
 ## Project structure
 
-- `/`: root directory containing scripting for building toolbox and configuration for development related things (linting, git configuration files). 
-- `extension/`: root directory of the extension itself. Contains the manifests. From here the unpacked extension can be loaded for development. 
+- `/`: root directory containing scripting for building toolbox and configuration for development related things (linting, git configuration files).
+- `extension/`: root directory of the extension itself. Contains the manifests. From here the unpacked extension can be loaded for development.
 - `extension/data/`: Directory containing the functional code of toolbox. All files starting with `tb` are toolbox core scripts.
 - `extension/data/tbmodule.js`: Modules are loaded into toolbox through this.
-- `extension/data/tbstorage.js`: Everything storage related. 
+- `extension/data/tbstorage.js`: Everything storage related.
 - `extension/data/tbui.js`: Handles creating UI elements.
 - `extension/data/tbhelpers.js`: Contains standalone utility functions. Public functions all are part of the `TBHelpers` object.
 - `extension/data/tbapi.js`: Contains reddit api utility functions. Public functions all are part of the `TBApi` object.
-- `extension/data/tbcore.js`: TBCore is one of the core blocks on which toolbox is build. It contains a lot of information about the state of toolbox and reddit. 
+- `extension/data/tbcore.js`: TBCore is one of the core blocks on which toolbox is build. It contains a lot of information about the state of toolbox and reddit.
 - `extension/data/background/`: Contains extension background scripts
 - `extension/data/images/`: Images used by toolbox.
 - `extension/data/libs/`: Contains javascript libraries used by toolbox
-- `extension/data/modules/`: Contains the individual toolbox modules. 
+- `extension/data/modules/`: Contains the individual toolbox modules.
 - `extension/data/styles/`: Contains all CSS
 
 ## Building
+
+(FIXME: I think this section is outdated)
 
 Building is only needed if you want to test in Firefox as the build process makes some changes to `extension/manifest.json` for firefox. For Chrome and other chromium based browsers the building steps below are not needed.
 
@@ -67,7 +69,8 @@ $ npm run docs         # Build documentation of internal interfaces
 Once you've built a .zip for your platform, you're ready to test! Remember to reload the extension between builds.
 
 ## Testing on Chrome
-**Note:** It is not needed to build for chrome as it can be run directly from source. 
+
+**Note:** It is not needed to build for chrome as it can be run directly from source.
 
 - Go to `chrome://extensions`.
 - Check the "Developer mode" checkbox if it's not already checked.

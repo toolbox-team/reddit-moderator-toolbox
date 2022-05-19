@@ -21,10 +21,6 @@ If you think you've found a bug, or want to suggest a new feature, please [make 
 
 All Toolbox subreddit settings and data are stored in subreddit wikis through versioned JSON. Third party applications can use this data to hook into toolbox features like usernotes. Documentation for third-party application developers looking to integrate with toolbox can be found [on our Github wiki][third-party-docs].
 
-## Big Thanks
-
-Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs][saucelabs]
-
 [webstore]: https://chrome.google.com/webstore/detail/moderator-toolbox-for-red/jhjpjhhkcbkmgdkahnckfboefnkgghpo
 [amo]: https://addons.mozilla.org/en-US/firefox/addon/reddit-moderator-toolbox/
 [discord]: https://discord.gg/8fGCykQ

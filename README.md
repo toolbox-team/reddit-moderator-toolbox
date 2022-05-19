@@ -12,7 +12,7 @@ A set of tools to be used by moderators on Reddit in order to make their jobs ea
 
 ## Reporting issues and feature requests
 
-If you think you've found a bug, or want to suggest a new feature, please [make a post on /r/toolbox](https://new.reddit.com/r/toolbox/submit?text=true) before creating an issue on the repo!
+If you think you've found a bug, or want to suggest a new feature, please [make a post on /r/toolbox][post-on-reddit] before creating an issue on the repo!
 
 ## Building and Contributing
 
@@ -27,6 +27,7 @@ All Toolbox subreddit settings and data are stored in subreddit wikis through ve
 [edge-store]: https://microsoftedge.microsoft.com/addons/detail/moderator-toolbox-for-red/nolhfmoadpbgfeonfnjlcfmhhkmdlfcl
 
 [discord]: https://discord.gg/8fGCykQ
+[post-on-reddit]: https://new.reddit.com/r/toolbox/submit?text=true
 [user-docs]: https://www.reddit.com/r/toolbox/w/docs
 
 [nodejs]: https://nodejs.org/

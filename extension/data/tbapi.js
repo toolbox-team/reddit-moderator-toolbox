@@ -800,3 +800,27 @@ export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/no
     TBStorage.purifyObject(response);
     return response.mod_notes;
 });
+
+
+/**
+ * Creates a mod note on the given user in the given subreddit.
+ * @param {string} subreddit The name of the subreddit
+ * @param {string} user The name of the user
+ * @param {string} note The text of the note to add
+ * @param {string} [label] One of Reddit's supported note labels
+ * @param {string} [redditID] Fullname of an associated post or comment
+ * @returns {Promise}
+ */
+export const createModNote = ({
+    subreddit,
+    user,
+    note,
+    label,
+    redditID,
+}) => apiOauthPOST('/api/mod/notes', {
+    subreddit,
+    user,
+    note,
+    label,
+    reddit_id: redditID,
+});

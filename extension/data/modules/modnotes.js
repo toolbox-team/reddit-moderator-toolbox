@@ -135,6 +135,7 @@ function updateModNotesBadge ($badge, {
  * @param {string} data.user Name of the relevant user
  * @param {string} data.subreddit Name of the relevant subreddit
  * @param {object[]} [data.notes] Note objects for the user, or null/undefined
+ * @returns {jQuery} The created popup
  */
 function createModNotesPopup ({
     user,
@@ -146,9 +147,18 @@ function createModNotesPopup ({
         tabs: [{
             title: 'All Activity',
             content: `
-                <p class="error">loading...</p>
+                <div class="tb-modnote-table-wrap">
+                    <p class="error">loading...</p>
+                </div>
+                <div class="tb-modnote-create-wrap">
+                    <b>Add a Note</b>
+                    <!-- TODO: erin put a label select here too thx -->
+                    <input type="text" class="tb-modnote-text-input tb-input">
+                </div>
             `,
-            footer: actionButton('dab', 'tb-modnote-dab'),
+            footer: $(actionButton('Create Note', 'tb-modnote-create-button'))
+                .on('click', async () => {
+                }),
         }],
         cssClass: 'tb-modnote-popup',
     });
@@ -171,7 +181,7 @@ function createModNotesPopup ({
 function updateModNotesPopup ($popup, {
     notes,
 }) {
-    const $content = $popup.find('.tb-window-content');
+    const $content = $popup.find('.tb-modnote-table-wrap');
     $content.empty();
 
     if (!notes) {
@@ -194,10 +204,13 @@ function updateModNotesPopup ($popup, {
         // Generate a table for the notes we have and display that
         $content.append(generateNotesTable(notes));
     }
-
-    // TODO: append stuff for creating notes here
 }
 
+/**
+ * Generates a table of the given notes.
+ * @param {object[]} notes An array of note objects
+ * @returns {jQuery} The generated table
+ */
 function generateNotesTable (notes) {
     const $notesTable = $(`
         <table class="tb-modnote-table">
@@ -278,6 +291,7 @@ export default new Module({
     id: 'ModNotes',
     enabledByDefault: true,
 }, function () {
+    // Handle authors showing up on the page
     TBListener.on('author', async e => {
         const subreddit = e.detail.data.subreddit.name;
         const author = e.detail.data.author;
@@ -351,4 +365,22 @@ export default new Module({
             this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);
         }
     });
+
+    // Handle create note button clicks
+    $('body').on('click', '.tb-modnote-create-button', async (event) => {
+        const $popup = $(event.target).closest('.tb-modnote-popup');
+        const $textInput = $popup.find('.tb-modnote-text-input');
+        try {
+            await TBApi.createModNote({
+                user: $popup.attr('data-user'),
+                subreddit: $popup.attr('data-subreddit'),
+                note: $textInput.val(),
+            });
+            $textInput.val('');
+            alert('Note saved!');
+        } catch (error) {
+            this.error(`Failed to create mod note on /u/${user} in /r/${subreddit}:`, error);
+            alert('Failed to create mod note');
+        }
+    })
 });

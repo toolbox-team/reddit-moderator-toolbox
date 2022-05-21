@@ -268,9 +268,6 @@ function updateModNotesPopup ($popup, {
 
     $notesTable.append($notesTableBody);
     $content.append($notesTable);
-
-    // temporary debug stuff
-    $content.append($('<pre>').text(JSON.stringify(notes, null, 2)));
 }
 
 export default new Module({

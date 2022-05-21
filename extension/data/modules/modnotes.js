@@ -94,6 +94,7 @@ function updateModNotesBadge ($badge, {
         `);
     }
 }
+
 /**
  * Creates a mod note popup for the given information.
  * @param {object} data Data associated with the popup
@@ -197,7 +198,7 @@ export default new Module({
                     //       added to later if the user wants to load more
                     notes = await TBApi.getModNotes(subreddit, author);
                 } catch (error) {
-                    self.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}`, error);
+                    this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}`, error);
                 }
 
                 // Create, position, and display popup
@@ -218,16 +219,16 @@ export default new Module({
 
         // TODO: Use bulk endpoint to fetch multiple users' top notes, see
         //       https://reddit.com/comments/tjfxvt/_/i1kbioo/?context=9
-        self.debug(`Fetching mod notes for /u/${author} in /r/${subreddit}`);
+        this.debug(`Fetching mod notes for /u/${author} in /r/${subreddit}`);
         try {
             const notes = await TBApi.getModNotes(subreddit, author);
-            self.info(`Got notes for /u/${author} in /r/${subreddit}:`, notes);
+            this.info(`Got notes for /u/${author} in /r/${subreddit}:`, notes);
             updateModNotesBadge($badge, {
                 note: notes.find(note => note.type === 'NOTE'),
                 noteCount: notes.length,
             });
         } catch (error) {
-            self.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);
+            this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);
         }
     });
 });

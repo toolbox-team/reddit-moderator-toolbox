@@ -198,12 +198,12 @@ function updateModNotesPopup ($popup, {
 
     // Create a table to display all the notes in
     const $notesTable = $(`
-        <table class="utagger-notes">
+        <table class="tb-modnote-table">
             <thead>
                 <tr>
-                    <td>Author</td>
-                    <td>Type</td>
-                    <td>Details</td>
+                    <th>Author</th>
+                    <th>Type</th>
+                    <th>Details</th>
                 </tr>
             </thead>
         </table>
@@ -239,9 +239,9 @@ function updateModNotesPopup ($popup, {
 
         if (note.mod_action_data?.action) {
             $noteDetails.append(`
-                <i>
+                <span class="tb-modnote-action-summary">
                     Took action "${escapeHTML(note.mod_action_data.action)}"${note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''}${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
-                </i>
+                </span>
             `);
         }
 

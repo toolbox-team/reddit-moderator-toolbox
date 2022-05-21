@@ -1,0 +1,11 @@
+.mod-toolbox-rd .tb-modnote-table :is(th, td) {
+	/* stolen from usernotes, break this out into a generic table class later */
+	padding: 2px !important;
+	border: solid 1px #C1BFBF;
+	vertical-align: top;
+}
+
+.mod-toolbox-rd .tb-modnote-action-summary {
+	font-style: italic;
+	opacity: 0.5;
+}

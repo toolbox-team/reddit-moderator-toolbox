@@ -2,7 +2,7 @@ import {Module} from '../tbmodule.js';
 import {getModSubs, link, modsSub} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
-import {actionButton, drawPosition, popup} from '../tbui.js';
+import {actionButton, drawPosition, icons, popup} from '../tbui.js';
 import TBListener from '../tblistener.js';
 
 /**
@@ -156,9 +156,7 @@ function createModNotesPopup ({
                     <input type="text" class="tb-modnote-text-input tb-input">
                 </div>
             `,
-            footer: $(actionButton('Create Note', 'tb-modnote-create-button'))
-                .on('click', async () => {
-                }),
+            footer: actionButton('Create Note', 'tb-modnote-create-button'),
         }],
         cssClass: 'tb-modnote-popup',
     });
@@ -219,6 +217,7 @@ function generateNotesTable (notes) {
                     <th>Author</th>
                     <th>Type</th>
                     <th>Details</th>
+                    <th></th>
                 </tr>
             </thead>
         </table>
@@ -275,6 +274,25 @@ function generateNotesTable (notes) {
 
         $noteRow.append($noteDetails);
 
+        // Only manually added notes can be deleted
+        if (note.type === 'NOTE') {
+            $noteRow.append(`
+                <td>
+                    <a
+                        href="#"
+                        role="button"
+                        class="tb-modnote-delete-button tb-icons tb-icons-negative"
+                        data-note-id="${escapeHTML(note.id)}"
+                    >
+                        ${icons.delete}
+                    </a>
+                </td>
+            `);
+        } else {
+            // append an empty td to avoid weird border stuff
+            $noteRow.append('<td>')
+        }
+
         $notesTableBody.append($noteRow);
     }
 
@@ -321,6 +339,7 @@ export default new Module({
                 user: e.detail.data.author,
                 subreddit: e.detail.data.subreddit.name,
             });
+            // TODO: don't register this directly on the badge, use $body.on('click', selector, ...)
             $badge.on('click', async clickEvent => {
                 // TODO: open popup with more information for this user
                 this.info(`clicked badge for /u/${author} in /r/${subreddit}`);
@@ -367,7 +386,9 @@ export default new Module({
     });
 
     // Handle create note button clicks
-    $('body').on('click', '.tb-modnote-create-button', async (event) => {
+    const $body = $('body');
+
+    $body.on('click', '.tb-modnote-create-button', async event => {
         const $popup = $(event.target).closest('.tb-modnote-popup');
         const $textInput = $popup.find('.tb-modnote-text-input');
         try {
@@ -381,6 +402,24 @@ export default new Module({
         } catch (error) {
             this.error(`Failed to create mod note on /u/${user} in /r/${subreddit}:`, error);
             alert('Failed to create mod note');
+        }
+    })
+
+    $body.on('click', '.tb-modnote-delete-button', async event => {
+        const $button = $(event.target);
+        const $popup = $button.closest('.tb-modnote-popup');
+
+        try {
+            await TBApi.deleteModNote({
+                user: $popup.attr('data-user'),
+                subreddit: $popup.attr('data-subreddit'),
+                id: $button.attr('data-note-id'),
+            });
+            $button.closest('tr').remove();
+            alert('Note removed!')
+        } catch (error) {
+            this.error(`Failed to delete note:`, error);
+            alert('Failed to delete note');
         }
     })
 });

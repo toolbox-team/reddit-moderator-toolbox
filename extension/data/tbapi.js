@@ -142,6 +142,20 @@ export const apiOauthGET = (endpoint, query) => sendRequest({
 });
 
 /**
+ * Sends an authenticated DELETE request against the OAuth API.
+ * @function
+ * @param {string} endpoint The endpoint to request
+ * @param {object} query Query parameters as an object
+ */
+ export const apiOauthDELETE = (endpoint, query) => sendRequest({
+    method: 'DELETE',
+    oauth: true,
+    endpoint,
+    query,
+    okOnly: true,
+});
+
+/**
  * A promise that will fulfill with details about the current user, or reject if
  * user details can't be fetched. May return a cached details object if multiple
  * timeouts are encountered.
@@ -804,11 +818,12 @@ export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/no
 
 /**
  * Creates a mod note on the given user in the given subreddit.
- * @param {string} subreddit The name of the subreddit
- * @param {string} user The name of the user
- * @param {string} note The text of the note to add
- * @param {string} [label] One of Reddit's supported note labels
- * @param {string} [redditID] Fullname of an associated post or comment
+ * @param {object} data
+ * @param {string} data.subreddit The name of the subreddit
+ * @param {string} data.user The name of the user
+ * @param {string} data.note The text of the note to add
+ * @param {string} data.[label] One of Reddit's supported note labels
+ * @param {string} data.[redditID] Fullname of an associated post or comment
  * @returns {Promise}
  */
 export const createModNote = ({
@@ -823,4 +838,18 @@ export const createModNote = ({
     note,
     label,
     reddit_id: redditID,
+});
+
+/**
+ * Deletes a mod note on the given user in the given subreddit.
+ * @param {object} data
+ * @param {string} subreddit The name of the subreddit
+ * @param {string} user The name of the user
+ * @param {string} id The ID of the note
+ * @returns {Promise}
+ */
+export const deleteModNote = ({subreddit, user, id}) => apiOauthDELETE('/api/mod/notes', {
+    subreddit,
+    user,
+    note_id: id,
 });

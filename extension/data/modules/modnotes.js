@@ -385,9 +385,9 @@ export default new Module({
         }
     });
 
-    // Handle create note button clicks
     const $body = $('body');
 
+    // Handle create note button clicks
     $body.on('click', '.tb-modnote-create-button', async event => {
         const $popup = $(event.target).closest('.tb-modnote-popup');
         const $textInput = $popup.find('.tb-modnote-text-input');
@@ -399,12 +399,15 @@ export default new Module({
             });
             $textInput.val('');
             alert('Note saved!');
+            // TODO: add the new note to the table maybe? does creating the note
+            //       return the created note object? that would make it easy
         } catch (error) {
             this.error(`Failed to create mod note on /u/${user} in /r/${subreddit}:`, error);
             alert('Failed to create mod note');
         }
     })
 
+    // Handle delete note button clicks
     $body.on('click', '.tb-modnote-delete-button', async event => {
         const $button = $(event.target);
         const $popup = $button.closest('.tb-modnote-popup');

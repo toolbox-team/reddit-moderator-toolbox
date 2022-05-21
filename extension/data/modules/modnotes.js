@@ -89,7 +89,7 @@ function updateModNotesBadge ($badge, {
     if (noteCount > 1) {
         $badge.append(`
             <span class="tb-modnote-more-counter">
-                    (+${noteCount - 1})
+                (+${noteCount - 1})
             </span>
         `);
     }
@@ -167,9 +167,9 @@ function updateModNotesPopup ($popup, {
         <table class="utagger-notes">
             <thead>
                 <tr>
-                    <td>Date</td>
-                    <td>Mod</td>
-                    <td>Note</td>
+                    <td>Author</td>
+                    <td>Type</td>
+                    <td>Details</td>
                 </tr>
             </thead>
         </table>
@@ -181,23 +181,54 @@ function updateModNotesPopup ($popup, {
         const createdAt = new Date(note.created_at * 1000);
         const mod = note.operator; // TODO: can [deleted] show up here?
 
-        $notesTableBody.append(`
+        const $noteRow = $(`
             <tr>
                 <td>
-                    <time datetime="${escapeHTML(createdAt.toISOString())}">
-                        ${escapeHTML(createdAt.toLocaleString())}
-                    </time>
-                </td>
-                <td>
-                    <a href="${link(`/user/${encodeURIComponent(note.operator)}`)}">
-                        /u/${escapeHTML(note.operator)}
+                    <a href="${link(`/user/${encodeURIComponent(mod)}`)}">
+                        /u/${escapeHTML(mod)}
                     </a>
+                    <br>
+                    <small>
+                        <time datetime="${escapeHTML(createdAt.toISOString())}">
+                            ${escapeHTML(createdAt.toLocaleString())}
+                        </time>
+                    </small>
                 </td>
                 <td>
-                    ${escapeHTML(note.user_note_data.note || '') || '<span class="empty">(none)</span>'}
+                    <code>
+                        ${escapeHTML(note.type)}
+                    </code>
                 </td>
             </tr>
-        `)
+        `);
+
+        // Build the note details based on what sort of information is present
+        const $noteDetails = $('<td>');
+
+        if (note.mod_action_data?.action) {
+            $noteDetails.append(`
+                <em>
+                    Took action "${escapeHTML(note.mod_action_data.action)}"${note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''}${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
+                </em>
+            `);
+        }
+
+        if (note.user_note_data?.note) {
+            $noteDetails.append(`
+                <blockquote>
+                    ${note.user_note_data.label ? `
+                        <span style="color:${escapeHTML(labelColors[note.user_note_data.label])}">
+                            [${escapeHTML(note.user_note_data.label)}]
+                        </span>
+                    ` : ''}
+                    ${escapeHTML(note.user_note_data.note)}
+                </blockquote>
+            `);
+        }
+
+        $noteRow.append($noteDetails);
+
+        $notesTableBody.append($noteRow);
     }
 
     // Update dates in a nice format

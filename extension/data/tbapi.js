@@ -146,8 +146,9 @@ export const apiOauthGET = (endpoint, query) => sendRequest({
  * @function
  * @param {string} endpoint The endpoint to request
  * @param {object} query Query parameters as an object
+ * @returns {Promise}
  */
- export const apiOauthDELETE = (endpoint, query) => sendRequest({
+export const apiOauthDELETE = (endpoint, query) => sendRequest({
     method: 'DELETE',
     oauth: true,
     endpoint,
@@ -814,7 +815,6 @@ export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/no
     TBStorage.purifyObject(response);
     return response.mod_notes;
 });
-
 
 /**
  * Creates a mod note on the given user in the given subreddit.

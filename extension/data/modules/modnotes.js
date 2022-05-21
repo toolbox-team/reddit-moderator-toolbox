@@ -20,7 +20,7 @@ const typeNames = {
     SPAM: 'Spam',
     CONTENT_CHANGE: 'Update Post',
     MOD_ACTION: 'Mod Action',
-}
+};
 
 /**
  * An object mapping modnote labels to display colors. All colors are from
@@ -54,7 +54,7 @@ const labelNames = {
     SPAM_WATCH: 'Spam Watch',
     SOLID_CONTRIBUTOR: 'Solid Contributor',
     HELPFUL_USER: 'Helpful User',
-}
+};
 
 /**
  * Creates a mod note badge for the given information.
@@ -290,7 +290,7 @@ function generateNotesTable (notes) {
             `);
         } else {
             // append an empty td to avoid weird border stuff
-            $noteRow.append('<td>')
+            $noteRow.append('<td>');
         }
 
         $notesTableBody.append($noteRow);
@@ -402,10 +402,10 @@ export default new Module({
             // TODO: add the new note to the table maybe? does creating the note
             //       return the created note object? that would make it easy
         } catch (error) {
-            this.error(`Failed to create mod note on /u/${user} in /r/${subreddit}:`, error);
+            this.error('Failed to create mod note:', error);
             alert('Failed to create mod note');
         }
-    })
+    });
 
     // Handle delete note button clicks
     $body.on('click', '.tb-modnote-delete-button', async event => {
@@ -419,10 +419,10 @@ export default new Module({
                 id: $button.attr('data-note-id'),
             });
             $button.closest('tr').remove();
-            alert('Note removed!')
+            alert('Note removed!');
         } catch (error) {
-            this.error(`Failed to delete note:`, error);
+            this.error('Failed to delete note:', error);
             alert('Failed to delete note');
         }
-    })
+    });
 });

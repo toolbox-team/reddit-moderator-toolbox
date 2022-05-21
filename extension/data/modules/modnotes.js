@@ -1,6 +1,6 @@
 import {Module} from '../tbmodule.js';
-import {getModSubs, modsSub} from '../tbcore.js';
-import {htmlEncode} from '../tbhelpers.js';
+import {getModSubs, link, modsSub} from '../tbcore.js';
+import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
 import {actionButton, drawPosition, popup} from '../tbui.js';
 import TBListener from '../tblistener.js';
@@ -150,6 +150,49 @@ function updateModNotesPopup ($popup, {
         return;
     }
 
+    // create a table to display all the notes
+    const $notesTable = $(`
+        <table class="utagger-notes">
+            <thead>
+                <tr>
+                    <td>Date</td>
+                    <td>Mod</td>
+                    <td>Note</td>
+                </tr>
+            </thead>
+        </table>
+    `);
+    const $notesTableBody = $('<tbody>');
+    for (const note of notes) {
+        const createdAt = new Date(note.created_at * 1000);
+        const mod = note.operator; // TODO: can [deleted] show up here?
+
+        $notesTableBody.append(`
+            <tr>
+                <td>
+                    <time datetime="${escapeHTML(createdAt.toISOString())}">
+                        ${escapeHTML(createdAt.toLocaleString())}
+                    </time>
+                </td>
+                <td>
+                    <a href="${link(`/user/${encodeURIComponent(note.operator)}`)}">
+                        /u/${escapeHTML(note.operator)}
+                    </a>
+                </td>
+                <td>
+                    ${escapeHTML(note.user_note_data.note || '') || '<span class="empty">(none)</span>'}
+                </td>
+            </tr>
+        `)
+    }
+
+    // Update dates in a nice format
+    $notesTableBody.find('time.timeago').timeago();
+
+    $notesTable.append($notesTableBody);
+    $content.append($notesTable);
+
+    // temporary debug stuff
     $content.append($('<pre>').text(JSON.stringify(notes, null, 2)));
 }
 

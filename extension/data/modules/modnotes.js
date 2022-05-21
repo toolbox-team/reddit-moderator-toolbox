@@ -100,6 +100,7 @@ function updateModNotesBadge ($badge, {
  * @param {object} data Data associated with the popup
  * @param {string} data.user Name of the relevant user
  * @param {string} data.subreddit Name of the relevant subreddit
+ * @param {object[]} [data.notes] Note objects for the user, or null/undefined
  */
 function createModNotesPopup ({
     user,
@@ -127,11 +128,21 @@ function createModNotesPopup ({
     return $popup;
 }
 
+/**
+ * Updates a mod notes popup in place with the given information.
+ * @param {jQuery} $popup The popup to update
+ * @param {object} data
+ * @param {object[]} [data.notes] Note objects for the user, or null/undefined
+ */
 function updateModNotesPopup ($popup, {
     notes,
 }) {
     const $content = $popup.find('.tb-window-content');
     $content.empty();
+
+    // Notes being null/undefined indicates notes couldn't be fetched
+    // TODO: probably pass errors into this function for display, and also to
+    //       distinguish "failed to load" from "still loading"
     if (!notes) {
         $content.append(`
             <p class="error">
@@ -141,6 +152,7 @@ function updateModNotesPopup ($popup, {
         return;
     }
 
+    // If the notes list is empty, our job is very easy
     if (!notes.length) {
         $content.append(`
             <p>
@@ -150,7 +162,7 @@ function updateModNotesPopup ($popup, {
         return;
     }
 
-    // create a table to display all the notes
+    // Create a table to display all the notes in
     const $notesTable = $(`
         <table class="utagger-notes">
             <thead>
@@ -162,6 +174,8 @@ function updateModNotesPopup ($popup, {
             </thead>
         </table>
     `);
+
+    // Build the body of the table
     const $notesTableBody = $('<tbody>');
     for (const note of notes) {
         const createdAt = new Date(note.created_at * 1000);

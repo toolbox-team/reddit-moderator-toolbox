@@ -6,11 +6,29 @@ import {actionButton, drawPosition, popup} from '../tbui.js';
 import TBListener from '../tblistener.js';
 
 /**
+ * An object mapping modnote types to human-friendly display names.
+ * @constant {object}
+ */
+// NOTE: values of this object are not escaped before being inserted in HTML
+const typeNames = {
+    NOTE: 'Note',
+    APPROVAL: 'Approve',
+    REMOVAL: 'Remove',
+    BAN: 'Ban',
+    MUTE: 'Mail Mute',
+    INVITE: 'Invite',
+    SPAM: 'Spam',
+    CONTENT_CHANGE: 'Update Post',
+    MOD_ACTION: 'Mod Action',
+}
+
+/**
  * An object mapping modnote labels to display colors. All colors are from
  * the default Toolbox usernote type colors, except the HELPFUL_USER label
  * which doesn't have an analogue in Toolbox usernotes.
  * @constant {object}
  */
+// NOTE: values of this object are not escaped before being inserted in HTML
 const labelColors = {
     BOT_BAN: 'black',
     PERMA_BAN: 'darkred',
@@ -21,6 +39,22 @@ const labelColors = {
     SOLID_CONTRIBUTOR: 'green',
     HELPFUL_USER: 'lightseagreen',
 };
+
+/**
+ * An object mapping modnote lavels to human-friendly display names.
+ * @constant {object}
+ */
+// NOTE: values of this object are not escaped before being inserted in HTML
+const labelNames = {
+    BOT_BAN: 'Bot Ban',
+    PERMA_BAN: 'Permaban',
+    BAN: 'Ban',
+    ABUSE_WARNING: 'Abuse Warning',
+    SPAM_WARNING: 'Spam Warning',
+    SPAM_WATCH: 'Spam Watch',
+    SOLID_CONTRIBUTOR: 'Solid Contributor',
+    HELPFUL_USER: 'Helpful User',
+}
 
 /**
  * Creates a mod note badge for the given information.
@@ -195,9 +229,7 @@ function updateModNotesPopup ($popup, {
                     </small>
                 </td>
                 <td>
-                    <code>
-                        ${escapeHTML(note.type)}
-                    </code>
+                    ${typeNames[note.type]}
                 </td>
             </tr>
         `);
@@ -207,9 +239,9 @@ function updateModNotesPopup ($popup, {
 
         if (note.mod_action_data?.action) {
             $noteDetails.append(`
-                <em>
+                <i>
                     Took action "${escapeHTML(note.mod_action_data.action)}"${note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''}${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
-                </em>
+                </i>
             `);
         }
 
@@ -217,8 +249,8 @@ function updateModNotesPopup ($popup, {
             $noteDetails.append(`
                 <blockquote>
                     ${note.user_note_data.label ? `
-                        <span style="color:${escapeHTML(labelColors[note.user_note_data.label])}">
-                            [${escapeHTML(note.user_note_data.label)}]
+                        <span style="color:${labelColors[note.user_note_data.label]}">
+                            [${labelNames[note.user_note_data.label] || escapeHTML(note.user_note_data.label)}]
                         </span>
                     ` : ''}
                     ${escapeHTML(note.user_note_data.note)}

@@ -174,29 +174,31 @@ function updateModNotesPopup ($popup, {
     const $content = $popup.find('.tb-window-content');
     $content.empty();
 
-    // Notes being null/undefined indicates notes couldn't be fetched
-    // TODO: probably pass errors into this function for display, and also to
-    //       distinguish "failed to load" from "still loading"
     if (!notes) {
+        // Notes being null/undefined indicates notes couldn't be fetched
+        // TODO: probably pass errors into this function for display, and also
+        //       to distinguish "failed to load" from "still loading"
         $content.append(`
             <p class="error">
                 Error fetching mod notes
             </p>
         `);
-        return;
-    }
-
-    // If the notes list is empty, our job is very easy
-    if (!notes.length) {
+    } else if (!notes.length) {
+        // If the notes list is empty, our job is very easy
         $content.append(`
             <p>
                 No notes
             </p>
         `);
-        return;
+    } else {
+        // Generate a table for the notes we have and display that
+        $content.append(generateNotesTable(notes));
     }
 
-    // Create a table to display all the notes in
+    // TODO: append stuff for creating notes here
+}
+
+function generateNotesTable (notes) {
     const $notesTable = $(`
         <table class="tb-modnote-table">
             <thead>
@@ -266,8 +268,9 @@ function updateModNotesPopup ($popup, {
     // Update dates in a nice format
     $notesTableBody.find('time.timeago').timeago();
 
+    // We're done generating the body, add it to the table and return the result
     $notesTable.append($notesTableBody);
-    $content.append($notesTable);
+    return $notesTable;
 }
 
 export default new Module({

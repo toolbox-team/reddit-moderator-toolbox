@@ -1347,17 +1347,17 @@ async function saveUserNotes (sub, notes, reason) {
     }
 
     // Update cached notes with new notes object for this subreddit
-    TBStorage.getCache('Utils', 'noteCache', {}).then(cachedNotes => {
+    TBStorage.getCache('Utils', 'noteCache', {}).then(async cachedNotes => {
         cachedNotes[sub] = notes;
-        TBStorage.setCache('Utils', 'noteCache', cachedNotes);
+        await TBStorage.setCache('Utils', 'noteCache', cachedNotes);
     });
 
     // Deconvert notes to wiki format
-    notes = deconvertNotes(notes);
+    const deconvertedNotes = deconvertNotes(notes);
 
     // Write to wiki page
     try {
-        await TBApi.postToWiki('usernotes', sub, notes, reason, true, false);
+        await TBApi.postToWiki('usernotes', sub, deconvertedNotes, reason, true, false);
         TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
         return;
     } catch (error) {

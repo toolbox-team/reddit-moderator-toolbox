@@ -239,10 +239,6 @@ function startUsernotes ({maxChars, showDate}) {
         }
 
         getSubredditColors(subreddit).then(colors => {
-            console.warn('notes', notes);
-            console.warn('subreddit', subreddit);
-            console.warn('colors', colors);
-            console.warn('customThings', customThings);
             setNotes(notes, subreddit, colors, customThings);
         });
     }

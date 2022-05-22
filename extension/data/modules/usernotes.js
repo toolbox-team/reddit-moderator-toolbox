@@ -74,7 +74,7 @@ function startUsernotes ({maxChars, showDate}) {
         };
         // Correct for faulty third party usernotes implementations.
         const lowerCaseName = name.toLowerCase();
-        console.log(lowerCaseName, users);
+
         if (name !== lowerCaseName && Object.prototype.hasOwnProperty.call(users, lowerCaseName)) {
             userObject.name = name;
             const clonedNotes = JSON.parse(JSON.stringify(users[lowerCaseName].notes));
@@ -239,6 +239,10 @@ function startUsernotes ({maxChars, showDate}) {
         }
 
         getSubredditColors(subreddit).then(colors => {
+            console.warn('notes', notes);
+            console.warn('subreddit', subreddit);
+            console.warn('colors', colors);
+            console.warn('customThings', customThings);
             setNotes(notes, subreddit, colors, customThings);
         });
     }
@@ -665,7 +669,6 @@ function startUsernotes ({maxChars, showDate}) {
 
                 if (Object.prototype.hasOwnProperty.call(u, 'nonCanonicalName')) {
                     self.log(`Non Canoncial Username "${u.nonCanonicalName}" found. Correcting entry on save`);
-                    console.log(`Non Canoncial Username "${u.nonCanonicalName}" found. Correcting entry on save`);
                     delete notes.users[u.nonCanonicalName];
                     delete u.nonCanonicalName;
                 }

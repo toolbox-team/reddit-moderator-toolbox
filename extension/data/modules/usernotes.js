@@ -74,15 +74,17 @@ function startUsernotes ({maxChars, showDate}) {
         };
         // Correct for faulty third party usernotes implementations.
         const lowerCaseName = name.toLowerCase();
+        console.log(lowerCaseName, users);
         if (name !== lowerCaseName && Object.prototype.hasOwnProperty.call(users, lowerCaseName)) {
             userObject.name = name;
-            userObject.notes = users[lowerCaseName].notes;
+            const clonedNotes = JSON.parse(JSON.stringify(users[lowerCaseName].notes));
+            userObject.notes = clonedNotes;
+            userObject.nonCanonicalName = lowerCaseName;
         }
         if (Object.prototype.hasOwnProperty.call(users, name)) {
             userObject.name = name;
-            userObject.notes = userObject.notes.concat(users[name].notes);
-            console.log(users[name]);
-            console.log(userObject);
+            const clonedNotes = JSON.parse(JSON.stringify(users[name].notes));
+            userObject.notes = userObject.notes.concat(clonedNotes);
         }
 
         if (userObject.notes.length) {
@@ -660,6 +662,14 @@ function startUsernotes ({maxChars, showDate}) {
                     u.notes.unshift(note);
                     saveMsg = `create new note on user ${user}`;
                 }
+
+                if (Object.prototype.hasOwnProperty.call(u, 'nonCanonicalName')) {
+                    self.log(`Non Canoncial Username "${u.nonCanonicalName}" found. Correcting entry on save`);
+                    console.log(`Non Canoncial Username "${u.nonCanonicalName}" found. Correcting entry on save`);
+                    delete notes.users[u.nonCanonicalName];
+                    delete u.nonCanonicalName;
+                }
+                notes.users[user] = u;
             } else if (u === undefined && !deleteNote) {
                 // New user
                 notes.users[user] = userNotes;

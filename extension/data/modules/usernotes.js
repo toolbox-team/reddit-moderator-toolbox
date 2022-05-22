@@ -68,8 +68,26 @@ function startUsernotes ({maxChars, showDate}) {
     });
 
     function getUser (users, name) {
+        const userObject = {
+            name: '',
+            notes: [],
+        };
+        // Correct for faulty third party usernotes implementations.
+        const lowerCaseName = name.toLowerCase();
+        if (name !== lowerCaseName && Object.prototype.hasOwnProperty.call(users, lowerCaseName)) {
+            userObject.name = name;
+            userObject.notes = users[lowerCaseName].notes;
+        }
         if (Object.prototype.hasOwnProperty.call(users, name)) {
-            return users[name];
+            userObject.name = name;
+            userObject.notes = userObject.notes.concat(users[name].notes);
+            console.log(users[name]);
+            console.log(userObject);
+        }
+
+        if (userObject.notes.length) {
+            userObject.notes.sort((a, b) => b.time - a.time);
+            return userObject;
         }
         return undefined;
     }

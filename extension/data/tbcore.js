@@ -1,7 +1,7 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';
-import {NO_WIKI_PAGE, WIKI_PAGE_UNKNOWN, getModhash} from './tbapi.js';
+import {getModhash} from './tbapi.js';
 import {icons} from './tbconstants.js';
 import * as TBHelpers from './tbhelpers.js';
 
@@ -231,9 +231,6 @@ export let post_site = isModFakereddit || $('.redditname:not(.pagename) a:first'
 if (isModFakereddit || !post_site || invalidPostSites.indexOf(post_site) !== -1) {
     post_site = '';
 }
-
-// Error codes used in lots of places
-export {NO_WIKI_PAGE, WIKI_PAGE_UNKNOWN};
 
 // Page event management
 

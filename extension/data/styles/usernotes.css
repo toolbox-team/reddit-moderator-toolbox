@@ -110,6 +110,7 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-window a {
 }
 .mod-toolbox-rd .utagger-popup .utagger-type input:checked ~ div {
     background-color: #e2eefa;
+    outline: solid 1px #336699;
 }
 
 .mod-toolbox-rd .utagger-popup .utagger-type > div:before {

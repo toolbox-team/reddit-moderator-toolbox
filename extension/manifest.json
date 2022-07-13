@@ -4,10 +4,10 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "5.4.3",
-    "version_name": "5.4.3: \"Speeding Sloth\"",
+    "version": "5.6.5",
+    "version_name": "5.6.5: \"Deleting Dodo\"",
     "incognito": "split",
-    "applications": {
+    "browser_specific_settings": {
         "gecko": {
             "id": "yes@jetpack",
             "strict_min_version": "57.0"
@@ -35,6 +35,7 @@
             "data/libs/browser-polyfill-0.6.0.js",
             "data/libs/jquery-3.4.1.js",
             "data/background/background.js",
+            "data/background/ratelimiter.js",
             "data/background/handlers/webrequest.js",
             "data/background/handlers/reload.js",
             "data/background/handlers/cache.js",
@@ -56,6 +57,7 @@
                 "https://*.reddit.com/framedGild/*",
                 "https://*.reddit.com/framedModal/*",
                 "https://*.reddit.com/chat/*",
+                "https://*.reddit.com/account/sso/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",
                 "https://*.reddit.com/*.json?*",
@@ -87,44 +89,7 @@
                 "data/libs/codemirror/mode/yaml.js",
                 "data/libs/codemirror/mode/javascript.js",
                 "data/libs/pako.js",
-                "data/libs/tinycolor.js",
-                "data/tblog.js",
-                "data/libs/tbplugins.js",
-                "data/tbapi.js",
-                "data/tbstorage.js",
-                "data/tbui.js",
-                "data/tbhelpers.js",
-                "data/tbcore.js",
-                "data/tblistener.js",
-                "data/tbmodule.js",
-                "data/modules/devtools.js",
-                "data/modules/support.js",
-                "data/modules/modbar.js",
-                "data/modules/config.js",
-                "data/modules/betterbuttons.js",
-                "data/modules/domaintagger.js",
-                "data/modules/modmatrix.js",
-                "data/modules/syntax.js",
-                "data/modules/modbutton.js",
-                "data/modules/general.js",
-                "data/modules/notifier.js",
-                "data/modules/usernotes.js",
-                "data/modules/comment.js",
-                "data/modules/newmodmailpro.js",
-                "data/modules/modmailpro.js",
-                "data/modules/macros.js",
-                "data/modules/personalnotes.js",
-                "data/modules/historybutton.js",
-                "data/modules/removalreasons.js",
-                "data/modules/nukecomments.js",
-                "data/modules/trouble.js",
-                "data/modules/profile.js",
-                "data/modules/queue_overlay.js",
-                "data/modules/flyingsnoo.js",
-                "data/modules/queuetools.js",
-                "data/modules/achievements.js",
-                "data/modules/oldreddit.js",
-                "data/tbmoduleinit.js"
+                "data/libs/tinycolor.js"
             ]
         },
         {
@@ -137,6 +102,7 @@
                 "https://*.reddit.com/framedGild/*",
                 "https://*.reddit.com/framedModal/*",
                 "https://*.reddit.com/chat/*",
+                "https://*.reddit.com/account/sso/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",
                 "https://*.reddit.com/*.json?*",
@@ -163,6 +129,7 @@
                 "data/styles/usernotes.css",
                 "data/styles/config.css",
                 "data/styles/profile.css",
+                "data/styles/macros.css",
                 "data/styles/queue_overlay.css",
                 "data/styles/modmatrix.css",
                 "data/styles/codemirror/codemirror.css",
@@ -171,10 +138,16 @@
                 "data/styles/codemirror/matchesonscrollbar.css",
                 "data/styles/codemirror/show-hint.css",
                 "data/styles/codemirror/themes.css"
+            ],
+            "js": [
+                "data/init.js",
+                "data/libs/tbplugins.js"
             ]
         }
     ],
     "web_accessible_resources": [
+        "data/init.js.map",
+
         "/data/libs/snuownd.js",
         "/data/styles/font/MaterialIcons-Regular.woff2",
         "/data/styles/font/MaterialIcons-Regular.woff",

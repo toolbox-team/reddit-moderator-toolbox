@@ -1,0 +1,32 @@
+
+.mod-toolbox-rd .macro-popup .macro-edit-area {
+    font-size: 12px !important;
+    width: 60em;
+}
+
+.mod-toolbox-rd .macro-popup .tb-macro-preview {
+    margin: 5px 0;
+    padding: 0;
+}
+
+.mod-toolbox-rd .macro-popup .tb-macro-preview h3.tb-preview-heading {
+    margin: 5px 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.mod-toolbox-rd .macro-popup .tb-comment-body {
+    background-color: #f5f5f5;
+    margin: 0px;
+    padding: 5px;
+    font-size: 12px;
+    max-width: 60em;
+    height:  150px;
+    overflow-x: auto;
+    resize: both;
+}
+
+.mod-toolbox-rd .macro-popup .tb-macro-action-list {
+    margin: 5px 0;
+    padding: 5px;
+}

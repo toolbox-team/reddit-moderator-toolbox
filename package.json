@@ -4,8 +4,8 @@
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
     "private": true,
     "scripts": {
-        "build": "node build.js",
-        "build-watch": "nodemon --exec npm run build",
+        "build": "rollup -c rollup.config.js",
+        "build:watch": "rollup -c rollup.config.js --watch",
         "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
         "docs": "jsdoc -c jsdoc.json",
         "test": "jest",
@@ -19,17 +19,24 @@
         "url": "https://github.com/toolbox-team/reddit-moderator-toolbox.git"
     },
     "license": "Apache-2.0",
+    "dependencies": {
+        "webextension-polyfill": "^0.8.0"
+    },
     "devDependencies": {
+        "@rollup/plugin-node-resolve": "^13.0.0",
         "archiver": "^3.1.1",
         "codecov": "^3.7.1",
         "coveralls": "^3.0.7",
         "docdash": "^1.1.1",
-        "eslint": "^5.16.0",
+        "eslint": "^7.24.0",
+        "eslint-plugin-import": "^2.23.4",
         "eslint-plugin-jest": "^22.21.0",
         "jest": "^24.9.0",
         "jest-webextension-mock": "^3.5.0",
         "jsdoc": "^3.6.3",
         "nodemon": "^1.19.4",
+        "rollup": "^2.51.0",
+        "rollup-plugin-copy": "^3.4.0",
         "yargs": "^13.3.0"
     },
     "nodemonConfig": {

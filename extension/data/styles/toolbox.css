@@ -530,8 +530,13 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     padding: 3px;
 }
 
-.mod-toolbox-rd .mod-popup .flair-text {
+.mod-toolbox-rd .mod-popup .flair-text,
+.mod-toolbox-rd .mod-popup .flair-class {
     width: initial !important;
+}
+
+.mod-toolbox-rd .mod-popup .mod-popup-flair-input label[for="flair-template-id"] {
+    vertical-align: super !important;
 }
 
 .mod-toolbox-rd .tb-window-error {
@@ -1983,6 +1988,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 ------------
 */
 
+
 .res-nightmode .mod-toolbox-rd .tb-general-button,
 .res-nightmode .mod-toolbox-rd .tb-general-button:hover,
 .res-nightmode .mod-toolbox-rd .tb-action-button,
@@ -1999,8 +2005,25 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
 .res-nightmode .mod-toolbox-rd .tb-input,
 .res-nightmode .mod-toolbox-rd .menuarea.modtools,
-.res-nightmode .mod-toolbox-rd #tb-notification-alert
-
+.res-nightmode .mod-toolbox-rd #tb-notification-alert,
+.theme-dark.mod-toolbox-rd .tb-general-button,
+.theme-dark.mod-toolbox-rd .tb-general-button:hover,
+.theme-dark.mod-toolbox-rd .tb-action-button,
+.theme-dark.mod-toolbox-rd #tb-loading-stuff,
+.theme-dark.mod-toolbox-rd .tb-feedback-text,
+.theme-dark.mod-toolbox-rd .tb-bracket-button,
+.theme-dark.mod-toolbox-rd .tb-bracket-button:hover,
+.theme-dark.mod-toolbox-rd .tb-action-table,
+.theme-dark.mod-toolbox-rd .tb-window,
+.theme-dark.mod-toolbox-rd .reason-popup,
+.theme-dark.mod-toolbox-rd #tb-bottombar,
+.theme-dark.mod-toolbox-rd #tb-bottombar-hidden,
+.theme-dark.mod-toolbox-rd #tb-modbar-hide-tooltip,
+.theme-dark.mod-toolbox-rd #tb-context-menu,
+.theme-dark.mod-toolbox-rd .tb-input,
+.theme-dark.mod-toolbox-rd .menuarea.modtools,
+.theme-dark.mod-toolbox-rd #tb-notification-alert,
+.theme-dark.mod-toolbox-rd #tb-modmail-preview
 {
     filter: invert(90%)hue-rotate(180deg);
 }
@@ -2010,7 +2033,14 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd ul.tb-user-modsubs-expand-ul li img,
 .res-nightmode .mod-toolbox-rd ul.tb-user-modsubs-ul li img,
 .res-nightmode .mod-toolbox-rd .tb-user-thumbnail,
-.res-nightmode .mod-toolbox-rd a.tb-submission-thumbnail {
+.res-nightmode .mod-toolbox-rd a.tb-submission-thumbnail,
+.theme-dark.mod-toolbox-rd .tb-loading-content img,
+.theme-dark.mod-toolbox-rd .tb-trophy-icon,
+.theme-dark.mod-toolbox-rd ul.tb-user-modsubs-expand-ul li img,
+.theme-dark.mod-toolbox-rd ul.tb-user-modsubs-ul li img,
+.theme-dark.mod-toolbox-rd .tb-user-thumbnail,
+.theme-dark.mod-toolbox-rd a.tb-submission-thumbnail
+{
     filter: invert(90%)hue-rotate(180deg);
 }
 
@@ -2021,7 +2051,15 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .tb-window .tb-general-button:hover,
 .res-nightmode .mod-toolbox-rd .tb-window .tb-action-button,
 .res-nightmode .mod-toolbox-rd .tb-window .tb-bracket-button,
-.res-nightmode .mod-toolbox-rd .tb-window .tb-action-table {
+.res-nightmode .mod-toolbox-rd .tb-window .tb-action-table,
+.theme-dark.mod-toolbox-rd .menuarea.modtools .tb-general-button,
+.theme-dark.mod-toolbox-rd .menuarea.modtools .tb-general-button:hover,
+.theme-dark.mod-toolbox-rd .tb-window .tb-general-button,
+.theme-dark.mod-toolbox-rd .tb-window .tb-general-button:hover,
+.theme-dark.mod-toolbox-rd .tb-window .tb-action-button,
+.theme-dark.mod-toolbox-rd .tb-window .tb-bracket-button,
+.theme-dark.mod-toolbox-rd .tb-window .tb-action-table
+{
     filter: invert(0%);
 }
 
@@ -2033,41 +2071,71 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .reason-popup,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
-.res-nightmode .mod-toolbox-rd .menuarea.modtools
+.res-nightmode .mod-toolbox-rd .menuarea.modtools,
+.theme-dark.mod-toolbox-rd .menuarea.modtools [for="modtab-threshold"],
+.theme-dark.mod-toolbox-rd #tb-modbar-hide-tooltip,
+.theme-dark.mod-toolbox-rd .tb-feedback-text,
+.theme-dark.mod-toolbox-rd .tb-window,
+.theme-dark.mod-toolbox-rd .reason-popup,
+.theme-dark.mod-toolbox-rd #tb-bottombar,
+.theme-dark.mod-toolbox-rd #tb-context-menu,
+.theme-dark.mod-toolbox-rd .menuarea.modtools
 {
     color: #2f2f2f
 }
 
-.res-nightmode .mod-toolbox-rd .tb-bracket-button {
+.theme-dark.mod-toolbox-rd #tb-modmail-preview {
+    color: #353131;
+}
+
+
+.res-nightmode .mod-toolbox-rd .tb-bracket-button,
+.theme-dark.mod-toolbox-rd .tb-bracket-button
+{
     color: #353131;
     background-color: #d3dae2;
 }
 
 
-.res-nightmode .mod-toolbox-rd .tb-input.tb-input {
+.res-nightmode .mod-toolbox-rd .tb-input.tb-input,
+.theme-dark.mod-toolbox-rd .tb-input.tb-input
+{
     color: #ffffff;
     background-color: #000;
 }
 
-.res-nightmode .mod-toolbox-rd .tb-highlight-action-reason {
+.res-nightmode .mod-toolbox-rd .tb-highlight-action-reason,
+.theme-dark.mod-toolbox-rd .tb-highlight-action-reason
+{
     background-color: rgb(113, 68, 30);
     color: #fff;
 }
 
-.res-nightmode .mod-toolbox-rd .tb-highlight {
+.res-nightmode .mod-toolbox-rd .tb-highlight,
+.theme-dark.mod-toolbox-rd .tb-highlight
+{
     background-color: rgb(156, 156, 65);
     color: #fff;
 }
 
-.res-nightmode .mod-toolbox-rd .action-reason {
+.res-nightmode .mod-toolbox-rd .action-reason,
+.theme-dark.mod-toolbox-rd .action-reason
+{
     background-color: #56565680;
 }
 
-.res-nightmode .mod-toolbox-rd #mod-matrix-wrapper {
+.res-nightmode .mod-toolbox-rd #mod-matrix-wrapper,
+.res-nightmode .mod-toolbox-rd #mod-matrix-wrapper,
+.theme-dark.mod-toolbox-rd #mod-matrix-settings input,
+.theme-dark.mod-toolbox-rd #mod-matrix .action-number
+{
     background-color: #262626;
 }
 
 .res-nightmode .mod-toolbox-rd #mod-matrix-settings input,
-.res-nightmode .mod-toolbox-rd #mod-matrix .action-number {
+.res-nightmode .mod-toolbox-rd #mod-matrix .action-number,
+.theme-dark.mod-toolbox-rd #mod-matrix-settings input,
+.theme-dark.mod-toolbox-rd #mod-matrix .action-number
+{
     color: #CCCCCC;
 }

@@ -89,28 +89,29 @@ html.tb-nightmode,
 /* Color code "reply as"
 */
 
-.FancySelect__option:nth-child(2) {
+.mod-toolbox-rd .FancySelect__option:nth-child(2) {
   color: #0079d3;
 }
-.FancySelect__option:nth-child(2):hover {
+
+.mod-toolbox-rd .FancySelect__option:nth-child(2):hover {
   color: #fff;
   background: #0079d3;
 }
 
-.FancySelect__option:nth-child(3) {
+.mod-toolbox-rd .FancySelect__option:nth-child(3) {
   color: #46d160;
 }
 
-.FancySelect__option:nth-child(3):hover {
+.mod-toolbox-rd .FancySelect__option:nth-child(3):hover {
   color: #fff;
   background: #46d160;
 }
 
-.ThreadViewerReplyForm__replyButton.m-internal {
+.mod-toolbox-rd .ThreadViewerReplyForm__replyButton.m-internal {
   background: #46d160;
 }
 
-.m-internal .FancySelect__value {
+.mod-toolbox-rd .m-internal .FancySelect__value {
   color: #46d160;
 }
 
@@ -158,6 +159,20 @@ html.tb-nightmode,
 
 .new-modmail-activity-popup .tb-action-button.submit {
     margin-left: 5px;
+}
+
+
+/* Typing indicators and new message indicators
+*/
+
+.ThreadViewer__typingIndicator .ThreadTypingIndicator
+{
+    outline: solid #46d160 2px;
+    padding: 2px;
+}
+
+.Thread__newMessageIndicatorBubble {
+    border: solid #46d160 2px;
 }
 
 /* misc fixes.

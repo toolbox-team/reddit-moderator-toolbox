@@ -43,7 +43,7 @@ function updateManifest ({version, versionName, browser}) {
     if (browser === 'chrome') {
         console.log('Make sure chrome manifest is complete');
         if (!manifestContent.includes('"incognito":')) {
-            manifestContent = manifestContent.replace(/(\s*?"applications":)/, '\n    "incognito": "split",$1');
+            manifestContent = manifestContent.replace(/(\s*?"browser_specific_settings":)/, '\n    "incognito": "split",$1');
         }
     }
 
@@ -114,8 +114,12 @@ function createZip (browser) {
 }
 
 async function doZips () {
-    await createZip('firefox');
-    await createZip('chrome');
+    try {
+        await createZip('firefox');
+        await createZip('chrome');
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 doZips();

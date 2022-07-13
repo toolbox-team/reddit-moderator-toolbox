@@ -61,10 +61,12 @@ async function getOAuthTokens (tries = 1) {
 }
 
 /**
- * Serializes a fetch Response to a JSON value that can be constructed into a
- * new Response later.
+ * Serializes a fetch `Response` to a JSON value that can be constructed into a
+ * new `Response` later.
  * @param {Response} response
- * @returns a JSONable thing
+ * @returns {Promise<array | undefined>} An array of arguments to the `Response`
+ * constructor, serializable to plain JSON, which can be used to replicate the
+ * given response.
  */
 async function serializeResponse (response) {
     const headers = {};
@@ -100,6 +102,26 @@ function queryString (parameters) {
     return `?${kvStrings.join('&')}`;
 }
 
+// Ratelimiter for all oauth.reddit.com requests
+const oauthRatelimiter = new Ratelimiter();
+// Ratelimiter for all old.reddit.com requests
+const oldRedditRatelimiter = new Ratelimiter();
+
+/**
+ * Creates a `FormData` object from the given set of key-value pairs.
+ * @param {object} obj
+ * @returns {FormData}
+ */
+function makeFormData (obj) {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(obj)) {
+        if (value != null) {
+            formData.append(key, value);
+        }
+    }
+    return formData;
+}
+
 /**
  * Sends a generic HTTP request.
  * @function
@@ -115,10 +137,26 @@ function queryString (parameters) {
  * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
  * in an error being rejected. The error will have a `response` property
  * containing the full `Response` object.
+ * @param {boolean?} [options.absolute] If true, the request endpoint will be
+ * treated as a full URL and will not be subjected to any Ratelimiter.
+ * @param {boolean?} [options.bypassRatelimit] If true, the request will be sent
+ * immediately, even if the current ratelimit bucket is empty. Use sparingly,
+ * only for requests which block all of Toolbox, and definitely never for mass
+ * actions.
  * @returns {Promise} Resolves to a Response object, or rejects an Error
  * @todo Ratelimit handling
  */
-async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absolute}) {
+async function makeRequest ({
+    method,
+    endpoint,
+    query,
+    body,
+    oauth,
+    okOnly,
+    absolute,
+    bypassRatelimit,
+}) {
+    // Construct the request URL
     query = queryString(query);
     // If we have a query object and additional parameters in the endpoint, we
     // just stick the object parameters on the end with `&` instead of `?`, and
@@ -127,38 +165,51 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
         query = query.replace('?', '&');
     }
     const url = absolute ? endpoint : `https://${oauth ? 'oauth' : 'old'}.reddit.com${endpoint}${query}`;
-    const options = {
+
+    // Construct the options object passed to fetch()
+    const fetchOptions = {
         credentials: 'include', // required for cookies to be sent
         redirect: 'error', // prevents strange reddit API shenanigans
         method,
+        cache: 'no-store',
     };
-
-    // Post requests need their body to be in formdata format
     if (body) {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(body)) {
-            if (value !== undefined && value !== null) {
-                formData.append(key, value);
-            }
+        if (typeof body === 'object') {
+            // If the body is passed as an object, convert it to FormData (this
+            // is needed for POST requests)
+            fetchOptions.body = makeFormData(body);
+        } else {
+            // Otherwise, we assume the body is a string and use it as-is
+            fetchOptions.body = body;
         }
-        options.body = formData;
     }
-
     // If requested, fetch OAuth tokens and add `Authorization` header
     if (oauth) {
         try {
             const tokens = await getOAuthTokens();
-            options.headers = {Authorization: `bearer ${tokens.accessToken}`};
+            fetchOptions.headers = {Authorization: `bearer ${tokens.accessToken}`};
         } catch (error) {
             console.error('getOAuthTokens: ', error);
             throw error;
         }
     }
 
+    // Construct the ratelimiter options object
+    const ratelimiterOptions = {
+        bypassLimit: !!bypassRatelimit,
+    };
+
     // Perform the request
     let response;
     try {
-        response = await fetch(url, options);
+        if (absolute) {
+            // Absolute URLs may hit non-Reddit domains, don't try to limit them
+            response = await fetch(url, fetchOptions);
+        } else if (oauth) {
+            response = await oauthRatelimiter.request(ratelimiterOptions, url, fetchOptions);
+        } else {
+            response = await oldRedditRatelimiter.request(ratelimiterOptions, url, fetchOptions);
+        }
     } catch (error) {
         console.error('Fetch request failed:', error);
         throw error;
@@ -176,20 +227,18 @@ async function makeRequest ({method, endpoint, query, body, oauth, okOnly, absol
 }
 
 // Makes a request and sends a reply with response and error properties
-messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions)
+messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions).then(
     // For succeeded requests, we send only the raw `response`
-    .then(async response => ({response: await serializeResponse(response)}))
+    async response => ({
+        response: await serializeResponse(response),
+    }),
     // For failed requests, we send:
     // - `error: true` to indicate the failure
     // - `message` containing information about the error
     // - `response` containing the raw response data (if applicable)
-    .catch(async error => {
-        const reply = {
-            error: true,
-            message: error.message,
-        };
-        if (error.response) {
-            reply.response = await serializeResponse(error.response);
-        }
-        return reply;
-    }));
+    async error => ({
+        error: true,
+        message: error.message,
+        response: error.response ? await serializeResponse(error.response) : undefined,
+    }),
+));

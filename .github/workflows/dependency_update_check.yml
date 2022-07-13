@@ -1,0 +1,47 @@
+name: Check for DOMPurify updates
+
+on:
+  schedule:
+    # run daily at midnight
+    - cron: '0 0 * * *'
+jobs:
+  checkdepedencies:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout toolbox
+      - name: checkout
+        uses: actions/checkout@v2
+      # Download latest DOMPurify
+      - name: download
+        id: download
+        uses: creesch/github-latest-release-zip@main
+        with:
+          owner: cure53
+          repo: DOMPurify
+          # build is a gitignored directory which we are using as a temp directory here.
+          downloadPath: build
+      # Unzip to build and only copy purify.js over the current version in toolbox.
+      # If the copied over purify.js is newer it will cause a delta which can be picked up by the pull request action later.
+      # Any other file is still in the build directory and will therefore be ignored.
+      - name: unzip
+        run: |
+          BASEDIR=$(pwd)
+          cd build
+          FILENAME="${{ steps.download.outputs.filename }}"
+          unzip $FILENAME
+          DIRECTORY=$(ls -d */)
+          cp "${DIRECTORY}dist/purify.js" "${BASEDIR}/extension/data/libs/purify.js"
+      # Run pullrequest action, if the previous stepped caused no difference no pullrequest will be made.
+      - name: pullrequest
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Update DOMPurify to ${{ steps.download.outputs.tag_name }}
+          title: Update DOMPurify to ${{ steps.download.outputs.name }}
+          body: |
+            [${{ steps.download.outputs.name }}](${{ steps.download.outputs.html_url }})
+
+            ## Release notes:
+
+            ${{ steps.download.outputs.body }}
+          branch: update-DOMPurify-dependency
+          delete-branch: true

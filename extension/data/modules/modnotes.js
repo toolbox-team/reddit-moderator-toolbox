@@ -56,6 +56,87 @@ const labelNames = {
     HELPFUL_USER: 'Helpful User',
 };
 
+// A queue of users and subreddits whose latest note will be fetched in the next
+// bulk call, alongside the associated resolve and reject functions so we can
+// pass the individual results back to their callers; used by `getLatestModNote`
+let pendingLatestNoteRequests = [];
+
+// The ID of the timeout for performing the bulk API request; used by
+// `getLatestModNote` to debounce the request
+let fetchLatestNotesTimeout;
+
+/**
+ * Fetches the most recent mod note on the given user in the given subreddit.
+ * @param {string} subreddit The name of the subreddit
+ * @param {string} user The name of the user
+ * @returns {Promise} Resolves to a note object or `null`, or rejects an error
+ */
+function getLatestModNote (subreddit, user) {
+    return new Promise((resolve, reject) => {
+        // Add this user/subreddit to the queue to be included in the next call,
+        // alongside this promise's resolve and reject functions so we can pass
+        // the result back to the caller
+        pendingLatestNoteRequests.push({
+            subreddit,
+            user,
+            resolve,
+            reject,
+        });
+
+        // Each time this function is called, we set a timeout to process the
+        // queue 500ms later. However, if the function is called again in that
+        // time, that should be cancelled and rescheduled for 500ms after the
+        // later call.
+
+        // Cancel any existing timeout
+        clearTimeout(fetchLatestNotesTimeout);
+        fetchLatestNotesTimeout = null;
+
+        // If we have 500 users/subs queued, that's the max the API can handle
+        // at once, so process the queue now rather than waiting longer
+        if (pendingLatestNoteRequests.length === 500) {
+            processQueue();
+            return;
+        }
+
+        // Otherwise, set a timeout to process the queue in 500ms
+        fetchLatestNotesTimeout = setTimeout(processQueue, 500);
+    });
+
+    // This function executes the API request to fetch the latest note for all
+    // the users/subreddits queued, and distributes results (or errors) to their
+    // corresponding callers.
+    async function processQueue () {
+        // Store a copy of the queue as it is right now, then immediately clear
+        // the queue, so additional requests can be queued for the next batch
+        // while we handle the current batch
+        const queuedRequests = pendingLatestNoteRequests;
+        pendingLatestNoteRequests = [];
+
+        try {
+            // The API takes separate arrays of subs and users, so build those
+            const subreddits = queuedRequests.map(entry => entry.subreddit);
+            const users = queuedRequests.map(entry => entry.user);
+
+            // Perform the request to fetch the notes
+            const notes = await TBApi.getRecentModNotes(subreddits, users);
+
+            // We now have to pass each note to the appropriate caller's promise
+            // resolver; since the arrays are in the same order, we can loop
+            // over all the resolve functions and call them, passing the note at
+            // the corresponding index in the notes array
+            for (const [i, {resolve}] of Object.entries(queuedRequests)) {
+                resolve(notes[i]);
+            }
+        } catch (error) {
+            // If there was an error, reject all the the promises
+            for (const {reject} of queuedRequests) {
+                reject(error);
+            }
+        }
+    }
+}
+
 /**
  * Creates a mod note badge for the given information.
  * @param {object} data Data associated with the badge
@@ -372,13 +453,13 @@ export default new Module({
 
         // TODO: Use bulk endpoint to fetch multiple users' top notes, see
         //       https://reddit.com/comments/tjfxvt/_/i1kbioo/?context=9
-        this.debug(`Fetching mod notes for /u/${author} in /r/${subreddit}`);
+        this.debug(`Fetching latest mod note for /u/${author} in /r/${subreddit}`);
         try {
-            const notes = await TBApi.getModNotes(subreddit, author);
-            this.info(`Got notes for /u/${author} in /r/${subreddit}:`, notes);
+            const note = await getLatestModNote(subreddit, author);
+            this.info(`Got note for /u/${author} in /r/${subreddit}:`, note);
             updateModNotesBadge($badge, {
-                note: notes.find(note => note.type === 'NOTE'),
-                noteCount: notes.length,
+                note,
+                noteCount: note ? 0 : 1, // TODO: this is useless, bulk endpoint doesn't return that
             });
         } catch (error) {
             this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);

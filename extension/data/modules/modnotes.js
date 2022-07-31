@@ -437,8 +437,6 @@ export default new Module({
             $badge.appendTo($target);
         }
 
-        // TODO: Use bulk endpoint to fetch multiple users' top notes, see
-        //       https://reddit.com/comments/tjfxvt/_/i1kbioo/?context=9
         this.debug(`Fetching latest mod note for /u/${author} in /r/${subreddit}`);
         try {
             const note = await getLatestModNote(subreddit, author);

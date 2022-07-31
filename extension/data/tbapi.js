@@ -817,6 +817,23 @@ export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/no
 });
 
 /**
+ * For each given (user, subreddit) pair, fetches the most recent mod note for
+ * that user in that subreddit.
+ * @param {string[]} subreddits List of subreddit names
+ * @param {string[]} users List of user names
+ * @returns {Promise} Resolves to an array of note objects, where each
+ * corresponds to the user and subreddit at the same index; if a given user has
+ * no notes in the given subreddit, the corresponding item will be `null`
+ */
+export const getRecentModNotes = (subreddits, users) => apiOauthGET('/api/mod/notes/recent', {
+    subreddits: subreddits.join(','),
+    users: users.join(','),
+}).then(response => response.json()).then(response => {
+    TBStorage.purifyObject(response);
+    return response.mod_notes;
+});
+
+/**
  * Creates a mod note on the given user in the given subreddit.
  * @param {object} data
  * @param {string} data.subreddit The name of the subreddit

@@ -177,14 +177,9 @@ function createModNotesBadge ({
 /**
  * Updates mod note badges in place with the given information.
  * @param {jQuery} $badge The badge(s) to update
- * @param {object} data Data associated with the badge
- * @param {object} [data.note] The most recent mod note left on the user
- * @param {number} [data.noteCount] The number of total notes for the user
+ * @param {object} note The most recent mod note left on the user, or null
  */
-function updateModNotesBadge ($badge, {
-    note,
-    noteCount,
-}) {
+function updateModNotesBadge ($badge, note) {
     if (!note) {
         $badge.text($badge.attr('data-label'));
         return;
@@ -199,15 +194,6 @@ function updateModNotesBadge ($badge, {
             ${htmlEncode(note.user_note_data.note)}
         </b>
     `);
-
-    // If there are more mod notes, list how many more
-    if (noteCount > 1) {
-        $badge.append(`
-            <span class="tb-modnote-more-counter">
-                (+${noteCount - 1})
-            </span>
-        `);
-    }
 }
 
 /**
@@ -457,10 +443,7 @@ export default new Module({
         try {
             const note = await getLatestModNote(subreddit, author);
             this.info(`Got note for /u/${author} in /r/${subreddit}:`, note);
-            updateModNotesBadge($badge, {
-                note,
-                noteCount: note ? 0 : 1, // TODO: this is useless, bulk endpoint doesn't return that
-            });
+            updateModNotesBadge($badge, note);
         } catch (error) {
             this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);
         }

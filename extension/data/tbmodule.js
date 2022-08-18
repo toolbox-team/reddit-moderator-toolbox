@@ -31,14 +31,14 @@ const TBModule = {
                 const module = TBModule.modules[moduleName];
 
                 // Don't do anything with beta modules unless beta mode is enabled
-                if (!TBStorage.getSetting('Utils', 'betaMode', false) && module.beta) {
+                if (!TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
                     // skip this module entirely
                     logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                     return;
                 }
 
                 // Don't do anything with dev modules unless debug mode is enabled
-                if (!TBStorage.getSetting('Utils', 'debugMode', false) && module.debugMode) {
+                if (!TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
                     // skip this module entirely
                     logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
                     return;

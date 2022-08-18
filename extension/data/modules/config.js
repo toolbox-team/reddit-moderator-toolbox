@@ -122,6 +122,10 @@ const self = new Module({
                                         <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment" ${configData.removalReasons.typeLockComment ? 'checked' : ''}/>
                                         <label for="type-action-lock-comment">Lock the removal comment.</label>
                                     </li>
+                                    <li>
+                                        <input class="reason-comment-as-subreddit" type="checkbox" id="type-comment-as-subreddit" ${configData.removalReasons.typeCommentAsSubreddit ? 'checked' : ''}/>
+                                        <label for="type-comment-as-subreddit">Send as /u/${subredditConfig}-ModTeam.</label>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
@@ -920,6 +924,7 @@ const self = new Module({
             removalOption: $('#removal-option').val(),
             typeReply: $('input[name="type-reply"]:checked').val(),
             typeStickied: $('#type-stickied').prop('checked'),
+            typeCommentAsSubreddit: $('#type-comment-as-subreddit').prop('checked'),
             typeLockComment: $('#type-action-lock-comment').prop('checked'),
             typeAsSub: $('#type-as-sub').prop('checked'),
             autoArchive: $('#type-auto-archive').prop('checked'),

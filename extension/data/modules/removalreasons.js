@@ -52,6 +52,12 @@ export default new Module({
             description: 'Leave removal reasons as a sticky comment.',
         },
         {
+            id: 'reasonCommentAsSubreddit',
+            type: 'boolean',
+            default: false,
+            description: 'Leave removal reason comments with /u/subreddit-ModTeam.',
+        },
+        {
             id: 'actionLock',
             type: 'boolean',
             default: false,
@@ -80,6 +86,7 @@ export default new Module({
     reasonAsSub: reasonAsSubSetting,
     reasonAutoArchive: reasonAutoArchiveSetting,
     reasonSticky: reasonStickySetting,
+    reasonCommentAsSubreddit: reasonCommentAsSubredditSetting,
     actionLock: actionLockSetting,
     actionLockComment: actionLockCommentSetting,
 }) {
@@ -100,6 +107,7 @@ export default new Module({
           NO_REASON_ERROR = 'error, no reason selected',
           NO_REPLY_TYPE_ERROR = 'error, no reply type selected',
           REPLY_ERROR = 'error, failed to post reply',
+          REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account',
           PM_ERROR = 'error, failed to send PM',
           MODMAIL_ERROR = 'error, failed to send Modmail',
           MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail',
@@ -281,6 +289,7 @@ export default new Module({
             data.removalOption = response.removalOption;
             data.typeReply = response.typeReply;
             data.typeStickied = response.typeStickied;
+            data.typeCommentAsSubreddit = response.typeCommentAsSubreddit;
             data.typeLockComment = response.typeLockComment;
             data.typeAsSub = response.typeAsSub;
             data.autoArchive = response.autoArchive;
@@ -335,6 +344,7 @@ export default new Module({
                   removalOption = data.removalOption,
                   typeReply = data.typeReply,
                   typeStickied = data.typeStickied,
+                  typeCommentAsSubreddit = data.typeCommentAsSubreddit,
                   typeLockComment = data.typeLockComment,
                   typeAsSub = data.typeAsSub,
                   autoArchive = data.autoArchive,
@@ -366,6 +376,7 @@ export default new Module({
             const reasonAsSub = leaveUpToMods ? reasonAsSubSetting : typeAsSub;
             const reasonAutoArchive = leaveUpToMods ? reasonAutoArchiveSetting : autoArchive;
             const reasonSticky = leaveUpToMods ? reasonStickySetting : typeStickied;
+            const reasonCommentAsSubreddit = leaveUpToMods ? reasonCommentAsSubredditSetting : typeCommentAsSubreddit;
             const actionLockThread = leaveUpToMods ? actionLockSetting : typeLockThread;
             const actionLockComment = leaveUpToMods ? actionLockCommentSetting : typeLockComment;
 
@@ -418,6 +429,9 @@ export default new Module({
                             </li>
                             <li>
                                 <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                            </li>
+                            <li>
+                                <input ${forced ? 'disabled' : ''} class="reason-comment-as-subreddit" id="type-reason-commnet-as-sub" type="checkbox"${reasonCommentAsSubreddit ? 'checked' : ''}/><label for="type-reason-commnet-as-sub">Send as /u/${data.subreddit}-ModTeam.</label>
                             </li>
                         </ul>
                     </li>
@@ -648,6 +662,7 @@ export default new Module({
               notifySticky = popup.find('.reason-sticky').prop('checked'),
               actionLockThread = popup.find('.action-lock-thread').prop('checked'),
               actionLockComment = popup.find('.action-lock-comment').prop('checked'),
+              reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked'),
               checked = popup.find('.reason-check:checked'),
               status = popup.find('.status'),
               attrs = popup.find('attrs'),
@@ -859,37 +874,66 @@ export default new Module({
             // Reply to submission/comment
             if (notifyByReply) {
                 self.log('Sending removal message by comment reply.');
-                TBApi.postComment(data.fullname, reason).then(response => {
-                    if (response.json.errors.length > 0) {
-                        status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
+                if (reasonCommentAsSubreddit) {
+                    self.log('Commenting as subreddit.');
+                    let modactionsEndpoint;
+                    if (data.fullname.startsWith('t1')) {
+                        modactionsEndpoint = '/api/v1/modactions/removal_comment_message';
                     } else {
-                        // Distinguish the new reply, stickying if necessary
-                        TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                            if (notifyByNewModmail) {
-                                sendNewModmail();
-                            } else if (notifyByPM) {
-                                sendPM();
-                            } else {
-                                removePopup(popup);
-                            }
-                        }).catch(() => {
-                            status.text(DISTINGUISH_ERROR);
-                        });
-
-                        // Lock reply if requested
-                        if (actionLockComment) {
-                            const commentId = response.json.data.things[0].data.id;
-                            self.log(`Fullname of reply: ${commentId}`);
-                            TBApi.lock(commentId).then(() => {
-                                removePopup(popup);
-                            }).catch(() => {
-                                status.text(LOCK_COMMENT_ERROR);
-                            });
-                        }
+                        modactionsEndpoint = '/api/v1/modactions/removal_link_message';
                     }
-                }).catch(() => {
-                    status.text(REPLY_ERROR);
-                });
+
+                    TBApi.apiOauthPOST(modactionsEndpoint, JSON.stringify({
+                        item_id: [
+                            data.fullname,
+                        ],
+                        message: reason,
+                        title: 'removal reason through toolbox',
+                        type: 'public_as_subreddit',
+                        lock_comment: actionLockComment,
+                    })).then(() => {
+                        if (notifyByNewModmail) {
+                            sendNewModmail();
+                        } else if (notifyByPM) {
+                            sendPM();
+                        } else {
+                            removePopup(popup);
+                        }
+                    }).catch(() => {
+                        status.text(REPLY_ERROR_SUBREDDIT);
+                    });
+                } else {
+                    TBApi.postComment(data.fullname, reason).then(response => {
+                        if (response.json.errors.length > 0) {
+                            status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
+                        } else {
+                            // Distinguish the new reply, stickying if necessary
+                            TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
+                                if (notifyByNewModmail) {
+                                    sendNewModmail();
+                                } else if (notifyByPM) {
+                                    sendPM();
+                                } else {
+                                    removePopup(popup);
+                                }
+                            }).catch(() => {
+                                status.text(DISTINGUISH_ERROR);
+                            });
+                            // Lock reply if requested
+                            if (actionLockComment) {
+                                const commentId = response.json.data.things[0].data.id;
+                                self.log(`Fullname of reply: ${commentId}`);
+                                TBApi.lock(commentId).then(() => {
+                                    removePopup(popup);
+                                }).catch(() => {
+                                    status.text(LOCK_COMMENT_ERROR);
+                                });
+                            }
+                        }
+                    }).catch(() => {
+                        status.text(REPLY_ERROR);
+                    });
+                }
             } else if (notifyByNewModmail) {
                 sendNewModmail();
             } else if (notifyByPM) {

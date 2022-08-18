@@ -374,6 +374,7 @@ function generateNotesTable (notes) {
 export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
+    beta: true,
     enabledByDefault: true,
 }, function () {
     // Handle authors showing up on the page

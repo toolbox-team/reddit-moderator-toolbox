@@ -30,6 +30,11 @@ const TBModule = {
             await Promise.all(TBModule.moduleList.map(async moduleName => {
                 const module = TBModule.modules[moduleName];
 
+                // Don't do anything with modules the user has disabled
+                if (!await module.getEnabled()) {
+                    return;
+                }
+
                 // Don't do anything with beta modules unless beta mode is enabled
                 if (!TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
                     // skip this module entirely
@@ -47,11 +52,6 @@ const TBModule = {
                 // FIXME: implement environment switches in modules
                 if (!TBCore.isOldReddit && module.oldReddit) {
                     logger.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
-                    return;
-                }
-
-                // Don't do anything with modules the user has disabled
-                if (!await module.getEnabled()) {
                     return;
                 }
 

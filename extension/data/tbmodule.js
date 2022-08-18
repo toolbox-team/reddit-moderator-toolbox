@@ -24,41 +24,41 @@ const TBModule = {
     },
 
     init: function tbInit () {
-        setTimeout(() => {
+        setTimeout(async () => {
             logger.debug('TBModule has TBStorage, loading modules');
-            // call every module's init() method on page load
-            for (let i = 0; i < TBModule.moduleList.length; i++) {
-                const module = TBModule.modules[TBModule.moduleList[i]];
+            // Check if each module should be enabled, then call its initializer
+            await Promise.all(TBModule.moduleList.map(async moduleName => {
+                const module = TBModule.modules[moduleName];
 
                 // Don't do anything with beta modules unless beta mode is enabled
                 if (!TBStorage.getSetting('Utils', 'betaMode', false) && module.beta) {
                     // skip this module entirely
                     logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
-                    continue;
+                    return;
                 }
 
                 // Don't do anything with dev modules unless debug mode is enabled
                 if (!TBStorage.getSetting('Utils', 'debugMode', false) && module.debugMode) {
                     // skip this module entirely
                     logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
-                    continue;
+                    return;
                 }
 
                 // FIXME: implement environment switches in modules
                 if (!TBCore.isOldReddit && module.oldReddit) {
                     logger.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
-                    continue;
+                    return;
+                }
+
+                // Don't do anything with modules the user has disabled
+                if (!await module.getEnabled()) {
+                    return;
                 }
 
                 // lock 'n load
-                module.getEnabled().then(enabled => {
-                    if (!enabled) {
-                        return;
-                    }
-                    logger.debug(`Loading ${module.id} module`);
-                    module.init();
-                });
-            }
+                logger.debug(`Loading ${module.id} module`);
+                await module.init();
+            }));
 
             // Start the event listener once everything else is initialized
             TBListener.start();

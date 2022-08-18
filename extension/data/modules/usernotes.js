@@ -49,23 +49,23 @@ const self = new Module({
             hidden: true,
         },
     ],
-}, function init (initialSettings) {
+}, async function init (initialSettings) {
     startUsernotesManager.call(this, initialSettings);
-    startUsernotes.call(this, initialSettings);
+    await startUsernotes.call(this, initialSettings);
 });
 export default self;
 
-function startUsernotes ({maxChars, showDate}) {
+async function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
     const subs = [],
           $body = $('body');
     const self = this;
     let firstRun = true;
 
-    TBCore.getModSubs().then(() => {
-        self.log('Got mod subs');
-        self.log(window._TBCore.mySubs);
-        run();
-    });
+    await TBCore.getModSubs();
+    self.log('Got mod subs');
+    self.log(window._TBCore.mySubs);
+
+    run();
 
     function getUser (users, name) {
         const userObject = {
@@ -95,18 +95,9 @@ function startUsernotes ({maxChars, showDate}) {
     }
 
     // NER support.
-    let newThingRunning = false;
-    window.addEventListener('TBNewThings', () => {
-        // It is entirely possible that TBNewThings is fired multiple times.
-        // That is why we use a timeout here to prevent run() from being triggered multiple times.
-        if (!newThingRunning) {
-            newThingRunning = true;
-            setTimeout(() => {
-                newThingRunning = false;
-                run();
-            }, 500);
-        }
-    });
+    // It is entirely possible that TBNewThings is fired multiple times, so we
+    // use a debounce here to prevent run() from being triggered multiple times
+    window.addEventListener('TBNewThings', TBHelpers.debounce(run, 500));
 
     // Queue the processing of usernotes.
     let listnerSubs = {};
@@ -130,8 +121,6 @@ function startUsernotes ({maxChars, showDate}) {
     }
 
     function addTBListener () {
-        const onlyshowInhover = self.get('onlyshowInhover');
-
         // event based handling of author elements.
         TBListener.on('author', async e => {
             const $target = $(e.target);

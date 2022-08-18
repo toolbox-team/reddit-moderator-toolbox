@@ -230,4 +230,3 @@ function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highl
 
     */
 }
-

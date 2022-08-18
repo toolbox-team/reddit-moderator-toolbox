@@ -1,7 +1,7 @@
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';
-import {NO_WIKI_PAGE, WIKI_PAGE_UNKNOWN, getModhash} from './tbapi.js';
+import {getModhash} from './tbapi.js';
 import {icons} from './tbconstants.js';
 import * as TBHelpers from './tbhelpers.js';
 
@@ -50,6 +50,7 @@ export const toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (be
 export const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
 
 // Details about the current page
+const $body = $('body');
 export const isMod = $('body.moderator').length;
 export const isOldReddit = $('#header').length;
 export const isNewModmail = location.host === 'mod.reddit.com';
@@ -230,9 +231,6 @@ export let post_site = isModFakereddit || $('.redditname:not(.pagename) a:first'
 if (isModFakereddit || !post_site || invalidPostSites.indexOf(post_site) !== -1) {
     post_site = '';
 }
-
-// Error codes used in lots of places
-export {NO_WIKI_PAGE, WIKI_PAGE_UNKNOWN};
 
 // Page event management
 
@@ -465,7 +463,7 @@ export const alert = ({message, noteID, showClose}) => new Promise(resolve => {
     if (showClose) {
         $noteDiv.append(`<i class="note-close tb-icons" title="Close">${icons.close}</i>`);
     }
-    $noteDiv.appendTo('body');
+    $noteDiv.appendTo($body);
 
     window.addEventListener('tbSingleSettingUpdate', event => {
         const settingDetail = event.detail;
@@ -904,7 +902,6 @@ export function getThingInfo (sender, modCheck) {
 
     // declare what we will need.
     const $sender = $(sender);
-    const $body = $('body');
 
     let subreddit,
         permalink,

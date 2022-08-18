@@ -76,13 +76,13 @@ export default new Module({
         $editArea.css('display', 'block');
 
         TBApi.readFromWiki(notewiki, `notes/${wikiPage}`, false).then(resp => {
-            if (resp === TBCore.WIKI_PAGE_UNKNOWN) {
+            if (resp === TBApi.WIKI_PAGE_UNKNOWN) {
                 $editArea.val('error getting wiki data.');
                 TBui.textFeedback('error getting wiki data.', TBui.FEEDBACK_NEGATIVE);
                 return;
             }
 
-            if (resp === TBCore.NO_WIKI_PAGE) {
+            if (resp === TBApi.NO_WIKI_PAGE) {
                 $editArea.val('Not sure how you did this, but this is not an existing page.');
                 TBui.textFeedback('error getting wiki data.', TBui.FEEDBACK_NEGATIVE);
                 return;

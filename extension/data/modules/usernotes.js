@@ -583,7 +583,7 @@ function startUsernotes ({maxChars, showDate}) {
             notes = await getUserNotes(subreddit, true);
         } catch (error) {
             // If getting usernotes failed because the page doesn't exist, create it
-            if (error.message === TBCore.NO_WIKI_PAGE) {
+            if (error.message === TBApi.NO_WIKI_PAGE) {
                 self.log('usernotes page did not exist, creating it');
                 notes = noteSkel;
                 notes.users[user] = userNotes;
@@ -1190,14 +1190,14 @@ async function getUserNotes (subreddit, forceSkipCache) {
     const resp = await TBApi.readFromWiki(subreddit, 'usernotes', true);
     // Errors when reading notes
     // These errors are bad
-    if (!resp || resp === TBCore.WIKI_PAGE_UNKNOWN) {
-        throw new Error(TBCore.WIKI_PAGE_UNKNOWN);
+    if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN) {
+        throw new Error(TBApi.WIKI_PAGE_UNKNOWN);
     }
-    if (resp === TBCore.NO_WIKI_PAGE) {
+    if (resp === TBApi.NO_WIKI_PAGE) {
         cachedSubsWithNoNotes.push(subreddit);
         await TBStorage.setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
 
-        throw new Error(TBCore.NO_WIKI_PAGE);
+        throw new Error(TBApi.NO_WIKI_PAGE);
     }
     // No notes exist in wiki page
     if (resp.length < 1) {

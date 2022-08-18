@@ -294,8 +294,8 @@ export async function postToWiki (page, subreddit, data, reason, isJSON, updateA
  * @returns {Promise} Promises the data of the wiki page. If there is an
  * error reading from the page, one of the following error values may be
  * returned:
- * - TBCore.WIKI_PAGE_UNKNOWN
- * - TBCore.NO_WIKI_PAGE
+ * - TBApi.WIKI_PAGE_UNKNOWN
+ * - TBApi.NO_WIKI_PAGE
  * If the isJSON `param` was true, then this will be an object. Otherwise,
  * it will be the raw contents of the wiki as a string.
  */

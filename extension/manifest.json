@@ -132,6 +132,7 @@
                 "data/styles/macros.css",
                 "data/styles/queue_overlay.css",
                 "data/styles/modmatrix.css",
+                "data/styles/modnotes.css",
                 "data/styles/codemirror/codemirror.css",
                 "data/styles/codemirror/dialog.css",
                 "data/styles/codemirror/fullscreen.css",

@@ -142,6 +142,21 @@ export const apiOauthGET = (endpoint, query) => sendRequest({
 });
 
 /**
+ * Sends an authenticated DELETE request against the OAuth API.
+ * @function
+ * @param {string} endpoint The endpoint to request
+ * @param {object} query Query parameters as an object
+ * @returns {Promise}
+ */
+export const apiOauthDELETE = (endpoint, query) => sendRequest({
+    method: 'DELETE',
+    oauth: true,
+    endpoint,
+    query,
+    okOnly: true,
+});
+
+/**
  * A promise that will fulfill with details about the current user, or reject if
  * user details can't be fetched. May return a cached details object if multiple
  * timeouts are encountered.
@@ -782,4 +797,76 @@ export const getReportReasons = async postURL => getJSON(`${postURL}.json?limit=
             mod_reports: data.mod_reports,
         };
     }
+});
+
+/**
+ * Fetches a page of mod notes for the given user in the given subreddit.
+ * @param {string} subreddit The name of the subreddit
+ * @param {*} user The name of a user
+ * @param {*} before ID of a mod note to search before (for pagination)
+ * @returns {Promise} Resolves to an array of note objects or rejects an error
+ */
+export const getModNotes = (subreddit, user, before) => apiOauthGET('/api/mod/notes', {
+    subreddit,
+    user,
+    before,
+    limit: 100,
+}).then(response => response.json()).then(response => {
+    TBStorage.purifyObject(response);
+    return response.mod_notes;
+});
+
+/**
+ * For each given (user, subreddit) pair, fetches the most recent mod note for
+ * that user in that subreddit.
+ * @param {string[]} subreddits List of subreddit names
+ * @param {string[]} users List of user names
+ * @returns {Promise} Resolves to an array of note objects, where each
+ * corresponds to the user and subreddit at the same index; if a given user has
+ * no notes in the given subreddit, the corresponding item will be `null`
+ */
+export const getRecentModNotes = (subreddits, users) => apiOauthGET('/api/mod/notes/recent', {
+    subreddits: subreddits.join(','),
+    users: users.join(','),
+}).then(response => response.json()).then(response => {
+    TBStorage.purifyObject(response);
+    return response.mod_notes;
+});
+
+/**
+ * Creates a mod note on the given user in the given subreddit.
+ * @param {object} data
+ * @param {string} data.subreddit The name of the subreddit
+ * @param {string} data.user The name of the user
+ * @param {string} data.note The text of the note to add
+ * @param {string} data.[label] One of Reddit's supported note labels
+ * @param {string} data.[redditID] Fullname of an associated post or comment
+ * @returns {Promise}
+ */
+export const createModNote = ({
+    subreddit,
+    user,
+    note,
+    label,
+    redditID,
+}) => apiOauthPOST('/api/mod/notes', {
+    subreddit,
+    user,
+    note,
+    label,
+    reddit_id: redditID,
+});
+
+/**
+ * Deletes a mod note on the given user in the given subreddit.
+ * @param {object} data
+ * @param {string} subreddit The name of the subreddit
+ * @param {string} user The name of the user
+ * @param {string} id The ID of the note
+ * @returns {Promise}
+ */
+export const deleteModNote = ({subreddit, user, id}) => apiOauthDELETE('/api/mod/notes', {
+    subreddit,
+    user,
+    note_id: id,
 });

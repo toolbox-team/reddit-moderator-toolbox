@@ -1,0 +1,29 @@
+name: Update documentation
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  checkdepedencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout@v3
+        uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm install
+      - name: generate docs
+        run: npm run docs
+      - name: Push docs to source-docs repo
+        uses: cpina/github-action-push-to-another-repository@v1.5
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: 'docs'
+          destination-github-username: 'toolbox-team'
+          destination-repository-name: 'source-docs'
+          user-email: creesch@users.noreply.github.com
+          target-branch: gh-pages

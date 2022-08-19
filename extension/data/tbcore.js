@@ -1647,12 +1647,27 @@ function refreshPathContext () {
     }
 }
 
-refreshPathContext();
-refreshHashContext();
-window.addEventListener('tb-url-changed', () => {
+let watchingForURLChanges = false;
+/**
+ * Begins emitting TBNewPage and TBHashParam events with metadata whenever the
+ * background page detects that this tab's URL has changed.
+ */
+export function watchForURLChanges () {
+    if (watchingForURLChanges) {
+        return;
+    }
+    watchingForURLChanges = true;
+
+    // Emit initial events for the current page URL
     refreshPathContext();
     refreshHashContext();
-});
+
+    // Register a listener to emit additional events when the URL changes
+    window.addEventListener('tb-url-changed', () => {
+        refreshPathContext();
+        refreshHashContext();
+    });
+}
 
 // Clean up old seen items if the lists are getting too long
 TBStorage.getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {

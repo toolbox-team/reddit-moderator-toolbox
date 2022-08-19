@@ -4,6 +4,7 @@ import {delay} from './tbhelpers.js';
 import TBModule from './tbmodule.js';
 import * as TBCore from './tbcore.js';
 import * as TBApi from './tbapi.js';
+import TBListener from './tblistener.js';
 
 import Devtools from './modules/devtools.js';
 import Support from './modules/support.js';
@@ -240,5 +241,10 @@ const coreLoadedPromise = new Promise(resolve => {
     }
 
     // Once all modules are registered, call TB.init() to run them
-    TBModule.init();
+    await TBModule.init();
+
+    // Once all modules are initialized and have had a chance to register event
+    // listeners, start emitting jsAPI events and page URL change events
+    TBListener.start();
+    TBCore.watchForURLChanges();
 })();

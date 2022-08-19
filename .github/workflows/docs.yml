@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  checkdepedencies:
+  updateDocs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout@v3
@@ -17,6 +17,7 @@ jobs:
       - run: npm install
       - name: generate docs
         run: npm run docs
+        continue-on-error: true
       - name: Push docs to source-docs repo
         uses: cpina/github-action-push-to-another-repository@v1.5
         env:

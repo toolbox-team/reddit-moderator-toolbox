@@ -144,7 +144,6 @@ function getLatestModNote (subreddit, user) {
  * @param {string} data.subreddit Name of the relevant subreddit
  * @param {string} data.label Text shown in the badge if there are no notes
  * @param {object} [data.note] The most recent mod note left on the user
- * @param {number} [data.noteCount] The number of total notes for the user
  * @returns {jQuery} The created badge
  */
 function createModNotesBadge ({
@@ -152,7 +151,6 @@ function createModNotesBadge ({
     subreddit,
     label = 'NN',
     note,
-    noteCount,
 }) {
     const $badge = $(`
         <a
@@ -168,7 +166,6 @@ function createModNotesBadge ({
 
     updateModNotesBadge($badge, {
         note,
-        noteCount,
     });
 
     return $badge;

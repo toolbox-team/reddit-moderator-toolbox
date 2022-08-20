@@ -180,17 +180,14 @@ function createModNotesBadge ({
  * @param {object} note The most recent mod note left on the user, or null
  */
 function updateModNotesBadge ($badge, note) {
-    if (!note) {
+    if (!note || !note.user_note_data) {
         $badge.text($badge.attr('data-label'));
         return;
     }
 
-    // The latest note is the first in the array; look up its color
-    const noteColor = labelColors[note.user_note_data.label];
-
     $badge.empty();
     $badge.append(`
-        <b style="${noteColor ? `color: ${noteColor}` : ''}">
+        <b style="${note.user_note_data.label ? `color: ${labelColors[note.user_note_data.label]}` : ''}">
             ${htmlEncode(note.user_note_data.note)}
         </b>
     `);

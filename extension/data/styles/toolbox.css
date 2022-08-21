@@ -792,6 +792,7 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] {
     margin: 3px 0 3px 8px;
     padding: 3px;
     display: block;
+    white-space: normal;
 }
 
 body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserHovercard"] .tb-bracket-button.tb-history-button,

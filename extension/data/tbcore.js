@@ -1472,8 +1472,8 @@ let locationHref;
 let locationHash;
 
 // new modmail regex matches.
-const newMMlistingReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals)\/?$/;
-const newMMconversationReg = /^\/mail\/(all|inbox|new|inprogress|archived|highlighted|mod|notifications|perma|appeals|thread)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
+const newMMlistingReg = /^\/mail\/([^/]+?)\/?$/;
+const newMMconversationReg = /^\/mail\/([^/]+?)\/?([^/]*)\/?(?:[^/]*\/?)?$/;
 const newMMcreate = /^\/mail\/create\/?$/;
 
 // reddit regex matches.

@@ -57,11 +57,7 @@ self.fetched = {};// fetched histories
 
 self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H') {
     requestAnimationFrame(() => {
-        $target.append(`
-                <a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" ${subreddit && `data-subreddit="${subreddit}"`} title="view & analyze user's submission and comment history">
-                    ${buttonText}
-                </a>
-            `);
+        $target.append(`<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" ${subreddit && `data-subreddit="${subreddit}"`} title="view & analyze user's submission and comment history">${buttonText}</a>`);
     });
 };
 

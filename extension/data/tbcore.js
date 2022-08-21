@@ -1229,7 +1229,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
  * @param {string} [after] Pagination parameter used for recursion
  * @returns {Promise<object[]>}
  */
-async function fetchModSubs (after) {
+async function fetchModSubs (after, tries = 1) {
     let json;
     try {
         json = await TBApi.getJSON('/subreddits/mine/moderator.json', {
@@ -1238,9 +1238,9 @@ async function fetchModSubs (after) {
         });
         TBStorage.purifyObject(json);
     } catch (error) {
-        if (error.response && error.response.status === 504) {
-            // Always retry 504s
-            return fetchModSubs(after);
+        // Retry 504s, up to 5 attempts; otherwise throw the error
+        if (error.response && error.response.status === 504 && tries < 5) {
+            return fetchModSubs(after, tries + 1);
         } else {
             throw error;
         }

@@ -60,6 +60,13 @@ export default new Module({
             default: true,
             description: 'Displays a "Show Source" button allowing you to display the message source in markdown.',
         },
+        {
+            id: 'modmailSidebarAvatar',
+            type: 'selector',
+            values: ['Original', 'Compact', 'Hidden'],
+            default: 'original',
+            description: 'Change how the user avatar in the modmail sidebar looks.',
+        },
     ],
 }, ({
     modmailnightmode: modMailNightmode,
@@ -70,6 +77,7 @@ export default new Module({
     sourceButton,
     modmaillink: modmaillink,
     openmailtab: openMailTab,
+    modmailSidebarAvatar,
 }) => {
     const $body = $('body');
 
@@ -107,6 +115,9 @@ export default new Module({
     if (TBCore.isNewModmail) {
         // Add a class to body
         $body.addClass('tb-new-modmail');
+
+        // Set the sidebar avatar style.
+        $body.addClass(`tb-modmail-sidebar-avatar-${modmailSidebarAvatar}`);
 
         /**
          * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the

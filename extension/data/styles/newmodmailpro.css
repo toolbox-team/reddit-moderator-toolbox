@@ -175,6 +175,110 @@ html.tb-nightmode,
     border: solid #46d160 2px;
 }
 
+/* Sidebar avatar styling - compact
+*/
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .NewInfoBar__idCard .tb-jsapi-container {
+    margin-top: 10px;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard {
+    width: unset;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    margin-top: 20px;
+    padding-left: 85px;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard:has(.ModIdCard__icon) {
+    height: 80px;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__snoovatarContainer {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: unset;
+    padding: 0;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .particleWrapper {
+    top: -20px;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__topGlow,
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bottomGlow {
+        display: none;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage {
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 20px);
+    margin: 0;
+    padding: 0;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__snoovatar {
+    height: 100px;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__icon {
+    margin-top: calc((100px - 60px - (1px * 2)) / 2);
+    width: unset;
+    height: 60px;
+}
+
+/* banner shenanigans */
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__UserNameLink,
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__UserNameMetaData{
+    justify-content: initial;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__UserProfileLink {
+    text-align: initial;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserNameContainer .ModIdCard__UserNameLink,
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserNameMetaData,
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserProfileLink {
+    color: black;
+    position: relative;
+    text-shadow:
+        2px 2px rgba(255, 255, 255, .5),
+        2px 1px rgba(255, 255, 255, .5),
+        2px 0 rgba(255, 255, 255, .5),
+        2px -1px rgba(255, 255, 255, .5),
+        2px -2px rgba(255, 255, 255, .5),
+        1px -2px rgba(255, 255, 255, .5),
+        0 -2px rgba(255, 255, 255, .5),
+        -1px -2px rgba(255, 255, 255, .5),
+        -2px -2px rgba(255, 255, 255, .5),
+        -2px -1px rgba(255, 255, 255, .5),
+        -2px 0 rgba(255, 255, 255, .5),
+        -2px 1px rgba(255, 255, 255, .5),
+        -2px 2px rgba(255, 255, 255, .5),
+        -1px 2px rgba(255, 255, 255, .5),
+        0 2px rgba(255, 255, 255, .5),
+        1px 2px rgba(255, 255, 255, .5);
+}
+
+/* Sidebar avatar styling - hidden
+*/
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-hidden .ModIdCard__snoovatarContainer,
+.tb-new-modmail.tb-modmail-sidebar-avatar-hidden .ModIdCard__bannerImage {
+   display: none;
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-hidden .ModIdCard {
+   padding-top: 20px;
+}
+
 /* misc fixes.
 */
 

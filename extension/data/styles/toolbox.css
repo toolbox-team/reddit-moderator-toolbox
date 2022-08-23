@@ -809,6 +809,23 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     line-height: 17px;
 }
 
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserHovercard"] {
+    display: block;
+    width: -moz-max-content;
+    width: -webkit-max-content;
+    width: max-content;
+    margin-bottom: 5px;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
+}
+
+
+body.mod-toolbox-rd .NewInfoBar__idCard .tb-jsapi-container {
+    margin: auto;
+    width: fit-content;
+}
+
 /*
 -----------
     Comment rebuilding css

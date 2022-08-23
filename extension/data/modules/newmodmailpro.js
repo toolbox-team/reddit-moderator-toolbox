@@ -67,6 +67,12 @@ export default new Module({
             default: 'original',
             description: 'Change how the user avatar in the modmail sidebar looks.',
         },
+        {
+            id: 'disableAvatarAnimation',
+            type: 'boolean',
+            default: false,
+            description: 'Disable the sidebar avatar animation effect.',
+        },
     ],
 }, ({
     modmailnightmode: modMailNightmode,
@@ -78,6 +84,7 @@ export default new Module({
     modmaillink: modmaillink,
     openmailtab: openMailTab,
     modmailSidebarAvatar,
+    disableAvatarAnimation,
 }) => {
     const $body = $('body');
 
@@ -133,6 +140,10 @@ export default new Module({
 
         // Set the sidebar avatar style.
         $body.addClass(`tb-modmail-sidebar-avatar-${modmailSidebarAvatar}`);
+
+        if (disableAvatarAnimation) {
+            $body.addClass('tb-modmail-sidebar-no-animation');
+        }
 
         /**
          * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the

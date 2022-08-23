@@ -221,6 +221,7 @@ html.tb-nightmode,
     height: calc(100% + 20px);
     margin: 0;
     padding: 0;
+    opacity: 0.8;
 }
 
 .tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__snoovatar {
@@ -283,6 +284,11 @@ html.tb-nightmode,
 */
 .tb-new-modmail a.tb-sidebar-profile-link {
     color: #006dc6
+}
+
+
+.tb-new-modmail.tb-modmail-sidebar-no-animation .particleWrapper {
+    display: none;
 }
 
 /* misc fixes.

@@ -826,6 +826,8 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserModmailSidebar"] 
 
 body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserModmailSidebar"] .tb-bracket-button {
     margin-bottom: 5px;
+    height: 17px;
+    line-height: 17px;
 }
 
 

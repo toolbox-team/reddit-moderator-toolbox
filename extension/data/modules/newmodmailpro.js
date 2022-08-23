@@ -114,11 +114,12 @@ export default new Module({
             }
         }
 
+        // A few obivious elements in the sidebar should be clickable and lead to the user profile.
         const $modIdCard = $body.find('.NewInfoBar__idCard .ModIdCard:not(.tb-profile-link-seen)');
         if ($modIdCard.length) {
             $modIdCard.addClass('tb-profile-link-seen');
             const userProfileLink = $body.find('.ModIdCard__UserProfileLink a').attr('href');
-            const wrapElement = `<a href="${userProfileLink}" target="_blank"></a>`;
+            const wrapElement = `<a href="${userProfileLink}" target="_blank" class="tb-sidebar-profile-link"></a>`;
             $body.find('.ModIdCard__snoovatarContainer img.ModIdCard__snoovatar').wrap(wrapElement);
             $body.find('.ModIdCard__UserNameContainer .ModIdCard__UserNameLink div').wrap(wrapElement);
             $body.find('.ModIdCard__UserNameMetaData .ModIdCard__UserNameText').wrap(wrapElement);
@@ -139,7 +140,6 @@ export default new Module({
          * with our own checks, we need to trigger the event again and let Reddit handle it normally.
          */
         let shouldHijackClickHandler = true;
-
 
         // Handle sidebar specific things when the user icon is clicked (mobile devices, small windows).
         $body.on('click', '.icon-user', () => {

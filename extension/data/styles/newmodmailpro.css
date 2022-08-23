@@ -208,6 +208,10 @@ html.tb-nightmode,
     top: -20px;
 }
 
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__UserNameContainer {
+    z-index: 1;
+}
+
 .tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__topGlow,
 .tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bottomGlow {
         display: none;
@@ -244,10 +248,12 @@ html.tb-nightmode,
     text-align: initial;
 }
 
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserNameContainer .ModIdCard__admin,
 .tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserNameContainer .ModIdCard__UserNameLink,
 .tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserNameMetaData,
 .tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserProfileLink {
-    color: black;
+    color: #000000;
     position: relative;
     text-shadow:
         2px 2px rgba(255, 255, 255, .5),
@@ -266,6 +272,11 @@ html.tb-nightmode,
         -1px 2px rgba(255, 255, 255, .5),
         0 2px rgba(255, 255, 255, .5),
         1px 2px rgba(255, 255, 255, .5);
+}
+
+.tb-new-modmail.tb-modmail-sidebar-avatar-compact .ModIdCard__bannerImage ~ .ModIdCard__UserNameContainer .ModIdCard__admin.ModIdCard__admin {
+    display: inline;
+    color: #ff4500;
 }
 
 /* Sidebar avatar styling - hidden

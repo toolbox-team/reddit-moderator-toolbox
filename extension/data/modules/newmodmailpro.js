@@ -114,7 +114,7 @@ export default new Module({
             }
         }
 
-        // A few obivious elements in the sidebar should be clickable and lead to the user profile.
+        // A few obvious elements in the sidebar should be clickable and lead to the user profile.
         const $modIdCard = $body.find('.NewInfoBar__idCard .ModIdCard:not(.tb-profile-link-seen)');
         if ($modIdCard.length) {
             $modIdCard.addClass('tb-profile-link-seen');

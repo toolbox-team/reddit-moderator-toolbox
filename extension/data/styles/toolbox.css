@@ -809,10 +809,28 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     line-height: 17px;
 }
 
+
+/* New modmail sidebar toolbox buttons styling
+*/
+
 body.mod-toolbox-rd .NewInfoBar__idCard .tb-jsapi-container {
-    margin: auto;
-    width: fit-content;
+    width: 100%;
 }
+
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserModmailSidebar"] {
+    display: grid;
+    grid-template-columns: 47% 47%;
+    grid-template-rows: auto;
+    justify-content: center;
+}
+
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBuserModmailSidebar"] .tb-bracket-button {
+    margin-bottom: 5px;
+}
+
+
+
+
 
 /*
 -----------

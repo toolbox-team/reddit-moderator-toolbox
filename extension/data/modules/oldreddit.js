@@ -235,13 +235,17 @@ function newModmailSidebar () {
     setTimeout(() => {
         const $body = $('body');
         if ($body.find('.ThreadViewer').length) {
-            $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)').each(function () {
+            let $modmailSidebar = $body.find('.NewInfoBar__idCard:not(.tb-seen), .NewInfoBar__idCard:not(.tb-seen)');
+
+            if (!$modmailSidebar.length) {
+                $modmailSidebar = $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)');
+            }
+            $modmailSidebar.each(function () {
                 const $infobar = $(this);
                 $infobar.addClass('tb-seen');
                 const info = TBCore.getThingInfo(this, true);
                 const $jsApiThingPlaceholder = $(`
-                        <div class="tb-jsapi-container InfoBar__recents">
-                            <div class="InfoBar__recentsTitle">Toolbox functions:</div>
+                        <div class="tb-jsapi-container">
                             <span data-name="toolbox"></span>
                         </div>
                     `).appendTo($infobar);

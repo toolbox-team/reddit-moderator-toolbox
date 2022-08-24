@@ -1,4 +1,4 @@
-import TBModule, {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
 import * as TBCore from '../tbcore.js';
 import {getSettingAsync} from '../tbstorage.js';

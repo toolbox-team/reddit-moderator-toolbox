@@ -401,7 +401,7 @@ const TBModule = {
             } else {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
                 TBCore.exportSettings(sub);
-                await TBStorage.setSettingAsync('Modbar.lastExport', TBHelpers.getTime());
+                await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
                 TBCore.clearCache();
                 window.location.reload();
             }

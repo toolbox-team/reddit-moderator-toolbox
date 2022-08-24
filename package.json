@@ -7,11 +7,7 @@
         "build": "rollup -c rollup.config.js",
         "build:watch": "rollup -c rollup.config.js --watch",
         "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
-        "docs": "jsdoc -c jsdoc.json",
-        "test": "jest",
-        "test:coverage": "npm run test -- --coverage",
-        "codecov": "codecov",
-        "coveralls": "cat ./coverage/lcov.info | coveralls"
+        "docs": "jsdoc -c jsdoc.json"
     },
     "homepage": "http://www.reddit.com/r/toolbox",
     "repository": {
@@ -24,42 +20,11 @@
     },
     "devDependencies": {
         "@rollup/plugin-node-resolve": "^13.0.0",
-        "archiver": "^3.1.1",
-        "codecov": "^3.7.1",
-        "coveralls": "^3.0.7",
         "docdash": "^1.1.1",
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",
-        "eslint-plugin-jest": "^22.21.0",
-        "jest": "^24.9.0",
-        "jest-webextension-mock": "^3.5.0",
         "jsdoc": "^3.6.3",
-        "nodemon": "^1.19.4",
         "rollup": "^2.51.0",
-        "rollup-plugin-copy": "^3.4.0",
-        "yargs": "^13.3.0"
-    },
-    "nodemonConfig": {
-        "watch": "extension",
-        "ext": "js,css"
-    },
-    "jest": {
-        "testURL": "https://www.reddit.com",
-        "setupFiles": [
-            "jest-webextension-mock"
-        ],
-        "setupFilesAfterEnv": [
-            "./tests/unit/jest.setup.js"
-        ],
-        "coveragePathIgnorePatterns": [
-            "/node_modules/",
-            "./extension/data/libs/"
-        ],
-        "collectCoverageFrom": [
-            "./extension/data/**/*.js"
-        ],
-        "moduleNameMapper": {
-            "^@data(.*)$": "<rootDir>/extension/data$1"
-        }
+        "rollup-plugin-copy": "^3.4.0"
     }
 }

@@ -69,17 +69,17 @@ const TBModule = {
         //
         // preload some generic variables
         //
-        const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
-              betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
-              advancedMode = TBStorage.getSetting('Utils', 'advancedMode', false),
+        const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false),
+              betaMode = await TBStorage.getSettingAsync('Utils', 'betaMode', false),
+              advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false),
 
-              settingSub = TBStorage.getSetting('Utils', 'settingSub', ''),
-              shortLength = TBStorage.getSetting('Utils', 'shortLength', 15),
-              longLength = TBStorage.getSetting('Utils', 'longLength', 45),
+              settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', ''),
+              shortLength = await TBStorage.getSettingAsync('Utils', 'shortLength', 15),
+              longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45),
 
               // last export stuff
-              lastExport = await TBModule.modules['Modbar'].get('lastExport'),
-              showExportReminder = await TBModule.modules['Modbar'].get('showExportReminder'),
+              lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport'),
+              showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder'),
               lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport)),
               lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
@@ -453,12 +453,12 @@ const TBModule = {
         TBModule.moduleList.sort((a, b) => a.localeCompare(b)).forEach(async moduleName => {
             const module = TBModule.modules[moduleName];
             // Don't do anything with beta modules unless beta mode is enabled
-            if (!TBStorage.getSetting('Utils', 'betaMode', false) && module.beta) {
+            if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
                 return;
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
-            if (!TBStorage.getSetting('Utils', 'debugMode', false) && module.debugMode) {
+            if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
                 return;
             }
 
@@ -530,24 +530,24 @@ const TBModule = {
                 // }
 
                 // hide beta stuff unless beta mode enabled
-                if (options.beta && !TBStorage.getSetting('Utils', 'betaMode', false)) {
+                if (options.beta && !await TBStorage.getSettingAsync('Utils', 'betaMode', false)) {
                     continue;
                 }
 
                 // hide debug stuff unless debug mode enabled
-                if (options.debug && !TBStorage.getSetting('Utils', 'debugMode', false)) {
+                if (options.debug && !await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
                     continue;
                 }
 
                 // hide hidden settings, ofc
                 // TODO: Tie to a specific setting rather than debug mode
-                if (options.hidden && !TBStorage.getSetting('Utils', 'debugMode', false)) {
+                if (options.hidden && !await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
                     continue;
                 }
 
                 // hide advanced settings, but do it via CSS so it can be overridden.
                 let displaySetting = true;
-                if (options.advanced && !TBStorage.getSetting('Utils', 'advancedMode', false)) {
+                if (options.advanced && !await TBStorage.getSettingAsync('Utils', 'advancedMode', false)) {
                     displaySetting = false;
                 }
 
@@ -654,7 +654,7 @@ body {
                         // Syntax highlighter selection stuff
                         $body.addClass('mod-syntax');
                         let editorSettings;
-                        const enableWordWrap = TBStorage.getSetting('Syntax', 'enableWordWrap', true);
+                        const enableWordWrap = await TBStorage.getSettingAsync('Syntax', 'enableWordWrap', true);
                         $(`#${module.shortname}_syntax_theme_css`).each(async (index, elem) => {
                             // Editor setup.
                             editorSettings = CodeMirror.fromTextArea(elem, {

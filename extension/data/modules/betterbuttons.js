@@ -1,6 +1,7 @@
 import TBModule, {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';
 import * as TBCore from '../tbcore.js';
+import {getSettingAsync} from '../tbstorage.js';
 
 const self = new Module({
     name: 'Better Buttons',
@@ -322,13 +323,13 @@ function initRemoveConfirmation () {
         // }, 100);
     });
     // Remove and spam
-    $body.on('click', '.flat-list .remove-button .togglebutton', function () {
+    $body.on('click', '.flat-list .remove-button .togglebutton', async function () {
         const $button = $(this).closest('.remove-button'),
               yes = $button.find('.yes')[0];
 
         // Don't remove if removal reasons are enabled and the button isn't for spam
         if (!$body.hasClass('tb-removal-reasons')
-            || $body.hasClass('tb-removal-reasons') && !TBModule.modules.RReasons.setting('commentReasons')
+            || $body.hasClass('tb-removal-reasons') && !await getSettingAsync('RReasons', 'commentReasons')
             || $button.children().first().attr('value') === 'spammed'
         ) {
             if (yes) {

@@ -60,6 +60,19 @@ export default new Module({
             default: true,
             description: 'Displays a "Show Source" button allowing you to display the message source in markdown.',
         },
+        {
+            id: 'modmailSidebarAvatar',
+            type: 'selector',
+            values: ['Original', 'Compact', 'Hidden'],
+            default: 'original',
+            description: 'Change how the user avatar in the modmail sidebar looks.',
+        },
+        {
+            id: 'disableAvatarAnimation',
+            type: 'boolean',
+            default: false,
+            description: 'Disable the sidebar avatar animation effect.',
+        },
     ],
 }, ({
     modmailnightmode: modMailNightmode,
@@ -70,6 +83,8 @@ export default new Module({
     sourceButton,
     modmaillink: modmaillink,
     openmailtab: openMailTab,
+    modmailSidebarAvatar,
+    disableAvatarAnimation,
 }) => {
     const $body = $('body');
 
@@ -82,24 +97,39 @@ export default new Module({
     }
 
     /**
-     * Searches for ban reason elements on page and makes included links clickable.
+     * Searches for elements in the sidebar and turns static text into clickable links where possible.
+     * For example: Links in ban reasons, username instances, etc.
      * @function
      */
-    function reasonClickable () {
-        const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen)');
-        if ($reasons.length) {
-            $reasons.each(function () {
-                const $reason = $(this);
-                $reason.addClass('tb-reason-seen');
+    function extraClickable () {
+        // Make ban reason links clickable.
+        if (clickableReason) {
+            const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen), .KarmaAndTrophies__BanStatus:not(.tb-reason-seen), .NewInfoBar__muteText:not(.tb-reason-seen)');
+            if ($reasons.length) {
+                $reasons.each(function () {
+                    const $reason = $(this);
+                    $reason.addClass('tb-reason-seen');
 
-                let reasonText = $reason.text();
-                // Three regex passes to avoid silly logic about whole urls, urls starting with a slash and those without it.
-                reasonText = reasonText.replace(/(\s|'|^)(https:\/\/.+?)(\s|'|$)/gi, '$1<a href="$2" target="_blank">$2</a>$3');
-                reasonText = reasonText.replace(/(\s|'|^)(\/u\/.+?|\/user\/.+?|\/r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com$2" target="_blank">$2</a>$3');
-                reasonText = reasonText.replace(/(\s|'|^)(u\/.+?|user\/.+?|r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com/$2" target="_blank">$2</a>$3');
+                    let reasonText = $reason.text();
+                    // Three regex passes to avoid silly logic about whole urls, urls starting with a slash and those without it.
+                    reasonText = reasonText.replace(/(\s|'|^)(https:\/\/.+?)(\s|'|$)/gi, '$1<a href="$2" target="_blank">$2</a>$3');
+                    reasonText = reasonText.replace(/(\s|'|^)(\/u\/.+?|\/user\/.+?|\/r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com$2" target="_blank">$2</a>$3');
+                    reasonText = reasonText.replace(/(\s|'|^)(u\/.+?|user\/.+?|r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com/$2" target="_blank">$2</a>$3');
 
-                $reason.html(reasonText);
-            });
+                    $reason.html(reasonText);
+                });
+            }
+        }
+
+        // A few obvious elements in the sidebar should be clickable and lead to the user profile.
+        const $modIdCard = $body.find('.NewInfoBar__idCard .ModIdCard:not(.tb-profile-link-seen)');
+        if ($modIdCard.length) {
+            $modIdCard.addClass('tb-profile-link-seen');
+            const userProfileLink = $body.find('.ModIdCard__UserProfileLink a').attr('href');
+            const wrapElement = `<a href="${userProfileLink}" target="_blank" class="tb-sidebar-profile-link"></a>`;
+            $body.find('.ModIdCard__snoovatarContainer img.ModIdCard__snoovatar').wrap(wrapElement);
+            $body.find('.ModIdCard__UserNameContainer .ModIdCard__UserNameLink div').wrap(wrapElement);
+            $body.find('.ModIdCard__UserNameMetaData .ModIdCard__UserNameText').wrap(wrapElement);
         }
     }
 
@@ -108,12 +138,35 @@ export default new Module({
         // Add a class to body
         $body.addClass('tb-new-modmail');
 
+        // Set the sidebar avatar style.
+        $body.addClass(`tb-modmail-sidebar-avatar-${modmailSidebarAvatar}`);
+
+        if (disableAvatarAnimation) {
+            $body.addClass('tb-modmail-sidebar-no-animation');
+        }
+
         /**
          * Controls whether clicks events on the reply button are handled by us or Reddit. When the user clicks the
          * button, we want to perform our own handling. However, in order to actually submit a reply once we're done
          * with our own checks, we need to trigger the event again and let Reddit handle it normally.
          */
         let shouldHijackClickHandler = true;
+
+        // Handle sidebar specific things when the user icon is clicked (mobile devices, small windows).
+        $body.on('click', '.icon-user', () => {
+            setTimeout(() => {
+                extraClickable();
+            }, 500);
+        });
+
+        // Handle sidebar specific things when arriving on a conversation view.
+        window.addEventListener('TBNewPage', event => {
+            if (event.detail.pageType === 'modmailConversation') {
+                setTimeout(() => {
+                    extraClickable();
+                }, 500);
+            }
+        });
 
         /**
          * Submits the reply form, bypassing the submission button click. Should only be
@@ -228,22 +281,6 @@ export default new Module({
 
             // Now enable toolbox nightmode.
             $('html').addClass('tb-nightmode');
-        }
-
-        if (clickableReason) {
-            $body.on('click', '.icon-user', () => {
-                setTimeout(() => {
-                    reasonClickable();
-                }, 500);
-            });
-
-            window.addEventListener('TBNewPage', event => {
-                if (event.detail.pageType === 'modmailConversation') {
-                    setTimeout(() => {
-                        reasonClickable();
-                    }, 500);
-                }
-            });
         }
 
         if (sourceButton) {

@@ -19,7 +19,6 @@
         "webextension-polyfill": "^0.8.0"
     },
     "devDependencies": {
-        "@rollup/plugin-node-resolve": "^13.0.0",
         "docdash": "^1.1.1",
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",

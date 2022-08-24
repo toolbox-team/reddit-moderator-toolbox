@@ -721,7 +721,7 @@ self.dateToUTC = function (date) {
     return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 };
 
-async function init () {
+function init () {
     if (!TBCore.isModLogPage) {
         return;
     }
@@ -731,96 +731,63 @@ async function init () {
 
     const $body = $('body');
 
+    let lastAfter;
+
     const $nerNext = $body.find('#NERStaticLink');
     const nerActive = $nerNext.length;
     let loadComments = false;
     const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
     $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of comments</a></div>');
 
-    const modlogCache = {
-        modlogUrl: '',
-        modlog: {},
-    };
+    function getComments (modlogUrl) {
+        TBui.longLoadSpinner(true);
 
-    async function getModlog (modlogUrl) {
-        if (modlogUrl === modlogCache.modlogUrl) {
-            return;
-        } else {
-            TBui.longLoadSpinner(true);
-            const modlog = await TBApi.getJSON(modlogUrl, {
-                raw_json: 1,
-            });
-            TBStorage.purifyObject(modlog);
-            TBui.longLoadSpinner(false);
-            modlogCache.modlogUrl = modlogUrl;
-            modlogCache.modlog = modlog;
-            return;
-        }
-    }
+        TBApi.getJSON(modlogUrl, {
+            raw_json: 1,
+        }).then(result => {
+            TBStorage.purifyObject(result);
+            lastAfter = result.data.after;
+            const $modActions = $('.modactionlisting');
+            $modActions.addClass('tb-comments-loaded');
+            result.data.children.forEach(child => {
+                if (child.data.target_body && child.data.target_fullname.startsWith('t1_')) {
+                    const $listingItem = $modActions.find(`tr.modactions[data-fullname="${child.data.id}"] .description`);
 
-    await getModlog(`${location.pathname}.json${location.search}`);
+                    // Render string markdown to HTML first.
+                    const renderedMarkdown = TBStorage.purify(parser.render(child.data.target_body));
 
-    function addExtraLogInfo () {
-        const modlog = modlogCache.modlog;
-        const $modActions = $('.modactionlisting');
-        modlog.data.children.forEach(child => {
-            if (child.data.description) {
-                const $listingItem = $modActions.find(`tr.modactions[data-fullname="${child.data.id}"] .description`);
-                $listingItem.append(`<em>Description: ${child.data.description}</em>`);
-            }
-        });
-    }
-
-    addExtraLogInfo();
-
-    function getComments () {
-        const modlog = modlogCache.modlog;
-        const $modActions = $('.modactionlisting');
-        $modActions.addClass('tb-comments-loaded');
-        modlog.data.children.forEach(child => {
-            if (child.data.target_body && child.data.target_fullname.startsWith('t1_')) {
-                const $listingItem = $modActions.find(`tr.modactions[data-fullname="${child.data.id}"] .description`);
-
-                // Render string markdown to HTML first.
-                const renderedMarkdown = TBStorage.purify(parser.render(child.data.target_body));
-
-                // Put it in a template.
-                const comment = `
-                        <div class="modlog_comment_text ${child.data.action}">
-                            <div class="md">
+                    // Put it in a template.
+                    const comment = `
+                            <div class="modlog_comment_text ${child.data.action}">
+                                <div class="md">
 
 ${renderedMarkdown}
 
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
-                $listingItem.append(comment);
-            }
+                    $listingItem.append(comment);
+                }
+            });
+            TBui.longLoadSpinner(false);
         });
     }
 
-    $body.on('click', '.activate-comment-load', async function () {
+    $body.on('click', '.activate-comment-load', function () {
         loadComments = true;
         $(this).hide();
         const modlogUrl = `${location.pathname}.json${location.search}`;
-        // modlog should be current, but doesn't hurt to make sure it is updated.
-        await getModlog(modlogUrl);
         getComments(modlogUrl);
     });
 
     // NER support.
-    window.addEventListener('TBNewThings', async () => {
-        if (nerActive) {
+    window.addEventListener('TBNewThings', () => {
+        if (loadComments && nerActive) {
             const linkUrl = new URL(location);
-            linkUrl.searchParams.set('after', modlogCache.modlog.data.after);
+            linkUrl.searchParams.set('after', lastAfter);
             const modlogUrl = `${linkUrl.pathname}.json${linkUrl.search}`;
-            await getModlog(modlogUrl);
-            addExtraLogInfo();
-
-            if (loadComments) {
-                getComments();
-            }
+            getComments(modlogUrl);
         }
     });
 }

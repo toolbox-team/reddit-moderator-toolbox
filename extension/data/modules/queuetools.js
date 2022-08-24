@@ -1344,6 +1344,7 @@ function init (options) {
                         const mod = value.mod;
                         const action = value.action;
                         const details = value.details;
+                        const description = value.description ? `: ${value.description}` : '';
                         const createdUTC = TBHelpers.timeConverterRead(value.created_utc);
                         const createdTimeAgo = new Date(value.created_utc * 1000).toISOString();
 
@@ -1351,7 +1352,7 @@ function init (options) {
                             <tr>
                                 <td>${mod}</td>
                                 <td>${action}</td>
-                                <td>${details}</td>
+                                <td>${details} ${description}</td>
                                 <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
                             </tr>
                         `;

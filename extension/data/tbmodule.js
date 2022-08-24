@@ -337,7 +337,7 @@ const TBModule = {
             TBStorage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
             TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
 
-            await TBModule.modules['Modbar'].set('showExportReminder', $('#showExportReminder').prop('checked'));
+            await TBStorage.setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
 
             // save cache settings.
             TBStorage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
@@ -386,7 +386,7 @@ const TBModule = {
 
             if ($(e.target).hasClass('tb-settings-import')) {
                 await TBCore.importSettings(sub);
-                await TBModule.modules['Modbar'].set('lastExport', TBHelpers.getTime());
+                await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
                 TBCore.clearCache();
                 TBStorage.verifiedSettingsSave(succ => {
                     if (succ) {

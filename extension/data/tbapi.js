@@ -197,7 +197,7 @@ export const getModhash = async () => {
     if (Object.keys(cachedUserDetails).length) {
         return cachedUserDetails.data.modhash;
     } else {
-        const userDetails = await userDetailsPromise();
+        const userDetails = await getUserDetails();
         return userDetails.data.modhash;
     }
 };
@@ -212,7 +212,7 @@ export const getCurrentUser = async () => {
     if (Object.keys(cachedUserDetails).length) {
         return cachedUserDetails.data.name;
     } else {
-        const userDetails = await userDetailsPromise();
+        const userDetails = await getUserDetails();
         return userDetails.data.name;
     }
 };

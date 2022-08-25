@@ -166,6 +166,7 @@ const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
     try {
         const data = await getJSON('/api/me.json');
         TBStorage.purifyObject(data);
+        TBStorage.setCache('Utils', 'userDetails', data)
         return data;
     } catch (error) {
         // 504 Gateway Timeout errors can be retried
@@ -190,13 +191,31 @@ export const getUserDetails = () => userDetailsPromise;
  * Gets the modhash of the currently signed-in user.
  * @returns {Promise<string>}
  */
-export const getModhash = () => userDetailsPromise.then(details => details.data.modhash);
+export const getModhash = async () => {
+    // Return cached data if available, otherwise fetch userDetails.
+    const cachedUserDetails = await TBStorage.getCache('Utils', 'userDetails', {});
+    if (Object.keys(cachedUserDetails).length) {
+        return cachedUserDetails.data.modhash;
+    } else {
+        const userDetails = await userDetailsPromise();
+        return userDetails.data.modhash;
+    }
+}
 
 /**
  * Gets the username of the currently signed-in user.
  * @returns {Promise<string>}
  */
-export const getCurrentUser = () => userDetailsPromise.then(details => details.data.name);
+export const getCurrentUser = async () => {
+    // Return cached data if available, otherwise fetch userDetails.
+    const cachedUserDetails = await TBStorage.getCache('Utils', 'userDetails', {});
+    if (Object.keys(cachedUserDetails).length) {
+        return cachedUserDetails.data.name;
+    } else {
+        const userDetails = await userDetailsPromise();
+        return userDetails.data.name;
+    }
+}
 
 //
 // Reddit 'legacy' API stuff. Still very much in use.

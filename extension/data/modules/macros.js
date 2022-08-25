@@ -271,7 +271,7 @@ export default new Module({
             }
 
             if (spam) {
-                actionList += `<br>- This ${kind} will be marked as spam`;
+                actionList += `<br>- This ${kind} will be removed and marked as spam`;
             }
 
             if (approve) {

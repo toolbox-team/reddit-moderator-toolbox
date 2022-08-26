@@ -163,6 +163,12 @@ export const apiOauthDELETE = (endpoint, query) => sendRequest({
  * @type {Promise<object | undefined>} JSON response from `/api/me.json`
  */
 const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
+    // Check cache for user details and return from there if we have anything
+    const cachedData = await TBStorage.getCache('Utils', 'userDetails', {});
+    if (Object.keys(cachedData).length) {
+        return cachedData;
+    }
+
     try {
         const data = await getJSON('/api/me.json');
         TBStorage.purifyObject(data);
@@ -177,9 +183,7 @@ const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
         // Throw all other errors without retrying
         throw error;
     }
-})()
-    // If getting details from API fails, fall back to the cached value (if any)
-    .catch(() => TBStorage.getCache('Utils', 'userDetails'));
+})();
 
 /**
  * Gets details about the current user.
@@ -192,14 +196,8 @@ export const getUserDetails = () => userDetailsPromise;
  * @returns {Promise<string>}
  */
 export const getModhash = async () => {
-    // Return cached data if available, otherwise fetch userDetails.
-    const cachedUserDetails = await TBStorage.getCache('Utils', 'userDetails', {});
-    if (Object.keys(cachedUserDetails).length) {
-        return cachedUserDetails.data.modhash;
-    } else {
-        const userDetails = await getUserDetails();
-        return userDetails.data.modhash;
-    }
+    const userDetails = await getUserDetails();
+    return userDetails.data.modhash;
 };
 
 /**
@@ -207,14 +205,8 @@ export const getModhash = async () => {
  * @returns {Promise<string>}
  */
 export const getCurrentUser = async () => {
-    // Return cached data if available, otherwise fetch userDetails.
-    const cachedUserDetails = await TBStorage.getCache('Utils', 'userDetails', {});
-    if (Object.keys(cachedUserDetails).length) {
-        return cachedUserDetails.data.name;
-    } else {
-        const userDetails = await getUserDetails();
-        return userDetails.data.name;
-    }
+    const userDetails = await getUserDetails();
+    return userDetails.data.name;
 };
 
 //

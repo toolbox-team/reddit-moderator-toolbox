@@ -23,9 +23,17 @@ export default ['chrome', 'firefox'].map(platform => ({
                     transform: contents => {
                         const manifest = JSON.parse(contents);
 
-                        // Firefox doesn't support "incognito": "split"
+                        // Firefox doesn't support:
+                        // - "incognito": "split"
+                        // - "version_name" as property
                         if (platform === 'firefox') {
                             manifest.incognito = undefined;
+                            manifest.version_name = undefined;
+                        }
+
+                        // There are no chromium specific settings.
+                        if (platform === 'chrome') {
+                            manifest.browser_specific_settings = undefined;
                         }
 
                         return JSON.stringify(manifest, null, 4);

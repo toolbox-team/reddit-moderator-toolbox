@@ -2,7 +2,7 @@ import {Module} from '../tbmodule.js';
 import {getModSubs, link, modsSub} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
-import {actionButton, drawPosition, icons, popup} from '../tbui.js';
+import {actionButton, drawPosition, icons, pagerForItems, popup} from '../tbui.js';
 import TBListener from '../tblistener.js';
 
 /**
@@ -205,20 +205,26 @@ function createModNotesPopup ({
 }) {
     const $popup = popup({
         title: `Mod notes for /u/${user} in /r/${subreddit}`,
-        tabs: [{
-            title: 'All Activity',
-            content: `
-                <div class="tb-modnote-table-wrap">
-                    <p class="error">loading...</p>
-                </div>
-                <div class="tb-modnote-create-wrap">
-                    <b>Add a Note</b>
-                    <!-- TODO: erin put a label select here too thx -->
-                    <input type="text" class="tb-modnote-text-input tb-input">
-                </div>
-            `,
-            footer: actionButton('Create Note', 'tb-modnote-create-button'),
-        }],
+        tabs: [
+            {
+                title: 'All Activity',
+                id: 'tb-modnote-tab-all',
+            },
+            {
+                title: 'Notes',
+                id: 'tb-modnote-tab-notes',
+            },
+            {
+                id: 'tb-modnote-tab-actions',
+                title: 'Mod Actions',
+            },
+        ],
+        footer: $(`
+            <span>
+                <input type="text" class="tb-modnote-text-input tb-input">
+            </span>
+        `)
+            .append(actionButton('Create Note', 'tb-modnote-create-button')),
         cssClass: 'tb-modnote-popup',
     });
     $popup.attr('data-user', user);
@@ -240,29 +246,63 @@ function createModNotesPopup ({
 function updateModNotesPopup ($popup, {
     notes,
 }) {
-    const $content = $popup.find('.tb-modnote-table-wrap');
-    $content.empty();
+    // Build a table for each tab containing the right subset of notes
+    $popup.find('.tb-window-tab').each(function () {
+        const $tabContainer = $(this);
 
-    if (!notes) {
-        // Notes being null/undefined indicates notes couldn't be fetched
-        // TODO: probably pass errors into this function for display, and also
-        //       to distinguish "failed to load" from "still loading"
-        $content.append(`
-            <p class="error">
-                Error fetching mod notes
-            </p>
-        `);
-    } else if (!notes.length) {
-        // If the notes list is empty, our job is very easy
-        $content.append(`
-            <p>
-                No notes
-            </p>
-        `);
-    } else {
-        // Generate a table for the notes we have and display that
-        $content.append(generateNotesTable(notes));
-    }
+        const $content = $tabContainer.find('.tb-window-content');
+        $content.empty();
+
+        if (!notes) {
+            // Notes being null/undefined indicates notes couldn't be fetched
+            // TODO: probably pass errors into this function for display, and
+            //       also to distinguish "failed to load" from "still loading"
+            $content.append(`
+                <p class="error">
+                    Error fetching mod notes
+                </p>
+            `);
+            return;
+        }
+
+        // Filter notes as appropriate for this tab
+        let filteredNotes = notes;
+        if ($tabContainer.hasClass('tb-modnote-tab-notes')) {
+            filteredNotes = notes.filter(note => note.user_note_data?.note);
+        }
+        if ($tabContainer.hasClass('tb-modnote-tab-actions')) {
+            filteredNotes = notes.filter(note => note.mod_action_data?.action);
+        }
+
+        if (!filteredNotes.length) {
+            // If the notes list is empty, our job is very easy
+            $content.append(`
+                <p>
+                    No notes
+                </p>
+            `);
+        } else {
+            // Generate a table for the notes we have and display that
+            const $notesPager = pagerForItems({
+                items: filteredNotes,
+                perPage: 10,
+                displayItem: generateNoteTableRow,
+                wrapper: `
+                    <table class="tb-modnote-table">
+                        <thead>
+                            <tr>
+                                <th>Author</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                `,
+            });
+            $content.append($notesPager);
+        }
+    });
 }
 
 /**
@@ -270,99 +310,77 @@ function updateModNotesPopup ($popup, {
  * @param {object[]} notes An array of note objects
  * @returns {jQuery} The generated table
  */
-function generateNotesTable (notes) {
-    const $notesTable = $(`
-        <table class="tb-modnote-table">
-            <thead>
-                <tr>
-                    <th>Author</th>
-                    <th>Type</th>
-                    <th>Details</th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
+function generateNoteTableRow (note) {
+    const createdAt = new Date(note.created_at * 1000);
+    const mod = note.operator; // TODO: can [deleted] show up here?
+
+    const $noteRow = $(`
+        <tr>
+            <td>
+                <a href="${link(`/user/${encodeURIComponent(mod)}`)}">
+                    /u/${escapeHTML(mod)}
+                </a>
+                <br>
+                <small>
+                    <time datetime="${escapeHTML(createdAt.toISOString())}">
+                        ${escapeHTML(createdAt.toLocaleString())}
+                    </time>
+                </small>
+            </td>
+            <td>
+                ${typeNames[note.type]}
+            </td>
+        </tr>
     `);
 
-    // Build the body of the table
-    const $notesTableBody = $('<tbody>');
-    for (const note of notes) {
-        const createdAt = new Date(note.created_at * 1000);
-        const mod = note.operator; // TODO: can [deleted] show up here?
+    // Build the note details based on what sort of information is present
+    const $noteDetails = $('<td>');
 
-        const $noteRow = $(`
-            <tr>
-                <td>
-                    <a href="${link(`/user/${encodeURIComponent(mod)}`)}">
-                        /u/${escapeHTML(mod)}
-                    </a>
-                    <br>
-                    <small>
-                        <time datetime="${escapeHTML(createdAt.toISOString())}">
-                            ${escapeHTML(createdAt.toLocaleString())}
-                        </time>
-                    </small>
-                </td>
-                <td>
-                    ${typeNames[note.type]}
-                </td>
-            </tr>
+    if (note.mod_action_data?.action) {
+        $noteDetails.append(`
+            <span class="tb-modnote-action-summary">
+                Took action "${escapeHTML(note.mod_action_data.action)}"${note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''}${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
+            </span>
         `);
-
-        // Build the note details based on what sort of information is present
-        const $noteDetails = $('<td>');
-
-        if (note.mod_action_data?.action) {
-            $noteDetails.append(`
-                <span class="tb-modnote-action-summary">
-                    Took action "${escapeHTML(note.mod_action_data.action)}"${note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''}${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
-                </span>
-            `);
-        }
-
-        if (note.user_note_data?.note) {
-            $noteDetails.append(`
-                <blockquote>
-                    ${note.user_note_data.label ? `
-                        <span style="color:${labelColors[note.user_note_data.label]}">
-                            [${labelNames[note.user_note_data.label] || escapeHTML(note.user_note_data.label)}]
-                        </span>
-                    ` : ''}
-                    ${escapeHTML(note.user_note_data.note)}
-                </blockquote>
-            `);
-        }
-
-        $noteRow.append($noteDetails);
-
-        // Only manually added notes can be deleted
-        if (note.type === 'NOTE') {
-            $noteRow.append(`
-                <td>
-                    <a
-                        href="#"
-                        role="button"
-                        class="tb-modnote-delete-button tb-icons tb-icons-negative"
-                        data-note-id="${escapeHTML(note.id)}"
-                    >
-                        ${icons.delete}
-                    </a>
-                </td>
-            `);
-        } else {
-            // append an empty td to avoid weird border stuff
-            $noteRow.append('<td>');
-        }
-
-        $notesTableBody.append($noteRow);
     }
 
-    // Update dates in a nice format
-    $notesTableBody.find('time.timeago').timeago();
+    if (note.user_note_data?.note) {
+        $noteDetails.append(`
+            <blockquote>
+                ${note.user_note_data.label ? `
+                    <span style="color:${labelColors[note.user_note_data.label]}">
+                        [${labelNames[note.user_note_data.label] || escapeHTML(note.user_note_data.label)}]
+                    </span>
+                ` : ''}
+                ${escapeHTML(note.user_note_data.note)}
+            </blockquote>
+        `);
+    }
 
-    // We're done generating the body, add it to the table and return the result
-    $notesTable.append($notesTableBody);
-    return $notesTable;
+    $noteRow.append($noteDetails);
+
+    // Only manually added notes can be deleted
+    if (note.type === 'NOTE') {
+        $noteRow.append(`
+            <td>
+                <a
+                    href="#"
+                    role="button"
+                    class="tb-modnote-delete-button tb-icons tb-icons-negative"
+                    data-note-id="${escapeHTML(note.id)}"
+                >
+                    ${icons.delete}
+                </a>
+            </td>
+        `);
+    } else {
+        // append an empty td to avoid weird border stuff
+        $noteRow.append('<td>');
+    }
+
+    $noteRow.find('time').timeago();
+
+    return $noteRow;
 }
 
 export default new Module({

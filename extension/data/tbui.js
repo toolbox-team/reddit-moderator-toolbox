@@ -176,6 +176,8 @@ $body.on('click', '.tb-notification', function () {
  * @param {object} options Options for the popup
  * @param {string} options.title The popup's title (raw HTML)
  * @param {object[]} options.tabs The tabs for the popup
+ * @param {string} options.footer The popup footer (used for all tabs; if
+ * provided, tab footers are ignored)
  * @param {string?} options.cssClass Extra CSS class to add to the popup
  * @param {string?} options.meta Raw HTML to add to a "meta" container
  * @param {boolean?} [draggable=true] Whether the user can move the popup
@@ -184,6 +186,7 @@ $body.on('click', '.tb-notification', function () {
 export function popup ({
     title,
     tabs,
+    footer,
     cssClass = '',
     meta,
     draggable = true,
@@ -206,7 +209,7 @@ export function popup ({
     if (tabs.length === 1) {
         // We don't use template literals here as the content can be a jquery object.
         $popup.append($('<div class="tb-window-content"></div>').append(tabs[0].content));
-        $popup.append($('<div class="tb-window-footer"></div>').append(tabs[0].footer));
+        $popup.append($('<div class="tb-window-footer"></div>').append(footer || tabs[0].footer));
     } else {
         const $tabs = $('<div class="tb-window-tabs"></div>');
         $popup.append($tabs);
@@ -248,7 +251,10 @@ export function popup ({
             // We don't use template literals here as the content can be a jquery object.
             const $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
             $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
-            $tab.append($('<div class="tb-window-footer""></div>').append(tab.footer));
+            if (!footer) {
+                // Only display tab footer if whole-popup footer not set
+                $tab.append($('<div class="tb-window-footer""></div>').append(tab.footer));
+            }
 
             // default first tab is visible; hide others
             if (i === 0) {
@@ -258,6 +264,11 @@ export function popup ({
             }
 
             $tab.appendTo($popup);
+        }
+
+        // If we have a whole-popup footer, add it underneath the tabbed portion
+        if (footer) {
+            $popup.append($('<div class="tb-window-footer"></div>').append(footer));
         }
     }
 
@@ -1787,6 +1798,8 @@ export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
  * content for each individual item in the dataset
  * @param {string} controlPosition Where to display the pager's controls,
  * either 'top' or 'bottom'
+ * @param {string} [wrapper='<div>'] Used to provide custom wrapper markup for
+ * each page of items
  * @returns {jQuery}
  */
 export function pagerForItems ({
@@ -1794,12 +1807,13 @@ export function pagerForItems ({
     perPage,
     displayItem,
     controlPosition,
+    wrapper = '<div>',
 }) {
     return pager({
         controlPosition,
         pageCount: Math.ceil(items.length / perPage),
     }, page => {
-        const $wrapper = $('<div>');
+        const $wrapper = $(wrapper);
         const start = page * perPage;
         const end = (page + 1) * perPage;
         for (let i = start; i < end && i < items.length; i += 1) {

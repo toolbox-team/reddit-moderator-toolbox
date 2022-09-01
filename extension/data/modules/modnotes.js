@@ -211,13 +211,12 @@ function createModNotesPopup ({
                 <div class="tb-modnote-table-wrap">
                     <p class="error">loading...</p>
                 </div>
-                <div class="tb-modnote-create-wrap">
-                    <b>Add a Note</b>
-                    <!-- TODO: erin put a label select here too thx -->
-                    <input type="text" class="tb-modnote-text-input tb-input">
-                </div>
             `,
-            footer: actionButton('Create Note', 'tb-modnote-create-button'),
+            footer: $(`
+                <span>
+                    <input type="text" class="tb-modnote-text-input tb-input">
+                </span>
+            `).append(actionButton('Create Note', 'tb-modnote-create-button')),
         }],
         cssClass: 'tb-modnote-popup',
     });

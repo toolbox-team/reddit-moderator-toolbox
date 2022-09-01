@@ -1787,6 +1787,8 @@ export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
  * content for each individual item in the dataset
  * @param {string} controlPosition Where to display the pager's controls,
  * either 'top' or 'bottom'
+ * @param {string} [wrapper='<div>'] Used to provide custom wrapper markup for
+ * each page of items
  * @returns {jQuery}
  */
 export function pagerForItems ({
@@ -1794,12 +1796,13 @@ export function pagerForItems ({
     perPage,
     displayItem,
     controlPosition,
+    wrapper = '<div>',
 }) {
     return pager({
         controlPosition,
         pageCount: Math.ceil(items.length / perPage),
     }, page => {
-        const $wrapper = $('<div>');
+        const $wrapper = $(wrapper);
         const start = page * perPage;
         const end = (page + 1) * perPage;
         for (let i = start; i < end && i < items.length; i += 1) {

@@ -205,14 +205,20 @@ function createModNotesPopup ({
 }) {
     const $popup = popup({
         title: `Mod notes for /u/${user} in /r/${subreddit}`,
-        tabs: [{
-            title: 'All Activity',
-            content: `
-                <div class="tb-modnote-table-wrap">
-                    <p class="error">loading...</p>
-                </div>
-            `,
-        }],
+        tabs: [
+            {
+                title: 'All Activity',
+                id: 'tb-modnote-tab-all',
+            },
+            {
+                title: 'Notes',
+                id: 'tb-modnote-tab-notes',
+            },
+            {
+                id: 'tb-modnote-tab-actions',
+                title: 'Mod Actions',
+            },
+        ],
         footer: $(`
             <span>
                 <input type="text" class="tb-modnote-text-input tb-input">
@@ -240,46 +246,63 @@ function createModNotesPopup ({
 function updateModNotesPopup ($popup, {
     notes,
 }) {
-    const $content = $popup.find('.tb-modnote-table-wrap');
-    $content.empty();
+    // Build a table for each tab containing the right subset of notes
+    $popup.find('.tb-window-tab').each(function () {
+        const $tabContainer = $(this);
 
-    if (!notes) {
-        // Notes being null/undefined indicates notes couldn't be fetched
-        // TODO: probably pass errors into this function for display, and also
-        //       to distinguish "failed to load" from "still loading"
-        $content.append(`
-            <p class="error">
-                Error fetching mod notes
-            </p>
-        `);
-    } else if (!notes.length) {
-        // If the notes list is empty, our job is very easy
-        $content.append(`
-            <p>
-                No notes
-            </p>
-        `);
-    } else {
-        // Generate a table for the notes we have and display that
-        const $notesPager = pagerForItems({
-            items: notes,
-            perPage: 10,
-            displayItem: generateNoteTableRow,
-            wrapper: `
-                <table class="tb-modnote-table">
-                    <thead>
-                        <tr>
-                            <th>Author</th>
-                            <th>Type</th>
-                            <th>Details</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                </table>
-            `,
-        });
-        $content.append($notesPager);
-    }
+        const $content = $tabContainer.find('.tb-window-content');
+        $content.empty();
+
+        if (!notes) {
+            // Notes being null/undefined indicates notes couldn't be fetched
+            // TODO: probably pass errors into this function for display, and
+            //       also to distinguish "failed to load" from "still loading"
+            $content.append(`
+                <p class="error">
+                    Error fetching mod notes
+                </p>
+            `);
+            return;
+        }
+
+        // Filter notes as appropriate for this tab
+        let filteredNotes = notes;
+        if ($tabContainer.hasClass('tb-modnote-tab-notes')) {
+            filteredNotes = notes.filter(note => note.user_note_data?.note);
+        }
+        if ($tabContainer.hasClass('tb-modnote-tab-actions')) {
+            filteredNotes = notes.filter(note => note.mod_action_data?.action);
+        }
+
+        if (!filteredNotes.length) {
+            // If the notes list is empty, our job is very easy
+            $content.append(`
+                <p>
+                    No notes
+                </p>
+            `);
+        } else {
+            // Generate a table for the notes we have and display that
+            const $notesPager = pagerForItems({
+                items: filteredNotes,
+                perPage: 10,
+                displayItem: generateNoteTableRow,
+                wrapper: `
+                    <table class="tb-modnote-table">
+                        <thead>
+                            <tr>
+                                <th>Author</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                `,
+            });
+            $content.append($notesPager);
+        }
+    });
 }
 
 /**

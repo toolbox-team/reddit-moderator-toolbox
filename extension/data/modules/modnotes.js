@@ -212,12 +212,13 @@ function createModNotesPopup ({
                     <p class="error">loading...</p>
                 </div>
             `,
-            footer: $(`
-                <span>
-                    <input type="text" class="tb-modnote-text-input tb-input">
-                </span>
-            `).append(actionButton('Create Note', 'tb-modnote-create-button')),
         }],
+        footer: $(`
+            <span>
+                <input type="text" class="tb-modnote-text-input tb-input">
+            </span>
+        `)
+            .append(actionButton('Create Note', 'tb-modnote-create-button')),
         cssClass: 'tb-modnote-popup',
     });
     $popup.attr('data-user', user);

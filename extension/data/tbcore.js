@@ -1375,7 +1375,7 @@ export async function getToolboxDevs () {
         TBStorage.setSetting(SETTINGS_NAME, 'longLength', longLength);
     }
 
-    // First run changes for all releases. 
+    // First run changes for all releases.
     if (shortVersion > lastVersion) {
         // These need to happen for every version change
         TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
@@ -1415,8 +1415,8 @@ export async function getToolboxDevs () {
 
     // First run changes for major and minor releases only
     // https://semver.org
-    const shortVersionMinor = Math.floor(shortVersion / 1e2)
-    const lastVersionMinor = Math.floor(lastVersion / 1e2)
+    const shortVersionMinor = Math.floor(shortVersion / 1e2);
+    const lastVersionMinor = Math.floor(lastVersion / 1e2);
 
     if (shortVersionMinor > lastVersionMinor) {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);

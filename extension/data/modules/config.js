@@ -251,6 +251,7 @@ const self = new Module({
                             <h2>Item</h2>
                             <label><input type="checkbox" id="approveitem">approve item</label>
                             <label><input type="checkbox" id="removeitem">remove item</label>
+                            <label><input type="checkbox" id="spamitem">spam item</label>
                             <label><input type="checkbox" id="lockitem">lock item</label>
                             <label><input type="checkbox" id="archivemodmail">archive modmail</label>
                             <label><input type="checkbox" id="highlightmodmail">highlight modmail</label>
@@ -786,6 +787,7 @@ const self = new Module({
                                     <h2>Item</h2>
                                     <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>
                                     <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>
+                                    <label><input type="checkbox" class="{{i}}-spamitem" id="spamitem">spam item</label>
                                     <label><input type="checkbox" class="{{i}}-lockitem" id="lockitem">lock item</label>
                                     <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
                                     <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
@@ -823,6 +825,7 @@ const self = new Module({
                 $(`.${i}-banuser`).prop('checked', macro.ban);
                 $(`.${i}-muteuser`).prop('checked', macro.mute);
                 $(`.${i}-removeitem`).prop('checked', macro.remove);
+                $(`.${i}-spamitem`).prop('checked', macro.spam);
                 $(`.${i}-approveitem`).prop('checked', macro.approve);
                 $(`.${i}-lockitem`).prop('checked', macro.lockthread);
                 $(`.${i}-lockreply`).prop('checked', macro.lockreply);
@@ -1581,6 +1584,7 @@ const self = new Module({
               muteuser = $body.find('#muteuser').prop('checked'),
               removeitem = $body.find('#removeitem').prop('checked'),
               approveitem = $body.find('#approveitem').prop('checked'),
+              spamitem = $body.find('#spamitem').prop('checked'),
               lockitem = $body.find('#lockitem').prop('checked'),
               lockreply = $body.find('#lockreply').prop('checked'),
               sticky = $body.find('#sticky').prop('checked'),
@@ -1608,6 +1612,7 @@ const self = new Module({
         macro.mute = muteuser;
         macro.remove = removeitem;
         macro.approve = approveitem;
+        macro.spam = spamitem;
         // saved as lockthread for legacy reasons
         macro.lockthread = lockitem;
         macro.lockreply = lockreply;
@@ -1639,6 +1644,7 @@ const self = new Module({
         $body.find('#muteuser').prop('checked', false);
         $body.find('#removeitem').prop('checked', false);
         $body.find('#approveitem').prop('checked', false);
+        $body.find('#spamitem').prop('checked', false);
         $body.find('#lockitem').prop('checked', false);
         $body.find('#lockreply').prop('checked', false);
         $body.find('#sticky').prop('checked', false);

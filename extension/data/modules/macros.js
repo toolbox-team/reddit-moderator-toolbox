@@ -236,6 +236,7 @@ export default new Module({
         // get some placement variables
         const remove = macro.remove,
               approve = macro.approve,
+              spam = macro.spam,
               ban = macro.ban,
               mute = macro.mute,
             // Comments can only be stickied by being distinguished, so
@@ -267,6 +268,10 @@ export default new Module({
         if (!TBCore.isModmail && !TBCore.isNewModmail) {
             if (remove) {
                 actionList += `<br>- This ${kind} will be removed`;
+            }
+
+            if (spam) {
+                actionList += `<br>- This ${kind} will be removed and marked as spam`;
             }
 
             if (approve) {
@@ -473,6 +478,10 @@ export default new Module({
 
                         if (remove) {
                             TBApi.removeThing(info.id);
+                        }
+
+                        if (spam) {
+                            TBApi.removeThing(info.id, true);
                         }
 
                         if (approve) {

@@ -1375,8 +1375,7 @@ export async function getToolboxDevs () {
         TBStorage.setSetting(SETTINGS_NAME, 'longLength', longLength);
     }
 
-    // First run changes.
-
+    // First run changes for all releases.
     if (shortVersion > lastVersion) {
         // These need to happen for every version change
         TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
@@ -1412,6 +1411,14 @@ export async function getToolboxDevs () {
         // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
         TBStorage.setSetting(SETTINGS_NAME, 'debugMode', false);
+    }
+
+    // First run changes for major and minor releases only
+    // https://semver.org
+    const shortVersionMinor = Math.floor(shortVersion / 100);
+    const lastVersionMinor = Math.floor(lastVersion / 100);
+
+    if (shortVersionMinor > lastVersionMinor) {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
     }
 

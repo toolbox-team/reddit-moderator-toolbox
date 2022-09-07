@@ -1415,8 +1415,8 @@ export async function getToolboxDevs () {
 
     // First run changes for major and minor releases only
     // https://semver.org
-    const shortVersionMinor = Math.floor(shortVersion / 1e2);
-    const lastVersionMinor = Math.floor(lastVersion / 1e2);
+    const shortVersionMinor = Math.floor(shortVersion / 100);
+    const lastVersionMinor = Math.floor(lastVersion / 100);
 
     if (shortVersionMinor > lastVersionMinor) {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);

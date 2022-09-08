@@ -313,81 +313,82 @@ export default new Module({
         let subList = '';
         const configEnabled = TBStorage.getSetting('TBConfig', 'enabled', false),
               usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false);
-        await TBCore.getModSubs();
-        this.log('got mod subs');
-        this.log(window._TBCore.mySubs.length);
-        this.log(window._TBCore.mySubsData.length);
-        $(window._TBCore.mySubsData).each(function () {
-            const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
-            subList += `
-                <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
-                    <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
-                    <td class="tb-my-subreddits-subreddit">
-                        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
-                        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
-                        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
-                        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
-                        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
-                        ${usernotesEnabled ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>` : ''}
-                        ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
-                    </td>
-                </tr>
+        TBCore.getModSubs().then(async () => {
+            this.log('got mod subs');
+            this.log(window._TBCore.mySubs.length);
+            this.log(window._TBCore.mySubsData.length);
+            $(window._TBCore.mySubsData).each(function () {
+                const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
+                subList += `
+                    <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
+                        <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
+                        <td class="tb-my-subreddits-subreddit">
+                            <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
+                            <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
+                            <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
+                            <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
+                            <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
+                            ${usernotesEnabled ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>` : ''}
+                            ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const modSubsPopupContent = `
+                <div id="tb-my-subreddits">
+                    <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
+                <span class="tb-livefilter-count">${window._TBCore.mySubs.length}</span>
+                    <br>
+                    <table id="tb-my-subreddit-list">${subList}</table>
+                </div>
             `;
-        });
 
-        const modSubsPopupContent = `
-            <div id="tb-my-subreddits">
-                <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-            <span class="tb-livefilter-count">${window._TBCore.mySubs.length}</span>
-                <br>
-                <table id="tb-my-subreddit-list">${subList}</table>
-            </div>
-        `;
+            $body.on('click', '#tb-toolbar-mysubs', () => {
+                const $existingPopup = $body.find('.subreddits-you-mod-popup');
+                if (!$existingPopup.length) {
+                    TBui.popup({
+                        title: 'Subreddits you moderate',
+                        tabs: [
+                            {
+                                title: 'Subreddits you moderate',
+                                id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
+                                tooltip: 'Subreddits you moderate',
+                                content: modSubsPopupContent,
+                                footer: '',
+                            },
+                        ],
+                        cssClass: 'subreddits-you-mod-popup',
+                    }).appendTo('body').css({
+                        position: 'fixed',
+                        bottom: '41px',
+                        left: '20px',
+                    });
+                    // Focus the filter bar for convenience
+                    $('#tb-livefilter-input').focus();
+                } else {
+                    $existingPopup.remove();
+                }
 
-        $body.on('click', '#tb-toolbar-mysubs', () => {
-            const $existingPopup = $body.find('.subreddits-you-mod-popup');
-            if (!$existingPopup.length) {
-                TBui.popup({
-                    title: 'Subreddits you moderate',
-                    tabs: [
-                        {
-                            title: 'Subreddits you moderate',
-                            id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
-                            tooltip: 'Subreddits you moderate',
-                            content: modSubsPopupContent,
-                            footer: '',
-                        },
-                    ],
-                    cssClass: 'subreddits-you-mod-popup',
-                }).appendTo('body').css({
-                    position: 'fixed',
-                    bottom: '41px',
-                    left: '20px',
-                });
-                // Focus the filter bar for convenience
-                $('#tb-livefilter-input').focus();
-            } else {
-                $existingPopup.remove();
-            }
+                $body.find('#tb-livefilter-input').keyup(function () {
+                    const LiveSearchValue = $(this).val();
+                    $body.find('#tb-my-subreddits table tr').each(function () {
+                        const $this = $(this),
+                              subredditName = $this.attr('data-subreddit');
 
-            $body.find('#tb-livefilter-input').keyup(function () {
-                const LiveSearchValue = $(this).val();
-                $body.find('#tb-my-subreddits table tr').each(function () {
-                    const $this = $(this),
-                          subredditName = $this.attr('data-subreddit');
-
-                    if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
-                        $this.hide();
-                    } else {
-                        $this.show();
-                    }
-                    $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+                        if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+                            $this.hide();
+                        } else {
+                            $this.show();
+                        }
+                        $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+                    });
                 });
             });
-        });
 
-        // only show the button once it's populated.
-        $('#tb-toolbar-mysubs').show();
+            // only show the button once it's populated.
+            $('#tb-toolbar-mysubs').show();
+        });
     }
 
     // Swap old/new reddit button

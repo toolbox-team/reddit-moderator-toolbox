@@ -311,9 +311,9 @@ export default new Module({
         $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
         let subList = '';
-        const configEnabled = TBStorage.getSetting('TBConfig', 'enabled', false),
-              usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false);
         TBCore.getModSubs().then(async () => {
+            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false),
+                  usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
             this.log('got mod subs');
             this.log(window._TBCore.mySubs.length);
             this.log(window._TBCore.mySubsData.length);

@@ -124,24 +124,24 @@ export default new Module({
     // preload some generic variables
     //
 
-    const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
+    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false),
 
-          modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
-          unreadMessageCount = TBStorage.getSetting('Notifier', 'unreadMessageCount', 0),
-          modqueueCount = TBStorage.getSetting('Notifier', 'modqueueCount', 0),
-          unmoderatedCount = TBStorage.getSetting('Notifier', 'unmoderatedCount', 0),
-          modmailCount = TBStorage.getSetting('Notifier', 'modmailCount', 0),
-          newModmailCount = TBStorage.getSetting('Notifier', 'newModmailCount', 0),
-          notifierEnabled = TBStorage.getSetting('Notifier', 'enabled', true),
-          modmailCustomLimit = TBStorage.getSetting('ModMail', 'customLimit', 0),
+          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
+          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod'),
+          unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0),
+          modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0),
+          unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0),
+          modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0),
+          newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0),
+          notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true),
+          modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0),
 
-          modSubredditsFMod = TBStorage.getSetting('Notifier', 'modSubredditsFMod', false),
-          unmoderatedSubredditsFMod = TBStorage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
+          modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
+          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Ready some details for new modmail linking
-    const modmailLink = TBStorage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
-          openMailTab = TBStorage.getSetting('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
+    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail'),
+          openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
           newModmailBaseUrl = 'https://mod.reddit.com/mail/';
     let newModmailUrl;
 

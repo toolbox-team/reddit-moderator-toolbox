@@ -280,6 +280,31 @@ export default new Module({
 `);
 
     $body.append($modBar);
+    $body.append($modbarhid);
+
+    const toggleMenuBar = hidden => {
+        if (hidden) {
+            $modBar.hide();
+            $modbarhid.show();
+            $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
+            $body.toggleClass('tb-modbar-shown', false); // New modmail uses this style to add space to the bottom of the page
+        } else {
+            $modBar.show();
+            $modbarhid.hide();
+            if (consoleShowing && debugMode) {
+                $body.find('.tb-debug-window').show();
+            }
+            $body.toggleClass('tb-modbar-shown', true);
+        }
+        this.set('modbarHidden', hidden);
+    };
+
+    // Always default to hidden in compact mode
+    if (compactHide) {
+        modbarHidden = true;
+    }
+
+    toggleMenuBar(modbarHidden);
 
     // moderated subreddits button.
     if (enableModSubs) {
@@ -396,33 +421,6 @@ export default new Module({
         const $shortcut = $(`<a class="tb-no-gustavobc" href="${TBHelpers.htmlEncode(unescape(value))}">${TBHelpers.htmlEncode(unescape(index))}</a>`);
         $shortcut.appendTo('#tb-toolbarshortcuts');
     });
-
-    $body.append($modbarhid);
-
-    // Always default to hidden.
-
-    if (compactHide) {
-        modbarHidden = true;
-    }
-
-    const toggleMenuBar = hidden => {
-        if (hidden) {
-            $modBar.hide();
-            $modbarhid.show();
-            $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
-            $body.toggleClass('tb-modbar-shown', false); // New modmail uses this style to add space to the bottom of the page
-        } else {
-            $modBar.show();
-            $modbarhid.hide();
-            if (consoleShowing && debugMode) {
-                $body.find('.tb-debug-window').show();
-            }
-            $body.toggleClass('tb-modbar-shown', true);
-        }
-        this.set('modbarHidden', hidden);
-    };
-
-    toggleMenuBar(modbarHidden);
 
     // Show/hide menubar
     $body.on('click', '.tb-bottombar-unhide, .tb-bottombar-hide', function () {

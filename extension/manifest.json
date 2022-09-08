@@ -23,7 +23,8 @@
         "storage",
         "unlimitedStorage",
         "notifications",
-        "webNavigation"
+        "webNavigation",
+        "alarms"
     ],
     "icons": {
         "16": "data/images/icon16.png",

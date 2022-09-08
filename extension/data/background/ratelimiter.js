@@ -1,9 +1,7 @@
-'use strict';
-
 /**
  * Ratelimit handler supporting parallel in-flight requests.
  */
-class Ratelimiter { // eslint-disable-line no-unused-vars,no-redeclare
+export class Ratelimiter { // eslint-disable-line no-unused-vars,no-redeclare
     constructor () {
         /**
          * Array of data for pending requests.

@@ -1,5 +1,6 @@
-'use strict';
 // Notification stuff
+
+import {messageHandlers} from '../messageHandling';
 
 // We store notification meta data here for later use.
 const notificationData = {};

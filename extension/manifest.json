@@ -34,15 +34,7 @@
         "scripts": [
             "data/libs/browser-polyfill-0.6.0.js",
             "data/libs/jquery-3.4.1.js",
-            "data/background/background.js",
-            "data/background/ratelimiter.js",
-            "data/background/handlers/webrequest.js",
-            "data/background/handlers/reload.js",
-            "data/background/handlers/cache.js",
-            "data/background/handlers/modqueue.js",
-            "data/background/handlers/globalmessage.js",
-            "data/background/handlers/notifications.js",
-            "data/background/handlers/url_changed.js"
+            "data/background/index.js"
         ],
         "persistent": true
     },
@@ -148,7 +140,6 @@
     ],
     "web_accessible_resources": [
         "data/init.js.map",
-
         "/data/libs/snuownd.js",
         "/data/styles/font/MaterialIcons-Regular.woff2",
         "/data/styles/font/MaterialIcons-Regular.woff",

@@ -1,14 +1,8 @@
 /**
- * This refers to the webextension background page.
- * @module BackgroundPage
- */
-'use strict';
-
-/**
  * @var {Map<string, function>} messageHandlers A map storing handlers for the
  * various toolbox-defined message types
  */
-const messageHandlers = new Map();
+export const messageHandlers = new Map();
 
 /**
  * Handles a message
@@ -16,7 +10,7 @@ const messageHandlers = new Map();
  * @param {runtime.MessageSender} sender The sender of the message
  * @returns {Promise<any> | void}
  */
-function handleMessage (request, sender) {
+export function handleMessage (request, sender) {
     const handler = messageHandlers.get(request.action);
     if (handler) {
         return Promise.resolve(handler(request, sender));

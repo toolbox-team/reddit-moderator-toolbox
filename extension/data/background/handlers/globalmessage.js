@@ -1,4 +1,4 @@
-'use strict';
+import {messageHandlers, handleMessage} from '../messageHandling';
 
 messageHandlers.set('tb-global', async (request, sender) => {
     const message = {

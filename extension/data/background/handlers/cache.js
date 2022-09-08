@@ -1,7 +1,8 @@
-'use strict';
 //
 // Cache handling.
 //
+
+import {messageHandlers} from '../messageHandling';
 
 let TBsettingsObject = {};
 const cachedata = {

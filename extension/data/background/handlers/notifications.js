@@ -1,8 +1,49 @@
 'use strict';
 // Notification stuff
+const NOTIFICATION_STORAGE_KEY = 'tb-notifications-storage';
 
-// We store notification meta data here for later use.
-const notificationData = {};
+/**
+ * Sets the notification ID and meta data object for a given notification.
+ * @param notificationID string notificationID
+ * @param notificationObject object containing the meta data
+ */
+async function setNotificationMetaData (notificationID, notificationObject) {
+    const result = await browser.storage.local.get({[NOTIFICATION_STORAGE_KEY]: {}});
+    result[NOTIFICATION_STORAGE_KEY][notificationID] = notificationObject;
+    await browser.storage.local.set({
+        [NOTIFICATION_STORAGE_KEY]: result[NOTIFICATION_STORAGE_KEY],
+    });
+    return;
+}
+
+/**
+ * Returns the notification meta data object for a given notification id.
+ * @param notificationID notificationID
+ * @returns {promise<object>}
+ */
+async function getNotificationMetaData (notificationID) {
+    const result = await browser.storage.local.get({[NOTIFICATION_STORAGE_KEY]: {}});
+    if (Object.prototype.hasOwnProperty.call(result[NOTIFICATION_STORAGE_KEY], notificationID)) {
+        return result[NOTIFICATION_STORAGE_KEY][notificationID];
+    }
+    return null;
+}
+
+/**
+ * Deletes the notification meta data object for a given notification id.
+ * @param notificationID subreddit
+ * @returns {promise<object>}
+ */
+async function deleteNotificationMetaData (notificationID) {
+    const result = await browser.storage.local.get({[NOTIFICATION_STORAGE_KEY]: {}});
+    if (Object.prototype.hasOwnProperty.call(result[NOTIFICATION_STORAGE_KEY], notificationID)) {
+        delete result[NOTIFICATION_STORAGE_KEY][notificationID];
+        await browser.storage.local.set({
+            [NOTIFICATION_STORAGE_KEY]: result[NOTIFICATION_STORAGE_KEY],
+        });
+    }
+    return;
+}
 
 // TODO: I know we've had this conversation before but I'm 99% sure this isn't
 // actually necessary anymore...
@@ -35,12 +76,13 @@ async function sendNativeNotification ({title, body, url, modHash, markreadid}) 
         title,
         message: body,
     });
-    notificationData[notificationID] = {
+
+    await setNotificationMetaData(notificationID, {
         type: 'native',
         url,
         modHash,
         markreadid,
-    };
+    });
     return notificationID;
 }
 
@@ -50,12 +92,12 @@ async function sendNativeNotification ({title, body, url, modHash, markreadid}) 
  */
 async function sendPageNotification ({title, body, url, modHash, markreadid}) {
     const notificationID = uuidv4();
-    notificationData[notificationID] = {
+    await setNotificationMetaData(notificationID, {
         type: 'page',
         url,
         modHash,
         markreadid,
-    };
+    });
     const message = {
         action: 'tb-show-page-notification',
         details: {
@@ -76,14 +118,22 @@ async function sendPageNotification ({title, body, url, modHash, markreadid}) {
     return notificationID;
 }
 
+// Handle notification clearing
+browser.alarms.onAlarm.addListener(alarmInfo => {
+    const name = alarmInfo.name;
+    if (name.startsWith('tb-notification-')) {
+        const notificationID = name.replace('tb-notification-', '');
+        clearNotification(notificationID);
+    }
+});
+
 // Handle notification creation
 messageHandlers.set('tb-notification', request => {
-    const notificationTimeout = 6000;
     const sendNotification = request.native ? sendNativeNotification : sendPageNotification;
     sendNotification(request.details).then(id => {
-        setTimeout(() => {
-            clearNotification(id);
-        }, notificationTimeout);
+        browser.alarms.create(`tb-notification-${id}`, {
+            delayInMinutes: 1,
+        });
     });
     return; // no response needed
 });
@@ -93,7 +143,7 @@ messageHandlers.set('tb-notification', request => {
  * @param {string} notificationID The ID of the notification
  */
 async function clearNotification (notificationID) {
-    const metadata = notificationData[notificationID];
+    const metadata = await getNotificationMetaData(notificationID);
     if (!metadata) {
         // Notification has already been cleared
         return;
@@ -118,7 +168,7 @@ async function clearNotification (notificationID) {
         }
         // We don't get a callback when the notifications are closed, so we just
         // clean up the data here
-        delete notificationData[notificationID];
+        await deleteNotificationMetaData(notificationID);
     }
 }
 
@@ -128,15 +178,19 @@ async function clearNotification (notificationID) {
  */
 async function onClickNotification (notificationID) {
     // Store the metadata so we can work with it after clearing the notification
-    const metadata = notificationData[notificationID];
-    console.log('notification clikcked: ', metadata);
+    const metadata = await getNotificationMetaData(notificationID);
+    console.log('notification clicked: ', metadata);
 
     // Mark as read if needed.
-    if (notificationData[notificationID].markreadid) {
-        $.post('https://old.reddit.com/api/read_message', {
-            id: metadata.markreadid,
-            uh: metadata.modHash,
-            api_type: 'json',
+    if (metadata.markreadid) {
+        makeRequest({
+            method: 'POST',
+            endpoint: '/api/read_message',
+            body: {
+                id: metadata.markreadid,
+                uh: metadata.modHash,
+                api_type: 'json',
+            },
         });
     }
 
@@ -165,5 +219,5 @@ browser.notifications.onClicked.addListener(onClickNotification);
 browser.notifications.onClosed.addListener(id => {
     // Clearing native notifications is done for us, so we don't need to call
     // clearNotification, but we do still need to clean up metadata.
-    delete notificationData[id];
+    deleteNotificationMetaData(id);
 });

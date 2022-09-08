@@ -308,10 +308,11 @@ export default new Module({
 
     // moderated subreddits button.
     if (enableModSubs) {
-        $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
-
-        let subList = '';
         TBCore.getModSubs().then(async () => {
+            $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
+
+            let subList = '';
+
             const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false),
                   usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
             this.log('got mod subs');

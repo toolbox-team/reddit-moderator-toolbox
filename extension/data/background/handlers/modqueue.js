@@ -10,9 +10,9 @@ const MODQUEUE_CACHE_NAME = 'tb-modqueue-cache';
  */
 async function setQueueCache (subreddit, cacheObject) {
     const result = await browser.storage.local.get({[MODQUEUE_CACHE_NAME]: {}});
-    result[subreddit] = cacheObject;
+    result[MODQUEUE_CACHE_NAME][subreddit] = cacheObject;
     await browser.storage.local.set({
-        [MODQUEUE_CACHE_NAME]: result,
+        [MODQUEUE_CACHE_NAME]: result[MODQUEUE_CACHE_NAME],
     });
     return;
 }

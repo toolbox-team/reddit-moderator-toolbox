@@ -16,9 +16,11 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
+        "jquery": "^3.4.1",
         "webextension-polyfill": "^0.8.0"
     },
     "devDependencies": {
+        "@rollup/plugin-node-resolve": "^14.0.1",
         "docdash": "^1.1.1",
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",

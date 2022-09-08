@@ -1,3 +1,6 @@
+import 'webextension-polyfill';
+import 'jquery';
+
 import './handlers/cache.js';
 import './handlers/globalmessage.js';
 import './handlers/modqueue.js';

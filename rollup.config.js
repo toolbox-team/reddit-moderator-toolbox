@@ -2,6 +2,7 @@
 
 // import nodeResolve from '@rollup/plugin-node-resolve';
 import copy from 'rollup-plugin-copy';
+import {nodeResolve} from '@rollup/plugin-node-resolve';
 
 // TODO: Pull entry point info and copied files from manifest itself
 export default ['chrome', 'firefox'].flatMap(platform => [
@@ -13,7 +14,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
             sourcemap: 'inline',
         },
         plugins: [
-            // nodeResolve(),
+            nodeResolve(),
             // Copy files not processed by Rollup over to the build directory
             copy({
                 targets: [
@@ -50,7 +51,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
             sourcemap: 'inline',
         },
         plugins: [
-            // nodeResolve(),
+            nodeResolve(),
         ],
     },
 ]);

@@ -34,7 +34,7 @@ async function getQueueCache (subreddit) {
  * Returns if a given thing is contained in the cache for the given subreddit.
  * @param thingName reddit `thing` name.
  * @param subreddit subreddit
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 async function thingFound (thingName, subreddit) {
     const subredditQueueCache = await getQueueCache(subreddit);

@@ -75,7 +75,7 @@ messageHandlers.set('tb-modqueue', async request => {
     // Instead we wait for the finished event and then reference the cache object.
     if (refreshActive) {
         console.debug('Cache being refreshed, wait for it to be finished');
-        await waitForCacheRefresh(subreddit, thingName);
+        await waitForCacheRefresh(subreddit);
     // The thing timestamp is bigger than the last refresh or cache isn't fresh anymore.
     } else if (thingTimestamp * 1000 > lastRefresh || Date.now() - lastRefresh > 1000 * MODQUEUE_CACHE_TTL) {
         console.debug('Cache needs a refresh');

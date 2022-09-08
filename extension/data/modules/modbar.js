@@ -5,6 +5,17 @@ import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 import * as TBApi from '../tbapi.js';
 
+// Hold onto the modbarExists resolver so we can call it when the time is right
+let resolveModbarExists = null;
+
+/**
+ * A promise which resolves when the modbar is added to the page.
+ * @constant {Promise<void>}
+ */
+export const modbarExists = new Promise(resolve => {
+    resolveModbarExists = resolve;
+});
+
 export default new Module({
     name: 'Modbar',
     id: 'Modbar',
@@ -305,6 +316,9 @@ export default new Module({
     }
 
     toggleMenuBar(modbarHidden);
+
+    // modbar was added to the DOM, let everyone know so they can add buttons and stuff
+    resolveModbarExists();
 
     // moderated subreddits button.
     if (enableModSubs) {

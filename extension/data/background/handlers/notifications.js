@@ -1,5 +1,6 @@
 // Notification stuff
 import {messageHandlers} from '../messageHandling';
+import {makeRequest} from './webrequest';
 
 const NOTIFICATION_STORAGE_KEY = 'tb-notifications-storage';
 

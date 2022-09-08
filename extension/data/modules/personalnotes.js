@@ -4,6 +4,8 @@ import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
 
+import {modbarExists} from './modbar.js';
+
 export default new Module({
     name: 'Personal Notes',
     id: 'PNotes',
@@ -124,8 +126,10 @@ export default new Module({
         });
     };
 
-    // add the button to the modbar
-    $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
+    // add the button to the modbar once the modbar is available
+    modbarExists.then(() => {
+        $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
+    });
 
     // Since we have a button we can click on it!
     $body.on('click', '#tb-personal-notes-button', async () => {

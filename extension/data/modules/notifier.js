@@ -484,7 +484,7 @@ export default new Module({
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 const pushedunread = await this.get('unreadPushed');
-                if (consolidatedMessages) {
+                if (consolidatedMessages && json.data.children.length > 1) {
                     let notificationbody,
                         messagecount = 0;
                     json.data.children.forEach(value => {
@@ -522,14 +522,8 @@ export default new Module({
                             pushedunread.push(value.data.name);
                         }
                     });
-
-                    if (messagecount === 1) {
-                        TBCore.notification('One new message!', notificationbody, messageunreadurl);
-                        youveGotMail();
-                    } else if (messagecount > 1) {
-                        TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
-                        youveGotMail();
-                    }
+                    TBCore.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
+                    youveGotMail();
                 } else {
                     json.data.children.forEach(value => {
                         let context,

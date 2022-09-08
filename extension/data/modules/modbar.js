@@ -124,24 +124,24 @@ export default new Module({
     // preload some generic variables
     //
 
-    const debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
+    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false),
 
-          modSubreddits = TBStorage.getSetting('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubreddits = TBStorage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
-          unreadMessageCount = TBStorage.getSetting('Notifier', 'unreadMessageCount', 0),
-          modqueueCount = TBStorage.getSetting('Notifier', 'modqueueCount', 0),
-          unmoderatedCount = TBStorage.getSetting('Notifier', 'unmoderatedCount', 0),
-          modmailCount = TBStorage.getSetting('Notifier', 'modmailCount', 0),
-          newModmailCount = TBStorage.getSetting('Notifier', 'newModmailCount', 0),
-          notifierEnabled = TBStorage.getSetting('Notifier', 'enabled', true),
-          modmailCustomLimit = TBStorage.getSetting('ModMail', 'customLimit', 0),
+          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
+          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod'),
+          unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0),
+          modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0),
+          unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0),
+          modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0),
+          newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0),
+          notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true),
+          modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0),
 
-          modSubredditsFMod = TBStorage.getSetting('Notifier', 'modSubredditsFMod', false),
-          unmoderatedSubredditsFMod = TBStorage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
+          modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
+          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Ready some details for new modmail linking
-    const modmailLink = TBStorage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
-          openMailTab = TBStorage.getSetting('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
+    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail'),
+          openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
           newModmailBaseUrl = 'https://mod.reddit.com/mail/';
     let newModmailUrl;
 
@@ -280,89 +280,116 @@ export default new Module({
 `);
 
     $body.append($modBar);
+    $body.append($modbarhid);
+
+    const toggleMenuBar = hidden => {
+        if (hidden) {
+            $modBar.hide();
+            $modbarhid.show();
+            $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
+            $body.toggleClass('tb-modbar-shown', false); // New modmail uses this style to add space to the bottom of the page
+        } else {
+            $modBar.show();
+            $modbarhid.hide();
+            if (consoleShowing && debugMode) {
+                $body.find('.tb-debug-window').show();
+            }
+            $body.toggleClass('tb-modbar-shown', true);
+        }
+        this.set('modbarHidden', hidden);
+    };
+
+    // Always default to hidden in compact mode
+    if (compactHide) {
+        modbarHidden = true;
+    }
+
+    toggleMenuBar(modbarHidden);
 
     // moderated subreddits button.
     if (enableModSubs) {
-        $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
+        TBCore.getModSubs().then(async () => {
+            $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
-        let subList = '';
-        const configEnabled = TBStorage.getSetting('TBConfig', 'enabled', false),
-              usernotesEnabled = TBStorage.getSetting('UserNotes', 'enabled', false);
-        await TBCore.getModSubs();
-        this.log('got mod subs');
-        this.log(window._TBCore.mySubs.length);
-        this.log(window._TBCore.mySubsData.length);
-        $(window._TBCore.mySubsData).each(function () {
-            const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
-            subList += `
-                <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
-                    <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
-                    <td class="tb-my-subreddits-subreddit">
-                        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
-                        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
-                        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
-                        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
-                        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
-                        ${usernotesEnabled ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>` : ''}
-                        ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
-                    </td>
-                </tr>
+            let subList = '';
+
+            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false),
+                  usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
+            this.log('got mod subs');
+            this.log(window._TBCore.mySubs.length);
+            this.log(window._TBCore.mySubsData.length);
+            $(window._TBCore.mySubsData).each(function () {
+                const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
+                subList += `
+                    <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
+                        <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
+                        <td class="tb-my-subreddits-subreddit">
+                            <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
+                            <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
+                            <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
+                            <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
+                            <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
+                            ${usernotesEnabled ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>` : ''}
+                            ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            const modSubsPopupContent = `
+                <div id="tb-my-subreddits">
+                    <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
+                <span class="tb-livefilter-count">${window._TBCore.mySubs.length}</span>
+                    <br>
+                    <table id="tb-my-subreddit-list">${subList}</table>
+                </div>
             `;
-        });
 
-        const modSubsPopupContent = `
-            <div id="tb-my-subreddits">
-                <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-            <span class="tb-livefilter-count">${window._TBCore.mySubs.length}</span>
-                <br>
-                <table id="tb-my-subreddit-list">${subList}</table>
-            </div>
-        `;
+            $body.on('click', '#tb-toolbar-mysubs', () => {
+                const $existingPopup = $body.find('.subreddits-you-mod-popup');
+                if (!$existingPopup.length) {
+                    TBui.popup({
+                        title: 'Subreddits you moderate',
+                        tabs: [
+                            {
+                                title: 'Subreddits you moderate',
+                                id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
+                                tooltip: 'Subreddits you moderate',
+                                content: modSubsPopupContent,
+                                footer: '',
+                            },
+                        ],
+                        cssClass: 'subreddits-you-mod-popup',
+                    }).appendTo('body').css({
+                        position: 'fixed',
+                        bottom: '41px',
+                        left: '20px',
+                    });
+                    // Focus the filter bar for convenience
+                    $('#tb-livefilter-input').focus();
+                } else {
+                    $existingPopup.remove();
+                }
 
-        $body.on('click', '#tb-toolbar-mysubs', () => {
-            const $existingPopup = $body.find('.subreddits-you-mod-popup');
-            if (!$existingPopup.length) {
-                TBui.popup({
-                    title: 'Subreddits you moderate',
-                    tabs: [
-                        {
-                            title: 'Subreddits you moderate',
-                            id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
-                            tooltip: 'Subreddits you moderate',
-                            content: modSubsPopupContent,
-                            footer: '',
-                        },
-                    ],
-                    cssClass: 'subreddits-you-mod-popup',
-                }).appendTo('body').css({
-                    position: 'fixed',
-                    bottom: '41px',
-                    left: '20px',
-                });
-                // Focus the filter bar for convenience
-                $('#tb-livefilter-input').focus();
-            } else {
-                $existingPopup.remove();
-            }
+                $body.find('#tb-livefilter-input').keyup(function () {
+                    const LiveSearchValue = $(this).val();
+                    $body.find('#tb-my-subreddits table tr').each(function () {
+                        const $this = $(this),
+                              subredditName = $this.attr('data-subreddit');
 
-            $body.find('#tb-livefilter-input').keyup(function () {
-                const LiveSearchValue = $(this).val();
-                $body.find('#tb-my-subreddits table tr').each(function () {
-                    const $this = $(this),
-                          subredditName = $this.attr('data-subreddit');
-
-                    if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
-                        $this.hide();
-                    } else {
-                        $this.show();
-                    }
-                    $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+                        if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+                            $this.hide();
+                        } else {
+                            $this.show();
+                        }
+                        $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+                    });
                 });
             });
-        });
 
-        // only show the button once it's populated.
-        $('#tb-toolbar-mysubs').show();
+            // only show the button once it's populated.
+            $('#tb-toolbar-mysubs').show();
+        });
     }
 
     // Swap old/new reddit button
@@ -396,33 +423,6 @@ export default new Module({
         const $shortcut = $(`<a class="tb-no-gustavobc" href="${TBHelpers.htmlEncode(unescape(value))}">${TBHelpers.htmlEncode(unescape(index))}</a>`);
         $shortcut.appendTo('#tb-toolbarshortcuts');
     });
-
-    $body.append($modbarhid);
-
-    // Always default to hidden.
-
-    if (compactHide) {
-        modbarHidden = true;
-    }
-
-    const toggleMenuBar = hidden => {
-        if (hidden) {
-            $modBar.hide();
-            $modbarhid.show();
-            $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
-            $body.toggleClass('tb-modbar-shown', false); // New modmail uses this style to add space to the bottom of the page
-        } else {
-            $modBar.show();
-            $modbarhid.hide();
-            if (consoleShowing && debugMode) {
-                $body.find('.tb-debug-window').show();
-            }
-            $body.toggleClass('tb-modbar-shown', true);
-        }
-        this.set('modbarHidden', hidden);
-    };
-
-    toggleMenuBar(modbarHidden);
 
     // Show/hide menubar
     $body.on('click', '.tb-bottombar-unhide, .tb-bottombar-hide', function () {

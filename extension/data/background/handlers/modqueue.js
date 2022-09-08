@@ -1,4 +1,5 @@
-'use strict';
+import {messageHandlers} from '../messageHandling';
+import {makeRequest} from './webrequest';
 
 const MODQUEUE_CACHE_TTL = 30;
 const MODQUEUE_CACHE_NAME = 'tb-modqueue-cache';

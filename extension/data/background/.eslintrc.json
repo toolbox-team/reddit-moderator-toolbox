@@ -1,8 +1,0 @@
-{
-	"globals": {
-		"Ratelimiter": true,
-		"messageHandlers": true,
-		"handleMessage": true,
-		"makeRequest": true
-	}
-}

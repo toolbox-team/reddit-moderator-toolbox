@@ -1,4 +1,5 @@
-'use strict';
+import {messageHandlers} from '../messageHandling';
+import {Ratelimiter} from '../ratelimiter';
 
 /**
  * Retrieves the user's OAuth tokens from cookies.
@@ -146,7 +147,7 @@ function makeFormData (obj) {
  * @returns {Promise} Resolves to a Response object, or rejects an Error
  * @todo Ratelimit handling
  */
-async function makeRequest ({
+export async function makeRequest ({
     method,
     endpoint,
     query,

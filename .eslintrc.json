@@ -8,7 +8,6 @@
     },
     "env": {
         "browser": true,
-        "jquery": true,
         "es6": true
     },
     "globals": {
@@ -16,9 +15,7 @@
         "redditapi": true,
         "browser": true,
         "safari": true,
-        "SnuOwnd": true,
         "pako": true,
-        "tinycolor": true,
         "DOMPurify": true
     },
     "extends": [

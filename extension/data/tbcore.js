@@ -499,7 +499,7 @@ export async function notification (title, body, path, markreadid = false) {
     const notificationTimeout = 6000;
     const notificationID = await browser.runtime.sendMessage({
         action: 'tb-notification',
-        native: TBStorage.getSettingAsync('GenSettings', 'nativeNotifications', true),
+        native: await TBStorage.getSettingAsync('GenSettings', 'nativeNotifications', true),
         details: {
             title,
             body,

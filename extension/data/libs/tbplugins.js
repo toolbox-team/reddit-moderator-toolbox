@@ -80,10 +80,8 @@ let jQuery = window.jQuery = window.$ = $;
     $.fn.removeHighlight = function () {
         return this.find("span.tb-highlight, span.tb-highlight-action-reason").each(function () {
             this.parentNode.firstChild.nodeName;
-            with (this.parentNode) {
-                replaceChild(this.firstChild, this);
-                normalize();
-            }
+            this.parentNode.replaceChild(this.firstChild, this);
+            this.parentNode.normalize();
         }).end();
     };
 }(window.jQuery);

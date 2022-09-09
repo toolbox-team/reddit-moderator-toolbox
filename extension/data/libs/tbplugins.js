@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+let jQuery = window.jQuery = window.$ = $;
+
 // highlight jquery plugin https://github.com/tankchintan/highlight-js
 !function ($) {
     $.fn.highlight = function (pat, ignore, actionReason = false) {

@@ -18,7 +18,7 @@
     "dependencies": {
         "codemirror": "^5.65.8",
         "dompurify": "^2.4.0",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "pako": "^0.2.6",
         "snuownd": "^1.1.0",
         "timeago": "^1.6.7",

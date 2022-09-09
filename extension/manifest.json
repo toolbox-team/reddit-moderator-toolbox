@@ -57,7 +57,6 @@
             ],
             "js": [
                 "data/tbmigrate.js",
-                "data/libs/snuownd.js",
                 "data/libs/purify.js",
                 "data/libs/codemirror/codemirror.js",
                 "data/libs/codemirror/addon/closebrackets.js",
@@ -77,8 +76,7 @@
                 "data/libs/codemirror/mode/markdown.js",
                 "data/libs/codemirror/mode/yaml.js",
                 "data/libs/codemirror/mode/javascript.js",
-                "data/libs/pako.js",
-                "data/libs/tinycolor.js"
+                "data/libs/pako.js"
             ]
         },
         {

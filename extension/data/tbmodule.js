@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import CodeMirror from 'codemirror';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import CodeMirror from 'codemirror';
 
 import {Module} from '../tbmodule.js';
 import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.js';

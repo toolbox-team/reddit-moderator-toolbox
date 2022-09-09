@@ -1,6 +1,8 @@
 import browser from 'webextension-polyfill';
 import $ from 'jquery';
 
+// We load all our CodeMirror addons and modes here and they'll be available
+// anywhere else we `import CodeMirror from 'codemirror';`
 import 'codemirror';
 import 'codemirror/addon/dialog/dialog.js';
 import 'codemirror/addon/display/fullscreen.js';

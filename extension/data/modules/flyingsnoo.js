@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-
 import $ from 'jquery';
 
 import {Module} from '../tbmodule.js';

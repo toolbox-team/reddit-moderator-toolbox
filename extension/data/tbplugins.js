@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import 'timeago';
+
 let jQuery = window.jQuery = window.$ = $;
 
 // highlight jquery plugin https://github.com/tankchintan/highlight-js
@@ -85,24 +87,6 @@ let jQuery = window.jQuery = window.$ = $;
         }).end();
     };
 }(window.jQuery);
-
-/**
- * Timeago is a jQuery plugin that makes it easy to support automatically
- * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
- *
- * @name timeago
- * @version 1.4.1
- * @requires jQuery v1.2.3+
- * @author Ryan McGeary
- * @license MIT License - http://www.opensource.org/licenses/mit-license.php
- *
- * For usage and examples, visit:
- * http://timeago.yarp.com/
- *
- * Copyright (c) 2008-2013, Ryan McGeary (ryan -[at]- mcgeary [*dot*] org)
- */
-
-import 'timeago';
 
 // DefineProperty is implicitly non-enumerable
 // We don't want iterators to see this function

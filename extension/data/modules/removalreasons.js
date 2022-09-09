@@ -1,5 +1,4 @@
 import $ from 'jquery';
-
 import SnuOwnd from 'snuownd';
 
 import {Module} from '../tbmodule.js';

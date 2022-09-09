@@ -5,7 +5,8 @@ const self = new Module({
     name: 'Old Reddit',
     id: 'oldreddit',
     alwaysEnabled: true,
-}, () => {
+}, async () => {
+    await TBCore.getModSubs();
     // Looks like we are on old reddit. Activate!
     if (TBCore.isOldReddit) {
         setTimeout(() => {

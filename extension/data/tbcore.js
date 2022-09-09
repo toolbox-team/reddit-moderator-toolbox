@@ -499,9 +499,10 @@ export const alert = ({message, noteID, showClose}) => new Promise(resolve => {
  * when the notification is clicked
  */
 export async function notification (title, body, path, markreadid = false) {
-    browser.runtime.sendMessage({
+    const notificationTimeout = 6000;
+    const notificationID = await browser.runtime.sendMessage({
         action: 'tb-notification',
-        native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
+        native: await TBStorage.getSettingAsync('GenSettings', 'nativeNotifications', true),
         details: {
             title,
             body,
@@ -511,6 +512,14 @@ export async function notification (title, body, path, markreadid = false) {
             markreadid: markreadid || false,
         },
     });
+
+    // Because `browser.alarms` is weirdly simplistic and limited it is easier to do the timeout in the content_script side of things.
+    setTimeout(() => {
+        browser.runtime.sendMessage({
+            action: 'tb-page-notification-clear',
+            id: notificationID,
+        });
+    }, notificationTimeout);
 }
 
 /**

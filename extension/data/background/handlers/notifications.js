@@ -133,14 +133,16 @@ browser.alarms.onAlarm.addListener(alarmInfo => {
 });
 
 // Handle notification creation
-messageHandlers.set('tb-notification', request => {
+messageHandlers.set('tb-notification', async request => {
     const sendNotification = request.native ? sendNativeNotification : sendPageNotification;
-    sendNotification(request.details).then(id => {
-        browser.alarms.create(`tb-notification-${id}`, {
-            delayInMinutes: 1,
-        });
+    const notificationID = await sendNotification(request.details);
+    // The Alarms API is baffling simplistic and limited.
+    // Because of that the ID will be send back to the tab that requested the notification and a timeout used there to relay back to the background worker.
+    // But because it is possible tabs get closed before the timeout we keep the alarm here as a backup.
+    browser.alarms.create(`tb-notification-${notificationID}`, {
+        delayInMinutes: 1,
     });
-    return; // no response needed
+    return notificationID; // no response needed
 });
 
 /**
@@ -210,12 +212,12 @@ async function onClickNotification (notificationID) {
     clearNotification(notificationID);
 }
 
-// Handle click/close events on in-page notifications
+// Handle click/clear events on in-page notifications
 messageHandlers.set('tb-page-notification-click', request => {
     onClickNotification(request.id);
 });
 
-messageHandlers.set('tb-page-notification-close', request => {
+messageHandlers.set('tb-page-notification-clear', request => {
     clearNotification(request.id);
 });
 

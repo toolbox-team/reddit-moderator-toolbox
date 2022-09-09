@@ -163,7 +163,7 @@ browser.runtime.onMessage.addListener(message => {
 $body.on('click', '.tb-notification .close', function (event) {
     event.stopPropagation(); // don't open the linked page
     browser.runtime.sendMessage({
-        action: 'tb-page-notification-close',
+        action: 'tb-page-notification-clear',
         id: $(this).closest('.tb-notification').attr('data-id'),
     });
 });

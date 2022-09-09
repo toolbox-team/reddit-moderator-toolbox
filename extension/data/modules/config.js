@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import {Module} from '../tbmodule.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBui from '../tbui.js';

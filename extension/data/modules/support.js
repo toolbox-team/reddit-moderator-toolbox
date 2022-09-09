@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import {Module} from '../tbmodule.js';
 import {template} from '../tbhelpers.js';
 import {debugInformation} from '../tbcore.js';

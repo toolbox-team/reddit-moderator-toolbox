@@ -130,8 +130,7 @@
                 "data/styles/codemirror/themes.css"
             ],
             "js": [
-                "data/init.js",
-                "data/libs/tbplugins.js"
+                "data/init.js"
             ]
         }
     ],

@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';

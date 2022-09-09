@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * Returns a promise that resolves after the given time.
  * @param {number} ms Number of milliseconds to delay

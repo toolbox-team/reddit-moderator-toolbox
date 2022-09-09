@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 import {messageHandlers, handleMessage} from '../messageHandling';
 
 messageHandlers.set('tb-global', async (request, sender) => {

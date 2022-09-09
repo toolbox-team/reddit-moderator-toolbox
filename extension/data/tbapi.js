@@ -2,6 +2,8 @@
  * Generic helpers for making requests against the Reddit API.
  */
 
+import browser from 'webextension-polyfill';
+
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 

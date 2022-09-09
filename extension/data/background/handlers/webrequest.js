@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 import {messageHandlers} from '../messageHandling';
 import {Ratelimiter} from '../ratelimiter';
 

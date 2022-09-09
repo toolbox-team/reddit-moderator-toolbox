@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 /**
  * @var {Map<string, function>} messageHandlers A map storing handlers for the
  * various toolbox-defined message types

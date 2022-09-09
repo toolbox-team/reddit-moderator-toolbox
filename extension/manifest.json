@@ -134,7 +134,6 @@
     ],
     "web_accessible_resources": [
         "data/init.js.map",
-        "/data/libs/snuownd.js",
         "/data/styles/font/MaterialIcons-Regular.woff2",
         "/data/styles/font/MaterialIcons-Regular.woff",
         "/data/styles/font/MaterialIcons-Regular.ttf",

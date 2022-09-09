@@ -75,8 +75,7 @@
                 "data/libs/codemirror/mode/css.js",
                 "data/libs/codemirror/mode/markdown.js",
                 "data/libs/codemirror/mode/yaml.js",
-                "data/libs/codemirror/mode/javascript.js",
-                "data/libs/pako.js"
+                "data/libs/codemirror/mode/javascript.js"
             ]
         },
         {

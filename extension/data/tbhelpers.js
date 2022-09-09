@@ -1,6 +1,6 @@
 import $ from 'jquery';
-
 import SnuOwnd from 'snuownd';
+import pako from 'pako';
 
 /**
  * Returns a promise that resolves after the given time.

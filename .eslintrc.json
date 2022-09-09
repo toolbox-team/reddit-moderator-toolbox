@@ -15,7 +15,6 @@
         "redditapi": true,
         "browser": true,
         "safari": true,
-        "pako": true,
         "DOMPurify": true
     },
     "extends": [

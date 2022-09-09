@@ -12,10 +12,7 @@
     },
     "globals": {
         "CodeMirror": true,
-        "redditapi": true,
-        "browser": true,
-        "safari": true,
-        "DOMPurify": true
+        "browser": true
     },
     "extends": [
         "eslint:recommended",

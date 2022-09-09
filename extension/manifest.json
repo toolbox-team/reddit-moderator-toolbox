@@ -39,27 +39,6 @@
     },
     "content_scripts": [
         {
-            "run_at": "document_start",
-            "all_frames": true,
-            "matches": [
-                "https://*.reddit.com/*"
-            ],
-            "exclude_matches": [
-                "https://*.reddit.com/framedGild/*",
-                "https://*.reddit.com/framedModal/*",
-                "https://*.reddit.com/chat/*",
-                "https://*.reddit.com/account/sso/*",
-                "https://ads.reddit.com/*",
-                "https://*.reddit.com/*.json",
-                "https://*.reddit.com/*.json?*",
-                "https://*.reddit.com/*.json-html",
-                "https://*.reddit.com/*.json-html?*"
-            ],
-            "js": [
-                "data/tbmigrate.js"
-            ]
-        },
-        {
             "run_at": "document_end",
             "all_frames": true,
             "matches": [

@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import CodeMirror from 'codemirror';
+
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';
@@ -867,7 +870,7 @@ body {
             //
             // We get one additional click handler for each module that gets injected.
             // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
-            $('.tb-settings').bindFirst('click', '.tb-save', () => {
+            $('.tb-settings').on('click', '.tb-save', () => {
                 // handle module enable/disable on Toggle Modules first
                 const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
                 TBStorage.setSetting(module.id, 'enabled', $moduleEnabled);

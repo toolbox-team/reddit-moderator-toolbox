@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import {Module} from '../tbmodule.js';
 import {getModSubs, link, modsSub} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';

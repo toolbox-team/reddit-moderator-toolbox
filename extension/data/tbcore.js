@@ -1,3 +1,6 @@
+import browser from 'webextension-polyfill';
+import $ from 'jquery';
+
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.js';

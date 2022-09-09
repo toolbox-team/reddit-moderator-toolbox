@@ -1,4 +1,7 @@
 // Notification stuff
+
+import browser from 'webextension-polyfill';
+
 import {messageHandlers} from '../messageHandling';
 import {makeRequest} from './webrequest';
 

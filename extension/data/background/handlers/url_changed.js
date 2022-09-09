@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 // Notifies tabs when their URL changes.
 // This is triggered in the background as there's no native event which is emitted when `history#pushState` modifies the URL.
 function handleWebNavigation ({tabId, frameId}) {

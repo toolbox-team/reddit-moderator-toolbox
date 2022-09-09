@@ -2,6 +2,8 @@
 // Cache handling.
 //
 
+import browser from 'webextension-polyfill';
+
 import {messageHandlers} from '../messageHandling';
 
 let TBsettingsObject = {};

@@ -16,9 +16,18 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
+        "codemirror": "^5.65.8",
+        "dompurify": "^2.4.0",
+        "jquery": "^3.4.1",
+        "pako": "^0.2.6",
+        "snuownd": "^1.1.0",
+        "timeago": "^1.6.7",
+        "tinycolor2": "^1.4.1",
         "webextension-polyfill": "^0.8.0"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^22.0.2",
+        "@rollup/plugin-node-resolve": "^14.0.1",
         "docdash": "^1.1.1",
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",

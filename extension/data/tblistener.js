@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import TBLog from './tblog.js';
 
 const logger = TBLog('TBListener');

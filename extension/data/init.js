@@ -1,6 +1,25 @@
 import 'webextension-polyfill';
 import $ from 'jquery';
 
+import 'codemirror';
+import 'codemirror/addon/dialog/dialog.js';
+import 'codemirror/addon/display/fullscreen.js';
+import 'codemirror/addon/display/panel.js';
+import 'codemirror/addon/display/rulers.js';
+import 'codemirror/addon/edit/closebrackets.js';
+import 'codemirror/addon/hint/css-hint.js';
+import 'codemirror/addon/hint/show-hint.js';
+import 'codemirror/addon/scroll/annotatescrollbar.js';
+import 'codemirror/addon/search/jump-to-line.js';
+import 'codemirror/addon/search/match-highlighter.js';
+import 'codemirror/addon/search/matchesonscrollbar.js';
+import 'codemirror/addon/search/search.js';
+import 'codemirror/addon/search/searchcursor.js';
+import 'codemirror/mode/css/css.js';
+import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/markdown/markdown.js';
+import 'codemirror/mode/yaml/yaml.js';
+
 import './libs/tbplugins.js';
 
 import TBLog from './tblog.js';

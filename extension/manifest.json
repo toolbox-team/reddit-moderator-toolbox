@@ -56,25 +56,7 @@
                 "https://*.reddit.com/*.json-html?*"
             ],
             "js": [
-                "data/tbmigrate.js",
-                "data/libs/codemirror/codemirror.js",
-                "data/libs/codemirror/addon/closebrackets.js",
-                "data/libs/codemirror/addon/css-hint.js",
-                "data/libs/codemirror/addon/dialog.js",
-                "data/libs/codemirror/addon/fullscreen.js",
-                "data/libs/codemirror/addon/jump-to-line.js",
-                "data/libs/codemirror/addon/matchesonscrollbar.js",
-                "data/libs/codemirror/addon/match-highlighter.js",
-                "data/libs/codemirror/addon/annotatescrollbar.js",
-                "data/libs/codemirror/addon/panel.js",
-                "data/libs/codemirror/addon/rulers.js",
-                "data/libs/codemirror/addon/search.js",
-                "data/libs/codemirror/addon/searchcursor.js",
-                "data/libs/codemirror/addon/show-hint.js",
-                "data/libs/codemirror/mode/css.js",
-                "data/libs/codemirror/mode/markdown.js",
-                "data/libs/codemirror/mode/yaml.js",
-                "data/libs/codemirror/mode/javascript.js"
+                "data/tbmigrate.js"
             ]
         },
         {

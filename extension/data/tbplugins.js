@@ -55,7 +55,6 @@ let jQuery = window.jQuery = window.$ = $;
                             spannode.className = 'tb-highlight';
                         }
                         var middlebit = node.splitText(pos);
-                        var endbit = middlebit.splitText(currentTerm.length);
                         var middleclone = middlebit.cloneNode(true);
                         spannode.appendChild(middleclone);
                         middlebit.parentNode.replaceChild(spannode, middlebit);

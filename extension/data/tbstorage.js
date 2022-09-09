@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import DOMPurify from 'dompurify';
 
 import TBLog from './tblog.js';
 

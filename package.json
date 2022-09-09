@@ -16,6 +16,7 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
+        "dompurify": "^2.4.0",
         "jquery": "^3.4.1",
         "pako": "^0.2.6",
         "snuownd": "^1.1.0",

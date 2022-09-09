@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import tinycolor from 'tinycolor2';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';

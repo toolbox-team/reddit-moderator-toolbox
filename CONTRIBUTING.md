@@ -47,7 +47,6 @@ You can find the documentation for all this on the following locations:
 - `extension/data/tbcore.js`: TBCore is one of the core blocks on which toolbox is build. It contains a lot of information about the state of toolbox and reddit.
 - `extension/data/background/`: Contains extension background scripts
 - `extension/data/images/`: Images used by toolbox.
-- `extension/data/libs/`: Contains javascript libraries used by toolbox
 - `extension/data/modules/`: Contains the individual toolbox modules.
 - `extension/data/styles/`: Contains all CSS
 

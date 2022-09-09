@@ -8,16 +8,10 @@ tests/*
 # gulp
 gulpfile.js
 
-#node_modules
+# node_modules
 node_modules/*
-
-# External libraries
-/extension/data/libs/*
 
 # IDE related
 .idea/*
 .settings/*
 .vscode/*
-
-# Not yet ported node_modules
-/extension/data/libs/redditapi.js

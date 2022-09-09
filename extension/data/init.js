@@ -20,7 +20,7 @@ import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/mode/markdown/markdown.js';
 import 'codemirror/mode/yaml/yaml.js';
 
-import './libs/tbplugins.js';
+import './tbplugins.js';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';

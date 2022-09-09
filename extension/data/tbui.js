@@ -1764,9 +1764,6 @@ export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
 
         // When the button is clicked, go to the correct page
         $button.on('click', () => {
-            logger.info(jQuery._data(buttons[0], 'events'));
-            logger.info(jQuery._data(buttons[0][0], 'events'));
-            // Update the button display
             loadPage(page);
         });
 

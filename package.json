@@ -4,9 +4,9 @@
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
     "private": true,
     "scripts": {
-        "build": "rollup -c rollup.config.js",
+        "build": "del-cli build && rollup -c rollup.config.js",
         "build:watch": "rollup -c rollup.config.js --watch",
-        "build:release": "npm ci && cross-env NODE_ENV=production rollup -c rollup.config.js",
+        "build:release": "npm ci && del-cli build && cross-env NODE_ENV=production rollup -c rollup.config.js",
         "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
         "docs": "jsdoc -c jsdoc.json"
     },
@@ -35,6 +35,7 @@
         "eslint-plugin-import": "^2.23.4",
         "jsdoc": "^3.6.3",
         "rollup": "^2.79.0",
-        "rollup-plugin-copy": "^3.4.0"
+        "rollup-plugin-copy": "^3.4.0",
+        "del-cli": "^5.0.0"
     }
 }

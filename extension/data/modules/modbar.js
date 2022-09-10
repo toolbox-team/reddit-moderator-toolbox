@@ -325,7 +325,9 @@ export default new Module({
     // moderated subreddits button.
     if (enableModSubs) {
         TBCore.getModSubs(true).then(async mySubsData => {
-            console.error(mySubsData);
+            if (!mySubsData.length) {
+                return;
+            }
             $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
             let subList = '';

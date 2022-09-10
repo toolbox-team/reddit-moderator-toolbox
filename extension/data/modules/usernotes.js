@@ -933,7 +933,7 @@ function startUsernotesManager ({unManagerLink}) {
                 delete subUsenotes.users[user];
 
                 // Update notes cache
-                const cachedNotes = await TBStorage.getCache('Utils', 'noteCache');
+                const cachedNotes = await TBStorage.getCache('Utils', 'noteCache', {});
                 cachedNotes[sub] = subUsenotes;
                 await TBStorage.setCache('Utils', 'noteCache', cachedNotes);
 
@@ -955,7 +955,7 @@ function startUsernotesManager ({unManagerLink}) {
             subUsenotes.users[user].notes.splice(note, 1);
 
             // Update notes cache
-            const cachedNotes = await TBStorage.getCache('Utils', 'noteCache');
+            const cachedNotes = await TBStorage.getCache('Utils', 'noteCache', {});
             cachedNotes[sub] = subUsenotes;
             TBStorage.setCache('Utils', 'noteCache', cachedNotes);
 

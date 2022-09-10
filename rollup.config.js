@@ -22,8 +22,9 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                 targets: [
                 // The manifest
                     {
-                        src: 'extension/manifest.json',
+                        src: `extension/${platform}_manifest.json`,
                         dest: `build/${platform}`,
+                        rename: 'manifest.json',
                         transform: contents => {
                             const manifest = JSON.parse(contents);
 

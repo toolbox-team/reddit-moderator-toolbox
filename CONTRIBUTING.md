@@ -55,10 +55,11 @@ You can find the documentation for all this on the following locations:
 Building the extension is relatively easy through [Node.js](https://nodejs.org/en/). We use [Rollup](https://www.rollupjs.org/) to bundle the extension's Javascript code and manually copy over assets including images and the `manifest.json` file via [rollup-plugin-copy](https://www.npmjs.com/package/rollup-plugin-copy). Additionally, some browser-specific processing is applied to the manifest to work around some browser-specific incompatibilities. Build output goes to `build/chrome` and `build/firefox`.
 
 ```sh
-$ npm install          # Install dependencies
-$ npm run build        # Build extension
-$ npm run build:watch  # Automatically rebuild on file changes
-$ npm run docs         # Build documentation of internal interfaces
+$ npm install           # Install dependencies
+$ npm run build         # Build extension
+$ npm run build:watch   # Automatically rebuild on file changes
+$ npm run build:release # Install dependencies and perform a release build
+$ npm run docs          # Build documentation of internal interfaces
 ```
 
 Once you've built the extension, you can load it up in your browser for testing:

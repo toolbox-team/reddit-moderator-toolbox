@@ -183,6 +183,7 @@ export function verifiedSettingsSave (callback) {
                         action: 'tb-global',
                         globalEvent: 'tb-settings-update',
                         payload: returnObject,
+                        excludeBackground: true,
                     });
                     callback(true);
                 } else {

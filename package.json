@@ -6,7 +6,7 @@
     "scripts": {
         "build": "rollup -c rollup.config.js",
         "build:watch": "rollup -c rollup.config.js --watch",
-        "build:release": "npm ci && cross-env NODE_ENV=production rollup -c rollup.config.js",
+        "build:release": "npm ci && node release.mjs && cross-env NODE_ENV=production rollup -c rollup.config.js",
         "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
         "docs": "jsdoc -c jsdoc.json"
     },
@@ -32,6 +32,7 @@
         "docdash": "^1.1.1",
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",
+        "inquirer": "^9.1.1",
         "jsdoc": "^3.6.3",
         "rollup": "^2.51.0",
         "rollup-plugin-copy": "^3.4.0"

@@ -497,7 +497,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         let link;
 
         if (TBCore.isNewModmail) {
-            link = await TBCore.getThingInfo($thing).permalink_newmodmail;
+            const thingInfo = await TBCore.getThingInfo($thing);
+            link = thingInfo.permalink_newmodmail;
             createUserPopup(subreddit, user, link, disableLink, e);
         } else {
             let thingID;

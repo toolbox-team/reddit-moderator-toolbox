@@ -331,8 +331,8 @@ const self = new Module({
         if (event.detail.pageDetails.subreddit) {
             const subreddit = event.detail.pageDetails.subreddit;
 
-            await TBCore.getModSubs();
-            if (TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod) {
                 TBui.contextTrigger('tb-config-link', {
                     addTrigger: true,
                     triggerText: `/r/${subreddit} config`,
@@ -391,13 +391,13 @@ const self = new Module({
     function postToWiki (page, data, reason, isJSON, updateAM) {
         self.log('posting to wiki');
         TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
-        TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(() => {
+        TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(async () => {
             self.log('save succ = true');
             if (page === 'config/automoderator') {
                 $body.find('.edit_automoderator_config .error').hide();
             }
             self.log('clearing cache');
-            TBCore.clearCache();
+            await TBStorage.clearCache();
 
             TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
         }).catch(async err => {

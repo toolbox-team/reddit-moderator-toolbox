@@ -324,7 +324,6 @@ self.modmailpro = function ({
                 threads, chunkSize, processRate,
                 (thread, count, array) => {
                     self.log(`Running thread batch: ${count + 1} of ${array.length}`);
-                    // self.log('\tUser = ' + TBCore.getThingInfo(thread).user);
                     processThread(thread);
                 },
                 () => {
@@ -398,7 +397,7 @@ self.modmailpro = function ({
         }
     }
 
-    function processThread (thread) {
+    async function processThread (thread) {
         self.startProfile('thread');
         self.startProfile('thread-info');
         self.startProfile('thread-jquery');
@@ -420,7 +419,7 @@ self.modmailpro = function ({
               $collapseLink = $thread.find('.tb-collapse-link'),
               $subredditArea = $thread.find('.correspondent:first'),
 
-              threadInfo = TBCore.getThingInfo($thread),
+              threadInfo = await TBCore.getThingInfo($thread),
               threadID = threadInfo.id,
               subreddit = threadInfo.subreddit,
               title = threadInfo.title,
@@ -607,13 +606,13 @@ self.modmailpro = function ({
 
             const attrib = $sender.data('fullname');
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 self.log('realtime go');
                 const thread = $(`.message-parent[data-fullname='${attrib}']`);
                 if (thread.length > 1) {
                     $sender.remove();
                 } else {
-                    processThread($sender);
+                    await processThread($sender);
                     sentFromMMP = true;
                     window.dispatchEvent(event);
                 }
@@ -1022,7 +1021,7 @@ self.autoLoad = function ({autoLoad}) {
     }
 };
 
-self.mailDropDowns = async function () {
+self.mailDropDowns = function () {
     const COMPOSE = 'compose-message',
           SWITCH = 'switch-modmail',
           composeURL = '/message/compose?to=%2Fr%2F',
@@ -1030,14 +1029,14 @@ self.mailDropDowns = async function () {
           $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
           $mmpMenu = $('.mmp-menu');
 
-    await TBCore.getModSubs();
     populateDropDowns();
 
-    function populateDropDowns () {
+    async function populateDropDowns () {
         $mmpMenu.append($composeSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
         $mmpMenu.append($switchSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
-        $(window._TBCore.mySubs).each(function () {
+        const mySubs = await TBCore.getModSubs(false);
+        $(mySubs).each(function () {
             $('.compose-mail').append($('<option>', {
                 value: this,
             }).text(this));

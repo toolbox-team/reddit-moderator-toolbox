@@ -199,13 +199,14 @@ self.queuetoolsOld = function ({
         }
     }
 
-    function colorSubreddits () {
+    async function colorSubreddits () {
         const $this = $(this),
               subredditName = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
 
         $this.addClass('color-processed');
 
-        if (!TBCore.modsSub(subredditName)) {
+        const isMod = await TBCore.isModSub(subredditName);
+        if (!isMod) {
             return;
         }
 
@@ -214,12 +215,10 @@ self.queuetoolsOld = function ({
         $this.addClass('tb-subreddit-color');
     }
 
-    TBCore.getModSubs().then(() => {
-        if (subredditColor) {
-            self.log('adding sub colors');
-            $('.thing').each(colorSubreddits);
-        }
-    });
+    if (subredditColor) {
+        self.log('adding sub colors');
+        $('.thing').each(colorSubreddits);
+    }
 
     // Negative post highlighting
     function highlightBadPosts () {
@@ -271,17 +270,17 @@ self.queuetoolsOld = function ({
         $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
         // remove stuff we can't moderate (in non-mod queues only)
-        async function removeUnmoddable () {
+        function removeUnmoddable () {
             if (!TBCore.isModpage && !TBCore.isSubCommentsPage) {
-                await TBCore.getModSubs();
-                $('.thing').each(function () {
+                $('.thing').each(async function () {
                     const $thing = $(this),
                           $sub = $thing.find('.subreddit');
 
                     // Remove if the sub isn't moderated
                     if ($sub.length > 0) {
                         const sub = TBHelpers.cleanSubredditName($sub.text());
-                        if (!TBCore.modsSub(sub)) {
+                        const isMod = await TBCore.isModSub(sub);
+                        if (!isMod) {
                             $thing.remove();
                         }
                     } else if ($thing.find('.parent').text().endsWith('[promoted post]')) {
@@ -1323,8 +1322,8 @@ function init (options) {
     }
 
     async function makeActionTable ($target, subreddit, id) {
-        await TBCore.getModSubs();
-        if (TBCore.modsSub(subreddit)) {
+        const isMod = await TBCore.isModSub(subreddit);
+        if (isMod) {
             getActions(subreddit, id, actions => {
                 if (actions) {
                     const show = $('body').hasClass('tb-show-actions');
@@ -1422,7 +1421,8 @@ function init (options) {
 
             // If we don't mod this subreddit, do nothing
             const subreddit = redditEvent.detail.data.subreddit.name;
-            if (!TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (!isMod) {
                 return;
             }
 

@@ -20,7 +20,7 @@ const cachedata = {
  * @param timeoutDuration Timeout value in minutes
  * @param cacheType The type of cache, either `short` or `long`
  */
-async function emptyCacheTimeout (timeoutDuration, cacheType) {
+function emptyCacheTimeout (timeoutDuration, cacheType) {
     // Make sure we always clear any running timeouts so we don't get things running multiple times.
     clearTimeout(cachedata.timeouts[cacheType]);
 
@@ -40,22 +40,6 @@ async function emptyCacheTimeout (timeoutDuration, cacheType) {
         localStorage['TBCache.Utils.noRules'] = '[]';
         localStorage['TBCache.Utils.moderatedSubs'] = '[]';
         localStorage['TBCache.Utils.moderatedSubsData'] = '[]';
-    }
-
-    // Let's make sure all our open tabs know that cache has been cleared for these types.
-    const tabs = await browser.tabs.query({});
-    for (let i = 0; i < tabs.length; ++i) {
-        if (tabs[i].url.includes('reddit.com')) {
-            browser.tabs.sendMessage(tabs[i].id, {
-                action: 'tb-cache-timeout',
-                payload: cacheType,
-            }).catch(error => {
-                // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
-                if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
-                    console.warn('tb-cache-timeout: ', error.message, error);
-                }
-            });
-        }
     }
 
     // Done, go for another round.

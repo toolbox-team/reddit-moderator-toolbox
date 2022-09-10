@@ -112,11 +112,11 @@ export default new Module({
     async function filterModdable (hide) {
         const $things = $('.tb-thing');
         if (hide) {
-            await TBCore.getModSubs();
+            const mySubs = await TBCore.getModSubs();
             TBCore.forEachChunkedDynamic($things, thing => {
                 const $thing = $(thing);
                 const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
-                if (!window._TBCore.mySubs.includes(subreddit)) {
+                if (!mySubs.includes(subreddit)) {
                     $thing.addClass('tb-mod-filtered');
                 }
             }, {framerate: 40});
@@ -524,11 +524,12 @@ export default new Module({
         cancelSearch = true;
     });
 
-    function populateSearchSuggestion (subreddit) {
-        if (subreddit && window._TBCore.mySubs.includes(subreddit)) {
+    async function populateSearchSuggestion (subreddit) {
+        const mySubs = await TBCore.getModSubs(false);
+        if (subreddit && mySubs.includes(subreddit)) {
             $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${subreddit}"><td>${subreddit}</td></td></tr>`);
         }
-        $(window._TBCore.mySubs).each(function () {
+        $(mySubs).each(function () {
             if (this !== subreddit) {
                 $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
             }
@@ -548,10 +549,9 @@ export default new Module({
         });
     }
 
-    async function initSearchSuggestion (subreddit) {
+    function initSearchSuggestion (subreddit) {
         if (!$body.find('#tb-search-suggest').length) {
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-            await TBCore.getModSubs();
             populateSearchSuggestion(subreddit);
         }
 
@@ -843,8 +843,8 @@ export default new Module({
                     return;
                 }
 
-                await TBCore.getModSubs();
-                if (TBCore.modsSub(subreddit)) {
+                const isMod = await TBCore.isModSub(subreddit);
+                if (isMod) {
                     const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
                     requestAnimationFrame(() => {
                         $target.append(profileButton);
@@ -858,8 +858,8 @@ export default new Module({
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
 
-            await TBCore.getModSubs();
-            if (TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod) {
                 const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
                 $target.append(profileButton);
             }

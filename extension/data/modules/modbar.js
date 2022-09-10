@@ -324,7 +324,8 @@ export default new Module({
 
     // moderated subreddits button.
     if (enableModSubs) {
-        TBCore.getModSubs().then(async () => {
+        TBCore.getModSubs(true).then(async mySubsData => {
+            console.error(mySubsData);
             $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
             let subList = '';
@@ -332,9 +333,9 @@ export default new Module({
             const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false),
                   usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
             this.log('got mod subs');
-            this.log(window._TBCore.mySubs.length);
-            this.log(window._TBCore.mySubsData.length);
-            $(window._TBCore.mySubsData).each(function () {
+            this.log(mySubsData.length);
+
+            $(mySubsData).each(function () {
                 const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
                 subList += `
                     <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
@@ -355,7 +356,7 @@ export default new Module({
             const modSubsPopupContent = `
                 <div id="tb-my-subreddits">
                     <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-                <span class="tb-livefilter-count">${window._TBCore.mySubs.length}</span>
+                <span class="tb-livefilter-count">${mySubsData.length}</span>
                     <br>
                     <table id="tb-my-subreddit-list">${subList}</table>
                 </div>
@@ -487,11 +488,10 @@ export default new Module({
     });
 
     // Open the settings
-    $body.on('click', '.tb-toolbar-new-settings', async () => {
+    $body.on('click', '.tb-toolbar-new-settings', () => {
         if ($('.tb-settings').length) {
             return;
         } // Don't show the window twice
-        await TBCore.getModSubs();
         TBModule.showSettings();
     });
 

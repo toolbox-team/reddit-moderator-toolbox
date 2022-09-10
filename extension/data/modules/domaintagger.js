@@ -27,11 +27,8 @@ export default new Module({
 
     $body.addClass(`tb-dt-type-${displayType}`);
 
-    TBCore.getModSubs().then(() => {
-        self.log('run called from getModSubs');
-        self.log(window._TBCore.mySubs);
-        run(true);
-    });
+    self.log('run called from first init');
+    run(true);
 
     function postToWiki (sub, json, reason) {
         // Update config cache to contain the new configuration
@@ -62,8 +59,9 @@ export default new Module({
         let $things = $('div.thing.link').not('.dt-processed');
 
         // Mark non-mySubs as processed and remove them from collection
-        $things.filter(function () {
-            return !TBCore.modsSub(this.dataset.subreddit);
+        $things.filter(async function () {
+            const isMod = await TBCore.isModSub(this.dataset.subreddit);
+            return !isMod;
         }).addClass('dt-processed');
 
         $things = $things.not('.dt-processed');

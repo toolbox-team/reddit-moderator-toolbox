@@ -57,15 +57,11 @@ const self = new Module({
 });
 export default self;
 
-async function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
+function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
     const subs = [],
           $body = $('body');
     const self = this;
     let firstRun = true;
-
-    await TBCore.getModSubs();
-    self.log('Got mod subs');
-    self.log(window._TBCore.mySubs);
 
     run();
 
@@ -137,8 +133,8 @@ async function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                 $target.attr('data-subreddit', subreddit);
                 $target.attr('data-author', author);
 
-                await TBCore.getModSubs();
-                if (TBCore.modsSub(subreddit)) {
+                const isMod = await TBCore.isModSub(subreddit);
+                if (isMod) {
                     attachNoteTag($target, subreddit, author);
                     foundSubreddit(subreddit);
                     queueProcessSub(subreddit, $target);
@@ -155,8 +151,8 @@ async function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             $target.attr('data-subreddit', subreddit);
             $target.attr('data-author', author);
 
-            await TBCore.getModSubs();
-            if (TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod) {
                 attachNoteTag($target, subreddit, author, {
                     customText: 'Usernotes',
                 });
@@ -501,7 +497,7 @@ async function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         let link;
 
         if (TBCore.isNewModmail) {
-            link = TBCore.getThingInfo($thing).permalink_newmodmail;
+            link = await TBCore.getThingInfo($thing).permalink_newmodmail;
             createUserPopup(subreddit, user, link, disableLink, e);
         } else {
             let thingID;
@@ -702,8 +698,8 @@ function startUsernotesManager ({unManagerLink}) {
             if (event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
 
-                await TBCore.getModSubs();
-                if (TBCore.modsSub(subreddit)) {
+                const isMod = await TBCore.isModSub(subreddit);
+                if (isMod) {
                     TBui.contextTrigger('tb-un-config-link', {
                         addTrigger: true,
                         triggerText: 'edit usernotes',
@@ -1262,7 +1258,7 @@ async function getUserNotes (subreddit, forceSkipCache) {
                         try {
                             await saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`);
                             TBui.textFeedback('Notes saved!', TBui.FEEDBACK_POSITIVE);
-                            TBCore.clearCache();
+                            await TBStorage.clearCache();
                             window.location.reload();
                         } catch (error) {
                             // TODO: do something with this

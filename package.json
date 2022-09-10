@@ -33,7 +33,7 @@
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",
         "jsdoc": "^3.6.3",
-        "rollup": "^2.51.0",
+        "rollup": "^2.79.0",
         "rollup-plugin-copy": "^3.4.0"
     }
 }

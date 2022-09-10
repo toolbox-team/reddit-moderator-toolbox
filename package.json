@@ -19,21 +19,22 @@
     "dependencies": {
         "codemirror": "^5.65.8",
         "dompurify": "^2.4.0",
-        "jquery": "^3.5.0",
+        "jquery": "^3.6.1",
         "pako": "^0.2.6",
         "snuownd": "^1.1.0",
         "timeago": "^1.6.7",
-        "tinycolor2": "^1.4.1",
-        "webextension-polyfill": "^0.8.0"
+        "tinycolor2": "^1.4.2",
+        "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^22.0.2",
         "@rollup/plugin-node-resolve": "^14.0.1",
+        "cross-env": "^7.0.3",
         "docdash": "^1.1.1",
         "eslint": "^7.24.0",
         "eslint-plugin-import": "^2.23.4",
         "jsdoc": "^3.6.3",
-        "rollup": "^2.51.0",
+        "rollup": "^2.79.0",
         "rollup-plugin-copy": "^3.4.0",
         "del-cli": "^5.0.0"
     }

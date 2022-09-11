@@ -69,7 +69,7 @@ const self = new Module({
             advanced: false,
         },
     ],
-}, async ({
+}, ({
     enableModSave,
     enableDistinguishToggle,
     removeRemoveConfirmation,
@@ -80,7 +80,6 @@ const self = new Module({
     addStickyButton,
     addCommentLockbutton,
 }) => {
-    await TBCore.getModSubs();
     if (enableModSave) {
         initModSave();
     }
@@ -373,11 +372,11 @@ function initAutoIgnoreReports () {
 function initRemoveButtons ({spamRemoved, hamSpammed}) {
     // only need to iterate if at least one of the options is enabled
     const $things = $('.thing.link:not(.tb-removebuttons-checked)');
-    TBCore.forEachChunkedDynamic($things, item => {
+    TBCore.forEachChunkedDynamic($things, async item => {
         const $thing = $(item);
         $thing.addClass('tb-removebuttons-checked');
 
-        const thing = TBCore.getThingInfo(item, true);
+        const thing = await TBCore.getThingInfo(item, true);
 
         if (spamRemoved) {
             // only for subreddits we mod
@@ -501,7 +500,7 @@ function initCommentLock () {
         const $lockButton = $(event.target);
 
         const action = $lockButton.attr('tb-action');
-        const info = TBCore.getThingInfo(this, true);
+        const info = await TBCore.getThingInfo(this, true);
         const data = {
             id: info.id,
         };

@@ -140,11 +140,11 @@ export default new Module({
         // Making sure the ui is only created once.
         if (!$existingPopup.length) {
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-            await TBCore.getModSubs();
+            const mySubs = await TBCore.getModSubs();
 
             // We can't expect people to get the capitalizing right.
             const mySubsLowerCase = [];
-            $(window._TBCore.mySubs).each(function () {
+            $(mySubs).each(function () {
                 mySubsLowerCase.push(this.toLowerCase());
             });
 

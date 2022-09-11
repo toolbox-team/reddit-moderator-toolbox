@@ -6,163 +6,103 @@ import browser from 'webextension-polyfill';
 
 import {messageHandlers} from '../messageHandling';
 
-let TBsettingsObject = {};
-const cachedata = {
-    timeouts: {},
-    currentDurations: {
-        long: 0,
-        short: 0,
-    },
-};
+const TB_CACHE_PREFIX = browser.extension.inIncognitoContext ? 'TBCache.incognito' : 'TBcache.public';
 
-/**
- * emptyshort or long cache if it expires
- * @param timeoutDuration Timeout value in minutes
- * @param cacheType The type of cache, either `short` or `long`
- */
-async function emptyCacheTimeout (timeoutDuration, cacheType) {
-    // Make sure we always clear any running timeouts so we don't get things running multiple times.
-    clearTimeout(cachedata.timeouts[cacheType]);
+const storageShortLengthKey = 'Toolbox.Utils.shortLength';
+const storageLongLengthKey = 'Toolbox.Utils.longLength';
 
-    // Users fill in the value in minutes, we need milliseconds of course.
-    const timeoutMS = timeoutDuration * 60 * 1000;
+const longCacheList = [
+    'Utils.configCache',
+    'Utils.rulesCache',
+    'Utils.noRules',
+    'Utils.moderatedSubs',
+    'Utils.moderatedSubsData',
+];
 
-    console.log('clearing cache:', cacheType, timeoutMS);
-    if (cacheType === 'short') {
-        localStorage['TBCache.Utils.noteCache'] = '{}';
-        localStorage['TBCache.Utils.noConfig'] = '[]';
-        localStorage['TBCache.Utils.noNotes'] = '[]';
-    }
+const shortCacheList = [
+    'Utils.noteCache',
+    'Utils.noConfig',
+    'Utils.noNotes',
+];
 
-    if (cacheType === 'long') {
-        localStorage['TBCache.Utils.configCache'] = '{}';
-        localStorage['TBCache.Utils.rulesCache'] = '{}';
-        localStorage['TBCache.Utils.noRules'] = '[]';
-        localStorage['TBCache.Utils.moderatedSubs'] = '[]';
-        localStorage['TBCache.Utils.moderatedSubsData'] = '[]';
-    }
-
-    // Let's make sure all our open tabs know that cache has been cleared for these types.
-    const tabs = await browser.tabs.query({});
-    for (let i = 0; i < tabs.length; ++i) {
-        if (tabs[i].url.includes('reddit.com')) {
-            browser.tabs.sendMessage(tabs[i].id, {
-                action: 'tb-cache-timeout',
-                payload: cacheType,
-            }).catch(error => {
-                // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
-                if (error.message !== 'Could not establish connection. Receiving end does not exist.') {
-                    console.warn('tb-cache-timeout: ', error.message, error);
-                }
-            });
-        }
-    }
-
-    // Done, go for another round.
-    cachedata.timeouts[cacheType] = setTimeout(() => {
-        emptyCacheTimeout(timeoutDuration, cacheType);
-    }, timeoutMS);
+async function clearCache () {
+    const storage = await browser.storage.local.get();
+    const cacheKeys = Object.keys(storage).filter(storageKey => storageKey.startsWith(TB_CACHE_PREFIX));
+    await browser.storage.local.remove(cacheKeys);
 }
-
-/**
- * Initiates cache timeouts based on toolbox settings.
- * @param {Boolean} forceRefresh when true will clear both caches and start fresh.
- */
-function initCacheTimeout (forceRefresh) {
-    console.log(TBsettingsObject);
-    console.log('Caching timeout initiated');
-    const storageShortLengthKey = 'Toolbox.Utils.shortLength';
-    const storageLongLengthKey = 'Toolbox.Utils.longLength';
-    let storageShortLength;
-    let storageLongLength;
-
-    // Get current shortLength value from storage.
-    if (TBsettingsObject.tbsettings[storageShortLengthKey] === undefined) {
-        storageShortLength = 15;
-    } else {
-        storageShortLength = TBsettingsObject.tbsettings[storageShortLengthKey];
-
-        if (typeof storageShortLength !== 'number') {
-            storageShortLength = parseInt(storageShortLength);
-        }
-    }
-
-    // Compare the current timeout value to the one in storage. Reinit timeout when needed.
-    if (storageShortLength !== cachedata.currentDurations.short || forceRefresh) {
-        console.log('Short timeout', storageShortLength);
-        cachedata.currentDurations.short = storageShortLength;
-        emptyCacheTimeout(storageShortLength, 'short');
-    }
-
-    // Get current longLength value from storage.
-    if (TBsettingsObject.tbsettings[storageLongLengthKey] === undefined) {
-        storageLongLength = 45;
-    } else {
-        storageLongLength = TBsettingsObject.tbsettings[storageLongLengthKey];
-        if (typeof storageLongLength !== 'number') {
-            storageLongLength = parseInt(storageLongLength);
-        }
-    }
-
-    // Compare the current timeout value to the one in storage. Reinit timeout when needed.
-    if (storageLongLength !== cachedata.currentDurations.long || forceRefresh) {
-        console.log('Long timeout', storageLongLength);
-        cachedata.currentDurations.short = storageShortLength;
-        emptyCacheTimeout(storageLongLength, 'long');
-    }
-}
-
-// Read data from storage on init
-browser.storage.local.get('tbsettings').then(sObject => {
-    console.log('first cache init');
-    TBsettingsObject = sObject;
-    initCacheTimeout(true);
-});
 
 // Handle getting/setting/clearing vavhe values
-messageHandlers.set('tb-cache', request => {
+messageHandlers.set('tb-cache', async request => {
     const {method, storageKey, inputValue} = request;
 
     if (method === 'get') {
         const result = {};
-        if (localStorage[storageKey] === undefined) {
-            result.value = inputValue;
+
+        const cacheKey = `${TB_CACHE_PREFIX}.${storageKey}`;
+        const storedValue = await browser.storage.local.get(cacheKey);
+
+        // Cache value was stored before
+        if (Object.prototype.hasOwnProperty.call(storedValue, cacheKey)) {
+            // Handle cache that can expire
+            if (longCacheList.includes(storageKey) || shortCacheList.includes(storageKey)) {
+                // Get settings object to determine timeout values.
+                const TBsettingsObject = await browser.storage.local.get('tbsettings');
+                let cacheTTL;
+                if (longCacheList.includes(storageKey)) {
+                    cacheTTL = TBsettingsObject.tbsettings[storageLongLengthKey] ? TBsettingsObject.tbsettings[storageLongLengthKey] : 45;
+                } else {
+                    cacheTTL = TBsettingsObject.tbsettings[storageShortLengthKey] ? TBsettingsObject.tbsettings[storageShortLengthKey] : 15;
+                }
+
+                // TODO: find out if this is actually still needed.
+                if (typeof cacheTTL !== 'number') {
+                    cacheTTL = parseInt(cacheTTL);
+                }
+                cacheTTL = cacheTTL * 60 * 1000;
+
+                // If cache has expired delete the entry and set inputValue.
+                if (Date.now() - storedValue[cacheKey].timeStamp > cacheTTL) {
+                    await browser.storage.local.remove(cacheKey);
+                    result.value = inputValue;
+                }
+            }
+            result.value = storedValue[cacheKey].value;
         } else {
-            const storageString = localStorage[storageKey];
-            try {
-                result.value = JSON.parse(storageString);
-            } catch (error) { // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
-                result.errorThrown = error.toString();
-                result.value = inputValue;
-            }
-
-            // send back the default if, somehow, someone stored `null`
-            // NOTE: never, EVER store `null`!
-            if (result.value === null && inputValue !== null) {
-                result.value = inputValue;
-            }
+            result.value = inputValue;
         }
-
-        return Promise.resolve(result);
+        return result;
     }
 
     if (method === 'set') {
-        localStorage[storageKey] = JSON.stringify(inputValue);
+        const cacheKey = `${TB_CACHE_PREFIX}.${storageKey}`;
+        await browser.storage.local.set({
+            [cacheKey]: {
+                value: inputValue,
+                timeStamp: Date.now(),
+            },
+        });
         return;
     }
 
     if (method === 'clear') {
-        localStorage.clear();
+        await clearCache();
         return;
     }
 });
 
 // Handle forcing cache timeouts
-messageHandlers.set('tb-cache-force-timeout', () => {
-    initCacheTimeout(true);
-});
+messageHandlers.set('tb-cache-force-timeout', async () => {
+    const storage = await browser.storage.local.get();
+    const cacheKeys = Object.keys(storage).filter(storageKey => {
+        if (storageKey.startsWith(TB_CACHE_PREFIX)) {
+            const shortKey = storageKey.replace(TB_CACHE_PREFIX);
+            if (longCacheList.includes(shortKey) || shortCacheList.includes(shortKey)) {
+                return true;
+            }
+        }
+        return false;
+    });
+    await browser.storage.local.remove(cacheKeys);
 
-messageHandlers.set('tb-settings-update', request => {
-    TBsettingsObject = request.payload;
-    initCacheTimeout();
+    return;
 });

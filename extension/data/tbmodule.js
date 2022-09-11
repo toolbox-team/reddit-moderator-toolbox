@@ -348,7 +348,7 @@ const TBModule = {
             TBStorage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
 
             if ($('#clearcache').prop('checked')) {
-                TBCore.clearCache();
+                TBStorage.clearCache();
             }
 
             $(settingsDialog).remove();
@@ -390,7 +390,7 @@ const TBModule = {
             if ($(e.target).hasClass('tb-settings-import')) {
                 await TBCore.importSettings(sub);
                 await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                TBCore.clearCache();
+                await TBStorage.clearCache();
                 TBStorage.verifiedSettingsSave(succ => {
                     if (succ) {
                         TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
@@ -405,7 +405,7 @@ const TBModule = {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
                 TBCore.exportSettings(sub);
                 await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                TBCore.clearCache();
+                await TBStorage.clearCache();
                 window.location.reload();
             }
         });
@@ -612,8 +612,9 @@ const TBModule = {
                 }
                 case 'sublist':
                 {
+                    const mySubs = await TBCore.getModSubs(false);
                     $setting.append(`${title}:<br />`);
-                    $setting.append(TBui.selectMultiple.apply(TBui, [window._TBCore.mySubs, await module.get(setting)]));
+                    $setting.append(TBui.selectMultiple.apply(TBui, [mySubs, await module.get(setting)]));
                     break;
                 }
                 case 'map':

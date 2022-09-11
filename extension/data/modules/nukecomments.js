@@ -255,9 +255,9 @@ export default new Module({
         const commentID = e.detail.data.id.substring(3);
         const postID = e.detail.data.post.id.substring(3);
 
-        await TBCore.getModSubs();
+        const isMod = await TBCore.isModSub(subreddit);
         // We have to mod the subreddit to show the button
-        if (!TBCore.modsSub(subreddit)) {
+        if (!isMod) {
             return;
         }
         // We also have to be on a comments page or looking at a context popup

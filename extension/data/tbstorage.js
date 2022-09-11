@@ -154,17 +154,6 @@ export async function clearCache () {
         action: 'tb-cache',
         method: 'clear',
     });
-
-    // Cache keys that store arrays/objects should never actually be undefined,
-    // so we set them to empty arrays/objects after clearing them.
-    await setCache('Utils', 'configCache', {});
-    await setCache('Utils', 'noteCache', {});
-    await setCache('Utils', 'rulesCache', {});
-    await setCache('Utils', 'noConfig', []);
-    await setCache('Utils', 'noNotes', []);
-    await setCache('Utils', 'noRules', []);
-    await setCache('Utils', 'moderatedSubs', []);
-    await setCache('Utils', 'moderatedSubsData', []);
 }
 
 // The below block of code will keep watch for events that require clearing the cache like account switching and people accepting mod invites.
@@ -194,6 +183,7 @@ export function verifiedSettingsSave (callback) {
                         action: 'tb-global',
                         globalEvent: 'tb-settings-update',
                         payload: returnObject,
+                        excludeBackground: true,
                     });
                     callback(true);
                 } else {
@@ -461,7 +451,7 @@ export async function setSettingAsync (module, setting, value, syncSettings = tr
  */
 export function getCache (module, setting, defaultVal) {
     return new Promise(resolve => {
-        const storageKey = `TBCache.${module}.${setting}`;
+        const storageKey = `${module}.${setting}`;
         const inputValue = defaultVal !== undefined ? defaultVal : null;
         browser.runtime.sendMessage({
             action: 'tb-cache',
@@ -487,7 +477,7 @@ export function getCache (module, setting, defaultVal) {
  * @returns {Promise<any>} Promises the new value of the cache key
  */
 export function setCache (module, setting, inputValue) {
-    const storageKey = `TBCache.${module}.${setting}`;
+    const storageKey = `${module}.${setting}`;
     return new Promise(resolve => {
         browser.runtime.sendMessage({
             action: 'tb-cache',

@@ -65,7 +65,8 @@ const $body = $('body'),
 
 self.runRedesign = async function () {
     // Not a mod, don't bother.
-    if (window._TBCore.mySubs.length < 1) {
+    const mySubs = await TBCore.getModSubs(false);
+    if (mySubs.length < 1) {
         return;
     }
     const onlyshowInhover = await self.get('onlyshowInhover');
@@ -113,7 +114,8 @@ self.runRedesign = async function () {
 /**
      *  updates the current savedsubs' listings in the mod button
      */
-self.updateSavedSubs = function () {
+self.updateSavedSubs = async function () {
+    const mySubs = await TBCore.getModSubs();
     //
     // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
     //
@@ -132,19 +134,20 @@ self.updateSavedSubs = function () {
 
         // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
-        $popup.find('.edit-subreddits').prepend(TBui.selectMultiple(window._TBCore.mySubs, self.savedSubs).addClass('savedSubs'));
+        $popup.find('.edit-subreddits').prepend(TBui.selectMultiple(mySubs, self.savedSubs).addClass('savedSubs'));
 
-        self.savedSubs.forEach(subreddit => {
+        self.savedSubs.forEach(async subreddit => {
             // only subs we moderate
             // and not the current sub
-            if (TBCore.modsSub(subreddit) && subreddit !== currentSub) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod && subreddit !== currentSub) {
                 $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${subreddit
                 }" id="action-${subreddit}"><label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit}</label></div>`);
             }
         });
     });
 
-    window._TBCore.mySubs.forEach(subreddit => {
+    mySubs.forEach(subreddit => {
         $popups.find(`select.${self.OTHER}`).append(`<option value="${subreddit}">${subreddit}</option>`);
     });
 };
@@ -159,10 +162,8 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
     self.savedSubs = TBHelpers.saneSort(self.savedSubs);
 
-    TBCore.getModSubs().then(() => {
-        // it's Go Time™!
-        self.runRedesign();
-    });
+    // it's Go Time™!
+    self.runRedesign();
 
     async function openModPopup (event, info) {
         const benbutton = event.target; // huehuehue
@@ -427,7 +428,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
         const $benbutton = $(benbutton);
 
         if (TBCore.isNewModmail) {
-            const info = TBCore.getThingInfo(this, true);
+            const info = await TBCore.getThingInfo(this, true);
             openModPopup(event, info);
         } else {
             const subreddit = $benbutton.attr('data-subreddit');
@@ -480,7 +481,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
     });
 
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
-    $body.on('click', '.mod-popup .save, .global-button', function () {
+    $body.on('click', '.mod-popup .save, .global-button', async function () {
         const $button = $(this),
               $popup = $button.parents('.mod-popup'),
               $selected = $popup.find('.mod-action :selected'),
@@ -546,7 +547,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                 }
 
                 if (confirmban) {
-                    const subs = window._TBCore.mySubs;
+                    const subs = await TBCore.getModSubs(false);
                     excludeGlobal.forEach(val => {
                         subs.splice(subs.indexOf(val), 1);
                     });

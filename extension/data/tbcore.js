@@ -109,82 +109,88 @@ const SETTINGS_NAME = 'Utils';
 
 export {getModhash};
 
-// If mod subs are being fetched, stores a promise that will fulfill afterwards
-let fetchModSubsPromise = null;
+// If mod subs are being fetched we wait for them to be refreshed.
+let fetchModSubsActive = false;
+
+function waitForModSubsRefresh () {
+    return new Promise(resolve => {
+        window.addEventListener('tb-fresh-mod-subs', () => {
+            resolve();
+        }, {
+            once: true,
+        });
+    });
+}
 
 /**
- * Populates `TBCore.mySubs` and `TBCore.mySubsData` if they're not already
- * present. First tries to read their values from cache, and falls back to
- * fetching the list of moderated subs from the API. Returns a Promise that
- * resolves once those properties are definitely populated and ready to use.
- * @returns {Promise<void>}
+ * Returns a Promise that returns the subreddits a user mods as
+ * an array with just the names or array with details per subreddit.
+ * First tries to read their values from cache, and falls back to
+ * fetching the list of moderated subs from the API.
+ * @function
+ * @param {boolean} data If true will return detailed subreddit data.
+ * @returns {Promise<array>} array with subreddit names or subreddit objects with details.
  */
-export async function getModSubs () {
+export async function getModSubs (data) {
     logger.log('getting mod subs');
 
-    // If the info we need is already present, return immediately
-    if (window._TBCore.mySubs && window._TBCore.mySubs.length
-        && window._TBCore.mySubsData && window._TBCore.mySubsData.length
-    ) {
-        return;
+    // Are we already fetching subs? If so, wait for them to be refreshed before attempting to return anything.
+    if (fetchModSubsActive) {
+        await waitForModSubsRefresh();
+        return TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
+    } else {
+        fetchModSubsActive = true;
     }
 
     // Try to load the info we need from cache
-    const [
-        cachedModSubs,
-        cachedModSubsData,
-    ] = await Promise.all([
-        TBStorage.getCache('Utils', 'moderatedSubs', []),
-        TBStorage.getCache('Utils', 'moderatedSubsData', []),
-    ]);
-    if (cachedModSubs.length && cachedModSubsData.length) {
-        // We have modded sub info in cache, just use that
-        window._TBCore.mySubs = cachedModSubs;
-        window._TBCore.mySubsData = cachedModSubsData;
-        return;
+    const cachedData = await TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
+    if (cachedData.length) {
+        // Got cache let other waiting instances of this function know and return cachedData
+        window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));
+        fetchModSubsActive = false;
+        return cachedData;
     }
 
-    // We need to refresh the list of moderated subreddits. Create a promise
-    // that takes care of doing the updating, in `fetchModSubsPromise`, and
-    // wait for that promise to fulfill before calling the callback.
+    // We need to refresh the list of moderated subreddits.
+    const subredditData = await fetchModSubs();
 
-    // Are we already fetching subs? If not, create the promise to do that
-    if (!fetchModSubsPromise) {
-        // Set fetchModSubsPromise to a promise that will fulfill once the sub list is updated
-        fetchModSubsPromise = fetchModSubs().then(subs => {
-            // mySubs should contain a list of subreddit names, sorted alphabetically
-            window._TBCore.mySubs = TBHelpers.saneSort(subs.map(({data}) => data.display_name.trim()));
+    // mySubs should contain a list of subreddit names, sorted alphabetically
+    const mySubs = TBHelpers.saneSort(subredditData.map(({data}) => data.display_name.trim()));
 
-            // mySubsData should contain a list of objects describing each subreddit, sorted by subscriber count
-            window._TBCore.mySubsData = TBHelpers.sortBy(subs.map(({data}) => ({
-                subreddit: data.display_name,
-                subscribers: data.subscribers,
-                over18: data.over18,
-                created_utc: data.created_utc,
-                subreddit_type: data.subreddit_type,
-                submission_type: data.submission_type,
-                is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
-            })), 'subscribers');
+    const mySubsData = TBHelpers.sortBy(subredditData.map(({data}) => ({
+        subreddit: data.display_name,
+        subscribers: data.subscribers,
+        over18: data.over18,
+        created_utc: data.created_utc,
+        subreddit_type: data.subreddit_type,
+        submission_type: data.submission_type,
+        is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
+    })), 'subscribers');
 
-            // Update the cache
-            TBStorage.setCache('Utils', 'moderatedSubs', window._TBCore.mySubs);
-            TBStorage.setCache('Utils', 'moderatedSubsData', window._TBCore.mySubsData);
+    await TBStorage.setCache('Utils', 'moderatedSubs', mySubs);
+    await TBStorage.setCache('Utils', 'moderatedSubsData', mySubsData);
 
-            // We're done fetching, unset this promise
-            fetchModSubsPromise = null;
-        });
-    }
-
-    // Pass the promise back to be handled by the caller
-    return fetchModSubsPromise;
+    fetchModSubsActive = false;
+    window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));
+    return data ? mySubsData : mySubs;
 }
-export const modsSub = subreddit => window._TBCore.mySubs.includes(subreddit);
+
+/**
+ * Returns a Promise that returns if the logged in user is a mod of a given subreddit.
+ * @function
+ * @param {string} subreddit Subreddit to check.
+ * @returns {Promise<boolean>}
+ */
+export async function isModSub (subreddit) {
+    const mySubs = await getModSubs(false);
+    return mySubs.includes(subreddit);
+}
 
 export async function modSubCheck () {
-    await getModSubs();
-    const subCount = window._TBCore.mySubsData.length;
+    const mySubsData = await getModSubs(true);
+    const subCount = mySubsData.length;
     let subscriberCount = 0;
-    window._TBCore.mySubsData.forEach(subreddit => {
+    mySubsData.forEach(subreddit => {
         subscriberCount += subreddit.subscribers;
     });
     subscriberCount -= subCount;
@@ -781,23 +787,6 @@ export function forEachChunkedDynamic (array, process, options) {
     });
 }
 
-// Functions dealing with settings/cache
-export function clearCache (calledFromBackground) {
-    logger.log('TBCore.clearCache()');
-
-    window._TBCore.mySubs = [];
-    window._TBCore.mySubsData = [];
-
-    TBStorage.clearCache();
-
-    if (!calledFromBackground) {
-        browser.runtime.sendMessage({
-            action: 'tb-global',
-            globalEvent: 'clearCache',
-        });
-    }
-}
-
 export async function getConfig (sub) {
     // Check
     const cachedSubsWithNoConfig = await TBStorage.getCache('Utils', 'noConfig', []);
@@ -906,7 +895,7 @@ export function addToSiteTable (URL, callback) {
     });
 }
 
-export function getThingInfo (sender, modCheck) {
+export async function getThingInfo (sender, modCheck) {
     // First we check if we are in new modmail thread and for now we take a very simple.
     // Everything we need info for is centered around threads.
     const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
@@ -1035,9 +1024,10 @@ export function getThingInfo (sender, modCheck) {
     // Mod mail subreddit names additionally end with "/".
     // reddit pls, need consistency
     subreddit = TBHelpers.cleanSubredditName(subreddit);
+    const isMod = await isModSub(subreddit);
 
     // Not a mod, reset current sub.
-    if (modCheck && !modsSub(subreddit)) {
+    if (modCheck && !isMod) {
         subreddit = '';
     }
 
@@ -1132,7 +1122,8 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
 
             let subreddit = message.data.subreddit || '';
 
-            if (modCheck && !modsSub(subreddit)) {
+            const isMod = await isModSub(subreddit);
+            if (modCheck && !isMod) {
                 subreddit = '';
             }
 
@@ -1181,7 +1172,8 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
             subreddit = TBHelpers.cleanSubredditName(subreddit);
 
             // Not a mod, reset current sub.
-            if (modCheck && !modsSub(subreddit)) {
+            const isMod = await isModSub(subreddit);
+            if (modCheck && !isMod) {
                 subreddit = '';
             }
 
@@ -1199,7 +1191,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
                 permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
             }
 
-            if (modCheck && !modsSub(subreddit)) {
+            if (modCheck && !isMod) {
                 subreddit = '';
             }
 
@@ -1354,9 +1346,6 @@ export async function getToolboxDevs () {
 
     TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
 
-    // Populate `TBCore.mySubs` and `TBCore.mySubsData`
-    getModSubs();
-
     // Update cache vars as needed.
     if (newLogin) {
         logger.log('Account changed');
@@ -1440,20 +1429,6 @@ export async function getToolboxDevs () {
 // Listen to background page communication and act based on that.
 browser.runtime.onMessage.addListener(message => {
     switch (message.action) {
-    case 'clearCache': {
-        clearCache(true);
-        break;
-    }
-    case 'tb-cache-timeout': {
-        logger.log('Timed cache update', message.payload);
-        // Cache has timed out
-        if (message.payload === 'long') {
-            window._TBCore.mySubs = [];
-            window._TBCore.mySubsData = [];
-        }
-
-        break;
-    }
     default: {
         const event = new CustomEvent(message.action, {detail: message.payload});
         window.dispatchEvent(event);

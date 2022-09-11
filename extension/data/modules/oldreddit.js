@@ -7,8 +7,7 @@ const self = new Module({
     name: 'Old Reddit',
     id: 'oldreddit',
     alwaysEnabled: true,
-}, async () => {
-    await TBCore.getModSubs();
+}, () => {
     // Looks like we are on old reddit. Activate!
     if (TBCore.isOldReddit) {
         setTimeout(() => {
@@ -63,7 +62,7 @@ function dispatchApiEvent (element, object) {
  * @param {IntersectionObserver} observer
  */
 function handleThing (entries, observer) {
-    entries.forEach(entry => {
+    entries.forEach(async entry => {
         // The observer fires for everything on page load.
         // This makes sure that we really only act on those items that are visible.
         if (!entry.isIntersecting) {
@@ -80,7 +79,7 @@ function handleThing (entries, observer) {
             return;
         }
 
-        const info = TBCore.getThingInfo($thing);
+        const info = await TBCore.getThingInfo($thing);
 
         requestAnimationFrame(() => {
             const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
@@ -255,10 +254,10 @@ function newModmailSidebar () {
                     </div>
                     `;
             }
-            $modmailSidebar.each(function () {
+            $modmailSidebar.each(async function () {
                 const $infobar = $(this);
                 $infobar.addClass('tb-seen');
-                const info = TBCore.getThingInfo(this, true);
+                const info = await TBCore.getThingInfo(this, true);
                 const $jsApiThingPlaceholder = $(jsApiPlaceHolder).appendTo($infobar);
 
                 const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];

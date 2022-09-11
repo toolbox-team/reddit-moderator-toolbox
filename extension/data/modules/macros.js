@@ -78,8 +78,8 @@ export default new Module({
     }
 
     if (TBCore.isOldReddit) {
-        TBCore.getModSubs().then(() => {
-            if (TBCore.post_site && window._TBCore.mySubs.includes(TBCore.post_site)) {
+        TBCore.getModSubs(false).then(mySubs => {
+            if (TBCore.post_site && mySubs.includes(TBCore.post_site)) {
                 self.log('getting config');
                 getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
@@ -101,11 +101,11 @@ export default new Module({
         });
 
         // add macro buttons after we click reply, if we're a mod.
-        $body.on('click', 'ul.buttons a', function () {
+        $body.on('click', 'ul.buttons a', async function () {
             const $this = $(this);
             if ($this.text() === 'reply') {
                 const $thing = $this.closest('.thing'),
-                      info = TBCore.getThingInfo($thing, true);
+                      info = await TBCore.getThingInfo($thing, true);
 
                 // This is because reddit clones the top-level reply box for all reply boxes.
                 // We need to remove it before adding the new one, because the new one works differently.
@@ -142,9 +142,9 @@ export default new Module({
     }
 
     // Add macro button in new modmail
-    function addNewMMMacro () {
+    async function addNewMMMacro () {
         const $thing = $body.find('.InfoBar'),
-              info = TBCore.getThingInfo($thing, true);
+              info = await TBCore.getThingInfo($thing, true);
 
         // Don't add macro button twice.
         if ($body.find('.tb-usertext-buttons').length) {
@@ -187,8 +187,8 @@ export default new Module({
             const subreddit = commentDetails.data.subreddit.name;
             const thingID = commentDetails.data.id;
 
-            await TBCore.getModSubs();
-            if (TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod) {
                 getConfig(subreddit, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
@@ -211,8 +211,8 @@ export default new Module({
         if (event.detail.pageType === 'subredditCommentsPage') {
             const subreddit = event.detail.pageDetails.subreddit;
 
-            await TBCore.getModSubs();
-            if (TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod) {
                 getConfig(subreddit, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
@@ -530,7 +530,7 @@ export default new Module({
         });
     }
 
-    $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
+    $body.on('change', '.tb-top-macro-select, .tb-macro-select', async function () {
         const $this = $(this),
               sub = $this.closest('select').attr('data-subreddit'),
               thingID = $this.closest('select').attr('data-thingID'),
@@ -546,9 +546,9 @@ export default new Module({
         // If it's a top-level reply we need to find the post's info.
         if (topLevel) {
             self.log('toplevel');
-            info = TBCore.getThingInfo($('#siteTable').find('.thing:first'));
+            info = await TBCore.getThingInfo($('#siteTable').find('.thing:first'));
         } else {
-            info = TBCore.getThingInfo($this.closest('.thing'));
+            info = await TBCore.getThingInfo($this.closest('.thing'));
         }
 
         self.log(info);

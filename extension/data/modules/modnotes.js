@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import {Module} from '../tbmodule.js';
-import {getModSubs, link, modsSub} from '../tbcore.js';
+import {link, isModSub} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
 import {actionButton, drawPosition, icons, pagerForItems, popup} from '../tbui.js';
@@ -403,8 +403,8 @@ export default new Module({
 
         // Can't fetch notes in a sub you're not a mod of
         // TODO: What specific permissions are required to fetch notes?
-        await getModSubs();
-        if (!await modsSub(subreddit)) {
+        const isMod = await isModSub(subreddit);
+        if (!isMod) {
             return;
         }
 

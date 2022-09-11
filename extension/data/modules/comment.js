@@ -84,7 +84,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
     self.spamRemoved = spamRemoved;
     self.hamSpammed = hamSpammed;
 
-    async function run () {
+    function run () {
         //
         //  Do stuff with removed comments
         //
@@ -119,12 +119,11 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
             const $things = $('.thing.comment:not(.tb-comments-checked)');
-            await TBCore.getModSubs();
-            TBCore.forEachChunkedDynamic($things, item => {
+            TBCore.forEachChunkedDynamic($things, async item => {
                 const $thing = $(item);
                 $thing.addClass('tb-comments-checked');
 
-                const thing = TBCore.getThingInfo($thing, true);
+                const thing = await TBCore.getThingInfo($thing, true);
 
                 if (self.approveComments) {
                     // only for subreddits we mod
@@ -293,17 +292,17 @@ function init ({
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
 
-            await TBCore.getModSubs();
-            if (TBCore.modsSub(subreddit)) {
+            const isMod = await TBCore.isModSub(subreddit);
+            if (isMod) {
                 $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                 $target.closest('.Comment').find('p').highlight(highlighted);
             }
         });
 
-        $body.on('click', '.expando-button', function () {
+        $body.on('click', '.expando-button', async function () {
             const $this = $(this);
             const $thing = $this.closest('.thing');
-            const thingInfo = TBCore.getThingInfo($thing, true);
+            const thingInfo = await TBCore.getThingInfo($thing, true);
             if (thingInfo.subreddit) {
                 setTimeout(() => {
                     $thing.find('.md').highlight(highlighted);
@@ -316,8 +315,8 @@ function init ({
 
             if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.subreddit;
-                await TBCore.getModSubs();
-                if (TBCore.modsSub(subreddit)) {
+                const isMod = await TBCore.isModSub(subreddit);
+                if (isMod) {
                     $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
                 }
             }

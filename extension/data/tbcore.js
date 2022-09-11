@@ -904,6 +904,8 @@ export async function getThingInfo (sender, modCheck) {
     // declare what we will need.
     const $sender = $(sender);
 
+    const currentUser = await TBApi.getCurrentUser();
+
     let subreddit,
         permalink,
         permalink_newmodmail,
@@ -1006,10 +1008,10 @@ export async function getThingInfo (sender, modCheck) {
             user = $entry.find('.sender a.author').text();
             // If there is only one use present and it says "to" it means that this is not the user sending the message.
             if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
-                user = window._TBCore.logged;
+                user = currentUser;
             }
             if (user === '') {
-                user = window._TBCore.logged;
+                user = currentUser;
                 if (!subreddit || subreddit.indexOf('/r/') < 1) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
@@ -1073,7 +1075,7 @@ export async function getThingInfo (sender, modCheck) {
         rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
         sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
         wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-        mod: window._TBCore.logged,
+        mod: currentUser,
     };
 
     return info;

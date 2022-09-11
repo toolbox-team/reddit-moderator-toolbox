@@ -904,6 +904,8 @@ export async function getThingInfo (sender, modCheck) {
     // declare what we will need.
     const $sender = $(sender);
 
+    const currentUser = await TBApi.getCurrentUser();
+
     let subreddit,
         permalink,
         permalink_newmodmail,
@@ -1006,10 +1008,10 @@ export async function getThingInfo (sender, modCheck) {
             user = $entry.find('.sender a.author').text();
             // If there is only one use present and it says "to" it means that this is not the user sending the message.
             if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
-                user = window._TBCore.logged;
+                user = currentUser;
             }
             if (user === '') {
-                user = window._TBCore.logged;
+                user = currentUser;
                 if (!subreddit || subreddit.indexOf('/r/') < 1) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
@@ -1073,7 +1075,7 @@ export async function getThingInfo (sender, modCheck) {
         rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
         sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
         wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-        mod: window._TBCore.logged,
+        mod: currentUser,
     };
 
     return info;
@@ -1322,110 +1324,6 @@ export async function getToolboxDevs () {
     return devsFetchPromise;
 }
 
-// Perform startup tasks
-(async () => {
-    // Module exports can't be reassigned asynchronously (modules that imported
-    // the value already won't be updated with the new value). To preserve old
-    // behavior, we create a `window._TBCore` object separate from the exported
-    // values of this module, and put values that need to be asynchronously
-    // reassigned on it rather than exporting them.
-    // TODO: Move remaining properties off this global object into exports or
-    //       rework them as necessary (e.g. with exported get/set functions that
-    //       update an internal variable)
-    const TBCore = window._TBCore = window._TBCore || {};
-
-    TBCore.logged = await TBApi.getCurrentUser();
-
-    // Private variables
-    let lastVersion = await getLastVersion();
-
-    const cacheName = await TBStorage.getCache('Utils', 'cacheName', ''),
-          newLogin = cacheName !== TBCore.logged;
-
-    // Public variables
-
-    TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
-
-    // Update cache vars as needed.
-    if (newLogin) {
-        logger.log('Account changed');
-        TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBCore.logged);
-
-        // Force refresh of timed cache
-        browser.runtime.sendMessage({
-            action: 'tb-cache-force-timeout',
-        });
-    }
-
-    // Extra checks on old faults
-    if (typeof lastVersion !== 'number') {
-        lastVersion = parseInt(lastVersion);
-        TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', lastVersion);
-    }
-
-    let shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
-        longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45);
-
-    if (typeof shortLength !== 'number') {
-        shortLength = parseInt(shortLength);
-        TBStorage.setSetting(SETTINGS_NAME, 'shortLength', shortLength);
-    }
-
-    if (typeof longLength !== 'number') {
-        longLength = parseInt(longLength);
-        TBStorage.setSetting(SETTINGS_NAME, 'longLength', longLength);
-    }
-
-    // First run changes for all releases.
-    if (shortVersion > lastVersion) {
-        // These need to happen for every version change
-        TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
-        getToolboxDevs(); // always repopulate tb devs for each version change
-
-        //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
-
-        // Start: version changes.
-        // reportsThreshold should be 0 by default
-        if (lastVersion < 50101) {
-            TBStorage.setSetting('QueueTools', 'reportsThreshold', 0);
-        }
-
-        // Some new modmail settings were removed in 5.7.0
-        if (lastVersion < 50700) {
-            TBStorage.setSetting('NewModMail', 'searchhelp', undefined);
-            TBStorage.setSetting('NewModMail', 'checkForNewMessages', undefined);
-        }
-
-        // End: version changes.
-
-        // This is a super extra check to make sure the wiki page for settings export really is private.
-        const settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
-        if (settingSubEnabled) {
-            // Depends on TBCore functionality that has not been defined yet.
-            // The timeout queues execution.
-            setTimeout(() => {
-                setWikiPrivate('tbsettings', settingSubEnabled, false);
-            }, 0);
-        }
-
-        // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
-        // TBStorage.setSetting('Notifier', 'modmailCount', 0);
-        TBStorage.setSetting(SETTINGS_NAME, 'debugMode', false);
-    }
-
-    // First run changes for major and minor releases only
-    // https://semver.org
-    const shortVersionMinor = Math.floor(shortVersion / 100);
-    const lastVersionMinor = Math.floor(lastVersion / 100);
-
-    if (shortVersionMinor > lastVersionMinor) {
-        TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
-    }
-
-    window.dispatchEvent(new CustomEvent('_coreLoaded'));
-})();
-
 // Listen to background page communication and act based on that.
 browser.runtime.onMessage.addListener(message => {
     switch (message.action) {
@@ -1437,7 +1335,7 @@ browser.runtime.onMessage.addListener(message => {
 });
 
 // Private function for setting wiki pages private
-async function setWikiPrivate (subreddit, page, failAlert) {
+export async function setWikiPrivate (subreddit, page, failAlert) {
     TBApi.sendRequest({
         okOnly: true,
         method: 'POST',

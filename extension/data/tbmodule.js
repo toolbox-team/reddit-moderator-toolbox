@@ -311,7 +311,7 @@ const TBModule = {
         $settingsDialog.on('click', '.tb-help-main', e => {
             const settingsDialog = e.delegateTarget;
             const page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
-            window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+            window.open(`https://old.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
         });
 
         $settingsDialog.on('click', '> .tb-window .buttons .close', () => {
@@ -445,7 +445,7 @@ const TBModule = {
 
         $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
             const module = $(this).attr('data-module');
-            window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+            window.open(`https://old.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
         });
 
         // Lock 'n load

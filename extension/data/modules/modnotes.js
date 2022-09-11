@@ -204,7 +204,15 @@ function createModNotesPopup ({
     user,
     subreddit,
     notes,
+    defaultTabName,
 }) {
+    let defaultTabID = 'tb-modnote-tab-all';
+    if (defaultTabName === 'notes') {
+        defaultTabID = 'tb-modnote-tab-notes';
+    } else if (defaultTabName === 'actions') {
+        defaultTabID = 'tb-modnote-tab-actions';
+    }
+
     const $popup = popup({
         title: `Mod notes for /u/${user} in /r/${subreddit}`,
         tabs: [
@@ -228,6 +236,7 @@ function createModNotesPopup ({
             </span>
         `,
         cssClass: 'tb-modnote-popup',
+        defaultTabID,
     });
     $popup.attr('data-user', user);
     $popup.attr('data-subreddit', subreddit);
@@ -390,7 +399,20 @@ export default new Module({
     id: 'ModNotes',
     beta: true,
     enabledByDefault: true,
-}, function () {
+    settings: [
+        {
+            id: 'defaultTabName',
+            description: 'Default tab for the modnotes window',
+            type: 'selector',
+            values: [
+                'All Activity',
+                'Notes',
+                'Actions',
+            ],
+            default: 'all_activity',
+        },
+    ],
+}, function ({defaultTabName}) {
     // Handle authors showing up on the page
     TBListener.on('author', async e => {
         const subreddit = e.detail.data.subreddit.name;
@@ -442,6 +464,7 @@ export default new Module({
                     user: author,
                     subreddit,
                     notes,
+                    defaultTabName,
                 })
                     .css({
                         top: positions.topPosition,

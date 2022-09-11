@@ -1326,16 +1326,6 @@ export async function getToolboxDevs () {
 
 // Perform startup tasks
 (async () => {
-    // Module exports can't be reassigned asynchronously (modules that imported
-    // the value already won't be updated with the new value). To preserve old
-    // behavior, we create a `window._TBCore` object separate from the exported
-    // values of this module, and put values that need to be asynchronously
-    // reassigned on it rather than exporting them.
-    // TODO: Move remaining properties off this global object into exports or
-    //       rework them as necessary (e.g. with exported get/set functions that
-    //       update an internal variable)
-    const TBCore = window._TBCore = window._TBCore || {};
-
     // Private variables
     const currentUser = await TBApi.getCurrentUser();
     let lastVersion = await getLastVersion();
@@ -1419,8 +1409,6 @@ export async function getToolboxDevs () {
     if (shortVersionMinor > lastVersionMinor) {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
     }
-
-    window.dispatchEvent(new CustomEvent('_coreLoaded'));
 })();
 
 // Listen to background page communication and act based on that.

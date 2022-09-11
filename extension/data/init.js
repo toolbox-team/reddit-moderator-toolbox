@@ -160,12 +160,6 @@ async function checkLoadConditions (tries = 3) {
     }
 }
 
-/** A promise that will resolve once TBCore is ready. */
-// TODO
-const coreLoadedPromise = new Promise(resolve => {
-    window.addEventListener('_coreLoaded', resolve, {once: true});
-});
-
 (async () => {
     // Handle settings reset and return early if we're doing that
     if (await checkReset()) {
@@ -223,10 +217,6 @@ const coreLoadedPromise = new Promise(resolve => {
             }
         </style>
     `);
-
-    // Wait for TBCore to load all its legacy stuff into `window._TBCore`
-    // TODO
-    await coreLoadedPromise;
 
     // Display news
     TBCore.displayNotes();

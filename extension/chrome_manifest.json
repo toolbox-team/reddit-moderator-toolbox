@@ -1,0 +1,104 @@
+{
+    "manifest_version": 3,
+    "name": "Moderator toolbox for reddit",
+    "author": "toolbox team",
+    "short_name": "toolbox",
+    "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+    "version": "6.0.2",
+    "version_name": "6.0.2: \"Backwards Bison\"",
+    "incognito": "split",
+    "permissions": [
+        "cookies",
+        "tabs",
+        "storage",
+        "unlimitedStorage",
+        "notifications",
+        "webNavigation",
+        "alarms"
+    ],
+    "host_permissions": [
+        "https://*.reddit.com/",
+        "https://old.reddit.com/",
+        "https://oauth.reddit.com/",
+        "https://mod.reddit.com/"
+    ],
+    "icons": {
+        "16": "data/images/icon16.png",
+        "48": "data/images/icon48.png",
+        "128": "data/images/icon128.png"
+    },
+    "background": {
+        "service_worker": "data/background/index.js"
+    },
+    "content_scripts": [
+        {
+            "run_at": "document_end",
+            "all_frames": true,
+            "matches": [
+                "https://*.reddit.com/*"
+            ],
+            "exclude_matches": [
+                "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/framedModal/*",
+                "https://*.reddit.com/chat/*",
+                "https://*.reddit.com/account/sso/*",
+                "https://ads.reddit.com/*",
+                "https://*.reddit.com/*.json",
+                "https://*.reddit.com/*.json?*",
+                "https://*.reddit.com/*.json-html",
+                "https://*.reddit.com/*.json-html?*"
+            ],
+            "css": [
+                "data/styles/toolbox.css",
+                "data/styles/tbui.css",
+                "data/styles/devtools.css",
+                "data/styles/support.css",
+                "data/styles/comment.css",
+                "data/styles/old_comment.css",
+                "data/styles/newmodmailpro.css",
+                "data/styles/removalreasons.css",
+                "data/styles/nukecomments.css",
+                "data/styles/personalnotes.css",
+                "data/styles/queuetools.css",
+                "data/styles/old_queuetools.css",
+                "data/styles/achievements.css",
+                "data/styles/modbar.css",
+                "data/styles/historybutton.css",
+                "data/styles/notifier.css",
+                "data/styles/usernotes.css",
+                "data/styles/config.css",
+                "data/styles/profile.css",
+                "data/styles/macros.css",
+                "data/styles/queue_overlay.css",
+                "data/styles/modmatrix.css",
+                "data/styles/modnotes.css",
+                "data/styles/codemirror/codemirror.css",
+                "data/styles/codemirror/dialog.css",
+                "data/styles/codemirror/fullscreen.css",
+                "data/styles/codemirror/matchesonscrollbar.css",
+                "data/styles/codemirror/show-hint.css",
+                "data/styles/codemirror/themes.css"
+            ],
+            "js": [
+                "data/init.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "data/init.js.map",
+                "/data/styles/font/MaterialIcons-Regular.woff2",
+                "/data/styles/font/MaterialIcons-Regular.woff",
+                "/data/styles/font/MaterialIcons-Regular.ttf",
+                "/data/images/balloon.png",
+                "/data/images/snoo_up.png",
+                "/data/images/snoo_splat.png",
+                "/data/images/snoo_uh_oh.png",
+                "/data/images/snoo_running.gif"
+            ],
+            "matches": ["<all_urls>"]
+        }
+    ]
+
+}

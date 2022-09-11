@@ -6,7 +6,6 @@
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
     "version": "6.0.2",
     "version_name": "6.0.2: \"Backwards Bison\"",
-    "incognito": "split",
     "browser_specific_settings": {
         "gecko": {
             "id": "yes@jetpack",

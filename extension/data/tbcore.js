@@ -143,7 +143,7 @@ export async function getModSubs (data) {
     }
 
     // Try to load the info we need from cache
-    const cachedData = await TBStorage.getCache('Utils', `${data ? 'moderatedSubsData' : 'moderatedSubs'}`, []);
+    const cachedData = await TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
     if (cachedData.length) {
         // Got cache let other waiting instances of this function know and return cachedData
         window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));

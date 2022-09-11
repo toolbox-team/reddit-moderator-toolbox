@@ -160,6 +160,12 @@ async function checkLoadConditions (tries = 3) {
     }
 }
 
+/**
+ * Handles settings updates that need to happen the first time a new version of
+ * Toolbox is run, and ensures that the "cacheName" cache matches the currently
+ * logged-in user.
+ * @returns {Promise<void>}
+ */
 async function doSettingsUpdates () {
     const SETTINGS_NAME = 'Utils';
 

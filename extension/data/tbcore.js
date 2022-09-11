@@ -1324,93 +1324,6 @@ export async function getToolboxDevs () {
     return devsFetchPromise;
 }
 
-// Perform startup tasks
-(async () => {
-    // Private variables
-    const currentUser = await TBApi.getCurrentUser();
-    let lastVersion = await getLastVersion();
-
-    const cacheName = await TBStorage.getCache('Utils', 'cacheName', ''),
-          newLogin = cacheName !== currentUser;
-
-    // Update cache vars as needed.
-    if (newLogin) {
-        logger.log('Account changed');
-        TBStorage.setCache(SETTINGS_NAME, 'cacheName', currentUser);
-
-        // Force refresh of timed cache
-        browser.runtime.sendMessage({
-            action: 'tb-cache-force-timeout',
-        });
-    }
-
-    // Extra checks on old faults
-    if (typeof lastVersion !== 'number') {
-        lastVersion = parseInt(lastVersion);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', lastVersion);
-    }
-
-    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15),
-        longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
-
-    if (typeof shortLength !== 'number') {
-        shortLength = parseInt(shortLength);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'shortLength', shortLength);
-    }
-
-    if (typeof longLength !== 'number') {
-        longLength = parseInt(longLength);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'longLength', longLength);
-    }
-
-    // First run changes for all releases.
-    if (shortVersion > lastVersion) {
-        // These need to happen for every version change
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
-        getToolboxDevs(); // always repopulate tb devs for each version change
-
-        //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
-
-        // Start: version changes.
-        // reportsThreshold should be 0 by default
-        if (lastVersion < 50101) {
-            await TBStorage.setSettingAsync('QueueTools', 'reportsThreshold', 0);
-        }
-
-        // Some new modmail settings were removed in 5.7.0
-        if (lastVersion < 50700) {
-            await TBStorage.setSettingAsync('NewModMail', 'searchhelp', undefined);
-            await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
-        }
-
-        // End: version changes.
-
-        // This is a super extra check to make sure the wiki page for settings export really is private.
-        const settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
-        if (settingSubEnabled) {
-            // Depends on TBCore functionality that has not been defined yet.
-            // The timeout queues execution.
-            setTimeout(() => {
-                setWikiPrivate('tbsettings', settingSubEnabled, false);
-            }, 0);
-        }
-
-        // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
-        // TBStorage.setSetting('Notifier', 'modmailCount', 0);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
-    }
-
-    // First run changes for major and minor releases only
-    // https://semver.org
-    const shortVersionMinor = Math.floor(shortVersion / 100);
-    const lastVersionMinor = Math.floor(lastVersion / 100);
-
-    if (shortVersionMinor > lastVersionMinor) {
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', false);
-    }
-})();
-
 // Listen to background page communication and act based on that.
 browser.runtime.onMessage.addListener(message => {
     switch (message.action) {
@@ -1422,7 +1335,7 @@ browser.runtime.onMessage.addListener(message => {
 });
 
 // Private function for setting wiki pages private
-async function setWikiPrivate (subreddit, page, failAlert) {
+export async function setWikiPrivate (subreddit, page, failAlert) {
     TBApi.sendRequest({
         okOnly: true,
         method: 'POST',

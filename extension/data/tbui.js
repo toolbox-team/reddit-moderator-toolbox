@@ -187,7 +187,7 @@ $body.on('click', '.tb-notification', function () {
  * @param {boolean} [options.draggable=true] Whether the user can move the
  * popup
  * @param {string} [options.defaultTabID] If provided, the tab with this ID
- * will be first displayed initially; otherwise, the first tab will be shown
+ * will be displayed initially; otherwise, the first tab will be shown
  * @returns {jQuery}
  */
 export function popup ({
@@ -254,7 +254,7 @@ export function popup ({
                 e.preventDefault();
             });
 
-            // Activate the default tab active
+            // Activate the default tab
             if (isDefaultTab) {
                 $button.addClass('active');
             }

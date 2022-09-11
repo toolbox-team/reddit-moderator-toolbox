@@ -1347,26 +1347,26 @@ export async function getToolboxDevs () {
     // Extra checks on old faults
     if (typeof lastVersion !== 'number') {
         lastVersion = parseInt(lastVersion);
-        TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', lastVersion);
+        await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', lastVersion);
     }
 
-    let shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
-        longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45);
+    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15),
+        longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
 
     if (typeof shortLength !== 'number') {
         shortLength = parseInt(shortLength);
-        TBStorage.setSetting(SETTINGS_NAME, 'shortLength', shortLength);
+        await TBStorage.setSettingAsync(SETTINGS_NAME, 'shortLength', shortLength);
     }
 
     if (typeof longLength !== 'number') {
         longLength = parseInt(longLength);
-        TBStorage.setSetting(SETTINGS_NAME, 'longLength', longLength);
+        await TBStorage.setSettingAsync(SETTINGS_NAME, 'longLength', longLength);
     }
 
     // First run changes for all releases.
     if (shortVersion > lastVersion) {
         // These need to happen for every version change
-        TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
+        await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
         getToolboxDevs(); // always repopulate tb devs for each version change
 
         //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
@@ -1374,13 +1374,13 @@ export async function getToolboxDevs () {
         // Start: version changes.
         // reportsThreshold should be 0 by default
         if (lastVersion < 50101) {
-            TBStorage.setSetting('QueueTools', 'reportsThreshold', 0);
+            await TBStorage.setSettingAsync('QueueTools', 'reportsThreshold', 0);
         }
 
         // Some new modmail settings were removed in 5.7.0
         if (lastVersion < 50700) {
-            TBStorage.setSetting('NewModMail', 'searchhelp', undefined);
-            TBStorage.setSetting('NewModMail', 'checkForNewMessages', undefined);
+            await TBStorage.setSettingAsync('NewModMail', 'searchhelp', undefined);
+            await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
         }
 
         // End: version changes.
@@ -1398,7 +1398,7 @@ export async function getToolboxDevs () {
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
         // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
-        TBStorage.setSetting(SETTINGS_NAME, 'debugMode', false);
+        await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
     }
 
     // First run changes for major and minor releases only
@@ -1407,7 +1407,7 @@ export async function getToolboxDevs () {
     const lastVersionMinor = Math.floor(lastVersion / 100);
 
     if (shortVersionMinor > lastVersionMinor) {
-        TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
+        await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', false);
     }
 })();
 

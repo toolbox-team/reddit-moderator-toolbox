@@ -25,16 +25,6 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                         src: `extension/${platform}_manifest.json`,
                         dest: `build/${platform}`,
                         rename: 'manifest.json',
-                        transform: contents => {
-                            const manifest = JSON.parse(contents);
-
-                            // Firefox doesn't support "incognito": "split"
-                            if (platform === 'firefox') {
-                                manifest.incognito = undefined;
-                            }
-
-                            return JSON.stringify(manifest, null, 4);
-                        },
                     },
                     // Vendor scripts that gets carried over unchanged
                     {src: 'extension/data/libs', dest: `build/${platform}/data`},

@@ -123,10 +123,10 @@ function waitForModSubsRefresh () {
 }
 
 /**
- * Populates `TBCore.mySubs` and `TBCore.mySubsData` if they're not already
- * present. First tries to read their values from cache, and falls back to
- * fetching the list of moderated subs from the API. Returns a Promise that
- * resolves once those properties are definitely populated and ready to use.
+ * Returns a Promise that returns the subreddits a user mods as
+ * an array with just the names or array with details per subreddit.
+ * First tries to read their values from cache, and falls back to
+ * fetching the list of moderated subs from the API.
  * @function
  * @param {boolean} data If true will return detailed subreddit data.
  * @returns {Promise<array>} array with subreddit names or subreddit objects with details.
@@ -175,6 +175,12 @@ export async function getModSubs (data) {
     return data ? mySubsData : mySubs;
 }
 
+/**
+ * Returns a Promise that returns if the logged in user is a mod of a given subreddit.
+ * @function
+ * @param {string} subreddit Subreddit to check.
+ * @returns {Promise<boolean>}
+ */
 export async function isModSub (subreddit) {
     const mySubs = await getModSubs(false);
     return mySubs.includes(subreddit);

@@ -1,7 +1,6 @@
 import browser from 'webextension-polyfill';
 
 import {messageHandlers} from '../messageHandling';
-import {Ratelimiter} from '../ratelimiter';
 
 /**
  * Retrieves the user's OAuth tokens from cookies.
@@ -105,11 +104,6 @@ function queryString (parameters) {
     return `?${kvStrings.join('&')}`;
 }
 
-// Ratelimiter for all oauth.reddit.com requests
-const oauthRatelimiter = new Ratelimiter();
-// Ratelimiter for all old.reddit.com requests
-const oldRedditRatelimiter = new Ratelimiter();
-
 /**
  * Creates a `FormData` object from the given set of key-value pairs.
  * @param {object} obj
@@ -141,13 +135,9 @@ function makeFormData (obj) {
  * in an error being rejected. The error will have a `response` property
  * containing the full `Response` object.
  * @param {boolean?} [options.absolute] If true, the request endpoint will be
- * treated as a full URL and will not be subjected to any Ratelimiter.
- * @param {boolean?} [options.bypassRatelimit] If true, the request will be sent
- * immediately, even if the current ratelimit bucket is empty. Use sparingly,
- * only for requests which block all of Toolbox, and definitely never for mass
- * actions.
+ * treated as a full URL; if false, the endpoint will be treated as a path on
+ * `https://old.reddit.com` (or `https://oauth.reddit.com` for oauth requests)
  * @returns {Promise} Resolves to a Response object, or rejects an Error
- * @todo Ratelimit handling
  */
 export async function makeRequest ({
     method,
@@ -157,7 +147,6 @@ export async function makeRequest ({
     oauth,
     okOnly,
     absolute,
-    bypassRatelimit,
 }) {
     // Construct the request URL
     query = queryString(query);
@@ -197,22 +186,10 @@ export async function makeRequest ({
         }
     }
 
-    // Construct the ratelimiter options object
-    const ratelimiterOptions = {
-        bypassLimit: !!bypassRatelimit,
-    };
-
     // Perform the request
     let response;
     try {
-        if (absolute) {
-            // Absolute URLs may hit non-Reddit domains, don't try to limit them
-            response = await fetch(url, fetchOptions);
-        } else if (oauth) {
-            response = await oauthRatelimiter.request(ratelimiterOptions, url, fetchOptions);
-        } else {
-            response = await oldRedditRatelimiter.request(ratelimiterOptions, url, fetchOptions);
-        }
+        response = await fetch(url, fetchOptions);
     } catch (error) {
         console.error('Fetch request failed:', error);
         throw error;

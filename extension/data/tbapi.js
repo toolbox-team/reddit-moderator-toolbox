@@ -28,18 +28,8 @@ export const WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
  * @param {boolean?} [options.okOnly] If true, non-2xx responses will result
  * in an error being rejected. The error will have a `response` property
  * containing the full `Response` object.
- * @param {boolean?} [options.bypassRatelimit=true] If true, the request
- * will be sent immediately, even if the current ratelimit bucket is empty.
  * @returns {Promise} Resolves to a `Response` object or rejects an `Error`.
  */
-// HACK: bypassRatelimit currently defaults to true, but in the future we should
-//       only use it sparingly. The issue is that because we share ratelimits
-//       with the user's own Reddit actions and other extensions, it's very easy
-//       for us to hit the limits, which causes Toolbox to not load or load very
-//       slowly. We may not be able to resolve this without abandoning our
-//       method of pulling authentication from the page, in which case it may
-//       not be worth it to do anything about it since Reddit generally still
-//       accepts requests over the limit.
 export const sendRequest = async ({
     method,
     endpoint,
@@ -47,7 +37,6 @@ export const sendRequest = async ({
     body,
     oauth,
     okOnly,
-    bypassRatelimit = true,
 }) => {
     // Make the request
     const messageReply = await browser.runtime.sendMessage({
@@ -58,7 +47,6 @@ export const sendRequest = async ({
         body,
         oauth,
         okOnly,
-        bypassRatelimit,
     });
 
     // The reply from that message will always be an object. It can have these keys:
@@ -466,7 +454,6 @@ export const flairUser = async (user, subreddit, text, cssClass, templateID) => 
  * or undefined for a permanent ban)
  * @param {string} [options.banContext] If banning, a fullname pointing to the
  * link or comment the user is being banned for
- * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
  * @returns {Promise} Resolves to the JSON response body or rejects with a
  * jqXHR object
  */
@@ -478,7 +465,7 @@ export async function friendUser ({
     banMessage,
     banDuration,
     banContext,
-}, bypassRatelimit = true) {
+}) {
     let trimmedBanMessage,
         trimmedBanReason;
     if (action === 'banned') {
@@ -504,8 +491,6 @@ export async function friendUser ({
         ban_message: trimmedBanMessage,
         duration: banDuration,
         ban_context: banContext,
-    }, {
-        bypassRatelimit,
     });
 }
 
@@ -521,14 +506,12 @@ export async function friendUser ({
  * @returns {Promise} Resolves to the JSON response body or rejects
  * an error.
  */
-export const unfriendUser = async (user, action, subreddit, bypassRatelimit = true) => post('/api/unfriend', {
+export const unfriendUser = async (user, action, subreddit) => post('/api/unfriend', {
     api_type: 'json',
     uh: await getModhash(),
     type: action,
     name: user,
     r: subreddit,
-}, {
-    bypassRatelimit,
 });
 
 /**
@@ -561,15 +544,12 @@ export const approveThing = async id => post('/api/approve', {
  * @function
  * @param {string} id Fullname of the post or comment
  * @param {boolean?} spam If true, removes as spam
- * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
  * @returns {Promise}
  */
-export const removeThing = async (id, spam = false, bypassRatelimit = true) => post('/api/remove', {
+export const removeThing = async (id, spam = false) => post('/api/remove', {
     uh: await getModhash(),
     id,
     spam,
-}, {
-    bypassRatelimit,
 });
 
 /**
@@ -597,14 +577,11 @@ export const unMarkOver18 = async id => post('/api/unmarknsfw', {
 /**
  * Locks a post or comment.
  * @param {string} id The fullname of the submission or comment
- * @param {boolean} [bypassRatelimit=true] Passed to TBApi.sendRequest
  * @returns {Promise} Resolves to response data or rejects with a jqXHR
  */
-export const lock = async (id, bypassRatelimit = true) => apiOauthPOST('/api/lock', {
+export const lock = async id => apiOauthPOST('/api/lock', {
     id,
     uh: await getModhash(),
-}, {
-    bypassRatelimit,
 });
 
 /**

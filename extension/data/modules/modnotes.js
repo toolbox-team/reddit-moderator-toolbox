@@ -217,16 +217,16 @@ function createModNotesPopup ({
                 id: 'tb-modnote-tab-notes',
             },
             {
-                id: 'tb-modnote-tab-actions',
                 title: 'Mod Actions',
+                id: 'tb-modnote-tab-actions',
             },
         ],
-        footer: $(`
+        footer: `
             <span>
                 <input type="text" class="tb-modnote-text-input tb-input">
+                ${actionButton('Create Note', 'tb-modnote-create-button')}
             </span>
-        `)
-            .append(actionButton('Create Note', 'tb-modnote-create-button')),
+        `,
         cssClass: 'tb-modnote-popup',
     });
     $popup.attr('data-user', user);

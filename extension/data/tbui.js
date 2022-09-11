@@ -180,11 +180,14 @@ $body.on('click', '.tb-notification', function () {
  * @param {object} options Options for the popup
  * @param {string} options.title The popup's title (raw HTML)
  * @param {object[]} options.tabs The tabs for the popup
- * @param {string} options.footer The popup footer (used for all tabs; if
+ * @param {string} [options.footer] The popup footer (used for all tabs; if
  * provided, tab footers are ignored)
- * @param {string?} options.cssClass Extra CSS class to add to the popup
- * @param {string?} options.meta Raw HTML to add to a "meta" container
- * @param {boolean?} [draggable=true] Whether the user can move the popup
+ * @param {string} [options.cssClass] Extra CSS class to add to the popup
+ * @param {string} [options.meta] Raw HTML to add to a "meta" container
+ * @param {boolean} [options.draggable=true] Whether the user can move the
+ * popup
+ * @param {string} [options.defaultTabID] If provided, the tab with this ID
+ * will be first displayed initially; otherwise, the first tab will be shown
  * @returns {jQuery}
  */
 export function popup ({
@@ -195,6 +198,7 @@ export function popup ({
     meta,
     draggable = true,
     closable = true,
+    defaultTabID,
 }) {
     // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
     const $popup = $(`
@@ -224,6 +228,11 @@ export function popup ({
                 tab.id = tab.title.trim().toLowerCase().replace(/\s/g, '_');
             }
 
+            // Check whether this is the tab that will be shown first. If
+            // defaultTabID is given, compare that to this tab's ID; otherwise,
+            // just check if this is the first tab.
+            const isDefaultTab = defaultTabID == null ? i === 0 : tab.id === defaultTabID;
+
             // Create tab button
             const $button = $(`
                     <a class="${tab.id}" title="${tab.tooltip || ''}">
@@ -245,8 +254,8 @@ export function popup ({
                 e.preventDefault();
             });
 
-            // default first tab is active tab
-            if (i === 0) {
+            // Activate the default tab active
+            if (isDefaultTab) {
                 $button.addClass('active');
             }
 
@@ -260,8 +269,8 @@ export function popup ({
                 $tab.append($('<div class="tb-window-footer""></div>').append(tab.footer));
             }
 
-            // default first tab is visible; hide others
-            if (i === 0) {
+            // Only show the default tab
+            if (isDefaultTab) {
                 $tab.show();
             } else {
                 $tab.hide();

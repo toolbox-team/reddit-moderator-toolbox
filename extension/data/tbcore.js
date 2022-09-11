@@ -1336,22 +1336,17 @@ export async function getToolboxDevs () {
     //       update an internal variable)
     const TBCore = window._TBCore = window._TBCore || {};
 
-    TBCore.logged = await TBApi.getCurrentUser();
-
     // Private variables
+    const currentUser = await TBApi.getCurrentUser();
     let lastVersion = await getLastVersion();
 
     const cacheName = await TBStorage.getCache('Utils', 'cacheName', ''),
-          newLogin = cacheName !== TBCore.logged;
-
-    // Public variables
-
-    TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
+          newLogin = cacheName !== currentUser;
 
     // Update cache vars as needed.
     if (newLogin) {
         logger.log('Account changed');
-        TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBCore.logged);
+        TBStorage.setCache(SETTINGS_NAME, 'cacheName', currentUser);
 
         // Force refresh of timed cache
         browser.runtime.sendMessage({

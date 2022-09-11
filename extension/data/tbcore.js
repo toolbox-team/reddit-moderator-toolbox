@@ -137,7 +137,7 @@ export async function getModSubs (data) {
     // Are we already fetching subs? If so, wait for them to be refreshed before attempting to return anything.
     if (fetchModSubsActive) {
         await waitForModSubsRefresh();
-        return TBStorage.getCache('Utils', `${data ? 'moderatedSubsData' : 'moderatedSubs'}`, []);
+        return TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
     } else {
         fetchModSubsActive = true;
     }

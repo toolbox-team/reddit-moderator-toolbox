@@ -196,7 +196,7 @@ const self = new Module({
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form" class="tb-removal-reason-field">
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
-                    <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\'re only using flair)"></textarea><br/>
+                    <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you're only using flair)"></textarea><br/>
                     <div>
                         <b>Use for:</b>
                         <input type="checkbox" id="remove-posts" name="remove-posts" checked>

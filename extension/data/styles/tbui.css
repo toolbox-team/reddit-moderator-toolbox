@@ -180,6 +180,10 @@
     text-align: center;
     margin-bottom: 5px;
 }
+.mod-toolbox-rd .tb-pager .tb-pager-content + .tb-pager-controls {
+    margin-bottom: 0;
+    margin-top: 5px;
+}
 .mod-toolbox-rd .tb-pager .tb-pager-control-active {
     background-color: #B6C9DD;
 }

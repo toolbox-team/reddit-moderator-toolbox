@@ -309,6 +309,7 @@ function updateModNotesPopup ($popup, {
             const $notesPager = pagerForItems({
                 items: filteredNotes,
                 perPage: 10,
+                controlPosition: 'bottom',
                 displayItem: generateNoteTableRow,
                 wrapper: `
                     <table class="tb-modnote-table">

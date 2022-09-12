@@ -15,7 +15,6 @@
         "plugin:import/recommended"
     ],
     "rules": {
-        "strict": "off",
         "array-callback-return": "error",
         "comma-spacing": "error",
         "eol-last": "error",

@@ -233,7 +233,7 @@ function createModNotesPopup ({
             <span>
                 <select class="tb-action-button tb-modnote-label-select">
                     <option value="" default>(no label)</option>
-                    ${Object.entries(labelNames).map(([value, name]) => `
+                    ${Object.entries(labelNames).reverse().map(([value, name]) => `
                         <option value="${htmlEncode(value)}">
                             ${htmlEncode(name)}
                         </option>

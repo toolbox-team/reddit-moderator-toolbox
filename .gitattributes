@@ -3,4 +3,5 @@
 
 # JS files must always use LF to prevent issues with libraries and checksums
 *.js eol=lf
+*.mjs eol=lf
 *.json eol=lf

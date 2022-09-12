@@ -324,7 +324,7 @@ const self = new Module({
     // Help click event.
     $body.on('click', '#tb-config-help', function () {
         const module = $(this).attr('data-module');
-        window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
+        window.open(`https://old.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
     });
 
     window.addEventListener('TBNewPage', async event => {

@@ -239,7 +239,11 @@ function createModNotesPopup ({
                         </option>
                     `)}
                 </select>
-                <input type="text" class="tb-modnote-text-input tb-input">
+                <input
+                    type="text"
+                    class="tb-modnote-text-input tb-input"
+                    placeholder="Add a note..."
+                >
                 ${actionButton('Create Note', 'tb-modnote-create-button')}
             </span>
         `,

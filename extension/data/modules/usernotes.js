@@ -329,14 +329,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             tabs: [{
                 content: `
                         <div class="utagger-content">
-                            <table class="utagger-notes">
-                                <tbody>
-                                    <tr>
-                                        <td class="utagger-notes-td1">Author</td>
-                                        <td class="utagger-notes-td2">Note</td>
-                                        <td class="utagger-notes-td3"></td></tr>
-                                </tbody>
-                            </table>
+                            <ul class="utagger-notes">
+
+                            </ul>
                             <div class="utagger-types">
                                 <div class="utagger-type-list"></div>
                             </div>
@@ -361,7 +356,7 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         });
 
         // defined so we can easily add things to these specific areas after loading the notes.
-        const $noteList = $popup.find('.utagger-content .utagger-notes tbody'),
+        const $noteList = $popup.find('.utagger-content ul.utagger-notes'),
               $typeList = $popup.find('.utagger-types .utagger-type-list');
 
         // We want to make sure windows fit on the screen.
@@ -446,36 +441,40 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                           timeString = new Date(note.time).toLocaleString();
 
                     // Construct some elements separately
-                    let timeDiv;
-
+                    let noteLinkElement = '';
                     if (note.link) {
                         let noteLink = note.link;
                         if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
                             noteLink = `https://www.reddit.com${noteLink}`;
                         }
-                        timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${noteLink}">${timeString}</a></div>`;
-                    } else {
-                        timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
+                        noteLinkElement = `
+                            <li>
+                                <a href="${noteLink}" class="tb-icons">${TBui.icons.tbSettingLink}</a>
+                            </li>`;
                     }
-
                     let typeSpan = '';
                     if (info && info.text) {
-                        typeSpan = `<span class="note-type" style="color: ${info.color}">[${TBHelpers.htmlEncode(info.text)}]</span>`;
+                        typeSpan = `<span class="note-type" style="color: ${info.color}">${TBHelpers.htmlEncode(info.text)}</span>`;
                     }
 
                     // Add note to list
                     $noteList.append(`
-                        <tr class="utagger-note">
-                            <td class="utagger-notes-td1">
-                                <div class="utagger-mod">${note.mod}</div>
-                                ${timeDiv}
-                            </td>
-                            <td class="utagger-notes-td2">
-                                ${typeSpan}
+                        <li class="utagger-note">
+                            <fieldset class="utagger-note-contents">
+                                <legend>
+                                    ${typeSpan}
+                                    <span class="utager-date" id="utagger-date-${i}">${timeString}</span>
+                                    <span class="utagger-mod">by ${note.mod}</span>
+                                </legend>
                                 <span class="note-text">${noteString}</span>
-                            </td>
-                            <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${TBui.icons.delete}</i></td>
-                        </tr>
+                            </fieldset>
+                            <ul class="utagger-note-actions">
+                                ${noteLinkElement}
+                                <li>
+                                    <a href="javascript:;" class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${TBui.icons.delete}</a>
+                                </li>
+                            </li>
+                        </li>
                     `);
                 });
             } else {

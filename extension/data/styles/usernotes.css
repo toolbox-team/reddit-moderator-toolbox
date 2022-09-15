@@ -29,50 +29,38 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-window a {
 }
 
 /* Popup styling */
-
-.mod-toolbox-rd .utagger-popup .right {
-    float: right;
+.mod-toolbox-rd .utagger-popup .utagger-notes .utagger-note-contents {
+    border: solid 1px rgb(23, 50, 78);
+    padding: 5px;
+    margin-bottom: 5px;
+    min-height: 40px;
 }
 
-.mod-toolbox-rd .utagger-popup .left {
-    float: left;
+.mod-toolbox-rd .utagger-popup .utagger-notes .utager-date,
+.mod-toolbox-rd .utagger-popup .utagger-notes .utagger-mod {
+    font-size: 10px;
+    color: rgb(128, 128, 128);
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-date {
-    font-size: 80%;
+.mod-toolbox-rd .utagger-popup .utagger-notes li.utagger-note {
+    display: grid;
+    grid-template-columns: auto 20px;
+    grid-template-rows: auto;
 }
 
 .mod-toolbox-rd .utagger-popup .utagger-notes {
     width: 100%;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-notes td {
-    padding: 2px !important;
-    border: solid 1px #C1BFBF;
-    vertical-align: top;
+.mod-toolbox-rd .utagger-popup .utagger-notes ul.utagger-note-actions {
+    margin-top: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.mod-toolbox-rd .utagger-popup .utagger-notes-td1 {
-    width: 65px;
-}
 
-.mod-toolbox-rd .utagger-popup .utagger-notes-td3 {
-    width: 5px;
-    border: 0;
-}
-
-.mod-toolbox-rd .utagger-popup .utagger-notes-td3 a {
-    color: #C92A2A;
-    font-weight: bold;
-}
-
-.mod-toolbox-rd .utagger-popup .utagger-note .note-type {
-    margin-right: 2px;
-}
-
-.mod-toolbox-rd .utagger-popup .utagger-remove-note {
-    cursor: pointer;
-}
 
 .mod-toolbox-rd .utagger-popup .utagger-types {
     display: inline-block;

@@ -155,8 +155,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input {
     color-scheme: none;
 }
 
-body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus-visible,
-body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
+body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus-visible {
     outline-color: #9fbad7;
     border-color: #9fbad7;
     color-scheme: none;

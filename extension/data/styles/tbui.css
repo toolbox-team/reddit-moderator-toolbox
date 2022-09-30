@@ -6,6 +6,11 @@
 .mod-toolbox-rd .tb-window *::before,
 .mod-toolbox-rd .tb-window *::after {
     box-sizing: content-box;
+    color-scheme: none;
+}
+
+.mod-toolbox-rd .tb-window {
+    color: #000;
 }
 
 /* Header/titlebar */
@@ -27,6 +32,7 @@
     font-weight: bold;
     padding: 0;
     margin: 0 10px;
+    color: #000;
 }
 /* Close/help buttons */
 .mod-toolbox-rd .tb-window-header .buttons {
@@ -129,6 +135,7 @@
     font-size: 11px;
     font-weight: normal;
     font-style: italic;
+    color: #369;
 }
 .mod-toolbox-rd .tb-window-vertical-tabs .tb-window-tabs-category {
     background-color: #C7D6E6;

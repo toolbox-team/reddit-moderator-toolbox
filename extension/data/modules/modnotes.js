@@ -231,7 +231,19 @@ function createModNotesPopup ({
         ],
         footer: `
             <span>
-                <input type="text" class="tb-modnote-text-input tb-input">
+                <select class="tb-action-button tb-modnote-label-select">
+                    <option value="" default>(no label)</option>
+                    ${Object.entries(labelNames).reverse().map(([value, name]) => `
+                        <option value="${htmlEncode(value)}">
+                            ${htmlEncode(name)}
+                        </option>
+                    `)}
+                </select>
+                <input
+                    type="text"
+                    class="tb-modnote-text-input tb-input"
+                    placeholder="Add a note..."
+                >
                 ${actionButton('Create Note', 'tb-modnote-create-button')}
             </span>
         `,
@@ -297,6 +309,7 @@ function updateModNotesPopup ($popup, {
             const $notesPager = pagerForItems({
                 items: filteredNotes,
                 perPage: 10,
+                controlPosition: 'bottom',
                 displayItem: generateNoteTableRow,
                 wrapper: `
                     <table class="tb-modnote-table">
@@ -491,11 +504,14 @@ export default new Module({
     $body.on('click', '.tb-modnote-create-button', async event => {
         const $popup = $(event.target).closest('.tb-modnote-popup');
         const $textInput = $popup.find('.tb-modnote-text-input');
+        const $labelSelect = $popup.find('.tb-modnote-label-select');
+
         try {
             await TBApi.createModNote({
                 user: $popup.attr('data-user'),
                 subreddit: $popup.attr('data-subreddit'),
                 note: $textInput.val(),
+                label: $labelSelect.val() || undefined,
             });
             $textInput.val('');
             alert('Note saved!');

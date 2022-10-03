@@ -1,3 +1,8 @@
+.mod-toolbox-rd .tb-modnote-table {
+	/* The modnote popup footer is very wide; fill up that extra width */
+	width: 100%;
+}
+
 .mod-toolbox-rd .tb-modnote-table :is(th, td) {
 	/* stolen from usernotes, break this out into a generic table class later */
 	padding: 2px 4px !important;

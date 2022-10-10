@@ -30,7 +30,7 @@
         "@rollup/plugin-node-resolve": "^14.1.0",
         "cross-env": "^7.0.3",
         "docdash": "^1.1.1",
-        "eslint": "^8.24.0",
+        "eslint": "^8.25.0",
         "eslint-plugin-import": "^2.23.4",
         "inquirer": "^9.1.2",
         "jsdoc": "^3.6.3",

@@ -314,6 +314,7 @@ self.queuetoolsOld = function ({
             <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a>
             <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a>
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a>
+            <a href="javascript:;" class="pretty-button action ignore" accesskey="G" type="ignore" tabindex="6">ignore&nbsp;reports&nbsp;on&nbsp;selected</a>
         </span>
         ${viewingspam ? '' : `<span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" min="0" value="${reportsThreshold}" /></a></span>`}
         <span class="dropdown-title lightdrop" style="float:right"> sort:
@@ -633,10 +634,11 @@ self.queuetoolsOld = function ({
             }
         });
 
-        // Mass spam/remove/approve
+        // Mass spam/remove/approve/ignore
         $('.pretty-button.action').click(function () {
             const approve = this.type === 'positive',
-                  spam = !approve && this.type === 'negative';
+                  spam = !approve && this.type === 'negative',
+                  ignore = this.type === 'ignore';
 
             // Apply action
             const $actioned = $('.thing:visible > input:checked').parent().each(function () {
@@ -646,6 +648,8 @@ self.queuetoolsOld = function ({
                     TBApi.approveThing(id).then(() => {
                         TBCore.sendEvent(TBCore.events.TB_APPROVE_THING);
                     });
+                } else if (ignore) {
+                    TBApi.ignoreReports(id);
                 } else {
                     TBApi.removeThing(id, spam);
                 }

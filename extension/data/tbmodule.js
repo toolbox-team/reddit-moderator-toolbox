@@ -446,8 +446,8 @@ const TBModule = {
         $body.css('overflow', 'hidden');
 
         // Sort the module list alphabetically
-        Object.keys(TBModule.modules).sort((a, b) => a.localeCompare(b)).forEach(async moduleName => {
-            const module = TBModule.modules[moduleName];
+        const sortedModules = Object.values(TBModule.modules).sort((a, b) => a.name.localeCompare(b.name));
+        for (const module of sortedModules) {
             // Don't do anything with beta modules unless beta mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
                 return;
@@ -933,7 +933,7 @@ body {
                     module.set($this.data('setting'), value, false);
                 });
             });
-        });
+        }
     },
 };
 export default TBModule;

@@ -9,7 +9,7 @@ import * as TBStorage from '../tbstorage.js';
 
 export default new Module({
     name: 'Mod Macros',
-    shortname: 'ModMacros',
+    id: 'ModMacros',
     enabledByDefault: true,
     settings: [
         {

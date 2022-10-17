@@ -11,7 +11,7 @@ import TBListener from '../tblistener.js';
 
 export default new Module({
     name: 'Removal Reasons',
-    shortname: 'RReasons',
+    id: 'RReasons',
     enabledByDefault: true,
     settings: [
         {

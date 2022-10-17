@@ -115,7 +115,7 @@ function Manager () {
                 }
 
                 self.log(`${title} Unlocked!`);
-                TBCore.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.shortname}`);
+                TBCore.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.id}`);
             }
         }
 

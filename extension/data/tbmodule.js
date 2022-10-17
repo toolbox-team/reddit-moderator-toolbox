@@ -14,11 +14,6 @@ const logger = TBLog('TBModule');
 const TBModule = {
     modules: {},
 
-    /** @deprecated */
-    get moduleList () {
-        return Object.values(TBModule.modules).map(mod => mod.shortname);
-    },
-
     register_module (module) {
         // TODO: compatibility; remove when we stop using `shortname`
         module.shortname = module.id;
@@ -29,9 +24,7 @@ const TBModule = {
     init: async function tbInit () {
         logger.debug('TBModule has TBStorage, loading modules');
         // Check if each module should be enabled, then call its initializer
-        await Promise.all(TBModule.moduleList.map(async moduleName => {
-            const module = TBModule.modules[moduleName];
-
+        await Promise.all(Object.values(TBModule.modules).map(async module => {
             // Don't do anything with modules the user has disabled
             if (!await module.getEnabled()) {
                 return;
@@ -453,7 +446,7 @@ const TBModule = {
         $body.css('overflow', 'hidden');
 
         // Sort the module list alphabetically
-        TBModule.moduleList.sort((a, b) => a.localeCompare(b)).forEach(async moduleName => {
+        Object.keys(TBModule.modules).sort((a, b) => a.localeCompare(b)).forEach(async moduleName => {
             const module = TBModule.modules[moduleName];
             // Don't do anything with beta modules unless beta mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {

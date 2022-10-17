@@ -12,16 +12,16 @@ import * as TBConstants from './tbconstants.js';
 const logger = TBLog('TBModule');
 
 const TBModule = {
-    modules: {},
+    modules: [],
 
-    register_module (module) {
-        TBModule.modules[module.id] = module;
+    register_module (mod) {
+        TBModule.modules.push(mod);
     },
 
     init: async function tbInit () {
         logger.debug('TBModule has TBStorage, loading modules');
         // Check if each module should be enabled, then call its initializer
-        await Promise.all(Object.values(TBModule.modules).map(async module => {
+        await Promise.all(TBModule.modules.map(async module => {
             // Don't do anything with modules the user has disabled
             if (!await module.getEnabled()) {
                 return;
@@ -443,7 +443,7 @@ const TBModule = {
         $body.css('overflow', 'hidden');
 
         // Sort the module list alphabetically
-        const sortedModules = Object.values(TBModule.modules).sort((a, b) => a.name.localeCompare(b.name));
+        const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
         for (const module of sortedModules) {
             // Don't do anything with beta modules unless beta mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {

@@ -233,25 +233,21 @@ export default new Module({
             $body.find('.tb-macro-select').remove();
         }
     });
-
+    /**
+     * @param {JQuery<HTMLSelectElement>} dropdown
+     * @param {unknown} info
+     * @param {{remove: boolean, approve: boolean, spam: boolean, ban: boolean, unban: boolean, lockitem: boolean, lockreply: boolean, sticky: boolean, archivemodmail: boolean, highlightmodmail: boolean, distinguish: boolean | undefined;}} macro
+     * @param {boolean} topLevel
+     */
     function editMacro (dropdown, info, macro, topLevel) {
         // get some placement variables
-        const remove = macro.remove,
-              approve = macro.approve,
-              spam = macro.spam,
-              ban = macro.ban,
-              mute = macro.mute,
-            // Comments can only be stickied by being distinguished, so
-            // always distinguish if sticky is also set. If distinguish is
-            // not present, distinguish it to support legacy behavior.
-              distinguish = macro.sticky || macro.distinguish === undefined ? true : macro.distinguish,
-            // saved as lockthread for legacy reasons
-              lockitem = macro.lockthread,
-              lockreply = macro.lockreply,
-              sticky = macro.sticky,
-              archivemodmail = macro.archivemodmail,
-              highlightmodmail = macro.highlightmodmail,
-              kind = info.kind;
+        const {remove, approve, spam, ban, unban, mute, lockitem, lockreply, sticky, archivemodmail, highlightmodmail} = macro;
+        // Comments can only be stickied by being distinguished, so
+        // always distinguish if sticky is also set. If distinguish is
+        // not present, distinguish it to support legacy behavior.
+        const distinguish = macro.sticky || macro.distinguish === undefined ? true : macro.distinguish;
+        const kind = info.kind;
+
         let $usertext = dropdown.closest('.usertext-edit'),
             comment = unescape(macro.text),
             actionList = 'The following actions will be performed:<br>- Your reply will be saved';
@@ -299,6 +295,10 @@ export default new Module({
 
         if (ban) {
             actionList += '<br>- This user will be banned';
+        }
+
+        if (unban) {
+            actionList += '<br>- This user will be unbanned';
         }
 
         if (mute) {
@@ -420,6 +420,10 @@ export default new Module({
                         });
                     }
 
+                    if (unban) {
+                        TBApi.unfriendUser(info.id, info.author, 'banned', info.subreddit);
+                    }
+
                     if (mute) {
                         // So we don't do an api call for this.
                         $body.find('.ThreadViewer .InfoBar__control:not(.m-on) .icon-mute').click();
@@ -506,6 +510,10 @@ export default new Module({
                             banMessage: `For the following ${kind}: ${info.permalink}`,
                             banContext: info.id,
                         });
+                    }
+
+                    if (unban) {
+                        TBApi.unfriendUser(info.author, 'banned', info.subreddit);
                     }
 
                     if (mute) {

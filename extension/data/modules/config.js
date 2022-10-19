@@ -262,6 +262,7 @@ const self = new Module({
                         <div class="tb-macro-actions-row">
                             <h2>User</h2>
                             <label><input type="checkbox" id="banuser">ban user</label>
+                            <label><input type="checkbox" id="unbanuser">unban user</label>
                             <label><input type="checkbox" id="muteuser">mute user</label>
                         </div>
                     </div>
@@ -798,6 +799,7 @@ const self = new Module({
                                 <div class="tb-macro-actions-row">
                                     <h2>User</h2>
                                     <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>
+                                    <label><input type="checkbox" class="{{i}}-unbanuser" id="unbanuser">unban user</label>
                                     <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>
                                 </div>
                             </div>
@@ -826,6 +828,7 @@ const self = new Module({
 
                 $(`.${i}-distinguish`).prop('checked', macro.distinguish);
                 $(`.${i}-banuser`).prop('checked', macro.ban);
+                $(`.${i}-unbanuser`).prop('checked', macro.unban);
                 $(`.${i}-muteuser`).prop('checked', macro.mute);
                 $(`.${i}-removeitem`).prop('checked', macro.remove);
                 $(`.${i}-spamitem`).prop('checked', macro.spam);
@@ -1450,6 +1453,7 @@ const self = new Module({
         $macroContent.find('input[name=macro-title]').val(macro.title || '');
         $macroContent.find('#distinguish').prop('checked', macro.distinguish);
         $macroContent.find('#banuser').prop('checked', macro.ban);
+        $macroContent.find('#unbanuser').prop('checked', macro.unban);
         $macroContent.find('#muteuser').prop('checked', macro.mute);
         $macroContent.find('#removeitem').prop('checked', macro.remove);
         $macroContent.find('#approveitem').prop('checked', macro.approve);
@@ -1474,6 +1478,7 @@ const self = new Module({
               macroTitle = $macroContent.find('input[name=macro-title]').val(),
               distinguish = $macroContent.find('#distinguish').prop('checked'),
               banuser = $macroContent.find('#banuser').prop('checked'),
+              unbanuser = $macroContent.find('#unbanuser').prop('checked'),
               muteuser = $macroContent.find('#muteuser').prop('checked'),
               removeitem = $macroContent.find('#removeitem').prop('checked'),
               approveitem = $macroContent.find('#approveitem').prop('checked'),
@@ -1503,6 +1508,7 @@ const self = new Module({
         macro.title = macroTitle;
         macro.distinguish = distinguish;
         macro.ban = banuser;
+        macro.unban = unbanuser;
         macro.mute = muteuser;
         macro.remove = removeitem;
         macro.approve = approveitem;
@@ -1584,6 +1590,7 @@ const self = new Module({
               macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
               distinguish = $body.find('#distinguish').prop('checked'),
               banuser = $body.find('#banuser').prop('checked'),
+              unbanuser = $body.find('#unbanuser').prop('checked'),
               muteuser = $body.find('#muteuser').prop('checked'),
               removeitem = $body.find('#removeitem').prop('checked'),
               approveitem = $body.find('#approveitem').prop('checked'),
@@ -1612,6 +1619,7 @@ const self = new Module({
         macro.title = macroTitle;
         macro.distinguish = distinguish;
         macro.ban = banuser;
+        macro.unban = unbanuser;
         macro.mute = muteuser;
         macro.remove = removeitem;
         macro.approve = approveitem;
@@ -1644,6 +1652,7 @@ const self = new Module({
         $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
         $body.find('#distinguish').prop('checked', false);
         $body.find('#banuser').prop('checked', false);
+        $body.find('#unbanuser').prop('checked', false);
         $body.find('#muteuser').prop('checked', false);
         $body.find('#removeitem').prop('checked', false);
         $body.find('#approveitem').prop('checked', false);
@@ -1667,6 +1676,7 @@ const self = new Module({
         $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
         $body.find('#distinguish').prop('checked', false);
         $body.find('#banuser').prop('checked', false);
+        $body.find('#unbanuser').prop('checked', false);
         $body.find('#muteuser').prop('checked', false);
         $body.find('#removeitem').prop('checked', false);
         $body.find('#approveitem').prop('checked', false);

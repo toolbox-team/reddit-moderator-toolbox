@@ -236,7 +236,7 @@ export default new Module({
     /**
      * @param {JQuery<HTMLSelectElement>} dropdown
      * @param {unknown} info
-     * @param {{remove: boolean, approve: boolean, spam: boolean, ban: boolean, unban: boolean, lockitem: boolean, lockreply: boolean, sticky: boolean, archivemodmail: boolean, highlightmodmail: boolean, distinguish: boolean | undefined;}} macro
+     * @param {object} macro
      * @param {boolean} topLevel
      */
     function editMacro (dropdown, info, macro, topLevel) {

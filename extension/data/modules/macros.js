@@ -241,7 +241,19 @@ export default new Module({
      */
     function editMacro (dropdown, info, macro, topLevel) {
         // get some placement variables
-        const {remove, approve, spam, ban, unban, mute, lockitem, lockreply, sticky, archivemodmail, highlightmodmail} = macro;
+        const {
+            remove,
+            approve,
+            spam,
+            ban,
+            unban,
+            mute,
+            lockthread: lockitem, // saved as lockthread for legacy reasons
+            lockreply,
+            sticky,
+            archivemodmail,
+            highlightmodmail,
+        } = macro;
         // Comments can only be stickied by being distinguished, so
         // always distinguish if sticky is also set. If distinguish is
         // not present, distinguish it to support legacy behavior.

@@ -553,6 +553,17 @@ export const removeThing = async (id, spam = false) => post('/api/remove', {
 });
 
 /**
+ * Ignores reports on a post or comment
+ * @function
+ * @param {string} id Fullname of the post or comment
+ * @returns {Promise}
+ */
+export const ignoreReports = async id => post('/api/ignore_reports', {
+    id,
+    uh: await getModhash(),
+});
+
+/**
  * Marks a post as NSFW.
  * @function
  * @param {string} id Fullname of the post

@@ -180,10 +180,10 @@ const TBModule = {
                   $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
             if ($inputSetting.is(':visible')) {
-                $this.css('opacity', '0.5');
+                $this.removeClass('active-link');
                 $inputSetting.hide();
             } else {
-                $this.css('opacity', '1');
+                $this.addClass('active-link');
                 $inputSetting.show(function () {
                     $(this).find('input:first-child').select();
                 });
@@ -783,9 +783,9 @@ body {
 
                         if ($inputSetting.is(':visible')) {
                             $inputSetting.hide();
-                            $this.css('opacity', '0.5');
+                            $this.removeClass('active-link');
                         } else {
-                            $this.css('opacity', '1');
+                            $this.addClass('active-link');
                             $inputSetting.show(function () {
                                 $(this).select();
                             });

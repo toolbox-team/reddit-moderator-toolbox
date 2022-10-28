@@ -385,13 +385,18 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus-visible {
 }
 
 .mod-toolbox-rd .tb-window-content  a.tb-setting-link,
-.mod-toolbox-rd .tb-gen-setting-link,
-.mod-toolbox-rd .tb-module-setting-link {
-    opacity: 0.5;
+.mod-toolbox-rd.mod-toolbox-rd .tb-gen-setting-link,
+.mod-toolbox-rd.mod-toolbox-rd .tb-module-setting-link {
+    color: rgb(70 89 109 / 50%);
     display: inline-block;
     vertical-align: middle;
 }
 
+.mod-toolbox-rd .tb-window-content  a.tb-setting-link.active-link,
+.mod-toolbox-rd .tb-gen-setting-link.active-link,
+.mod-toolbox-rd .tb-module-setting-link.active-link {
+    color: rgb(70, 89, 109);
+}
 
 .mod-toolbox-rd .tb-window-content  input.tb-setting-input {
     font-style: italic;

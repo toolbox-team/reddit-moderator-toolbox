@@ -282,6 +282,7 @@ async function doSettingsUpdates () {
         }
     });
 
+    $('html').addClass('mod-toolbox-rd');
     $body.addClass('mod-toolbox-rd');
     // Bit hacky maybe but allows us more flexibility in specificity.
     // TODO: Remove this and replace uses of it in CSS with duplicate classes

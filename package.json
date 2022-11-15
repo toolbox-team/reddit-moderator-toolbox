@@ -34,7 +34,7 @@
         "eslint": "^8.27.0",
         "eslint-plugin-import": "^2.23.4",
         "inquirer": "^9.1.4",
-        "jsdoc": "^3.6.3",
+        "jsdoc": "^4.0.0",
         "rollup": "^3.2.3",
         "rollup-plugin-copy": "^3.4.0",
         "del-cli": "^5.0.0"

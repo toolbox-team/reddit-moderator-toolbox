@@ -549,6 +549,12 @@ export default new Module({
                             banReason: `Muted from: ${info.permalink}`,
                         });
                     }
+
+                    if (userflair) {
+                        TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
+                            TBui.textFeedback(`error, failed to flair user (${userflair})`, TBui.FEEDBACK_NEGATIVE);
+                        });
+                    }
                 }
             }
         });

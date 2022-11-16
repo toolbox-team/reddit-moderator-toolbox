@@ -248,6 +248,8 @@ export default new Module({
             ban,
             unban,
             mute,
+            userflair,
+            userflairtext,
             lockthread: lockitem, // saved as lockthread for legacy reasons
             lockreply,
             sticky,
@@ -311,6 +313,10 @@ export default new Module({
 
         if (unban) {
             actionList += '<br>- This user will be unbanned';
+        }
+
+        if (userflair) {
+            actionList += `<br>- This user will be flaired with [ ${userflairtext} ]`;
         }
 
         if (mute) {
@@ -439,6 +445,12 @@ export default new Module({
                     if (mute) {
                         // So we don't do an api call for this.
                         $body.find('.ThreadViewer .InfoBar__control:not(.m-on) .icon-mute').click();
+                    }
+
+                    if (userflair) {
+                        TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
+                            status.text(`error, failed to flair user (${userflair})`);
+                        });
                     }
 
                     if (highlightmodmail) {

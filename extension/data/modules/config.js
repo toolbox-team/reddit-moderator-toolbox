@@ -7,6 +7,7 @@ import * as TBui from '../tbui.js';
 import * as TBApi from '../tbapi.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBCore from '../tbcore.js';
+import {flairPost} from '../tbapi.js';
 
 const self = new Module({
     name: 'toolbox Config',
@@ -23,7 +24,8 @@ const self = new Module({
     let config = TBCore.config,
         sortReasons = [],
         subreddit,
-        postFlairTemplates;
+        postFlairTemplates,
+        userFlairTemplates;
 
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
@@ -265,6 +267,14 @@ const self = new Module({
                             <label><input type="checkbox" id="unbanuser">unban user</label>
                             <label><input type="checkbox" id="muteuser">mute user</label>
                         </div>
+                        <div class="tb-macro-actions-row">
+                            <h2 style="padding-right: 8px">User flair</h2>
+                            <input type="hidden" class="tb-input" name="user-flair-text" id="userflair-text" value="">
+                            <select name="user-flair-id" id="userflair-id-select" class="tb-action-button inline-button user-flair-picker">
+                                <option value="Select user flair" disabled>Select user flair template</option>
+                                <option value="">Don't touch</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="tb-macro-context">
                         <h2>Which context</h2>
@@ -384,6 +394,7 @@ const self = new Module({
         sortReasons = [];
         subreddit = null;
         postFlairTemplates = null;
+        userFlairTemplates = null;
     });
 
     // now we can play around!
@@ -651,6 +662,27 @@ const self = new Module({
         });
     }
 
+    async function addUserFlairTemplatesToDropdown ($dropdown, macroNum) {
+        // Fetching the flair templates if not fetched already
+        if (!userFlairTemplates) {
+            userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
+        }
+
+        // We should only append the flair templates to the dropdown if they're not
+        // already there, otherwise they'll duplicate with every click of the edit icon.
+        if ($dropdown[0].childElementCount > 2) {
+            return;
+        }
+        // Getting the current flair template for the reason so we can set the `selected` attribute
+        // on one of the `<option>`s. When adding a new Removal Reason we don't have one
+        // selected yet, so this argument won't be provided.
+        const defaultOption = macroNum ? config.modMacros[macroNum].userflair : '';
+
+        userFlairTemplates.forEach(flair => {
+            $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`);
+        });
+    }
+
     // With this function we'll fetch the removal reasons for editing
     function removalReasonsContent () {
         if (config.removalReasons && config.removalReasons.reasons.length > 0) {
@@ -802,6 +834,14 @@ const self = new Module({
                                     <label><input type="checkbox" class="{{i}}-unbanuser" id="unbanuser">unban user</label>
                                     <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>
                                 </div>
+                                <div class="tb-macro-actions-row">
+                                    <h2 style="padding-right: 8px;">User flair</h2>
+                                    <input type="hidden" name="user-flair-text" class="tb-input {{i}}-user-flair-text" id="userflair-text" value="">
+                                    <select name="user-flair-id" id="userflair-id-select" class="tb-action-button inline-button {{i}}-user-flair-picker">
+                                        <option value="Select user flair" disabled>Select user flair template</option>
+                                        <option value="">Don't touch</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="tb-macro-context">
                                 <h2>Which context</h2>
@@ -830,6 +870,8 @@ const self = new Module({
                 $(`.${i}-banuser`).prop('checked', macro.ban);
                 $(`.${i}-unbanuser`).prop('checked', macro.unban);
                 $(`.${i}-muteuser`).prop('checked', macro.mute);
+                $(`.${i}-user-flair-picker`).val(macro.userflair);
+                $(`.${i}-user-flair-text`).val(macro.userflairtext);
                 $(`.${i}-removeitem`).prop('checked', macro.remove);
                 $(`.${i}-spamitem`).prop('checked', macro.spam);
                 $(`.${i}-approveitem`).prop('checked', macro.approve);
@@ -1269,6 +1311,18 @@ const self = new Module({
         $flairCSS.val(flairTemplate.css_class);
     });
 
+    // Watching for changes in the flair template dropdown and assigning the flair text and class
+    $body.on('change', '#userflair-id-select', function () {
+        const $this = $(this);
+        const selectedFlairID = $this.val();
+
+        const $flairText = $this.parents('.tb-macro-actions').find('input.tb-input[name="user-flair-text"]');
+
+        const flairTemplate = userFlairTemplates.find(flair => flair.id === selectedFlairID);
+
+        $flairText.val(flairTemplate?.text ?? '');
+    });
+
     const resetForm = () => {
         $body.find('#tb-add-removal-reason').show();
         $body.find('#tb-add-removal-reason-form').hide();
@@ -1439,6 +1493,13 @@ const self = new Module({
         const $this = $(this);
 
         $this.closest('tr.mod-macro').find('.mod-macro-label').hide();
+
+        // Getting the flair dropdown
+        const macroNum = $this.attr('data-macro');
+        const $flairDropdown = $this.closest('.mod-macro').find('#userflair-id-select');
+
+        addUserFlairTemplatesToDropdown($flairDropdown, macroNum);
+
         $this.closest('tr.mod-macro').find('.mod-macro-edit').show();
     });
 
@@ -1455,6 +1516,8 @@ const self = new Module({
         $macroContent.find('#banuser').prop('checked', macro.ban);
         $macroContent.find('#unbanuser').prop('checked', macro.unban);
         $macroContent.find('#muteuser').prop('checked', macro.mute);
+        $macroContent.find('#userflair-id-select').val(macro.userflair);
+        $macroContent.find('#userflair-text').val(macro.userflairtext);
         $macroContent.find('#removeitem').prop('checked', macro.remove);
         $macroContent.find('#approveitem').prop('checked', macro.approve);
         // saved as lockthread for legacy reasons
@@ -1480,6 +1543,8 @@ const self = new Module({
               banuser = $macroContent.find('#banuser').prop('checked'),
               unbanuser = $macroContent.find('#unbanuser').prop('checked'),
               muteuser = $macroContent.find('#muteuser').prop('checked'),
+              flairuser = $macroContent.find('#userflair-id-select').val(),
+              flairusertext = $macroContent.find('#userflair-text').val(),
               removeitem = $macroContent.find('#removeitem').prop('checked'),
               approveitem = $macroContent.find('#approveitem').prop('checked'),
               lockitem = $macroContent.find('#lockitem').prop('checked'),
@@ -1510,6 +1575,8 @@ const self = new Module({
         macro.ban = banuser;
         macro.unban = unbanuser;
         macro.mute = muteuser;
+        macro.userflair = flairuser;
+        macro.userflairtext = flairusertext;
         macro.remove = removeitem;
         macro.approve = approveitem;
         // saved as lockthread for legacy reasons
@@ -1580,7 +1647,16 @@ const self = new Module({
 
     // Adding a new macro
     $body.on('click', '#tb-add-mod-macro', function () {
-        $(this).hide();
+        const $this = $(this);
+
+        $this.hide();
+
+        // Getting the flair dropdown
+        const $addMacroForm = $('#tb-add-mod-macro-form');
+        const $flairDropdown = $addMacroForm.find('select#userflair-id-select');
+
+        addUserFlairTemplatesToDropdown($flairDropdown);
+
         $body.find('#tb-add-mod-macro-form').show();
     });
 
@@ -1592,6 +1668,8 @@ const self = new Module({
               banuser = $body.find('#banuser').prop('checked'),
               unbanuser = $body.find('#unbanuser').prop('checked'),
               muteuser = $body.find('#muteuser').prop('checked'),
+              flairuser = $body.find('#userflair-id-select').val(),
+              flairusertext = $body.find('#userflair-text').val(),
               removeitem = $body.find('#removeitem').prop('checked'),
               approveitem = $body.find('#approveitem').prop('checked'),
               spamitem = $body.find('#spamitem').prop('checked'),
@@ -1621,6 +1699,8 @@ const self = new Module({
         macro.ban = banuser;
         macro.unban = unbanuser;
         macro.mute = muteuser;
+        macro.userflair = flairuser;
+        macro.userflairtext = flairusertext;
         macro.remove = removeitem;
         macro.approve = approveitem;
         macro.spam = spamitem;
@@ -1654,6 +1734,8 @@ const self = new Module({
         $body.find('#banuser').prop('checked', false);
         $body.find('#unbanuser').prop('checked', false);
         $body.find('#muteuser').prop('checked', false);
+        $body.find('#userflair-id-select').val('');
+        $body.find('#userflair-text').val('');
         $body.find('#removeitem').prop('checked', false);
         $body.find('#approveitem').prop('checked', false);
         $body.find('#spamitem').prop('checked', false);
@@ -1678,6 +1760,8 @@ const self = new Module({
         $body.find('#banuser').prop('checked', false);
         $body.find('#unbanuser').prop('checked', false);
         $body.find('#muteuser').prop('checked', false);
+        $body.find('#userflair-id-select').val('');
+        $body.find('#userflair-text').val('');
         $body.find('#removeitem').prop('checked', false);
         $body.find('#approveitem').prop('checked', false);
         $body.find('#lockitem').prop('checked', false);

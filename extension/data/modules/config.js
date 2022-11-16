@@ -7,7 +7,6 @@ import * as TBui from '../tbui.js';
 import * as TBApi from '../tbapi.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBCore from '../tbcore.js';
-import {flairPost} from '../tbapi.js';
 
 const self = new Module({
     name: 'toolbox Config',
@@ -668,13 +667,13 @@ const self = new Module({
             userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
         }
 
-        // We should only append the flair templates to the dropdown if they're not
+        // We should only append user flair templates to the dropdown if they're not
         // already there, otherwise they'll duplicate with every click of the edit icon.
         if ($dropdown[0].childElementCount > 2) {
             return;
         }
-        // Getting the current flair template for the reason so we can set the `selected` attribute
-        // on one of the `<option>`s. When adding a new Removal Reason we don't have one
+        // Getting the current flair template for macro so we can set the `selected` attribute
+        // on one of the `<option>`s. When adding a new macro we don't have one
         // selected yet, so this argument won't be provided.
         const defaultOption = macroNum ? config.modMacros[macroNum].userflair : '';
 

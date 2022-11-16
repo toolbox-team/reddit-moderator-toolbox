@@ -449,7 +449,7 @@ export default new Module({
 
                     if (userflair) {
                         TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
-                            status.text(`error, failed to flair user (${userflair})`);
+                            TBui.textFeedback(`error, failed to flair user (${userflair})`, TBui.FEEDBACK_NEGATIVE);
                         });
                     }
 

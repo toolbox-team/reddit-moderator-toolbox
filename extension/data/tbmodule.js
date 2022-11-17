@@ -645,7 +645,7 @@ body {
                         $body.addClass('mod-syntax');
                         let editorSettings;
                         const enableWordWrap = await TBStorage.getSettingAsync('Syntax', 'enableWordWrap', true);
-                        $(`#${module.id}_syntax_theme_css`).each(async (index, elem) => {
+                        $setting.find(`#${module.id}_syntax_theme_css`).each(async (index, elem) => {
                             // Editor setup.
                             editorSettings = CodeMirror.fromTextArea(elem, {
                                 mode: 'text/css',
@@ -674,7 +674,7 @@ body {
                             }, 5);
                         });
 
-                        $(`#${module.id}_syntax_theme`).val(await module.get(setting));
+                        $setting.find(`#${module.id}_syntax_theme`).val(await module.get(setting));
                         $body.on('change keydown', `#${module.id}_syntax_theme`, function () {
                             const thingy = $(this);
                             setTimeout(() => {

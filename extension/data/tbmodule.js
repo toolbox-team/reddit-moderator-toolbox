@@ -289,13 +289,13 @@ const TBModule = {
 
         // This div contains the module links, separate from everything else
         const $moduleCategory = $(`
-                <div class="tb-window-tabs-category">
-                    <h2 class="tb-window-tabs-header">Modules</h2>
-                </div>
-            `);
-            // TODO: this basically hardcodes where in the list the modules
-            // category goes, but if we wanted it to not be hardcoded then we'd
-            // have to rewrite how this window is generated, so it's good enough
+            <div class="tb-window-tabs-category">
+                <h2 class="tb-window-tabs-header">Modules</h2>
+            </div>
+        `);
+        // TODO: this basically hardcodes where in the list the modules
+        // category goes, but if we wanted it to not be hardcoded then we'd
+        // have to rewrite how this window is generated, so it's good enough
         $settingsDialog.find('a[data-module="about"]').before($moduleCategory);
 
         $settingsDialog.on('click', '.tb-help-main', e => {
@@ -437,10 +437,6 @@ const TBModule = {
             const module = $(this).attr('data-module');
             window.open(`https://old.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
         });
-
-        // Lock 'n load
-        $settingsDialog.appendTo('body').show();
-        $body.css('overflow', 'hidden');
 
         // Sort the module list alphabetically
         const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
@@ -931,6 +927,10 @@ body {
                 });
             });
         }
+
+        // Lock 'n load
+        $settingsDialog.appendTo('body').show();
+        $body.css('overflow', 'hidden');
     },
 };
 export default TBModule;

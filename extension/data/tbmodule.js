@@ -495,7 +495,7 @@ const TBModule = {
 
                 // Add the setting in its place to keep ABC order
                 let added = false;
-                $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
+                $settingsDialog.find('.tb-window-tab.toggle_modules .tb-window-content p').each(function () {
                     const $this = $(this);
                     if ($this.text().localeCompare($setting.text()) > 0) {
                         $this.before($setting);
@@ -504,7 +504,7 @@ const TBModule = {
                     }
                 });
                 if (!added) {
-                    $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
+                    $settingsDialog.find('.tb-window-tab.toggle_modules .tb-window-content').append($setting);
                 }
             }
 
@@ -800,7 +800,7 @@ body {
                 if (module.oldReddit) {
                     $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                 }
-                $('.tb-settings .tb-window-tabs-wrapper').append($settings);
+                $settingsDialog.find('.tb-window-tabs-wrapper').append($settings);
                 if (module.sort) {
                     $tab.attr('data-order', module.sort.order);
                     // If the module specifies a sort, then we do that
@@ -835,7 +835,7 @@ body {
                         });
                         if (!added) {
                             // Not added yet? To the bottom we go.
-                            $('.tb-window-tabs').append($tab);
+                            $settingsDialog.find('.tb-window-tabs').append($tab);
                         }
                     }
                 } else {
@@ -857,7 +857,7 @@ body {
             //
             // We get one additional click handler for each module that gets injected.
             // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
-            $('.tb-settings').on('click', '.tb-save', () => {
+            $settingsDialog.on('click', '.tb-save', () => {
                 // handle module enable/disable on Toggle Modules first
                 const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.id}Enabled`).prop('checked');
                 TBStorage.setSetting(module.id, 'enabled', $moduleEnabled);

@@ -65,7 +65,7 @@ function uuidv4 () {
  * Sends a native browser notification.
  * @param {object} options The notification options
  */
-async function sendNativeNotification ({title, body, url, modHash, markreadid}) {
+async function sendNativeNotification ({title, body, url, modHash, markreadid, cookieStoreId}) {
     // If we have the getPermissionLevel function, check if we have permission
     // to send notifications. This function doesn't currently exist on Firefox
     // for some reason. (https://bugzilla.mozilla.org/show_bug.cgi?id=1213455)
@@ -87,6 +87,7 @@ async function sendNativeNotification ({title, body, url, modHash, markreadid}) 
         url,
         modHash,
         markreadid,
+        cookieStoreId,
     });
     return notificationID;
 }
@@ -95,13 +96,14 @@ async function sendNativeNotification ({title, body, url, modHash, markreadid}) 
  * Sends an in-page notification on all open Reddit windows
  * @param {object} options The notification options
  */
-async function sendPageNotification ({title, body, url, modHash, markreadid}) {
+async function sendPageNotification ({title, body, url, modHash, markreadid, cookieStoreId}) {
     const notificationID = uuidv4();
     await setNotificationMetaData(notificationID, {
         type: 'page',
         url,
         modHash,
         markreadid,
+        cookieStoreId,
     });
     const message = {
         action: 'tb-show-page-notification',
@@ -111,7 +113,10 @@ async function sendPageNotification ({title, body, url, modHash, markreadid}) {
             body,
         },
     };
-    const tabs = await browser.tabs.query({url: 'https://*.reddit.com/*'});
+    const tabs = await browser.tabs.query({
+        url: 'https://*.reddit.com/*',
+        cookieStoreId,
+    });
     for (const tab of tabs) {
         browser.tabs.sendMessage(tab.id, message).catch(error => {
             // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
@@ -164,7 +169,10 @@ async function clearNotification (notificationID) {
             action: 'tb-clear-page-notification',
             id: notificationID,
         };
-        const tabs = await browser.tabs.query({url: 'https://*.reddit.com/*'});
+        const tabs = await browser.tabs.query({
+            url: 'https://*.reddit.com/*',
+            cookieStoreId: metadata.cookieStoreId,
+        });
         for (const tab of tabs) {
             browser.tabs.sendMessage(tab.id, message).catch(error => {
                 // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
@@ -198,7 +206,7 @@ async function onClickNotification (notificationID) {
                 uh: metadata.modHash,
                 api_type: 'json',
             },
-        });
+        }, metadata.cookieStoreId);
     }
 
     // Open up in new tab.
@@ -206,6 +214,7 @@ async function onClickNotification (notificationID) {
     browser.tabs.create({
         url: metadata.url,
         windowId: window.id,
+        cookieStoreId: metadata.cookieStoreId,
     });
 
     // Notification no longer needed, clear it.

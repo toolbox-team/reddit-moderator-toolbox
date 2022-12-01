@@ -158,7 +158,7 @@ function makeFormData (obj) {
  * @param {boolean?} [options.absolute] If true, the request endpoint will be
  * treated as a full URL; if false, the endpoint will be treated as a path on
  * `https://old.reddit.com` (or `https://oauth.reddit.com` for oauth requests)
- * @param {string} options.cookieStoreId Sets what cookie store to pull from
+ * @param {string} cookieStoreId Sets what cookie store to pull from
  * @returns {Promise} Resolves to a Response object, or rejects an Error
  */
 export async function makeRequest ({
@@ -169,8 +169,7 @@ export async function makeRequest ({
     oauth,
     okOnly,
     absolute,
-    cookieStoreId,
-}) {
+}, cookieStoreId) {
     // Construct the request URL
     query = queryString(query);
     // If we have a query object and additional parameters in the endpoint, we

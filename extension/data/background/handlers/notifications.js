@@ -171,8 +171,7 @@ async function clearNotification (notificationID) {
         };
         const tabs = await browser.tabs.query({
             url: 'https://*.reddit.com/*',
-            cookieStoreId: metadata.cookieStoreId,
-        });
+        }, metadata.cookieStoreId);
         for (const tab of tabs) {
             browser.tabs.sendMessage(tab.id, message).catch(error => {
                 // Receiving end errors are not really relevant to us and happen a lot for iframes and such where toolbox isn't active.
@@ -214,8 +213,7 @@ async function onClickNotification (notificationID) {
     browser.tabs.create({
         url: metadata.url,
         windowId: window.id,
-        cookieStoreId: metadata.cookieStoreId,
-    });
+    }, metadata.cookieStoreId);
 
     // Notification no longer needed, clear it.
     clearNotification(notificationID);

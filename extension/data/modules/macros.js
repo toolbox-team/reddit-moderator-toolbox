@@ -248,6 +248,8 @@ export default new Module({
             ban,
             unban,
             mute,
+            userflair,
+            userflairtext,
             lockthread: lockitem, // saved as lockthread for legacy reasons
             lockreply,
             sticky,
@@ -311,6 +313,10 @@ export default new Module({
 
         if (unban) {
             actionList += '<br>- This user will be unbanned';
+        }
+
+        if (userflair) {
+            actionList += `<br>- This user will be flaired with [ ${userflairtext} ]`;
         }
 
         if (mute) {
@@ -441,6 +447,12 @@ export default new Module({
                         $body.find('.ThreadViewer .InfoBar__control:not(.m-on) .icon-mute').click();
                     }
 
+                    if (userflair) {
+                        TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
+                            TBui.textFeedback(`error, failed to flair user (${userflair})`, TBui.FEEDBACK_NEGATIVE);
+                        });
+                    }
+
                     if (highlightmodmail) {
                         $body.find('.ThreadViewer .ThreadViewerHeader__control:not(.m-selected) .icon-flair').click();
                     }
@@ -535,6 +547,12 @@ export default new Module({
                             action: 'muted',
                             subreddit: info.subreddit,
                             banReason: `Muted from: ${info.permalink}`,
+                        });
+                    }
+
+                    if (userflair) {
+                        TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
+                            TBui.textFeedback(`error, failed to flair user (${userflair})`, TBui.FEEDBACK_NEGATIVE);
                         });
                     }
                 }

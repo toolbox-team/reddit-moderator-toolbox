@@ -348,7 +348,7 @@ async function saveSettingsToBrowser () {
 /**
  * Returns the value of a setting.
  * @deprecated Use `getSettingAsync` instead
- * @param {string} module The shortname of the module the setting belongs to
+ * @param {string} module The ID of the module the setting belongs to
  * @param {string} setting The name of the setting
  * @param {any} defaultVal The value returned if the setting is not set
  * @returns {any}
@@ -381,7 +381,7 @@ export function getSetting (module, setting, defaultVal) {
 
 /**
  * Returns the value of a setting.
- * @param {string} module The shortname of the module the setting belongs to
+ * @param {string} module The ID of the module the setting belongs to
  * @param {string} setting The name of the setting
  * @param {any} defaultVal The value returned if the setting is not set
  * @returns {Promise<any>}
@@ -394,7 +394,7 @@ export async function getSettingAsync (module, setting, defaultVal) {
 /**
  * Sets a setting to a new value.
  * @deprecated Use `setSettingAsync` instead
- * @param {string} module The shortname of the module the setting belongs to
+ * @param {string} module The ID of the module the setting belongs to
  * @param {string} setting The name of the setting
  * @param {any} value The new value of the setting
  * @param {boolean} [syncSettings=true] If false, settings will not be committed
@@ -430,7 +430,7 @@ export function setSetting (module, setting, value, syncSettings = true) {
 
 /**
  * Sets a setting to a new value.
- * @param {string} module The shortname of the module the setting belongs to
+ * @param {string} module The ID of the module the setting belongs to
  * @param {string} setting The name of the setting
  * @param {any} value The new value of the setting
  * @param {boolean} [syncSettings=true] If false, settings will not be committed
@@ -471,7 +471,7 @@ export function getCache (module, setting, defaultVal) {
 
 /**
  * Sets a value in the cache.
- * @param {string} module The shortname of the module that owns the cache key
+ * @param {string} module The ID of the module that owns the cache key
  * @param {string} setting The name of the cache key
  * @param {any} inputValue The new value of the cache key
  * @returns {Promise<any>} Promises the new value of the cache key

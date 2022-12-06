@@ -38,7 +38,7 @@ function log (caller, type, ...args) {
     } else if (typeof caller === 'object') {
         // If it's an object, we assume it's a module
         // TODO: stop using this
-        callerName = caller.shortname;
+        callerName = caller.id;
     } else {
         // Should be a string
         callerName = caller;

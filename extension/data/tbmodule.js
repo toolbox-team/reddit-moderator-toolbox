@@ -12,26 +12,16 @@ import * as TBConstants from './tbconstants.js';
 const logger = TBLog('TBModule');
 
 const TBModule = {
-    modules: {},
+    modules: [],
 
-    /** @deprecated */
-    get moduleList () {
-        return Object.values(TBModule.modules).map(mod => mod.shortname);
-    },
-
-    register_module (module) {
-        // TODO: compatibility; remove when we stop using `shortname`
-        module.shortname = module.id;
-
-        TBModule.modules[module.shortname] = module;
+    register_module (mod) {
+        TBModule.modules.push(mod);
     },
 
     init: async function tbInit () {
         logger.debug('TBModule has TBStorage, loading modules');
         // Check if each module should be enabled, then call its initializer
-        await Promise.all(TBModule.moduleList.map(async moduleName => {
-            const module = TBModule.modules[moduleName];
-
+        await Promise.all(TBModule.modules.map(async module => {
             // Don't do anything with modules the user has disabled
             if (!await module.getEnabled()) {
                 return;
@@ -299,13 +289,13 @@ const TBModule = {
 
         // This div contains the module links, separate from everything else
         const $moduleCategory = $(`
-                <div class="tb-window-tabs-category">
-                    <h2 class="tb-window-tabs-header">Modules</h2>
-                </div>
-            `);
-            // TODO: this basically hardcodes where in the list the modules
-            // category goes, but if we wanted it to not be hardcoded then we'd
-            // have to rewrite how this window is generated, so it's good enough
+            <div class="tb-window-tabs-category">
+                <h2 class="tb-window-tabs-header">Modules</h2>
+            </div>
+        `);
+        // TODO: this basically hardcodes where in the list the modules
+        // category goes, but if we wanted it to not be hardcoded then we'd
+        // have to rewrite how this window is generated, so it's good enough
         $settingsDialog.find('a[data-module="about"]').before($moduleCategory);
 
         $settingsDialog.on('click', '.tb-help-main', e => {
@@ -448,21 +438,17 @@ const TBModule = {
             window.open(`https://old.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
         });
 
-        // Lock 'n load
-        $settingsDialog.appendTo('body').show();
-        $body.css('overflow', 'hidden');
-
         // Sort the module list alphabetically
-        TBModule.moduleList.sort((a, b) => a.localeCompare(b)).forEach(async moduleName => {
-            const module = TBModule.modules[moduleName];
+        const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
+        for (const module of sortedModules) {
             // Don't do anything with beta modules unless beta mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
-                return;
+                continue;
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
-                return;
+                continue;
             }
 
             //
@@ -470,9 +456,9 @@ const TBModule = {
             //
 
             let moduleHasSettingTab = false; // we set this to true later, if there's a visible setting
-            const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.id.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
+            const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.id.toLowerCase()}" data-module="${module.id.toLowerCase()}">${module.name}</a>`),
                   $settings = $(`
-                            <div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;">
+                            <div class="tb-window-tab ${module.id.toLowerCase()}" style="display: none;">
                                 <div class="tb-window-content">
                                     <div class="tb-settings"></div>
                                     <div class="tb-oldreddit-settings" style="display: none;">
@@ -483,19 +469,19 @@ const TBModule = {
                       `);
 
             $tab.data('module', module.id);
-            $tab.data('help_page', module.shortname);
+            $tab.data('help_page', module.id); // TODO: `module` and `help_page` are redundant, remove help_page
 
             const $body = $('body');
             const execAfterInject = [];
 
             // Handle module enable toggle
             if (!module.alwaysEnabled) {
-                const name = module.shortname.toLowerCase();
+                const name = module.id.toLowerCase();
 
                 const $setting = $(`
                     <p id="tb-toggle_modules-${name}" class="tb-settings-p">
-                        <label><input type="checkbox" id="${module.shortname}Enabled" ${await module.getEnabled() ? ' checked="checked"' : ''}>Enable ${TBHelpers.htmlEncode(module.name)}</label>
-                                <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
+                        <label><input type="checkbox" id="${module.id}Enabled" ${await module.getEnabled() ? ' checked="checked"' : ''}>Enable ${TBHelpers.htmlEncode(module.name)}</label>
+                                <a class="tb-help-toggle" href="javascript:;" data-module="${module.id}" title="Help">?</a>
                         <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
                             ${TBConstants.icons.tbSettingLink}
                         </a>&nbsp;
@@ -509,7 +495,7 @@ const TBModule = {
 
                 // Add the setting in its place to keep ABC order
                 let added = false;
-                $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
+                $settingsDialog.find('.tb-window-tab.toggle_modules .tb-window-content p').each(function () {
                     const $this = $(this);
                     if ($this.text().localeCompare($setting.text()) > 0) {
                         $this.before($setting);
@@ -518,7 +504,7 @@ const TBModule = {
                     }
                 });
                 if (!added) {
-                    $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
+                    $settingsDialog.find('.tb-window-tab.toggle_modules .tb-window-content').append($setting);
                 }
             }
 
@@ -635,9 +621,9 @@ const TBModule = {
                 {
                     $setting.append(`${title}:<br/>`);
                     $setting.append(TBConstants.syntaxHighlighterThemeSelect);
-                    $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
+                    $setting.find('select').attr('id', `${module.id}_syntax_theme`);
                     $setting.append($(`
-                    <textarea class="tb-input syntax-example" id="${module.shortname}_syntax_theme_css">
+                    <textarea class="tb-input syntax-example" id="${module.id}_syntax_theme_css">
 /* This is just some example code*/
 body {
     font-family: sans-serif, "Helvetica Neue", Arial;
@@ -659,7 +645,7 @@ body {
                         $body.addClass('mod-syntax');
                         let editorSettings;
                         const enableWordWrap = await TBStorage.getSettingAsync('Syntax', 'enableWordWrap', true);
-                        $(`#${module.shortname}_syntax_theme_css`).each(async (index, elem) => {
+                        $setting.find(`#${module.id}_syntax_theme_css`).each(async (index, elem) => {
                             // Editor setup.
                             editorSettings = CodeMirror.fromTextArea(elem, {
                                 mode: 'text/css',
@@ -688,8 +674,8 @@ body {
                             }, 5);
                         });
 
-                        $(`#${module.shortname}_syntax_theme`).val(await module.get(setting));
-                        $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
+                        $setting.find(`#${module.id}_syntax_theme`).val(await module.get(setting));
+                        $body.on('change keydown', `#${module.id}_syntax_theme`, function () {
                             const thingy = $(this);
                             setTimeout(() => {
                                 editorSettings.setOption('theme', thingy.val());
@@ -756,7 +742,7 @@ body {
                 }
                 }
                 if (!noWrap) {
-                    const moduleName = module.shortname.toLowerCase(),
+                    const moduleName = module.id.toLowerCase(),
                           settingName = setting.toLowerCase(),
                           linkClass = `tb-setting-link-${settingName}`,
                           inputClass = `tb-setting-input-${settingName}`,
@@ -771,7 +757,7 @@ body {
 
                     $setting = $('<span>').attr('class', 'setting-item').append($setting);
                     $setting.attr('id', `tb-${moduleName}-${settingName}`);
-                    $setting.attr('data-module', module.shortname);
+                    $setting.attr('data-module', module.id);
                     $setting.attr('data-setting', setting);
 
                     // TODO: somebody document this
@@ -814,7 +800,7 @@ body {
                 if (module.oldReddit) {
                     $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                 }
-                $('.tb-settings .tb-window-tabs-wrapper').append($settings);
+                $settingsDialog.find('.tb-window-tabs-wrapper').append($settings);
                 if (module.sort) {
                     $tab.attr('data-order', module.sort.order);
                     // If the module specifies a sort, then we do that
@@ -849,7 +835,7 @@ body {
                         });
                         if (!added) {
                             // Not added yet? To the bottom we go.
-                            $('.tb-window-tabs').append($tab);
+                            $settingsDialog.find('.tb-window-tabs').append($tab);
                         }
                     }
                 } else {
@@ -871,13 +857,13 @@ body {
             //
             // We get one additional click handler for each module that gets injected.
             // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
-            $('.tb-settings').on('click', '.tb-save', () => {
+            $settingsDialog.on('click', '.tb-save', () => {
                 // handle module enable/disable on Toggle Modules first
-                const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
+                const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.id}Enabled`).prop('checked');
                 TBStorage.setSetting(module.id, 'enabled', $moduleEnabled);
 
                 // handle the regular settings tab
-                const $settings_page = $(`.tb-window-tab.${module.shortname.toLowerCase()} .tb-window-content`);
+                const $settings_page = $(`.tb-window-tab.${module.id.toLowerCase()} .tb-window-content`);
 
                 $settings_page.find('span.setting-item').each(function () {
                     const $this = $(this);
@@ -931,7 +917,7 @@ body {
                         value = $this.find('.selector').val();
                         break;
                     case 'syntaxTheme':
-                        value = $this.find(`#${module.shortname}_syntax_theme`).val();
+                        value = $this.find(`#${module.id}_syntax_theme`).val();
                         break;
                     default:
                         value = JSON.parse($this.find('textarea').val());
@@ -940,7 +926,11 @@ body {
                     module.set($this.data('setting'), value, false);
                 });
             });
-        });
+        }
+
+        // Lock 'n load
+        $settingsDialog.appendTo('body').show();
+        $body.css('overflow', 'hidden');
     },
 };
 export default TBModule;

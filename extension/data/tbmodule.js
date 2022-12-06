@@ -443,12 +443,12 @@ const TBModule = {
         for (const module of sortedModules) {
             // Don't do anything with beta modules unless beta mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
-                return;
+                continue;
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
             if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
-                return;
+                continue;
             }
 
             //

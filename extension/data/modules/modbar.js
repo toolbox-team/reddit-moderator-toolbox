@@ -542,10 +542,10 @@ export default new Module({
             }
 
             // Wait a sec for stuff to load.
-            setTimeout(() => {
+            setTimeout(async () => {
                 // prevent tbsetting URL hash from persisting on reload.
                 history.pushState('', document.title, window.location.pathname);
-                TBModule.showSettings();
+                await TBModule.showSettings();
                 switchTab(module);
             }, 500);
         }

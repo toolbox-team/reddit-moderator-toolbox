@@ -1194,6 +1194,12 @@ export function makeSubmissionEntry (submission, submissionOptions) {
             </div>
             `);
 
+    // Links in the provided post body might be domain-relative, which won't
+    // work if we're in modmail; rewrite link hrefs as appropriate
+    $buildsubmission.find('.tb-self-expando a').each(function () {
+        this.setAttribute('href', TBCore.link(this.getAttribute('href')));
+    });
+
     // Now that we have the basic submission build we can go and add details where needed.
     // The two places where we will be adding data specific to the submission are either entry or the button list.
     const $submissionEntry = $buildsubmission.find('.tb-submission-entry');
@@ -1536,6 +1542,12 @@ export function makeSingleComment (comment, commentOptions = {}) {
                 </div>
             </div>
         `);
+
+    // Links in the provided comment body might be domain-relative, which won't
+    // work if we're in modmail; rewrite link hrefs as appropriate
+    $buildComment.find('.tb-comment-body a').each(function () {
+        this.setAttribute('href', TBCore.link(this.getAttribute('href')));
+    });
 
     // Now that we have the basic comment build we can go and add details where needed.
     // The two places where we will be adding data specific to the comment are either entry or the button list.

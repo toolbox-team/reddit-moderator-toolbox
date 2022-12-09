@@ -708,7 +708,7 @@ export function zlibInflate (blob) {
     // Decompress bytes
     const resultBytes = pako.inflate(compressedBytes);
     // Construct string from the decompressed bytes
-    return String.fromCharCode(...resultBytes);
+    return new TextDecoder().decode(resultBytes);
 }
 
 /**
@@ -723,7 +723,7 @@ export function zlibDeflate (objThing) {
     // Compress the data
     const compressedBytes = pako.deflate(bytes);
     // Base64 encode the compressed data
-    const binaryString = String.fromCharCode(...compressedBytes);
+    const binaryString = new TextDecoder().decode(compressedBytes);
     return btoa(binaryString);
 }
 

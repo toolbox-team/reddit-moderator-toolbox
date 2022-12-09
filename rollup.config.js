@@ -12,7 +12,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         output: {
             file: `build/${platform}/data/init.js`,
             // Sourcemaps without extra `web_accessible_resources` entries
-            sourcemap: 'inline',
+            sourcemap: false,
         },
         plugins: [
             nodeResolve(),

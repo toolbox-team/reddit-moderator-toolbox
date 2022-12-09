@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "6.1.0",
-    "version_name": "6.1.0: \"Delaying Donkey\"",
+    "version": "6.1.1",
+    "version_name": "6.1.1: \"Delaying Donkey\"",
     "incognito": "split",
     "permissions": [
         "cookies",

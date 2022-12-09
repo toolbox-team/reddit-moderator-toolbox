@@ -385,9 +385,7 @@ export default new Module({
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
-            console.log(SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST);
             SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST.push('id', 'placeholder', 'label', 'value');
-            console.log(SnuOwnd.DEFAULT_HTML_ATTR_WHITELIST);
             const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
 
             // Render header and footer

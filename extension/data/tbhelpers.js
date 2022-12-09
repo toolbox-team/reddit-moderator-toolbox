@@ -696,35 +696,31 @@ export function htmlDecode (value) {
 }
 
 /**
- * Inflates (decompresses) a base64-encoded zlib-compressed data string (a
- * usernotes blob) into a data string.
- * @param {string} string The comprsessed data, base64-encoded
- * @returns {string} The original data
+ * Inflates a base64-encoded zlib-compressed data string into data.
+ * @param {string} string The compressed string
+ * @returns {any}
  */
-export function zlibInflate (blob) {
-    // Decode base64 and put them into a buffer
-    const binaryData = atob(blob);
-    const compressedBytes = Uint8Array.from(binaryData, char => char.charCodeAt(0));
-    // Decompress bytes
-    const resultBytes = pako.inflate(compressedBytes);
-    // Construct string from the decompressed bytes
-    return new TextDecoder().decode(resultBytes);
+export function zlibInflate (stringThing) {
+    // Expand base64
+    stringThing = atob(stringThing);
+    // zlib time!
+    const inflate = new pako.Inflate({to: 'string'});
+    inflate.push(stringThing);
+    return inflate.result;
 }
 
 /**
- * Deflates (compresses) a data string into a base64-encoded zlib-compressed
- * data string (a usernotes blob).
- * @param {string} object The data to compress
- * @returns {string} The compressed data, base64-encoded
+ * Deflates some data into a base64-encoded zlib-compressed data string.
+ * @param {any} object The data to compress
+ * @returns {string}
  */
 export function zlibDeflate (objThing) {
-    // Read string into array of bytes
-    const bytes = Uint8Array.from(objThing, c => c.charCodeAt(0));
-    // Compress the data
-    const compressedBytes = pako.deflate(bytes);
-    // Base64 encode the compressed data
-    const binaryString = new TextDecoder().decode(compressedBytes);
-    return btoa(binaryString);
+    // zlib time!
+    const deflate = new pako.Deflate({to: 'string'});
+    deflate.push(objThing, true);
+    objThing = deflate.result;
+    // Collapse to base64
+    return btoa(objThing);
 }
 
 /**

@@ -15,3 +15,5 @@ node_modules/*
 
 # old plugins code (TODO)
 extension/data/tbplugins.js
+
+extension/data/libs/*

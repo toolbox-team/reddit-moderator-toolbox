@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import SnuOwnd from 'snuownd';
+import SnuOwnd from '../libs/snuownd.js';
 
 import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.js';

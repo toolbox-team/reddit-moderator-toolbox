@@ -21,7 +21,6 @@
         "dompurify": "^2.4.1",
         "jquery": "^3.6.1",
         "pako": "^0.2.6",
-        "snuownd": "^1.1.0",
         "timeago": "^1.6.7",
         "tinycolor2": "^1.4.2",
         "webextension-polyfill": "^0.10.0"

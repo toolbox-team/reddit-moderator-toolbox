@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import SnuOwnd from 'snuownd';
+import SnuOwnd from './libs/snuownd.js';
 import pako from 'pako';
 
 /**

@@ -26,8 +26,6 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                         dest: `build/${platform}`,
                         rename: 'manifest.json',
                     },
-                    // Vendor scripts that gets carried over unchanged
-                    {src: 'extension/data/libs', dest: `build/${platform}/data`},
                     // Non-script assets
                     {src: 'extension/data/images', dest: `build/${platform}/data`},
                     {src: 'extension/data/styles', dest: `build/${platform}/data`},

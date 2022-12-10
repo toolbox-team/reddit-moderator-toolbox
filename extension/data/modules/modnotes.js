@@ -4,7 +4,16 @@ import {Module} from '../tbmodule.js';
 import {link, isModSub} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
-import {actionButton, drawPosition, icons, pagerForItems, popup} from '../tbui.js';
+import {
+    actionButton,
+    drawPosition,
+    FEEDBACK_NEGATIVE,
+    FEEDBACK_POSITIVE,
+    icons,
+    pagerForItems,
+    popup,
+    textFeedback,
+} from '../tbui.js';
 import TBListener from '../tblistener.js';
 
 /**
@@ -514,12 +523,12 @@ export default new Module({
                 label: $labelSelect.val() || undefined,
             });
             $textInput.val('');
-            alert('Note saved!');
+            textFeedback('Note saved', FEEDBACK_POSITIVE);
             // TODO: add the new note to the table maybe? does creating the note
             //       return the created note object? that would make it easy
         } catch (error) {
             this.error('Failed to create mod note:', error);
-            alert('Failed to create mod note');
+            textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);
         }
     });
 
@@ -535,10 +544,10 @@ export default new Module({
                 id: $button.attr('data-note-id'),
             });
             $button.closest('tr').remove();
-            alert('Note removed!');
+            textFeedback('Note removed!', FEEDBACK_POSITIVE);
         } catch (error) {
             this.error('Failed to delete note:', error);
-            alert('Failed to delete note');
+            textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
         }
     });
 });

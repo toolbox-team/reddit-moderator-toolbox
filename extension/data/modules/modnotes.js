@@ -5,7 +5,6 @@ import {link, isModSub} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
 import {
-    actionButton,
     drawPosition,
     FEEDBACK_NEGATIVE,
     FEEDBACK_POSITIVE,
@@ -239,7 +238,7 @@ function createModNotesPopup ({
             },
         ],
         footer: `
-            <span>
+            <form class="tb-modnote-create-form">
                 <select class="tb-action-button tb-modnote-label-select">
                     <option value="" default>(no label)</option>
                     ${Object.entries(labelNames).reverse().map(([value, name]) => `
@@ -253,8 +252,13 @@ function createModNotesPopup ({
                     class="tb-modnote-text-input tb-input"
                     placeholder="Add a note..."
                 >
-                ${actionButton('Create Note', 'tb-modnote-create-button')}
-            </span>
+                <button
+                    type="submit"
+                    class="tb-action-button"
+                >
+                    Create Note
+                </button>
+            </form>
         `,
         cssClass: 'tb-modnote-popup',
         defaultTabID,
@@ -509,8 +513,11 @@ export default new Module({
 
     const $body = $('body');
 
-    // Handle create note button clicks
-    $body.on('click', '.tb-modnote-create-button', async event => {
+    // Handle note creation
+    $body.on('submit', '.tb-modnote-create-form', async event => {
+        // don't actually perform the HTML form action
+        event.preventDefault();
+
         const $popup = $(event.target).closest('.tb-modnote-popup');
         const $textInput = $popup.find('.tb-modnote-text-input');
         const $labelSelect = $popup.find('.tb-modnote-label-select');

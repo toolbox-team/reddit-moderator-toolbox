@@ -147,7 +147,7 @@ async function init (options) {
               popupContent = `
                     <div>
                         <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
-                        <span class="karma" />
+                        <span class="karma"></span>
                         <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
                         <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
                         <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>

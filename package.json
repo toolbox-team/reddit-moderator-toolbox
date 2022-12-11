@@ -21,6 +21,7 @@
         "dompurify": "^2.4.1",
         "jquery": "^3.6.1",
         "pako": "^0.2.6",
+        "snuownd": "github:gamefreak/snuownd#533e8dcb67fe8e4ddc83fb8317ed0d10c25b6fcb",
         "timeago": "^1.6.7",
         "tinycolor2": "^1.4.2",
         "webextension-polyfill": "^0.10.0"
@@ -29,13 +30,13 @@
         "@rollup/plugin-commonjs": "^23.0.4",
         "@rollup/plugin-node-resolve": "^15.0.1",
         "cross-env": "^7.0.3",
+        "del-cli": "^5.0.0",
         "docdash": "^2.0.0",
         "eslint": "^8.29.0",
         "eslint-plugin-import": "^2.23.4",
         "inquirer": "^9.1.4",
         "jsdoc": "^4.0.0",
         "rollup": "^3.2.3",
-        "rollup-plugin-copy": "^3.4.0",
-        "del-cli": "^5.0.0"
+        "rollup-plugin-copy": "^3.4.0"
     }
 }

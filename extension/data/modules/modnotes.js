@@ -213,6 +213,7 @@ function createModNotesPopup ({
     subreddit,
     notes,
     defaultTabName,
+    defaultNoteLabel,
 }) {
     let defaultTabID = 'tb-modnote-tab-all';
     if (defaultTabName === 'notes') {
@@ -240,12 +241,20 @@ function createModNotesPopup ({
         footer: `
             <form class="tb-modnote-create-form">
                 <select class="tb-action-button tb-modnote-label-select">
-                    <option value="" default>(no label)</option>
+                    <option
+                        value=""
+                        ${defaultNoteLabel === 'none' ? 'selected' : ''}
+                    >
+                        (no label)
+                    </option>
                     ${Object.entries(labelNames).reverse().map(([value, name]) => `
-                        <option value="${htmlEncode(value)}">
+                        <option
+                            value="${htmlEncode(value)}"
+                            ${defaultNoteLabel === name.toLowerCase().replace(/\s/g, '_') ? 'selected' : ''}
+                        >
                             ${htmlEncode(name)}
                         </option>
-                    `)}
+                    `).join('')}
                 </select>
                 <input
                     type="text"
@@ -437,8 +446,18 @@ export default new Module({
             ],
             default: 'all_activity',
         },
+        {
+            id: 'defaultNoteLabel',
+            description: 'Default label for new notes',
+            type: 'selector',
+            values: [
+                'None',
+                ...Object.values(labelNames),
+            ],
+            default: 'none',
+        },
     ],
-}, function ({defaultTabName}) {
+}, function ({defaultTabName, defaultNoteLabel}) {
     // Handle authors showing up on the page
     TBListener.on('author', async e => {
         const subreddit = e.detail.data.subreddit.name;
@@ -491,6 +510,7 @@ export default new Module({
                     subreddit,
                     notes,
                     defaultTabName,
+                    defaultNoteLabel,
                 })
                     .css({
                         top: positions.topPosition,

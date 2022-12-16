@@ -50,6 +50,13 @@ body.mod-toolbox[toolbox-warning]::before {
     margin-right: 0.5em;
 }
 
+/* Set the order of author buttons */
+.mod-toolbox-rd .tb-modnote-badge {order: 1}
+.mod-toolbox-rd .tb-usernote-button {order: 2}
+.mod-toolbox-rd .global-mod-button {order: 3}
+.mod-toolbox-rd .user-history-button {order: 4}
+.mod-toolbox-rd .tb-user-profile {order: 5}
+
 .mod-toolbox-rd.tb-modbar-shown .jowVts,
 .mod-toolbox-rd.tb-modbar-shown .pinned-to-bottom {
     bottom: 31px

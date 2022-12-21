@@ -1131,7 +1131,7 @@ Action reason: ${value.data.details}
         $('#siteTable .thing').each(function () {
             const $this = $(this);
             const subreddit = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
-            const removedBy = $this.find('.flat-list li[title^="removed at"]').text();
+            const removedBy = $this.find('.flat-list li[title]').text();
 
             self.log(`  subreddit: ${subreddit}`);
             self.log(`  removedby: ${removedBy}`);

@@ -141,12 +141,13 @@ export default new Module({
         if (!$existingPopup.length) {
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
             const mySubs = await TBCore.getModSubs();
-
             // We can't expect people to get the capitalizing right.
             const mySubsLowerCase = [];
-            $(mySubs).each(function () {
-                mySubsLowerCase.push(this.toLowerCase());
+            mySubs.forEach(subreddit => {
+                mySubsLowerCase.push(subreddit.toLowerCase());
             });
+
+            const noteWikiLowerCase = notewiki.toLowerCase();
 
             // Empty subreddit.
             if (notewiki === '') {
@@ -154,7 +155,7 @@ export default new Module({
                 createPersonalNotesPopup(notesPopupContent);
 
                 // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
-            } else if (!mySubsLowerCase.includes(notewiki)) {
+            } else if (!mySubsLowerCase.includes(noteWikiLowerCase)) {
                 notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
                 createPersonalNotesPopup(notesPopupContent);
             } else {

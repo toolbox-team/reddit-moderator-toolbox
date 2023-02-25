@@ -505,7 +505,7 @@ export default new Module({
 
                 // Create, position, and display popup
                 const positions = drawPosition(clickEvent);
-                createModNotesPopup({
+                const $popup = createModNotesPopup({
                     user: author,
                     subreddit,
                     notes,
@@ -517,6 +517,9 @@ export default new Module({
                         left: positions.leftPosition,
                     })
                     .appendTo($('body'));
+
+                // Focus the note input
+                $popup.find('.tb-modnote-text-input').focus();
             });
             $badge.appendTo($target);
         }

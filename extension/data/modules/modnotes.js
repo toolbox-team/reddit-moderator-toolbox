@@ -410,9 +410,9 @@ function generateNoteTableRow (note) {
         $noteRow.append(`
             <td>
                 <a
-                    href="#"
-                    role="button"
                     class="tb-modnote-delete-button tb-icons tb-icons-negative"
+                    role="button"
+                    title="Delete note"
                     data-note-id="${escapeHTML(note.id)}"
                 >
                     ${icons.delete}

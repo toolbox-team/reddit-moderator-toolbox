@@ -15,8 +15,21 @@ import {messageHandlers} from '../messageHandling';
 //       do manual cookie overwriting.
 const shouldRewriteRequestCookies = !!browser.webRequest;
 
-/** Name of the temporary header used to pass around cookie store IDs. */
-const COOKIE_STORE_ID_HEADER = 'X-Toolbox-Temp-CookieStoreId';
+/** Name of the temporary header used to pass around the random request ID. */
+const REQUEST_ID_HEADER = 'X-Toolbox-Temp-RequestID';
+
+/** A map that stores metadata for outgoing requests Toolbox initiates. */
+const requestMetadata = new Map();
+
+/**
+ * Securely generates a random request ID.
+ * @returns {string}
+ */
+function generateRequestId () {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map(n => n.toString(16).padStart(2, '0')).join('');
+}
 
 /**
  * Retrieves the user's OAuth tokens from cookies.
@@ -213,10 +226,15 @@ export async function makeRequest ({
     }
 
     // If we need to rewrite the `Cookie` header, pass a temporary header
-    // containing the cookie store ID. This will be intercepted and replaced
-    // with a new `Cookie` header by the `onBeforeSendHeaders` listener below.
+    // containing a request ID and store the cookie store ID as  metadata. This
+    // will be intercepted and replaced with a new `Cookie` header by the
+    // `onBeforeSendHeaders` listener below.
     if (shouldRewriteRequestCookies) {
-        fetchOptions.headers[COOKIE_STORE_ID_HEADER] = cookieStoreId;
+        const requestId = generateRequestId();
+        fetchOptions.headers[REQUEST_ID_HEADER] = requestId;
+        requestMetadata.set(requestId, {
+            cookieStoreId,
+        });
     }
 
     // Perform the request
@@ -259,11 +277,20 @@ messageHandlers.set('tb-request', (requestOptions, sender) => makeRequest(reques
 // Intercept our own requests and rewrite their cookies, if needed
 if (shouldRewriteRequestCookies) {
     browser.webRequest.onBeforeSendHeaders.addListener(async ({requestHeaders, url}) => {
-        const storeId = requestHeaders.find(header => header.name === COOKIE_STORE_ID_HEADER)?.value;
-        // If we didn't set the temporary header,
+        const requestId = requestHeaders.find(header => header.name === REQUEST_ID_HEADER)?.value;
+        // If we didn't set the temporary header, do nothing
+        if (!requestId) {
+            return {};
+        }
+
+        // If we didn't save a cookie store for this request, do nothing
+        const storeId = requestMetadata.get(requestId)?.cookieStoreId;
         if (!storeId) {
             return {};
         }
+
+        // Delete the request's metadata so it can't be reused
+        requestMetadata.delete(requestId);
 
         // Retrieve cookies for this URL from the specified cookie store
         const cookies = await browser.cookies.getAll({storeId, url});
@@ -272,7 +299,7 @@ if (shouldRewriteRequestCookies) {
         // Rewrite the response with modified headers
         requestHeaders = requestHeaders
             // Remove temporary header and old `Cookie` header
-            .filter(header => !['Cookie'/* , COOKIE_STORE_ID_HEADER */].includes(header.name))
+            .filter(header => !['Cookie'/* , REQUEST_ID_HEADER */].includes(header.name))
             // Add a new `Cookie` header with the cookies we retrieved
             .concat({
                 name: 'Cookie',

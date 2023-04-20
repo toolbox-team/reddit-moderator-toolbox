@@ -299,7 +299,7 @@ if (shouldRewriteRequestCookies) {
         // Rewrite the response with modified headers
         requestHeaders = requestHeaders
             // Remove temporary header and old `Cookie` header
-            .filter(header => !['Cookie'/* , REQUEST_ID_HEADER */].includes(header.name))
+            .filter(header => !['Cookie', REQUEST_ID_HEADER].includes(header.name))
             // Add a new `Cookie` header with the cookies we retrieved
             .concat({
                 name: 'Cookie',

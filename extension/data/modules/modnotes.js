@@ -205,12 +205,14 @@ function updateModNotesBadge ($badge, note) {
  * @param {object} data Data associated with the popup
  * @param {string} data.user Name of the relevant user
  * @param {string} data.subreddit Name of the relevant subreddit
+ * @param {string} [data.contextID] Fullname of the item the popup was opened from, used to write note context
  * @param {object[]} [data.notes] Note objects for the user, or null/undefined
  * @returns {jQuery} The created popup
  */
 function createModNotesPopup ({
     user,
     subreddit,
+    contextID,
     notes,
     defaultTabName,
     defaultNoteLabel,
@@ -274,6 +276,7 @@ function createModNotesPopup ({
     });
     $popup.attr('data-user', user);
     $popup.attr('data-subreddit', subreddit);
+    $popup.attr('data-context-id', contextID);
 
     updateModNotesPopup($popup, {
         notes,
@@ -460,8 +463,10 @@ export default new Module({
 }, function ({defaultTabName, defaultNoteLabel}) {
     // Handle authors showing up on the page
     TBListener.on('author', async e => {
+        this.info(e.detail);
         const subreddit = e.detail.data.subreddit.name;
         const author = e.detail.data.author;
+        const contextID = e.detail.data.comment?.id || e.detail.data.post?.id;
 
         // Deleted users can't have notes
         if (author === '[deleted]') {
@@ -509,6 +514,7 @@ export default new Module({
                     user: author,
                     subreddit,
                     notes,
+                    contextID,
                     defaultTabName,
                     defaultNoteLabel,
                 })
@@ -551,6 +557,7 @@ export default new Module({
                 subreddit: $popup.attr('data-subreddit'),
                 note: $textInput.val(),
                 label: $labelSelect.val() || undefined,
+                redditID: $popup.attr('data-context-id'),
             });
             $textInput.val('');
             textFeedback('Note saved', FEEDBACK_POSITIVE);

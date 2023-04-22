@@ -7,6 +7,7 @@ import browser from 'webextension-polyfill';
 import {messageHandlers} from '../messageHandling';
 
 const TB_CACHE_PREFIX = 'TBCache';
+const userCacheExpireTime = 1000 * 60 * 60 * 24;
 
 const storageShortLengthKey = 'Toolbox.Utils.shortLength';
 const storageLongLengthKey = 'Toolbox.Utils.longLength';
@@ -31,7 +32,48 @@ async function clearCache (redditSessionUserId) {
     await browser.storage.local.remove(cacheKeys);
 }
 
+let staleCacheCleaningInProgress = false;
+async function staleUserCacheCleanup (redditUserIdBase36) {
+    // Cache gets called upon a lot.
+    // To prevent conflicts processing of stale cache cleaning is locked
+    // by the first cache call that gets to it.
+    // There is a small risk of a scenario where this function is locked through on user
+    // and the interaction time of a different user not being updated
+    // But as the expiry time is long and people generally don't browser with two users
+    // at the exact same time we willing to take this risk
+    if (staleCacheCleaningInProgress) {
+        return;
+    }
+    staleCacheCleaningInProgress = true;
+
+    const result = await browser.storage.local.get({userCacheInteractionTimes: {}});
+
+    // Set interaction time for current user.
+    result.userCacheInteractionTimes[redditUserIdBase36] = Date.now();
+
+    Object.entries(result.userCacheInteractionTimes).forEach(([key, value]) => {
+        if (Date.now() - value > userCacheExpireTime) {
+            console.log('User cache stale: ', key);
+            clearCache(key);
+            delete result.userCacheInteractionTimes[key];
+        }
+    });
+
+    await browser.storage.local.set({
+        userCacheInteractionTimes: result.userCacheInteractionTimes,
+    });
+
+    staleCacheCleaningInProgress = false;
+}
+
+/**
+ * gets the reddit user ID based on the current `reddit_session` cookie data
+ * @param sender browser.runtime.onMessage sender object containing tab data
+ * @returns {promise<string>}
+ */
 async function getSessionUserID (sender) {
+    let redditUserIdBase36;
+
     // get specific user id for the cache key.
     const redditSessionCookieInfo = {
         storeId: sender.tab.cookieStoreId,
@@ -39,21 +81,36 @@ async function getSessionUserID (sender) {
         url: sender.tab.url,
     };
     let redditSessionCookie;
+
     try {
         redditSessionCookie = await browser.cookies.get(redditSessionCookieInfo);
     } catch (error) {
-        console.error(error);
-        // If first-party isolation is enabled in Firefox, `cookies.get`
-        // throws when not provided a `firstPartyDomain`, so we try again
-        // passing the first-party domain for the cookie we're looking for.
+        console.error('getSessionUserID cookie get 1: ', error);
+    }
+    // If first-party isolation is enabled in Firefox, `cookies.get`
+    // throws when not provided a `firstPartyDomain`, so we try again
+    // passing the first-party domain for the cookie we're looking for.
+    if (!redditSessionCookie) {
         redditSessionCookieInfo.firstPartyDomain = 'reddit.com';
-        redditSessionCookie = await browser.cookies.get(redditSessionCookieInfo);
+        try {
+            redditSessionCookie = await browser.cookies.get(redditSessionCookieInfo);
+        } catch (error) {
+            console.error('getSessionUserID cookie get 2: ', error);
+        }
     }
 
-    // The session value contains comma seperated values. The first one is the the userid in base10.
-    // We could do a base36 conversion to bring it in line with the user id as used in the api.
-    // But that is not really needed so we leave it like this.
-    return decodeURIComponent(redditSessionCookie.value).split(',')[0];
+    if (redditSessionCookie) {
+        // The session value contains comma seperated values. The first one is the the userid in base10.
+        // As reddit uses base36 everywhere else we convert the ID to that so things are easier to debug.
+        const redditUserIdBase10 = decodeURIComponent(redditSessionCookie.value).split(',')[0];
+        redditUserIdBase36 = parseInt(redditUserIdBase10).toString(36);
+    } else {
+        redditUserIdBase36 = 'noSessionFallback';
+    }
+
+    staleUserCacheCleanup(redditUserIdBase36);
+
+    return redditUserIdBase36;
 }
 
 // Handle getting/setting/clearing cache values

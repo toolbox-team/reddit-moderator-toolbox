@@ -463,7 +463,6 @@ export default new Module({
 }, function ({defaultTabName, defaultNoteLabel}) {
     // Handle authors showing up on the page
     TBListener.on('author', async e => {
-        this.info(e.detail);
         const subreddit = e.detail.data.subreddit.name;
         const author = e.detail.data.author;
         const contextID = e.detail.data.comment?.id || e.detail.data.post?.id;

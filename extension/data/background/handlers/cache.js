@@ -85,18 +85,11 @@ async function getSessionUserID (sender) {
     try {
         redditSessionCookie = await browser.cookies.get(redditSessionCookieInfo);
     } catch (error) {
-        console.error('getSessionUserID cookie get 1: ', error);
-    }
-    // If first-party isolation is enabled in Firefox, `cookies.get`
-    // throws when not provided a `firstPartyDomain`, so we try again
-    // passing the first-party domain for the cookie we're looking for.
-    if (!redditSessionCookie) {
+        // If first-party isolation is enabled in Firefox, `cookies.get`
+        // throws when not provided a `firstPartyDomain`, so we try again
+        // passing the first-party domain for the cookie we're looking for.
         redditSessionCookieInfo.firstPartyDomain = 'reddit.com';
-        try {
-            redditSessionCookie = await browser.cookies.get(redditSessionCookieInfo);
-        } catch (error) {
-            console.error('getSessionUserID cookie get 2: ', error);
-        }
+        redditSessionCookie = await browser.cookies.get(redditSessionCookieInfo);
     }
 
     if (redditSessionCookie) {

@@ -18,18 +18,11 @@ async function getOAuthTokens (tries = 1) {
     try {
         rawCookie = await browser.cookies.get(cookieInfo);
     } catch (error) {
-        console.error('getOAuthTokens cookie get 1: ', error);
-    }
-    // If first-party isolation is enabled in Firefox, `cookies.get`
-    // throws when not provided a `firstPartyDomain`, so we try again
-    // passing the first-party domain for the cookie we're looking for.
-    if (!rawCookie) {
+        // If first-party isolation is enabled in Firefox, `cookies.get`
+        // throws when not provided a `firstPartyDomain`, so we try again
+        // passing the first-party domain for the cookie we're looking for.
         cookieInfo.firstPartyDomain = 'reddit.com';
-        try {
-            rawCookie = await browser.cookies.get(cookieInfo);
-        } catch (error) {
-            console.error('getOAuthTokens cookie get 2: ', error);
-        }
+        rawCookie = await browser.cookies.get(cookieInfo);
     }
 
     // Make sure the cookie is still valid

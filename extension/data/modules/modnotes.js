@@ -45,7 +45,7 @@ const labelColors = {
     BAN: 'red',
     ABUSE_WARNING: 'orange',
     SPAM_WARNING: 'purple',
-    SPAM_WATCH: 'fuschia',
+    SPAM_WATCH: 'fuchsia',
     SOLID_CONTRIBUTOR: 'green',
     HELPFUL_USER: 'lightseagreen',
 };

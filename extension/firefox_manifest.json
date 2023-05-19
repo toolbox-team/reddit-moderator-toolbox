@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "6.1.2",
-    "version_name": "6.1.2: \"Delaying Donkey\"",
+    "version": "6.1.3",
+    "version_name": "6.1.3: \"Delaying Donkey\"",
     "browser_specific_settings": {
         "gecko": {
             "id": "yes@jetpack",

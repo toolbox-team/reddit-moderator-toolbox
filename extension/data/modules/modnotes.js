@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import {Module} from '../tbmodule.js';
-import {link, isModSub} from '../tbcore.js';
+import {link, isModSub, isNewModmail} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.js';
 import {
@@ -465,7 +465,7 @@ export default new Module({
     TBListener.on('author', async e => {
         const subreddit = e.detail.data.subreddit.name;
         const author = e.detail.data.author;
-        const contextID = e.detail.data.comment?.id || e.detail.data.post?.id;
+        const contextID = isNewModmail ? undefined : e.detail.data.comment?.id || e.detail.data.post?.id;
 
         // Deleted users can't have notes
         if (author === '[deleted]') {

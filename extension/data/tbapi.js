@@ -6,6 +6,7 @@ import browser from 'webextension-polyfill';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
+import {debounceWithResults} from './tbhelpers.js';
 
 const logger = TBLog('TBApi');
 
@@ -867,3 +868,21 @@ export const deleteModNote = ({subreddit, user, id}) => apiOauthDELETE('/api/mod
     user,
     note_id: id,
 });
+
+/**
+ * Fetches information in bulk about API items.
+ * @param {string[]} fullnames Fullnames of items to fetch info for
+ * @returns {Promise<object[]>} Information about each item
+ */
+export const getInfoBulk = fullnames => getJSON('/api/info', {
+    id: fullnames.join(','),
+}).then(result => result.data.children);
+
+/**
+ * Fetches information about an API item. This uses the bulk API and is
+ * debounced to collect multiple calls to send at once.
+ * @function
+ * @param {string} fullname Fullname of the item to fetch info for
+ * @returns {Promise<object>} Information about the item
+ */
+export const getInfo = debounceWithResults(fullnames => getInfoBulk(fullnames));

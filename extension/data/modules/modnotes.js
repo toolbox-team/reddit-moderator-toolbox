@@ -459,14 +459,8 @@ export default new Module({
             ],
             default: 'none',
         },
-        {
-            id: 'closeOnSave',
-            description: 'Close the mod notes window when saving a new note',
-            type: 'boolean',
-            default: false,
-        },
     ],
-}, function ({defaultTabName, defaultNoteLabel, closeOnSave}) {
+}, function ({defaultTabName, defaultNoteLabel}) {
     // Handle authors showing up on the page
     TBListener.on('author', async e => {
         const subreddit = e.detail.data.subreddit.name;
@@ -566,13 +560,9 @@ export default new Module({
             });
             $textInput.val('');
             textFeedback('Note saved', FEEDBACK_POSITIVE);
-            // TODO: add the new note to the table maybe? does creating the note
-            //       return the created note object? that would make it easy
 
-            // Close the popup after a successful save if that setting is set
-            if (closeOnSave) {
-                $popup.remove();
-            }
+            // Close the popup after a successful save
+            $popup.remove();
         } catch (error) {
             this.error('Failed to create mod note:', error);
             textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);

@@ -17,7 +17,7 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
-        "codemirror": "^5.65.11",
+        "codemirror": "^5.65.13",
         "dompurify": "^3.0.1",
         "jquery": "^3.6.4",
         "pako": "^0.2.6",

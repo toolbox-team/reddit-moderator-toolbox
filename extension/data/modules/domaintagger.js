@@ -54,41 +54,38 @@ export default new Module({
 
     // Main stuff
 
-    function run (addButton) {
+    async function run (addButton) {
         self.log(`run called with addButton=${addButton}`);
-        let $things = $('div.thing.link').not('.dt-processed');
-
-        // Mark non-mySubs as processed and remove them from collection
-        $things.filter(async function () {
-            const isMod = await TBCore.isModSub(this.dataset.subreddit);
-            return !isMod;
-        }).addClass('dt-processed');
-
-        $things = $things.not('.dt-processed');
+        let $things = $('div.thing.link:not(.dt-processed)');
 
         // Build object lists per subreddit
-        self.log('Processing things');
 
         const subs = {};
-        TBCore.forEachChunkedDynamic($things, thing => {
+        await Promise.all($things.toArray().map(async thing => {
             const $thing = $(thing),
                   sub = $thing.attr('data-subreddit');
+
+            // Mark non-mySubs as processed and remove them from collection
+            if (!await TBCore.isModSub(sub)) {
+                $thing.addClass('dt-processed');
+                return;
+            }
 
             processThing($thing, addButton);
 
             subs[sub] = subs[sub] || [];
             subs[sub].push(thing);
+        }));
+
+        // Process subreddit objects' lists
+
+        self.log('Processing subreddits');
+        self.log(Object.keys(subs));
+
+        TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
+            processSubreddit(sub, tags);
         }).then(() => {
-            // Process subreddit objects' lists
-
-            self.log('Processing subreddits');
-            self.log(Object.keys(subs));
-
-            TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
-                processSubreddit(sub, tags);
-            }).then(() => {
-                self.log('Done processing things');
-            });
+            self.log('Done processing things');
         });
     }
 

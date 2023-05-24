@@ -429,9 +429,9 @@ function generateNoteTableRow (note) {
 
     // HACK: timeago only works on elements added to the DOM, so we run it after
     //       a tick, when the caller has added the constructed row to the page
-    setTimeout(() => {
+    Promise.resolve().then(() => {
         $noteRow.find('time').timeago();
-    }, 0);
+    });
 
     return $noteRow;
 }

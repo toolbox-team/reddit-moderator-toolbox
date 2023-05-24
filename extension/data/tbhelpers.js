@@ -27,6 +27,63 @@ export function debounce (func, debounceTime = 100) {
 }
 
 /**
+ * A version of `debounce` which supports asynchronously passing values back to
+ * callers as the callback is executed. Useful for combining individual calls
+ * into a single bulk API request which takes many inputs and returns a result
+ * for every input.
+ * @template T Type of values callers can queue
+ * @template U Type of values returned to callers
+ * @param {(items: T[]) => Promise<U[]>} func Callback that receives an
+ * array of items when `debounceTime` elapses or `queueLimit` is met, and
+ * resolves to an array of values to be passed back to each corresponding caller
+ * @param {number} [debounceTime=100] Amount of time to debounce for, in ms
+ * @param {number} [queueLimit=Infinity] When the queue reaches this size, it
+ * will be flished immediately without waiting for the `debounceTime` to elapse
+ * @returns {(item: T) => Promise<U>} Function which queues an item to be
+ * processed and promises the corresponding result
+ */
+export function debounceWithResults (func, debounceTime = 100, maxQueueLength = Infinity) {
+    /** @type {number} */
+    let timeout;
+    /** @type {{item: T, resolve: (value: T) => void, reject: (error: any) => void}[]} */
+    let queue = [];
+
+    const flushQueue = () => {
+        // Grab the current queue and replace it with an empty array to collect
+        // further calls
+        const queueSnapshot = queue;
+        queue = [];
+
+        try {
+            // Call the callback with an array of accumulated items
+            const results = func(queueSnapshot.map(call => call.item));
+            // Return each result to the corresponding caller
+            results.forEach((result, i) => queueSnapshot[i].resolve(result));
+        } catch (error) {
+            // If the call failed, return the same error to all callers
+            queueSnapshot.forEach(call => call.reject(error));
+        }
+    };
+
+    return item => new Promise((resolve, reject) => {
+        // Add this call to the queue
+        queue.push({item, resolve, reject});
+
+        // Clear any existing timeout
+        clearTimeout(timeout);
+
+        // If we've hit the maximum queue length, flush the queue immediately
+        if (queue.length >= maxQueueLength) {
+            flushQueue();
+            return;
+        }
+
+        // Otherwise, flush the queue after the debounce delay
+        setTimeout(flushQueue, debounceTime);
+    });
+}
+
+/**
  * Moves an item in an array from one index to another
  * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
  * @function

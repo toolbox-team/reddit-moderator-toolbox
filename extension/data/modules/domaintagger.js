@@ -56,7 +56,7 @@ export default new Module({
 
     async function run (addButton) {
         self.log(`run called with addButton=${addButton}`);
-        let $things = $('div.thing.link:not(.dt-processed)');
+        const $things = $('div.thing.link:not(.dt-processed)');
 
         // Build object lists per subreddit
 

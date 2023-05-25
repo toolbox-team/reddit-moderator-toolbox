@@ -6,7 +6,7 @@ import browser from 'webextension-polyfill';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
-import {debounceWithResults} from './tbhelpers.js';
+import {createDeferredProcessQueue} from './tbhelpers.js';
 
 const logger = TBLog('TBApi');
 
@@ -886,4 +886,4 @@ export const getInfoBulk = fullnames => getJSON('/api/info.json', {
  * @param {string} fullname Fullname of the item to fetch info for
  * @returns {Promise<object>} Information about the item
  */
-export const getInfo = debounceWithResults(fullnames => getInfoBulk(fullnames));
+export const getInfo = createDeferredProcessQueue(fullnames => getInfoBulk(fullnames));

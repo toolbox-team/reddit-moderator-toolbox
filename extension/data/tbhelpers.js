@@ -27,25 +27,33 @@ export function debounce (func, debounceTime = 100) {
 }
 
 /**
- * A version of `debounce` which supports asynchronously passing values back to
- * callers as the callback is executed. Useful for combining individual calls
- * into a single bulk API request which takes many inputs and returns a result
- * for every input.
- * @template T Type of values callers can queue
- * @template U Type of values returned to callers
- * @param {(items: T[]) => Promise<U[]>} func Callback that receives an
- * array of items when `debounceTime` elapses or `queueLimit` is met, and
- * resolves to an array of values to be passed back to each corresponding caller
- * @param {number} [debounceTime=100] Amount of time to debounce for, in ms
- * @param {number} [queueLimit=Infinity] When the queue reaches this size, it
- * will be flished immediately without waiting for the `debounceTime` to elapse
- * @returns {(item: T) => Promise<U>} Function which queues an item to be
- * processed and promises the corresponding result
- */
-export function debounceWithResults (func, debounceTime = 100, maxQueueLength = Infinity) {
+ * Creates a processing queue that allows items to be added one at a time, and
+ * defers processing of those items until a specified delay between item
+ * additions happens, or a maximum length is reached. Returns an insert function
+ * to add items to the queue. Additionally, each invocation of the insert
+ * function returns a promise that can be awaited on to receive the processed
+ * result of the specific item added.
+ *
+ * Creating the queue requires giving it a processing function, which must take
+ * an input array of items, and return a promise that resolves to an array of
+ * corresponding results.
+ *
+ * @template Item Item queued for processing
+ * @template Result Result value from processing an item
+ * @param {(items: Item[]) => Promise<Result[]>} bulkProcess Receives an array
+ * of items from the queue and returns an array of results, where each result
+ * corresponds to the input item of the same index
+ * @param {number} [delayTime=100] This many milliseconds must pass without an
+ * item being queued before the queue is flushed
+ * @param {number} [queueLimit=Infinity] When the queue reaches this size, it is
+ * flushed immediately without waiting for the `delayTime` to elapse
+ * @returns {(item: Item) => Promise<Result>} New function which queues an item
+ * and returns a promise for the corresponding result after processing
+*/
+export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQueueLength = Infinity) {
     /** @type {number} */
     let timeout;
-    /** @type {{item: T, resolve: (value: T) => void, reject: (error: any) => void}[]} */
+    /** @type {{item: Item, resolve: (value: Item) => void, reject: (error: any) => void}[]} */
     let queue = [];
 
     const flushQueue = async () => {
@@ -56,7 +64,7 @@ export function debounceWithResults (func, debounceTime = 100, maxQueueLength = 
 
         try {
             // Call the callback with an array of accumulated items
-            const results = await func(queueSnapshot.map(call => call.item));
+            const results = await bulkProcess(queueSnapshot.map(call => call.item));
             // Return each result to the corresponding caller
             results.forEach((result, i) => queueSnapshot[i].resolve(result));
         } catch (error) {
@@ -79,7 +87,7 @@ export function debounceWithResults (func, debounceTime = 100, maxQueueLength = 
         }
 
         // Otherwise, flush the queue after the debounce delay
-        timeout = setTimeout(flushQueue, debounceTime);
+        timeout = setTimeout(flushQueue, delayTime);
     });
 }
 

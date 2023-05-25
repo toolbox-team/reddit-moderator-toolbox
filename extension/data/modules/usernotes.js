@@ -446,16 +446,22 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                           timeString = new Date(note.time).toLocaleString();
 
                     // Construct some elements separately
-                    let timeDiv;
+                    let noteTime = `
+                        <time
+                            class="utagger-date timeago"
+                            id="utagger-date-${i}"
+                            datetime="${TBHelpers.escapeHTML(timeString)}"
+                        >
+                            ${TBHelpers.escapeHTML(timeString)}
+                        </time>
+                    `;
 
                     if (note.link) {
                         let noteLink = note.link;
                         if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
                             noteLink = `https://www.reddit.com${noteLink}`;
                         }
-                        timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${noteLink}">${timeString}</a></div>`;
-                    } else {
-                        timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
+                        noteTime = `<a href="${TBHelpers.escapeHTML(noteLink)}">${noteTime}</a>`;
                     }
 
                     let typeSpan = '';
@@ -468,7 +474,7 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                         <tr class="utagger-note">
                             <td class="utagger-notes-td1">
                                 <div class="utagger-mod">${note.mod}</div>
-                                ${timeDiv}
+                                ${noteTime}
                             </td>
                             <td class="utagger-notes-td2">
                                 ${typeSpan}
@@ -478,6 +484,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                         </tr>
                     `);
                 });
+
+                // Convert to relative dates once the element is added to DOM
+                $popup.find('time.timeago').timeago();
             } else {
                 // No notes on user
                 $popup.find('#utagger-user-note-input').focus();

@@ -153,9 +153,9 @@ function getLatestModNote (subreddit, user) {
 /**
  * Gets the parent fullname of a comment.
  * @param {string} commentFullname Fullname of a comment
- * @returns {Promise<string>}
+ * @returns {Promise<string>} Fullname of the comment's parent post
  */
-async function getParentFullname (fullname) {
+async function getParentFullname (commentFullname) {
     // NOTE: This function isn't called until the module is initialized, so it's
     //       safe to reference `self` in order to read/write settings
     /* eslint-disable no-use-before-define */
@@ -164,13 +164,13 @@ async function getParentFullname (fullname) {
     let cachedParentFullnames = await self.get('cachedParentFullnames');
 
     // Search the cache for an answer first
-    const matchingIndex = cachedParentFullnames.findIndex(entry => entry[0] === fullname);
+    const matchingIndex = cachedParentFullnames.findIndex(entry => entry[0] === commentFullname);
     if (matchingIndex !== -1) {
         const parentFullname = cachedParentFullnames[matchingIndex][1];
 
         // Move the cache entry to the head of the array since we just used it
         cachedParentFullnames.splice(matchingIndex, 1);
-        cachedParentFullnames.unshift([fullname, parentFullname]);
+        cachedParentFullnames.unshift([commentFullname, parentFullname]);
 
         // Write back to the cache and return the cached parent fullname
         self.set('cachedParentFullnames', cachedParentFullnames);
@@ -178,12 +178,12 @@ async function getParentFullname (fullname) {
     }
 
     // No cached value, so fetch from API instead
-    const parentFullname = await TBApi.getInfo(fullname).then(info => info.data.parent_id);
+    const parentFullname = await TBApi.getInfo(commentFullname).then(info => info.data.parent_id);
 
     // Write result to cache and trim the cache size; fetch the cache value
     // again before changing it since others may have touched it in the meantime
     cachedParentFullnames = await self.get('cachedParentFullnames');
-    cachedParentFullnames.unshift([fullname, parentFullname]);
+    cachedParentFullnames.unshift([commentFullname, parentFullname]);
     await self.set('cachedParentFullnames', cachedParentFullnames.slice(0, PARENT_FULLNAMES_CACHE_MAX_SIZE));
     return parentFullname;
 

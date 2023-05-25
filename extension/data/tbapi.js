@@ -874,7 +874,8 @@ export const deleteModNote = ({subreddit, user, id}) => apiOauthDELETE('/api/mod
  * @param {string[]} fullnames Fullnames of items to fetch info for
  * @returns {Promise<object[]>} Information about each item
  */
-export const getInfoBulk = fullnames => getJSON('/api/info', {
+export const getInfoBulk = fullnames => getJSON('/api/info.json', {
+    raw_json: 1,
     id: fullnames.join(','),
 }).then(result => result.data.children);
 

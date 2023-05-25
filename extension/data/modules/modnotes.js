@@ -356,8 +356,8 @@ function updateModNotesPopup ($popup, {
 
 /**
  * Generates a table of the given notes.
- * @param {object[]} notes An array of note objects
- * @returns {jQuery} The generated table
+ * @param {object} note A note object
+ * @returns {jQuery} The generated table row
  */
 function generateNoteTableRow (note) {
     const createdAt = new Date(note.created_at * 1000);

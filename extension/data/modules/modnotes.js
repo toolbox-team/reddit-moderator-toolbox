@@ -148,6 +148,46 @@ function getLatestModNote (subreddit, user) {
 }
 
 /**
+ * Gets the parent fullname of a comment.
+ * @param {string} commentFullname Fullname of a comment
+ * @returns {Promise<string>}
+ */
+const getParentFullname = async fullname => {
+    // TODO: cache results so we don't have to hit the API every time
+    const parentFullname = await TBApi.getInfo(fullname).then(info => info.data.parent_id);
+    return parentFullname;
+};
+
+/**
+ * Gets a link to the context item of a note.
+ * @param {object} note A mod note object
+ * @returns {Promise<string | null>} Resolves to a URL that points to the note's
+ * context item, or `null` if there is none
+ */
+async function getContextURL (note) {
+    const itemFullname = note.user_note_data?.reddit_id || note.mod_action_data?.reddit_id;
+
+    // Can't link to something that isn't there
+    if (!itemFullname) {
+        return null;
+    }
+
+    // Post links only require the ID of the post itself, which we have
+    if (itemFullname.startsWith('t3_')) {
+        return link(`/comments/${itemFullname.replace('t3_', '')}`);
+    }
+
+    // Comment links require the ID of their parent post, which we need to fetch
+    if (itemFullname.startsWith('t1_')) {
+        const parentFullname = await getParentFullname(itemFullname);
+        return link(`/comments/${parentFullname.replace('t3_', '')}/_/${itemFullname.replace('t1_', '')}`);
+    }
+
+    // This ID is for some other item type which we can't process
+    return null;
+}
+
+/**
  * Creates a mod note badge for the given information.
  * @param {object} data Data associated with the badge
  * @param {string} data.user Name of the relevant user
@@ -426,6 +466,15 @@ function generateNoteTableRow (note) {
         // append an empty td to avoid weird border stuff
         $noteRow.append('<td>');
     }
+
+    // Check for a context URL (which might need to be fetched) and add it to
+    // the timestamp if we get one
+    getContextURL(note).then(contextURL => {
+        if (!contextURL) {
+            return;
+        }
+        $noteRow.find('time').wrap(`<a href="${escapeHTML(contextURL)}">`);
+    });
 
     // HACK: timeago only works on elements added to the DOM, so we run it after
     //       a tick, when the caller has added the constructed row to the page

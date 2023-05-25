@@ -48,7 +48,7 @@ export function debounceWithResults (func, debounceTime = 100, maxQueueLength = 
     /** @type {{item: T, resolve: (value: T) => void, reject: (error: any) => void}[]} */
     let queue = [];
 
-    const flushQueue = () => {
+    const flushQueue = async () => {
         // Grab the current queue and replace it with an empty array to collect
         // further calls
         const queueSnapshot = queue;
@@ -56,7 +56,7 @@ export function debounceWithResults (func, debounceTime = 100, maxQueueLength = 
 
         try {
             // Call the callback with an array of accumulated items
-            const results = func(queueSnapshot.map(call => call.item));
+            const results = await func(queueSnapshot.map(call => call.item));
             // Return each result to the corresponding caller
             results.forEach((result, i) => queueSnapshot[i].resolve(result));
         } catch (error) {
@@ -79,7 +79,7 @@ export function debounceWithResults (func, debounceTime = 100, maxQueueLength = 
         }
 
         // Otherwise, flush the queue after the debounce delay
-        setTimeout(flushQueue, debounceTime);
+        timeout = setTimeout(flushQueue, debounceTime);
     });
 }
 

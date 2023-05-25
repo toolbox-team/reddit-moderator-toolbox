@@ -427,7 +427,11 @@ function generateNoteTableRow (note) {
         $noteRow.append('<td>');
     }
 
-    $noteRow.find('time').timeago();
+    // HACK: timeago only works on elements added to the DOM, so we run it after
+    //       a tick, when the caller has added the constructed row to the page
+    Promise.resolve().then(() => {
+        $noteRow.find('time').timeago();
+    });
 
     return $noteRow;
 }

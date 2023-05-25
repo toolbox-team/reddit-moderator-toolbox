@@ -15,6 +15,9 @@ import {
 } from '../tbui.js';
 import TBListener from '../tblistener.js';
 
+/** The maximum number of entries in the parent fullnames cache. */
+const PARENT_FULLNAMES_CACHE_MAX_SIZE = 10000;
+
 /**
  * An object mapping modnote types to human-friendly display names.
  * @constant {object}
@@ -152,11 +155,42 @@ function getLatestModNote (subreddit, user) {
  * @param {string} commentFullname Fullname of a comment
  * @returns {Promise<string>}
  */
-const getParentFullname = async fullname => {
-    // TODO: cache results so we don't have to hit the API every time
+async function getParentFullname (fullname) {
+    // NOTE: This function isn't called until the module is initialized, so it's
+    //       safe to reference `self` in order to read/write settings
+    /* eslint-disable no-use-before-define */
+
+    /** @type {[commentFullname: string, parentFullname: string][]} */
+    let cachedParentFullnames = await self.get('cachedParentFullnames');
+
+    // Search the cache for an answer first
+    const matchingIndex = cachedParentFullnames.findIndex(entry => entry[0] === fullname);
+    if (matchingIndex !== -1) {
+        const parentFullname = cachedParentFullnames[matchingIndex][1];
+
+        // Move the cache entry to the head of the array since we just used it
+        cachedParentFullnames.splice(matchingIndex, 1);
+        cachedParentFullnames.unshift([fullname, parentFullname]);
+
+        // Write back to the cache and return the cached parent fullname
+        // eslint-disable-next-line no-use-before-define
+        self.set('cachedParentFullnames', cachedParentFullnames);
+        return parentFullname;
+    }
+
+    // No cached value, so fetch from API instead
     const parentFullname = await TBApi.getInfo(fullname).then(info => info.data.parent_id);
+
+    // Write result to cache and trim the cache size; fetch the cache value
+    // again before changing it since others may have touched it in the meantime
+    // eslint-disable-next-line no-use-before-define
+    cachedParentFullnames = await self.get('cachedParentFullnames');
+    cachedParentFullnames.unshift([fullname, parentFullname]);
+    await self.set('cachedParentFullnames', cachedParentFullnames.slice(0, PARENT_FULLNAMES_CACHE_MAX_SIZE));
     return parentFullname;
-};
+
+    /* eslint-enable no-use-before-define */
+}
 
 /**
  * Gets a link to the context item of a note.
@@ -485,7 +519,7 @@ function generateNoteTableRow (note) {
     return $noteRow;
 }
 
-export default new Module({
+const self = new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
     beta: true,
@@ -511,6 +545,13 @@ export default new Module({
                 ...Object.values(labelNames),
             ],
             default: 'none',
+        },
+        {
+            id: 'cachedParentFullnames',
+            description: 'Array of arrays mapping comment fullnames to parent post fullnames',
+            type: 'JSON',
+            hidden: true,
+            default: [],
         },
     ],
 }, function ({defaultTabName, defaultNoteLabel}) {
@@ -640,3 +681,4 @@ export default new Module({
         }
     });
 });
+export default self;

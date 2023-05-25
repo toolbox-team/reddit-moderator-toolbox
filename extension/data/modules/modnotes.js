@@ -173,7 +173,6 @@ async function getParentFullname (fullname) {
         cachedParentFullnames.unshift([fullname, parentFullname]);
 
         // Write back to the cache and return the cached parent fullname
-        // eslint-disable-next-line no-use-before-define
         self.set('cachedParentFullnames', cachedParentFullnames);
         return parentFullname;
     }
@@ -183,7 +182,6 @@ async function getParentFullname (fullname) {
 
     // Write result to cache and trim the cache size; fetch the cache value
     // again before changing it since others may have touched it in the meantime
-    // eslint-disable-next-line no-use-before-define
     cachedParentFullnames = await self.get('cachedParentFullnames');
     cachedParentFullnames.unshift([fullname, parentFullname]);
     await self.set('cachedParentFullnames', cachedParentFullnames.slice(0, PARENT_FULLNAMES_CACHE_MAX_SIZE));

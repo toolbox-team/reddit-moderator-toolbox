@@ -1042,8 +1042,10 @@ function startUsernotesManager ({unManagerLink}) {
                 $userNotes.append($note);
             });
 
-            // Set relative times on the notes
-            $userContent.find('time.timeago').timeago();
+            // Set relative times on the notes once the content is added to DOM
+            Promise.resolve().then(() => {
+                $userContent.find('time.timeago').timeago();
+            });
 
             return $userContent;
         }

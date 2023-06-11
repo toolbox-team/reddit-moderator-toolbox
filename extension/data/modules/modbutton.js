@@ -21,27 +21,27 @@ const self = new Module({
             id: 'savedSubs',
             type: 'sublist',
             default: [],
-            title: 'Saved subs (for quick access)',
+            description: 'Saved subs (for quick access)',
         },
         {
             id: 'rememberLastAction',
             type: 'boolean',
             default: false,
-            title: 'Remember last action',
+            description: 'Remember last action',
         },
         {
             id: 'globalButton',
             type: 'boolean',
             default: false,
             advanced: true,
-            title: 'Enable Global Action button',
+            description: 'Enable Global Action button',
         },
         {
             id: 'excludeGlobal',
             type: 'sublist',
             default: [],
             advanced: true,
-            title: 'Exclude subs from Global Actions',
+            description: 'Exclude subs from Global Actions',
         },
         // private storage
         {

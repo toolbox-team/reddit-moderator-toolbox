@@ -14,14 +14,14 @@ export default new Module({
             id: 'overlayFromBarRedesign',
             type: 'boolean',
             default: true,
-            title: 'In redesign when clicking queue and unmoderated icons open the old reddit variants in an overlay.',
+            description: 'In redesign when clicking queue and unmoderated icons open the old reddit variants in an overlay.',
         },
         {
             id: 'overlayFromBarOld',
             type: 'boolean',
             default: false,
             oldReddit: true,
-            title: 'Open queue and unmoderated in overlay when clicking on them from the modbar.',
+            description: 'Open queue and unmoderated in overlay when clicking on them from the modbar.',
         },
     ],
 }, async ({overlayFromBarRedesign, overlayFromBarOld}) => {

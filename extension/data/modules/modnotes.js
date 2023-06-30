@@ -564,8 +564,9 @@ export default new Module({
             });
             $textInput.val('');
             textFeedback('Note saved', FEEDBACK_POSITIVE);
-            // TODO: add the new note to the table maybe? does creating the note
-            //       return the created note object? that would make it easy
+
+            // Close the popup after a successful save
+            $popup.remove();
         } catch (error) {
             this.error('Failed to create mod note:', error);
             textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);

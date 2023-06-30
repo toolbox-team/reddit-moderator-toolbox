@@ -18,7 +18,7 @@
     "license": "Apache-2.0",
     "dependencies": {
         "codemirror": "^5.65.13",
-        "dompurify": "^3.0.1",
+        "dompurify": "^3.0.4",
         "jquery": "^3.6.4",
         "pako": "^0.2.6",
         "snuownd": "github:gamefreak/snuownd#533e8dcb67fe8e4ddc83fb8317ed0d10c25b6fcb",

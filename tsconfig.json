@@ -1,0 +1,13 @@
+{
+	"extends": "@tsconfig/recommended/tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		// we only really care about rollup output, but if we leave this unset
+		// then tooling will complain about the tsconfig.json being invalid
+		// because with allowJs and no outDir it would try to overwrite the
+		// source .js files with the built files and that's not allowed. so
+		// we just set it to somewhere out of the way
+		"outDir": "build/tsc",
+	}
+}

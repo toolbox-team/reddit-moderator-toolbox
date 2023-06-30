@@ -38,7 +38,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         ],
     },
     {
-        input: 'extension/data/background/index.js',
+        input: 'extension/data/background/index.ts',
         output: {
             file: `build/${platform}/data/background/index.js`,
             sourcemap: 'inline',

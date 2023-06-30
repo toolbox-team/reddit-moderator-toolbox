@@ -9,7 +9,7 @@ import typescript from '@rollup/plugin-typescript';
 // TODO: Pull entry point info and copied files from manifest itself
 export default ['chrome', 'firefox'].flatMap(platform => [
     {
-        input: 'extension/data/init.js',
+        input: 'extension/data/init.ts',
         output: {
             file: `build/${platform}/data/init.js`,
             // Sourcemaps without extra `web_accessible_resources` entries

@@ -144,6 +144,7 @@ async function checkLoadConditions (tries = 3) {
 
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
     // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
+    // @ts-expect-error InstallTrigger is not standard
     if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
         throw new Error('Firefox is in Incognito mode, Toolbox will not work');
     }
@@ -260,7 +261,8 @@ async function doSettingsUpdates () {
     try {
         await checkLoadConditions();
     } catch (error) {
-        logger.error('Load condition not met:', error.message);
+        // @ts-expect-error logger types are still broken
+        logger.error('Load condition not met:', (error as Error).message);
         return;
     }
 
@@ -274,7 +276,8 @@ async function doSettingsUpdates () {
     }
 
     // new profiles have some weird css going on. This remedies the weirdness...
-    window.addEventListener('TBNewPage', event => {
+    // TODO: make proper event types instead of using `any`
+    window.addEventListener('TBNewPage', (event: any) => {
         if (event.detail.pageType === 'userProfile') {
             $body.addClass('mod-toolbox-profile');
         } else {
@@ -343,6 +346,7 @@ async function doSettingsUpdates () {
         Achievements,
         OldReddit,
     ]) {
+        // @ts-expect-error TODO logger types are still broken
         logger.debug('Registering module', m);
         TBModule.register_module(m);
     }

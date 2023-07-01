@@ -446,7 +446,7 @@ export async function setSettingAsync (module, setting, value, syncSettings = tr
  * Gets a value in the cache.
  * @param {string} module The module that owns the cache key
  * @param {string} setting The name of the cache key
- * @param {any} defaultVal The value returned if there is no cached value
+ * @param {any} [defaultVal] The value returned if there is no cached value
  * @returns {Promise<any>}
  */
 export function getCache (module, setting, defaultVal) {

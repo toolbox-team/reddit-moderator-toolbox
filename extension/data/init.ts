@@ -29,7 +29,7 @@ import * as TBStorage from './tbstorage.js';
 import {delay} from './tbhelpers.js';
 import TBModule from './tbmodule.js';
 import * as TBCore from './tbcore.js';
-import * as TBApi from './tbapi.js';
+import * as TBApi from './tbapi';
 import TBListener from './tblistener.js';
 
 import Devtools from './modules/devtools.js';

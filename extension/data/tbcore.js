@@ -3,8 +3,8 @@ import $ from 'jquery';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
-import * as TBApi from './tbapi.js';
-import {getModhash} from './tbapi.js';
+import * as TBApi from './tbapi.ts';
+import {getModhash} from './tbapi.ts';
 import {icons} from './tbconstants.js';
 import * as TBHelpers from './tbhelpers.js';
 

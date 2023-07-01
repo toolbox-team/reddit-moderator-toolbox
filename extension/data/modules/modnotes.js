@@ -204,15 +204,18 @@ async function getContextURL (note) {
         return null;
     }
 
+    // Split fullname into type and ID
+    const [itemType, itemID] = itemFullname.split('_');
+
     // Post links only require the ID of the post itself, which we have
-    if (itemFullname.startsWith('t3_')) {
-        return link(`/comments/${itemFullname.replace('t3_', '')}`);
+    if (itemType === 't3_') {
+        return link(`/comments/${itemID}`);
     }
 
     // Comment links require the ID of their parent post, which we need to fetch
-    if (itemFullname.startsWith('t1_')) {
+    if (itemType === 't1_') {
         const parentFullname = await getParentFullname(itemFullname);
-        return link(`/comments/${parentFullname.replace('t3_', '')}/_/${itemFullname.replace('t1_', '')}`);
+        return link(`/comments/${parentFullname.replace('t3_', '')}/_/${itemID}`);
     }
 
     // This ID is for some other item type which we can't process

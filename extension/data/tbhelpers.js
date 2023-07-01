@@ -27,6 +27,74 @@ export function debounce (func, debounceTime = 100) {
 }
 
 /**
+ * Creates a processing queue that allows items to be added one at a time, and
+ * defers processing of those items until a specified delay between item
+ * additions happens, or a maximum length is reached. Returns an insert function
+ * to add items to the queue. Additionally, each invocation of the insert
+ * function returns a promise that can be awaited on to receive the processed
+ * result of the specific item added.
+ *
+ * Creating the queue requires giving it a processing function, which must take
+ * an input array of items, and return a promise that resolves to an array of
+ * corresponding results.
+ *
+ * @template Item Item queued for processing
+ * @template Result Result value from processing an item
+ * @param {(items: Item[]) => Promise<Result[]>} bulkProcess Receives an array
+ * of items from the queue and returns an array of results, where each result
+ * corresponds to the input item of the same index
+ * @param {number} [delayTime=100] This many milliseconds must pass without an
+ * item being queued before the queue is flushed
+ * @param {number} [queueLimit=Infinity] When the queue reaches this size, it is
+ * flushed immediately without waiting for the `delayTime` to elapse
+ * @returns {(item: Item) => Promise<Result>} New function which queues an item
+ * and returns a promise for the corresponding result after processing
+*/
+export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQueueLength = Infinity) {
+    /** @type {number} */
+    let timeout;
+    /** @type {{item: Item, resolve: (value: Item) => void, reject: (error: any) => void}[]} */
+    let queue = [];
+
+    const flushQueue = async () => {
+        // Grab the current queue and replace it with an empty array to collect
+        // further calls
+        const queueSnapshot = queue;
+        queue = [];
+
+        let results;
+        try {
+            // Call the callback with an array of accumulated items
+            results = await bulkProcess(queueSnapshot.map(call => call.item));
+        } catch (error) {
+            // If the call failed, return the same error to all callers
+            queueSnapshot.forEach(call => call.reject(error));
+            return;
+        }
+
+        // Return each result to the corresponding caller
+        results.forEach((result, i) => queueSnapshot[i].resolve(result));
+    };
+
+    return item => new Promise((resolve, reject) => {
+        // Add this call to the queue
+        queue.push({item, resolve, reject});
+
+        // Clear any existing timeout
+        clearTimeout(timeout);
+
+        // If we've hit the maximum queue length, flush the queue immediately
+        if (queue.length >= maxQueueLength) {
+            flushQueue();
+            return;
+        }
+
+        // Otherwise, flush the queue after the debounce delay
+        timeout = setTimeout(flushQueue, delayTime);
+    });
+}
+
+/**
  * Moves an item in an array from one index to another
  * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
  * @function

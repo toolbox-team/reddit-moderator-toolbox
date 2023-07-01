@@ -15,6 +15,9 @@ import {
 } from '../tbui.js';
 import TBListener from '../tblistener.js';
 
+/** The maximum number of entries in the parent fullnames cache. */
+const PARENT_FULLNAMES_CACHE_MAX_SIZE = 10000;
+
 /**
  * An object mapping modnote types to human-friendly display names.
  * @constant {object}
@@ -145,6 +148,78 @@ function getLatestModNote (subreddit, user) {
             }
         }
     }
+}
+
+/**
+ * Gets the parent fullname of a comment.
+ * @param {string} commentFullname Fullname of a comment
+ * @returns {Promise<string>} Fullname of the comment's parent post
+ */
+async function getParentFullname (commentFullname) {
+    // NOTE: This function isn't called until the module is initialized, so it's
+    //       safe to reference `self` in order to read/write settings
+    /* eslint-disable no-use-before-define */
+
+    /** @type {[commentFullname: string, parentFullname: string][]} */
+    let cachedParentFullnames = await self.get('cachedParentFullnames');
+
+    // Search the cache for an answer first
+    const matchingIndex = cachedParentFullnames.findIndex(entry => entry[0] === commentFullname);
+    if (matchingIndex !== -1) {
+        const parentFullname = cachedParentFullnames[matchingIndex][1];
+
+        // Move the cache entry to the head of the array since we just used it
+        cachedParentFullnames.splice(matchingIndex, 1);
+        cachedParentFullnames.unshift([commentFullname, parentFullname]);
+
+        // Write back to the cache and return the cached parent fullname
+        self.set('cachedParentFullnames', cachedParentFullnames);
+        return parentFullname;
+    }
+
+    // No cached value, so fetch from API instead
+    const parentFullname = await TBApi.getInfo(commentFullname).then(info => info.data.parent_id);
+
+    // Write result to cache and trim the cache size; fetch the cache value
+    // again before changing it since others may have touched it in the meantime
+    cachedParentFullnames = await self.get('cachedParentFullnames');
+    cachedParentFullnames.unshift([commentFullname, parentFullname]);
+    await self.set('cachedParentFullnames', cachedParentFullnames.slice(0, PARENT_FULLNAMES_CACHE_MAX_SIZE));
+    return parentFullname;
+
+    /* eslint-enable no-use-before-define */
+}
+
+/**
+ * Gets a link to the context item of a note.
+ * @param {object} note A mod note object
+ * @returns {Promise<string | null>} Resolves to a URL that points to the note's
+ * context item, or `null` if there is none
+ */
+async function getContextURL (note) {
+    const itemFullname = note.user_note_data?.reddit_id || note.mod_action_data?.reddit_id;
+
+    // Can't link to something that isn't there
+    if (!itemFullname) {
+        return null;
+    }
+
+    // Split fullname into type and ID
+    const [itemType, itemID] = itemFullname.split('_');
+
+    // Post links only require the ID of the post itself, which we have
+    if (itemType === 't3') {
+        return link(`/comments/${itemID}`);
+    }
+
+    // Comment links require the ID of their parent post, which we need to fetch
+    if (itemType === 't1') {
+        const parentFullname = await getParentFullname(itemFullname);
+        return link(`/comments/${parentFullname.replace('t3_', '')}/_/${itemID}`);
+    }
+
+    // This ID is for some other item type which we can't process
+    return null;
 }
 
 /**
@@ -356,8 +431,8 @@ function updateModNotesPopup ($popup, {
 
 /**
  * Generates a table of the given notes.
- * @param {object[]} notes An array of note objects
- * @returns {jQuery} The generated table
+ * @param {object} note A note object
+ * @returns {jQuery} The generated table row
  */
 function generateNoteTableRow (note) {
     const createdAt = new Date(note.created_at * 1000);
@@ -427,6 +502,15 @@ function generateNoteTableRow (note) {
         $noteRow.append('<td>');
     }
 
+    // Check for a context URL (which might need to be fetched) and add it to
+    // the timestamp if we get one
+    getContextURL(note).then(contextURL => {
+        if (!contextURL) {
+            return;
+        }
+        $noteRow.find('time').wrap(`<a href="${escapeHTML(contextURL)}">`);
+    });
+
     // HACK: timeago only works on elements added to the DOM, so we run it after
     //       a tick, when the caller has added the constructed row to the page
     Promise.resolve().then(() => {
@@ -436,7 +520,7 @@ function generateNoteTableRow (note) {
     return $noteRow;
 }
 
-export default new Module({
+const self = new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
     beta: true,
@@ -462,6 +546,13 @@ export default new Module({
                 ...Object.values(labelNames),
             ],
             default: 'none',
+        },
+        {
+            id: 'cachedParentFullnames',
+            description: 'Array of arrays mapping comment fullnames to parent post fullnames',
+            type: 'JSON',
+            hidden: true,
+            default: [],
         },
     ],
 }, function ({defaultTabName, defaultNoteLabel}) {
@@ -592,3 +683,4 @@ export default new Module({
         }
     });
 });
+export default self;

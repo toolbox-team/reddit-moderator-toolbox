@@ -5,10 +5,9 @@
 [![DeepScan grade](https://deepscan.io/api/teams/5774/projects/7592/branches/79819/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=5774&pid=7592&bid=79819)
 [![chrome web store version](https://img.shields.io/chrome-web-store/v/jhjpjhhkcbkmgdkahnckfboefnkgghpo?logo=googlechrome&logoColor=fff)][webstore]
 [![mozilla add-ons version](https://img.shields.io/amo/v/reddit-moderator-toolbox?logo=firefoxbrowser&logoColor=fff)][amo]
-[![edge extension version](https://img.shields.io/badge/dynamic/json?label=edge%20add-on&logo=microsoftedge&logoColor=fff&prefix=v&query=%24.version&url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Fnolhfmoadpbgfeonfnjlcfmhhkmdlfcl)][edge-store]
 [![Discord](https://img.shields.io/discord/535490452066009090?color=7373d7&label=discord&logo=discord&logoColor=fff)][discord]
 
-A set of tools to be used by moderators on Reddit in order to make their jobs easier. Install toolbox from [the Chrome Webstore][webstore], [the Mozilla add-ons store][amo], or [the Edge add-ons store][edge-store], or read the [user documentation][user-docs].
+A set of tools to be used by moderators on Reddit in order to make their jobs easier. Install toolbox from [the Chrome Webstore][webstore] or [the Mozilla add-ons store][amo], or read the [user documentation][user-docs].
 
 ## Reporting issues and feature requests
 

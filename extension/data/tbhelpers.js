@@ -71,7 +71,7 @@ export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQue
             queueSnapshot.forEach(call => call.reject(error));
             return;
         }
-        
+
         // Return each result to the corresponding caller
         results.forEach((result, i) => queueSnapshot[i].resolve(result));
     };

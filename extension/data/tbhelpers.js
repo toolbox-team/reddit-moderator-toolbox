@@ -62,15 +62,18 @@ export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQue
         const queueSnapshot = queue;
         queue = [];
 
+        let results;
         try {
             // Call the callback with an array of accumulated items
-            const results = await bulkProcess(queueSnapshot.map(call => call.item));
-            // Return each result to the corresponding caller
-            results.forEach((result, i) => queueSnapshot[i].resolve(result));
+            results = await bulkProcess(queueSnapshot.map(call => call.item));
         } catch (error) {
             // If the call failed, return the same error to all callers
             queueSnapshot.forEach(call => call.reject(error));
+            return;
         }
+        
+        // Return each result to the corresponding caller
+        results.forEach((result, i) => queueSnapshot[i].resolve(result));
     };
 
     return item => new Promise((resolve, reject) => {

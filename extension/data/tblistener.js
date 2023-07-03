@@ -19,7 +19,6 @@ const listenerAliases = {
     TBcommentOldReddit: ['comment'],
     TBpost: ['post'],
     TBuserHovercard: ['userHovercard'],
-    TBuserModmailSidebar: ['userHovercard'],
     TBmodmailCommentAuthor: ['author'],
 };
 

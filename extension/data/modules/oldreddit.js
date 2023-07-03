@@ -230,30 +230,20 @@ function newModmailConversationAuthors () {
 }
 
 /**
- * Makes sure to fire a jsAPI `TBuserHovercard` (old sidebar) or `TBuserModmailSidebar` (new sidebar) event for new modmail sidebar instances.
+ * Makes sure to fire a jsAPI `TBuserHovercard` event for new modmail sidebar instances.
  * @function
  */
 function newModmailSidebar () {
     setTimeout(() => {
         const $body = $('body');
         if ($body.find('.ThreadViewer').length) {
-            let $modmailSidebar = $body.find('.NewInfoBar__idCard:not(.tb-seen), .NewInfoBar__idCard:not(.tb-seen)');
-            let sidebarEvent = 'TBuserModmailSidebar';
-            let jsApiPlaceHolder = `
-                <div class="tb-jsapi-container">
+            const $modmailSidebar = $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen), .InfoBar__idCard:not(.tb-seen)');
+            const jsApiPlaceHolder = `
+                <div class="tb-jsapi-container tb-modmail-sidebar-container">
+                    <div class="InfoBar__recentsTitle">Toolbox functions:</div>
                     <span data-name="toolbox"></span>
                 </div>
-                `;
-            if (!$modmailSidebar.length) {
-                $modmailSidebar = $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)');
-                sidebarEvent = 'TBuserHovercard';
-                jsApiPlaceHolder = `
-                    <div class="tb-jsapi-container InfoBar__recents">
-                        <div class="InfoBar__recentsTitle">Toolbox functions:</div>
-                        <span data-name="toolbox"></span>
-                    </div>
-                    `;
-            }
+            `;
             $modmailSidebar.each(async function () {
                 const $infobar = $(this);
                 $infobar.addClass('tb-seen');
@@ -263,7 +253,7 @@ function newModmailSidebar () {
                 const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
 
                 const detailObject = {
-                    type: sidebarEvent,
+                    type: 'TBuserHovercard',
                     data: {
                         user: {
                             username: info.user || '[deleted]',

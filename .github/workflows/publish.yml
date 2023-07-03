@@ -15,7 +15,10 @@ jobs:
         node-version: '16'
     - run: npm ci
     - run: npm run eslint
-    - run: npm run build:release
+    - env:
+        NODE_ENV: production
+      run: npm run build
+
     - name: Upload release build artifact - Chrome
       uses: actions/upload-artifact@v3
       with:

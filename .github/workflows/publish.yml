@@ -19,17 +19,20 @@ jobs:
         NODE_ENV: production
       run: npm run build
 
+    - run: zip release-build-chrome.zip build/chrome/*
+    - run: zip release-build-firefox.zip build/firefox/*
+
     - name: Upload release build artifact - Chrome
       uses: actions/upload-artifact@v3
       with:
         name: release-build-chrome
-        path: build/chrome/*
+        path: release-build-chrome.zip
     - name: Upload release build artifact - Firefox
       uses: actions/upload-artifact@v3
       with:
         name: release-build-firefox
-        path: build/firefox/*
-      
+        path: release-build-firefox.zip
+
   publish-chrome:
     runs-on: ubuntu-latest
     steps:

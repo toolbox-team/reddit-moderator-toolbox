@@ -69,7 +69,7 @@ jobs:
     steps:
     - id: get-version
       run: echo "version=${GITHUB_REF/refs\/tags\//}" >> "$GITHUB_OUTPUT"
-    - uses: eritbh/action-publish-release-drafts@v0
+    - uses: eritbh/action-publish-release-drafts@b30c6d4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         tag-name: ${{ steps.get-version.outputs.version }}

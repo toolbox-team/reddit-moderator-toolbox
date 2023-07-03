@@ -40,14 +40,13 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: release-build-chrome
-    - run: ls -lA
-#    - uses: wdzeng/chrome-extension@v1
-#      with:
-#        extension-id: jhjpjhhkcbkmgdkahnckfboefnkgghpo
-#        zip-path: release-build-chrome.zip
-#        client-id: ${{ secrets.CWS_CLIENT_ID }}
-#        client-secret: ${{ secrets.CWS_CLIENT_SECRET }}
-#        refresh-token: ${{ secrets.CWS_REFRESH_TOKEN }}
+    - uses: wdzeng/chrome-extension@v1
+      with:
+        extension-id: jhjpjhhkcbkmgdkahnckfboefnkgghpo
+        zip-path: release-build-chrome.zip
+        client-id: ${{ secrets.CWS_CLIENT_ID }}
+        client-secret: ${{ secrets.CWS_CLIENT_SECRET }}
+        refresh-token: ${{ secrets.CWS_REFRESH_TOKEN }}
 
   publish-firefox:
     runs-on: ubuntu-latest
@@ -57,13 +56,12 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: release-build-firefox
-    - run: ls -lA
-#    - uses: wdzeng/firefox-addon@v1
-#      with:
-#        addon-guid: yes@jetpack
-#        xpi-path: release-build-firefox.zip
-#        jwt-issuer: ${{ secrets.AMO_JWT_ISSUER }}
-#        jwt-secret: ${{ secrets.AMO_JWT_SECRET }}
+    - uses: wdzeng/firefox-addon@v1
+      with:
+        addon-guid: yes@jetpack
+        xpi-path: release-build-firefox.zip
+        jwt-issuer: ${{ secrets.AMO_JWT_ISSUER }}
+        jwt-secret: ${{ secrets.AMO_JWT_SECRET }}
 
   releasenotes:
     runs-on: ubuntu-latest

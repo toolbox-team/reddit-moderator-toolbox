@@ -21,13 +21,13 @@ jobs:
     - name: Zip Chrome build
       run: |
         pushd build/chrome
-        zip release-build-chrome.zip ./*
+        zip -r release-build-chrome.zip ./*
         mv release-build-chrome.zip ../..
         popd
     - name: Zip Firefox build
       run: |
         pushd build/firefox
-        zip release-build-firefox.zip ./*
+        zip -r release-build-firefox.zip ./*
         mv release-build-firefox.zip ../..
         popd
 

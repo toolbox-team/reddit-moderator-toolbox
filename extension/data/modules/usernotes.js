@@ -443,16 +443,16 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                     // which searches a saved version based on ID.
                     const noteId = Math.trunc(note.time / 1000) * 1000,
                           noteString = TBHelpers.htmlEncode(note.note),
-                          timeString = new Date(note.time).toLocaleString();
+                          date = new Date(note.time);
 
                     // Construct some elements separately
                     let noteTime = `
                         <time
                             class="utagger-date timeago"
                             id="utagger-date-${i}"
-                            datetime="${TBHelpers.escapeHTML(timeString)}"
+                            datetime="${TBHelpers.escapeHTML(date.toISOString())}"
                         >
-                            ${TBHelpers.escapeHTML(timeString)}
+                            ${TBHelpers.escapeHTML(date.toLocaleString())}
                         </time>
                     `;
 

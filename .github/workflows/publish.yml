@@ -1,3 +1,4 @@
+name: "Publish"
 on:
   push:
     tags:
@@ -66,7 +67,7 @@ jobs:
     steps:
     - id: get-version
       run: echo "version=${GITHUB_REF/refs\/tags\//}" >> "$GITHUB_OUTPUT"
-    - uses: eritbh/action-publish-release-drafts@b30c6d4
+    - uses: eritbh/action-publish-release-drafts@b30c6d40e0a49c6cc5acb2f0edac09f2ba155b39
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         tag-name: ${{ steps.get-version.outputs.version }}

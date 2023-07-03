@@ -831,6 +831,11 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
 /* New modmail sidebar toolbox buttons styling
 */
 
+.mod-toolbox-rd .tb-modmail-sidebar-container {
+    margin-block-start: 0.5rem;
+    padding-inline: 1rem;
+}
+
 body.mod-toolbox-rd .NewInfoBar__idCard .tb-jsapi-container {
     width: 100%;
 }

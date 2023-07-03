@@ -243,16 +243,16 @@ function newModmailSidebar () {
                 <div class="tb-jsapi-container">
                     <span data-name="toolbox"></span>
                 </div>
-                `;
+            `;
             if (!$modmailSidebar.length) {
-                $modmailSidebar = $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen)');
+                $modmailSidebar = $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen), .InfoBar__idCard:not(.tb-seen)');
                 sidebarEvent = 'TBuserHovercard';
                 jsApiPlaceHolder = `
-                    <div class="tb-jsapi-container InfoBar__recents">
+                    <div class="tb-jsapi-container tb-modmail-sidebar-container">
                         <div class="InfoBar__recentsTitle">Toolbox functions:</div>
                         <span data-name="toolbox"></span>
                     </div>
-                    `;
+                `;
             }
             $modmailSidebar.each(async function () {
                 const $infobar = $(this);

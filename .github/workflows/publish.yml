@@ -1,4 +1,3 @@
-name: Publish release to stores
 on:
   push:
     tags:
@@ -50,7 +49,6 @@ jobs:
   publish-firefox:
     runs-on: ubuntu-latest
     needs: build-release
-    name: Publish to Mozilla Add-ons
     steps:
     - uses: actions/download-artifact@v3
       with:
@@ -62,10 +60,9 @@ jobs:
         jwt-issuer: ${{ secrets.AMO_JWT_ISSUER }}
         jwt-secret: ${{ secrets.AMO_JWT_SECRET }}
 
-  releasenotes:
+  publish-github-release:
     runs-on: ubuntu-latest
     needs: build-release
-    name: Publishe drafted Github release
     steps:
     - id: get-version
       run: echo "version=${GITHUB_REF/refs\/tags\//}" >> "$GITHUB_OUTPUT"

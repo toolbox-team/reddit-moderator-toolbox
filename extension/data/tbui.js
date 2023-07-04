@@ -1073,8 +1073,7 @@ export function makeSubmissionEntry (submission, submissionOptions) {
           submissionBanNote = submission.data.ban_note;
 
     // Format the submission datetime nicely
-    const submissionReadableCreatedUTC = TBHelpers.timeConverterRead(submissionCreatedUTC),
-          createdTimeAgo = new Date(submissionCreatedUTC * 1000).toISOString();
+    const createdAt = new Date(submissionCreatedUTC * 1000);
 
     // vote status
     let voteState = 'neutral';
@@ -1143,14 +1142,6 @@ export function makeSubmissionEntry (submission, submissionOptions) {
         commentsButtonText = `${submissionNumComments} comments`;
     }
 
-    // Indicate if a submission has been edited or not.
-    let editedHtml;
-    if (submissionEdited) {
-        const submissionReadableEdited = TBHelpers.timeConverterRead(submissionEdited),
-              editedTimeAgo = new Date(submissionEdited * 1000).toISOString();
-        editedHtml = `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
-    }
-
     const $buildsubmission = $(`
             <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-fullname="${submissionName}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score ${voteState}">${submissionScore}</div>
@@ -1166,8 +1157,8 @@ export function makeSubmissionEntry (submission, submissionOptions) {
                     </div>
                     ${submissionIsSelf && submissionSelfTextHTML ? `<div class="tb-self-expando-button"><i class="tb-icons">${icons.add}</i></div>` : ''}
                     <div class="tb-tagline">
-                        submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
-                        ${submissionEdited ? editedHtml : ''}
+                        submitted <span class="tb-submission-submitted"></span>
+                        ${submissionEdited ? '<span class="tb-submission-edited">*last edited </span>' : ''}
                         by ${submissionAuthor === '[deleted]' ? `
                             <span>[deleted]</span>
                         ` : `
@@ -1193,6 +1184,19 @@ export function makeSubmissionEntry (submission, submissionOptions) {
                 </div>
             </div>
             `);
+
+    // Add submission time
+    relativeTime(createdAt)
+        .addClass('tb-live-timestamp')
+        .appendTo($buildsubmission.find('.tb-submission-submitted'));
+
+    // Indicate if item is edited
+    if (submissionEdited) {
+        const editedAt = new Date(submissionEdited * 1000);
+        relativeTime(editedAt)
+            .addClass('tb-live-timestamp')
+            .appendTo($buildsubmission.find('.tb-submission-edited'));
+    }
 
     // Links in the provided post body might be domain-relative, which won't
     // work if we're in modmail; rewrite link hrefs as appropriate
@@ -1413,8 +1417,7 @@ export function makeSingleComment (comment, commentOptions = {}) {
     }
 
     // Format the comment datetime nicely
-    const commentReadableCreatedUTC = TBHelpers.timeConverterRead(commentCreatedUTC),
-          createdTimeAgo = new Date(commentCreatedUTC * 1000).toISOString();
+    const createdAt = new Date(commentCreatedUTC * 1000);
 
     // If we want the permalink of the parent thread we simply remove the comment id from the comment permalink..
     const commentThreadPermalink = TBHelpers.removeLastDirectoryPartOf(commentPermalink);
@@ -1492,14 +1495,6 @@ export function makeSingleComment (comment, commentOptions = {}) {
         commentScoreText = `${commentScore} point`;
     }
 
-    // Indicate if a comment has been edited or not.
-    let editedHtml;
-    if (commentEdited) {
-        const commentReadableEdited = TBHelpers.timeConverterRead(commentEdited),
-              editedTimeAgo = new Date(commentEdited * 1000).toISOString();
-        editedHtml = `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
-    }
-
     let commentDepthClass;
 
     if (commentOptions.noOddEven) {
@@ -1525,8 +1520,6 @@ export function makeSingleComment (comment, commentOptions = {}) {
                         ${authorAttributes.length ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
                         <span class="tb-jsapi-author-container"></span>
                         <span class="tb-comment-score ${commentControversiality ? 'tb-iscontroversial' : ''}" title="${commentScore}">${commentScoreText}</span>
-                        <time title="${commentReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
-                        ${commentEdited ? editedHtml : ''}
                         ${commentStickied ? '<span class="tb-comment-stickied">stickied</span>' : ''}
                         ${commentGildings.gid_1 ? `<span class="tb-award-silver">silver x${commentGildings.gid_1}</span>` : ''}
                         ${commentGildings.gid_2 ? `<span class="tb-award-gold">gold x${commentGildings.gid_2}</span>` : ''}
@@ -1542,6 +1535,18 @@ export function makeSingleComment (comment, commentOptions = {}) {
                 </div>
             </div>
         `);
+
+    // Add submission time
+    const $submittedTime = relativeTime(createdAt).addClass('tb-live-timestamp');
+    $buildComment.find('.tb-comment-score').after($submittedTime);
+
+    // Indicate if item is edited
+    if (commentEdited) {
+        const editedAt = new Date(commentEdited * 1000);
+        const $edited = $('<span class="tb-comment-edited">*last edited </span>')
+            .append(relativeTime(editedAt).addClass('tb-live-timestamp'));
+        $submittedTime.after($edited);
+    }
 
     // Links in the provided comment body might be domain-relative, which won't
     // work if we're in modmail; rewrite link hrefs as appropriate

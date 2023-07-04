@@ -450,7 +450,6 @@ function init ({
             const msg = `Building comment ${count}/${idListing.length}`;
             TBui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
             const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
-            $comment.find('time.timeago').timeago();
             $htmlCommentView.append($comment);
         }).then(() => {
             $flatSearchCount.text(count);
@@ -549,7 +548,6 @@ function init ({
                         display: 'block',
                     });
                 TBui.tbRedditEvent($comments);
-                $('time.timeago').timeago();
                 $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
             });
         });

@@ -153,12 +153,10 @@ export default new Module({
                 const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
                 $siteTable.append($comments);
                 TBui.tbRedditEvent($comments);
-                $('time.timeago').timeago();
             } else {
                 const $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
                 $siteTable.append($comment);
                 TBui.tbRedditEvent($comment);
-                $('time.timeago').timeago();
             }
         });
 
@@ -172,7 +170,6 @@ export default new Module({
                 if (entry.kind === 't3') {
                     const $submission = TBui.makeSubmissionEntry(entry);
                     $siteTable.append($submission);
-                    $('time.timeago').timeago();
                 }
             }).then(() => {
                 setTimeout(() => {

@@ -164,7 +164,6 @@ export default new Module({
                     $comment.find('.md').highlight(entry.highlight, '', true);
                 }
                 $siteTable.append($comment);
-                $('time.timeago').timeago();
             }
 
             // Submission
@@ -174,7 +173,6 @@ export default new Module({
                     $submission.find('.tb-title, .md').highlight(entry.highlight, '', true);
                 }
                 $siteTable.append($submission);
-                $('time.timeago').timeago();
             }
         }).then(() => {
             // More items available on a next page. Add load more element

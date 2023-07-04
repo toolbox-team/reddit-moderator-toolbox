@@ -348,7 +348,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     const timestamp = new Date(banInfo.date * 1000); // seconds to milliseconds
 
                     $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
-                    $popup.find('.current-sub .already-banned').append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
+                    $popup.find('.current-sub .already-banned').append(TBui.relativeTime(timestamp));
 
                     $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
                     $popup.find('.ban-note').val(banInfo.note);

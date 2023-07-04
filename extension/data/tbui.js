@@ -1845,6 +1845,49 @@ export function pagerForItems ({
     });
 }
 
+/**
+ * Holds relative time elements not yet added to the page
+ * @type {HTMLTimeElement[]}
+ */
+let relativeTimeElements = [];
+
+/**
+ * Creates a `<time>` element which displays the given date as a relative time
+ * via `$.timeago()`.
+ * @param {Date} date Date and time to display
+ * @returns {jQuery}
+ */
+export function relativeTime (date) {
+    // create element
+    const el = document.createElement('time');
+    el.dateTime = date.toISOString();
+    el.innerText = date.toLocaleString();
+
+    // run timeago on the element when it's added to the DOM
+    relativeTimeElements.push(el);
+
+    // return jQuery wrapped
+    return $(el);
+}
+
+// watch for elements created by `relativeTime` being added to the DOM
+new MutationObserver(() => {
+    // go through the array and see if each element is present yet
+    relativeTimeElements = relativeTimeElements.filter(timeEl => {
+        if (document.contains(timeEl)) {
+            // element is in the DOM, run timeago and remove from the array
+            $(timeEl).timeago();
+            return false;
+        }
+
+        // element is not on page yet, keep it in the array
+        return true;
+    });
+}).observe(document, {
+    childList: true,
+    subtree: true,
+});
+
 // handling of comment & submisstion actions.
 // TODO make this into command pattern
 $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function () {

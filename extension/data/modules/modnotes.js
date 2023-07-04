@@ -11,6 +11,7 @@ import {
     icons,
     pagerForItems,
     popup,
+    relativeTime,
     textFeedback,
 } from '../tbui.js';
 import TBListener from '../tblistener.js';
@@ -445,17 +446,16 @@ function generateNoteTableRow (note) {
                     /u/${escapeHTML(mod)}
                 </a>
                 <br>
-                <small>
-                    <time datetime="${escapeHTML(createdAt.toISOString())}">
-                        ${escapeHTML(createdAt.toLocaleString())}
-                    </time>
-                </small>
+                <small></small>
             </td>
             <td>
                 ${typeNames[note.type]}
             </td>
         </tr>
     `);
+
+    // Add relative timestamp element
+    $noteRow.find('small').append(relativeTime(createdAt));
 
     // Build the note details based on what sort of information is present
     const $noteDetails = $('<td>');
@@ -509,12 +509,6 @@ function generateNoteTableRow (note) {
             return;
         }
         $noteRow.find('time').wrap(`<a href="${escapeHTML(contextURL)}">`);
-    });
-
-    // HACK: timeago only works on elements added to the DOM, so we run it after
-    //       a tick, when the caller has added the constructed row to the page
-    Promise.resolve().then(() => {
-        $noteRow.find('time').timeago();
     });
 
     return $noteRow;

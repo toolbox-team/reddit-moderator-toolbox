@@ -1538,14 +1538,14 @@ export function makeSingleComment (comment, commentOptions = {}) {
 
     // Add submission time
     const $submittedTime = relativeTime(createdAt).addClass('tb-live-timestamp');
-    $buildComment.find('.tb-comment-score').after($submittedTime);
+    $buildComment.find('.tb-comment-score').after(' ', $submittedTime);
 
     // Indicate if item is edited
     if (commentEdited) {
         const editedAt = new Date(commentEdited * 1000);
         const $edited = $('<span class="tb-comment-edited">*last edited </span>')
             .append(relativeTime(editedAt).addClass('tb-live-timestamp'));
-        $submittedTime.after($edited);
+        $submittedTime.after(' ', $edited);
     }
 
     // Links in the provided comment body might be domain-relative, which won't

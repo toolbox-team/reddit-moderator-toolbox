@@ -1350,23 +1350,26 @@ function init (options) {
                         const action = value.action;
                         const details = value.details;
                         const description = value.description ? ` : ${value.description}` : '';
-                        const createdUTC = TBHelpers.timeConverterRead(value.created_utc);
-                        const createdTimeAgo = new Date(value.created_utc * 1000).toISOString();
+                        const createdAt = new Date(value.created_utc * 1000);
 
-                        const actionHTML = `
+                        const $actionRow = $(`
                             <tr>
                                 <td>${mod}</td>
                                 <td>${action}</td>
                                 <td>${details}${description}</td>
-                                <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
+                                <td></td>
                             </tr>
-                        `;
-                        $actionTable.find('.tb-action-table').append(actionHTML);
+                        `);
+
+                        const $actionTime = TBui.relativeTime(createdAt);
+                        $actionTime.addClass('live-timestamp');
+                        $actionRow.find('td:last-child').append($actionTime);
+
+                        $actionTable.find('.tb-action-table').append($actionRow);
                     });
 
                     requestAnimationFrame(() => {
                         $target.append($actionTable);
-                        $actionTable.find('time.timeago').timeago();
                     });
                 }
             });

@@ -164,7 +164,6 @@ export default new Module({
                     $comment.find('.md').highlight(entry.highlight, '', true);
                 }
                 $siteTable.append($comment);
-                $('time.timeago').timeago();
             }
 
             // Submission
@@ -174,7 +173,6 @@ export default new Module({
                     $submission.find('.tb-title, .md').highlight(entry.highlight, '', true);
                 }
                 $siteTable.append($submission);
-                $('time.timeago').timeago();
             }
         }).then(() => {
             // More items available on a next page. Add load more element
@@ -326,8 +324,7 @@ export default new Module({
                   commentKarma = data.data.comment_karma,
                   displayName = data.data.subreddit.title,
                   publicDescription = data.data.subreddit.public_description;
-            const readableCreatedUTC = TBHelpers.timeConverterRead(userCreated),
-                  createdTimeAgo = new Date(userCreated * 1000).toISOString();
+            const createdAt = new Date(userCreated * 1000).toISOString();
 
             const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
@@ -336,7 +333,7 @@ export default new Module({
                         ${displayName ? `<li>Display name: ${displayName}</li>` : ''}
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
-                        <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>
+                        <li class="tb-user-detail-join-date">Joined </li>
                         <li>${verifiedMail ? 'Verified mail' : 'No verified mail'}</li>
                     </ul>
                     ${publicDescription ? `
@@ -345,8 +342,8 @@ export default new Module({
                     </div>
                     ` : ''}
                 </div>`);
+            $sidebar.find('tb-user-detail-join-date').append(TBui.relativeTime(createdAt));
             $tabWrapper.after($sidebar);
-            $sidebar.find('time.timeago').timeago();
 
             addModSubsToSidebar(user, $sidebar);
         }).catch(error => {

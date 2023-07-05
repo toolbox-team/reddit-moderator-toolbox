@@ -446,22 +446,16 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                           date = new Date(note.time);
 
                     // Construct some elements separately
-                    let noteTime = `
-                        <time
-                            class="utagger-date timeago"
-                            id="utagger-date-${i}"
-                            datetime="${TBHelpers.escapeHTML(date.toISOString())}"
-                        >
-                            ${TBHelpers.escapeHTML(date.toLocaleString())}
-                        </time>
-                    `;
+                    let $noteTime = TBui.relativeTime(date);
+                    $noteTime.addClass('utagger-date');
+                    $noteTime.id = `utagger-date-${i}`;
 
                     if (note.link) {
                         let noteLink = note.link;
                         if (TBCore.isNewModmail && !noteLink.startsWith('https://')) {
                             noteLink = `https://www.reddit.com${noteLink}`;
                         }
-                        noteTime = `<a href="${TBHelpers.escapeHTML(noteLink)}">${noteTime}</a>`;
+                        $noteTime = $(`<a href="${TBHelpers.escapeHTML(noteLink)}">`).append($noteTime);
                     }
 
                     let typeSpan = '';
@@ -470,11 +464,10 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                     }
 
                     // Add note to list
-                    $noteList.append(`
+                    const $noteRow = $(`
                         <tr class="utagger-note">
                             <td class="utagger-notes-td1">
                                 <div class="utagger-mod">${note.mod}</div>
-                                ${noteTime}
                             </td>
                             <td class="utagger-notes-td2">
                                 ${typeSpan}
@@ -483,10 +476,10 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                             <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${TBui.icons.delete}</i></td>
                         </tr>
                     `);
-                });
+                    $noteRow.find('td:first-child').append($noteTime);
 
-                // Convert to relative dates once the element is added to DOM
-                $popup.find('time.timeago').timeago();
+                    $noteList.append($noteRow);
+                });
             } else {
                 // No notes on user
                 $popup.find('#utagger-user-note-input').focus();
@@ -1028,9 +1021,6 @@ function startUsernotesManager ({unManagerLink}) {
             Object.entries(user.notes).forEach(([key, val]) => {
                 const color = _findSubredditColor(colors, val.type);
 
-                const timeISO = new Date(val.time).toISOString(),
-                      timeHuman = TBHelpers.timeConverterRead(val.time / 1000);
-
                 const $note = $(`
                         <div class="tb-un-note-details">
                             <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
@@ -1041,19 +1031,16 @@ function startUsernotesManager ({unManagerLink}) {
                             <span>-</span>
                             <span class="mod">by /u/${val.mod}</span>
                             <span>-</span>
-                            <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
                         </div>
                     `);
+                const noteTime = TBui.relativeTime(new Date(val.time));
+                noteTime.classList.add('live-timestamp');
+                $note.append(noteTime);
 
                 if (color.key === 'none') {
                     $note.find('.note-type').hide();
                 }
                 $userNotes.append($note);
-            });
-
-            // Set relative times on the notes once the content is added to DOM
-            Promise.resolve().then(() => {
-                $userContent.find('time.timeago').timeago();
             });
 
             return $userContent;

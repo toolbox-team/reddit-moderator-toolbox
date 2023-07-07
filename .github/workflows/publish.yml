@@ -64,7 +64,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: release-build-firefox
-    - uses: eritbh/firefox-addon@69e3a310a890c256f0e5b2995485ce26a1bb71fc
+    - uses: wdzeng/firefox-addon@v1
       with:
         addon-guid: yes@jetpack
         xpi-path: release-build-firefox.zip

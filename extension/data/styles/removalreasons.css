@@ -166,6 +166,11 @@
     padding: 3px !important;
 }
 
+.mod-toolbox-rd .reason-popup .tb-window-footer {
+    display: flex;
+    gap: 5px;
+}
+
 .mod-toolbox-rd .reason-popup strong {
     font-weight: bold;
 }

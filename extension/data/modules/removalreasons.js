@@ -478,7 +478,7 @@ export default new Module({
                         // fixing it so here we are
                         footer: `
                             <input type="hidden" name="tom_or_not" value="no-tom">
-                            <span class="status error" style="display:none">This is an easter egg.</span>
+                            <span class="tb-reason-popup-status error" style="display:none">This is an easter egg.</span>
                             <button class="save tb-action-button">send</button>
                             <button class="no-reason tb-action-button">no reason</button>
                             <button class="cancel tb-action-button">cancel and approve</button>
@@ -570,7 +570,7 @@ export default new Module({
             });
             $popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
             $popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
-            $popup.find('.status').hide();// css('display: none;');
+            $popup.find('.tb-reason-popup-status').hide();// css('display: none;');
             $popup.find('.error-highlight').removeClass('error-highlight');
             $popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
 
@@ -665,7 +665,7 @@ export default new Module({
     // 'cancel' button clicked
     $body.on('click', '.reason-popup .cancel', function () {
         const $popup = $(this).parents('.reason-popup'),
-              status = $popup.find('.status');
+              status = $popup.find('.tb-reason-popup-status');
 
         TBApi.approveThing($popup.attr('data-fullname')).then(() => {
             removePopup($popup);
@@ -685,7 +685,7 @@ export default new Module({
               actionLockComment = popup.find('.action-lock-comment').prop('checked'),
               reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked'),
               checked = popup.find('.reason-check:checked'),
-              status = popup.find('.status'),
+              status = popup.find('.tb-reason-popup-status'),
               header = TBHelpers.htmlDecode(popup.attr('data-header')),
               footer = TBHelpers.htmlDecode(popup.attr('data-footer')),
               logReason = popup.find('#log-reason-input').val(),

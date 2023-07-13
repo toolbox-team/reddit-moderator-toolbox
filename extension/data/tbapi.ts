@@ -416,34 +416,40 @@ export const readFromWiki = (
     });
 });
 
+/** Describes a subreddit ban. */
+export interface BanState {
+    /** The banned user's name */
+    name: string;
+    /** The banned user's ID fullname */
+    id: string;
+    /** The mod-visible ban note */
+    note: string;
+    /** The date the ban was issued */
+    date: string;
+    /**
+     * If the ban is temporary, the number of days until it expires, otherwise
+     * `null`
+     */
+    days_left: number | null;
+}
+
 /**
  * Gets the ban state of a user.
  * @param subreddit The name of the subreddit to check in
  * @param user The name of the user to check
- * @returns Resolves to an object describing the ban, or null if the user is not
- * banned
+ * @returns Resolves to an object describing the ban, or `undefined` if the user
+ * is not banned
  */
 export const getBanState = async (subreddit: string, user: string) => {
     // Fetch ban info for just this one user
     const data = await getJSON(`/r/${subreddit}/about/banned/.json`, {user});
     TBStorage.purifyObject(data);
-    // This API sometimes returns weird things if the user isn't banned, so we use .find()
-    // to ensure `null` is returned if we don't get information about the right
-    // user
+    // This API sometimes returns weird things if the user isn't banned, so we
+    // use .find() to ensure `undefined` is returned if we don't get information
+    // about the right user
     // TODO: what the fuck do we do about API types
-    return data.data.children.find((ban: any) => ban.name.toLowerCase() === user.toLowerCase());
+    return (data.data.children as BanState[]).find(ban => ban.name.toLowerCase() === user.toLowerCase());
 };
-
-/**
- * Describes a subreddit ban.
- * @typedef banState
- * @property {string} name The banned user's name
- * @property {string} id The banned user's ID fullname
- * @property {string} note The mod-visible ban note
- * @property {string} date The date the ban was issued
- * @property {?number} days_left If the ban is temporary, the number of days
- * until it expires, otherwise null
- */
 
 /**
  * Sets a flair on a post.

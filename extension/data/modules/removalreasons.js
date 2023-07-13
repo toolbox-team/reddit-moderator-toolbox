@@ -477,7 +477,6 @@ export default new Module({
                         // issue with TBui.overlay() but i don't feel like
                         // fixing it so here we are
                         footer: `
-                            <input type="hidden" name="tom_or_not" value="no-tom">
                             <span class="tb-reason-popup-status error" style="display:none">This is an easter egg.</span>
                             <button class="save tb-action-button">send</button>
                             <button class="no-reason tb-action-button">no reason</button>

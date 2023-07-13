@@ -657,8 +657,8 @@ export default new Module({
 
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
-        const popup = $(this).parents('.reason-popup');
-        removePopup(popup);
+        const $popup = $(this).parents('.reason-popup');
+        removePopup($popup);
     });
 
     // 'cancel' button clicked
@@ -675,19 +675,19 @@ export default new Module({
 
     // 'save' button clicked
     $body.on('click', '.reason-popup .save', function () {
-        const popup = $(this).parents('.reason-popup'),
-              notifyBy = popup.find('.reason-type:checked').val(),
-              notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
-              autoArchive = popup.find('.reason-auto-archive').prop('checked'),
-              notifySticky = popup.find('.reason-sticky').prop('checked'),
-              actionLockThread = popup.find('.action-lock-thread').prop('checked'),
-              actionLockComment = popup.find('.action-lock-comment').prop('checked'),
-              reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked'),
-              checked = popup.find('.reason-check:checked'),
-              status = popup.find('.tb-reason-popup-status'),
-              header = TBHelpers.htmlDecode(popup.attr('data-header')),
-              footer = TBHelpers.htmlDecode(popup.attr('data-footer')),
-              logReason = popup.find('#log-reason-input').val(),
+        const $popup = $(this).parents('.reason-popup'),
+              notifyBy = $popup.find('.reason-type:checked').val(),
+              notifyAsSub = $popup.find('.reason-as-sub').prop('checked'),
+              autoArchive = $popup.find('.reason-auto-archive').prop('checked'),
+              notifySticky = $popup.find('.reason-sticky').prop('checked'),
+              actionLockThread = $popup.find('.action-lock-thread').prop('checked'),
+              actionLockComment = $popup.find('.action-lock-comment').prop('checked'),
+              reasonCommentAsSubreddit = $popup.find('.reason-comment-as-subreddit').prop('checked'),
+              checked = $popup.find('.reason-check:checked'),
+              status = $popup.find('.tb-reason-popup-status'),
+              header = TBHelpers.htmlDecode($popup.attr('data-header')),
+              footer = TBHelpers.htmlDecode($popup.attr('data-footer')),
+              logReason = $popup.find('#log-reason-input').val(),
               data = {
                   subreddit: '',
                   fullname: '',
@@ -704,18 +704,18 @@ export default new Module({
                   uri_body: '',
                   uri_title: '',
               };
-        let subject = popup.attr('data-subject'),
-            logTitle = popup.attr('data-logTitle');
+        let subject = $popup.attr('data-subject'),
+            logTitle = $popup.attr('data-logTitle');
 
         // Update status
         status.text(STATUS_DEFAULT_TEXT);
         status.show();
-        popup.find('.error-highlight').removeClass('error-highlight');
+        $popup.find('.error-highlight').removeClass('error-highlight');
 
         // Check if reason checked
         const noneSelected = $('body').find('.reason-type:checked').val();
         if (!checked.length && noneSelected !== 'none') {
-            popup.find('#reason-table').addClass('error-highlight');
+            $popup.find('#reason-table').addClass('error-highlight');
             return status.text(NO_REASON_ERROR);
         }
 
@@ -781,18 +781,18 @@ export default new Module({
         const reasonlength = reason.trim().length;
 
         // // Add header if selected
-        if (popup.find('#include-header').is(':checked')) {
+        if ($popup.find('#include-header').is(':checked')) {
             reason = `${header}\n\n${reason}`;
         }
 
         // // Add footer if selected
-        if (popup.find('#include-footer').is(':checked')) {
+        if ($popup.find('#include-footer').is(':checked')) {
             reason += `\n\n${footer}`;
         }
 
         // // Convert attribs back to data.
         for (const i of Object.keys(data)) {
-            data[i] = popup.attr(`data-${i}`);
+            data[i] = $popup.attr(`data-${i}`);
         }
 
         reason = TBHelpers.replaceTokens(data, reason);
@@ -823,7 +823,7 @@ export default new Module({
             if (logTitle.indexOf('{reason}') >= 0) {
                 // Check if a log reason is selected
                 if (!logReason) {
-                    popup.find('#log-reason-input').addClass('error-highlight');
+                    $popup.find('#log-reason-input').addClass('error-highlight');
                     return status.text(LOG_REASON_MISSING_ERROR);
                 }
 
@@ -838,7 +838,7 @@ export default new Module({
                 TBApi.approveThing(logThingId);
 
                 if (noneSelected === 'none') {
-                    removePopup(popup);
+                    removePopup($popup);
                 } else {
                     sendRemovalMessage(loglinkToken);
                 }
@@ -857,7 +857,7 @@ export default new Module({
             if (reasonlength < 1) {
                 if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
                     // We'll flair only flair, we are done here.
-                    return removePopup(popup);
+                    return removePopup($popup);
                 } else {
                     return status.text(NO_REASON_ERROR);
                 }
@@ -865,7 +865,7 @@ export default new Module({
 
             // Check if a valid notification type is selected
             if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
-                popup.find('#buttons').addClass('error-highlight');
+                $popup.find('#buttons').addClass('error-highlight');
                 return status.text(NO_REPLY_TYPE_ERROR);
             }
 
@@ -916,7 +916,7 @@ export default new Module({
                         } else if (notifyByPM) {
                             sendPM();
                         } else {
-                            removePopup(popup);
+                            removePopup($popup);
                         }
                     }).catch(() => {
                         status.text(REPLY_ERROR_SUBREDDIT);
@@ -933,7 +933,7 @@ export default new Module({
                                 } else if (notifyByPM) {
                                     sendPM();
                                 } else {
-                                    removePopup(popup);
+                                    removePopup($popup);
                                 }
                             }).catch(() => {
                                 status.text(DISTINGUISH_ERROR);
@@ -943,7 +943,7 @@ export default new Module({
                                 const commentId = response.json.data.things[0].data.id;
                                 self.log(`Fullname of reply: ${commentId}`);
                                 TBApi.lock(commentId).then(() => {
-                                    removePopup(popup);
+                                    removePopup($popup);
                                 }).catch(() => {
                                     status.text(LOCK_COMMENT_ERROR);
                                 });
@@ -965,7 +965,7 @@ export default new Module({
 
                 self.log('Sending removal message by PM');
                 TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
-                    removePopup(popup);
+                    removePopup($popup);
                 }).catch(() => {
                     status.text(PM_ERROR);
                 });
@@ -982,10 +982,10 @@ export default new Module({
                         const isInternal = data.conversation.isInternal;
                         if (autoArchive && !isInternal) {
                             TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
-                                removePopup(popup);
+                                removePopup($popup);
                             });
                         } else {
-                            removePopup(popup);
+                            removePopup($popup);
                         }
                     }).catch(() => {
                         status.text(MODMAIL_ARCHIVE_ERROR);

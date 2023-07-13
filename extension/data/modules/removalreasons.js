@@ -470,20 +470,21 @@ export default new Module({
                                 </p>
                             </div>
                         `,
-                    },
-                    {
-                        title: 'Native reasons - TODO',
-                        content: 'nothing to see here yet',
+                        // TODO: once we have native reasons we'll have a second
+                        // tab and this will go in the top-level overlay footer,
+                        // but passing a footer there when there's only one tab
+                        // results in the footer being duplicated. that's an
+                        // issue with TBui.overlay() but i don't feel like
+                        // fixing it so here we are
+                        footer: `
+                            <input type="hidden" name="tom_or_not" value="no-tom">
+                            <span class="status error" style="display:none">This is an easter egg.</span>
+                            <button class="save tb-action-button">send</button>
+                            <button class="no-reason tb-action-button">no reason</button>
+                            <button class="cancel tb-action-button">cancel and approve</button>
+                        `,
                     },
                 ],
-                // single footer
-                footer: `
-                    <input type="hidden" name="tom_or_not" value="no-tom">
-                    <span class="status error" style="display:none">This is an easter egg.</span>
-                    <button class="save tb-action-button">send</button>
-                    <button class="no-reason tb-action-button">no reason</button>
-                    <button class="cancel tb-action-button">cancel and approve</button>
-                `,
                 details: data,
                 tabOrientation: 'horizontal',
             });

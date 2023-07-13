@@ -494,6 +494,11 @@ export default new Module({
             $popup.attr('id', `reason-popup-${data.subreddit}`);
             $popup.find('attrs').attr(data);
 
+            // RRs don't have a close button
+            // TODO: is this desired? also if so, refactor this into an option
+            //       in TBui.overlay()
+            $popup.find('.buttons .close').remove();
+
             $popup.appendTo('body');
 
             let reasons = [];

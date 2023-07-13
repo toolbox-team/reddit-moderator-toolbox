@@ -9,5 +9,7 @@
 		// source .js files with the built files and that's not allowed. so
 		// we just set it to somewhere out of the way
 		"outDir": "build/tsc",
+		// Prevent Rollup builds from succeeding in the presence of type errors
+		"noEmitOnError": true,
 	}
 }

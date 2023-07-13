@@ -956,19 +956,18 @@ export const deleteModNote = ({subreddit, user, id}: {
 
 /**
  * Fetches information in bulk about API items.
- * @param {string[]} fullnames Fullnames of items to fetch info for
- * @returns {Promise<object[]>} Information about each item
+ * @param fullnames Fullnames of items to fetch info for
+ * @returns API items (`$.data.children` from the raw `/api/info` response)
  */
-export const getInfoBulk = fullnames => getJSON('/api/info.json', {
-    raw_json: 1,
+export const getInfoBulk = (fullnames: string[]) => getJSON('/api/info.json', {
+    raw_json: '1',
     id: fullnames.join(','),
-}).then(result => result.data.children);
+}).then(result => result.data.children as any);
 
 /**
  * Fetches information about an API item. This uses the bulk API and is
  * debounced to collect multiple calls to send at once.
- * @function
- * @param {string} fullname Fullname of the item to fetch info for
- * @returns {Promise<object>} Information about the item
+ * @param fullname Fullname of the item to fetch info for
+ * @returns API item (a `$.data.children[]` from the raw `/api/info` response)
  */
-export const getInfo = createDeferredProcessQueue(fullnames => getInfoBulk(fullnames));
+export const getInfo = createDeferredProcessQueue((fullnames: string[]) => getInfoBulk(fullnames));

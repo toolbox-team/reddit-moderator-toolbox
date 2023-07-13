@@ -352,17 +352,14 @@ export async function postToWiki (
 
 /**
  * Reads data from a wiki page
- * @function
- * @param {string} subreddit The name of the subreddit the page is in
- * @param {string} page The name of the page
- * @param {boolean} isJSON If true, data is parsed as JSON before being returned
- * @returns {Promise} Promises the data of the wiki page. If there is an
- * error reading from the page, one of the following error values may be
- * returned:
+ * @param subreddit The name of the subreddit the page is in
+ * @param page The name of the page
+ * @param isJSON If true, data is parsed as JSON before being returned
+ * @returns Promises the data of the wiki page. If there is an error reading
+ * from the page, one of the following error values may be returned:
  * - TBApi.WIKI_PAGE_UNKNOWN
- * - TBApi.NO_WIKI_PAGE
- * If the isJSON `param` was true, then this will be an object. Otherwise,
- * it will be the raw contents of the wiki as a string.
+ * - TBApi.NO_WIKI_PAGE If the isJSON `param` was true, then this will be an
+ *   object. Otherwise, it will be the raw contents of the wiki as a string.
  */
 export const readFromWiki = (
     subreddit: string,
@@ -421,11 +418,10 @@ export const readFromWiki = (
 
 /**
  * Gets the ban state of a user.
- * @function
- * @param {string} subreddit The name of the subreddit to check in
- * @param {string} user The name of the user to check
- * @returns {Promise<?banState>} An object describing the ban, or null
- * if the user is not banned
+ * @param subreddit The name of the subreddit to check in
+ * @param user The name of the user to check
+ * @returns Resolves to an object describing the ban, or null if the user is not
+ * banned
  */
 export const getBanState = async (subreddit: string, user: string) => {
     // Fetch ban info for just this one user
@@ -451,13 +447,11 @@ export const getBanState = async (subreddit: string, user: string) => {
 
 /**
  * Sets a flair on a post.
- * @function
  * @param postLink The post's fullname
  * @param subreddit The name of the subreddit the post is in
  * @param text The flair's text
  * @param cssClass The flair's CSS class
  * @param templateID The flair's template ID
- * @returns {Promise}
  */
 export const flairPost = async (
     postLink: string,
@@ -477,13 +471,11 @@ export const flairPost = async (
 
 /**
  * Sets a flair on a user in a subreddit.
- * @function
  * @param user The name of the user
  * @param subreddit The name of the subreddit
  * @param text The flair's text
  * @param cssClass The flair's CSS class
  * @param templateID The flair's template ID
- * @returns {Promise}
  */
 export const flairUser = async (
     user: string,
@@ -533,19 +525,18 @@ export async function friendUser (options: {
  * call actually worked. This method may still reject if the network request
  * can't be completed or if Reddit's API returns a different response code
  * (e.g. 401 Unauthorized).
- * @function
- * @param {object} options
- * @param {string} options.user The user to apply the relationship to
- * @param {string} options.action The string for the desired action (see
+ * @param options
+ * @param options.user The user to apply the relationship to
+ * @param options.action The string for the desired action (see
  * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
- * @param {string} options.subreddit The sub to apply the relationship in
- * @param {string} [options.banReason] If banning, the private mod note
- * @param {string} [options.banMessage] If banning, the note sent to the user
- * @param {number} [options.banDuration] If banning, the length of the ban (0
+ * @param options.subreddit The sub to apply the relationship in
+ * @param [options.banReason] If banning, the private mod note
+ * @param [options.banMessage] If banning, the note sent to the user
+ * @param [options.banDuration] If banning, the length of the ban (0
  * or undefined for a permanent ban)
- * @param {string} [options.banContext] If banning, a fullname pointing to the
+ * @param [options.banContext] If banning, a fullname pointing to the
  * link or comment the user is being banned for
- * @returns {Promise} Resolves to the JSON response body or rejects with a
+ * @returns Resolves to the JSON response body or rejects with a
  * jqXHR object
  */
 export async function friendUser ({
@@ -598,11 +589,11 @@ export async function friendUser ({
  * this API method seems to always return 200 OK with a blank object
  * (`{}`) in response, so there's no meaningful error handling
  * possible here other than network errors.
- * @param {string} user The name of the user
- * @param {string} action The type of relationship to remove (see
+ * @param user The name of the user
+ * @param action The type of relationship to remove (see
  * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
- * @param {string} subreddit The name of the subreddit
- * @returns {Promise} Resolves to the JSON response body or rejects
+ * @param subreddit The name of the subreddit
+ * @returns Resolves to the JSON response body or rejects
  * an error.
  */
 export const unfriendUser = async (user: string, action: string, subreddit: string) => post('/api/unfriend', {
@@ -615,11 +606,9 @@ export const unfriendUser = async (user: string, action: string, subreddit: stri
 
 /**
  * Mod-distinguishes a post or comment.
- * @function
- * @param {string} id The fullname of the post or comment
- * @param {boolean} sticky If distinguishing a top-level comment, whether to
+ * @param id The fullname of the post or comment
+ * @param sticky If distinguishing a top-level comment, whether to
  * also sticky the comment
- * @returns {Promise}
  */
 export const distinguishThing = async (id: string, sticky: boolean) => post('/api/distinguish/yes', {
     id,
@@ -629,9 +618,7 @@ export const distinguishThing = async (id: string, sticky: boolean) => post('/ap
 
 /**
  * Approves a post or comment.
- * @function
- * @param {string} id Fullname of the post or comment
- * @returns {Promise}
+ * @param id Fullname of the post or comment
  */
 export const approveThing = async (id: string) => post('/api/approve', {
     id,
@@ -640,10 +627,8 @@ export const approveThing = async (id: string) => post('/api/approve', {
 
 /**
  * Removes a post or comment.
- * @function
- * @param {string} id Fullname of the post or comment
- * @param {boolean?} spam If true, removes as spam
- * @returns {Promise}
+ * @param id Fullname of the post or comment
+ * @param spam If true, removes as spam
  */
 export const removeThing = async (id: string, spam = false) => post('/api/remove', {
     uh: await getModhash(),
@@ -653,9 +638,7 @@ export const removeThing = async (id: string, spam = false) => post('/api/remove
 
 /**
  * Ignores reports on a post or comment
- * @function
- * @param {string} id Fullname of the post or comment
- * @returns {Promise}
+ * @param id Fullname of the post or comment
  */
 export const ignoreReports = async (id: string) => post('/api/ignore_reports', {
     id,
@@ -664,9 +647,7 @@ export const ignoreReports = async (id: string) => post('/api/ignore_reports', {
 
 /**
  * Marks a post as NSFW.
- * @function
- * @param {string} id Fullname of the post
- * @returns {Promise}
+ * @param id Fullname of the post
  */
 export const markOver18 = async (id: string) => post('/api/marknsfw', {
     id,
@@ -675,9 +656,7 @@ export const markOver18 = async (id: string) => post('/api/marknsfw', {
 
 /**
  * Un-marks a post NSFW.
- * @function
- * @param {string} id Fullname of the post
- * @returns {Promise}
+ * @param id Fullname of the post
  */
 export const unMarkOver18 = async (id: string) => post('/api/unmarknsfw', {
     uh: await getModhash(),
@@ -686,8 +665,7 @@ export const unMarkOver18 = async (id: string) => post('/api/unmarknsfw', {
 
 /**
  * Locks a post or comment.
- * @param {string} id The fullname of the submission or comment
- * @returns {Promise} Resolves to response data or rejects with a jqXHR
+ * @param id The fullname of the submission or comment
  */
 export const lock = async (id: string) => apiOauthPOST('/api/lock', {
     id,
@@ -696,8 +674,7 @@ export const lock = async (id: string) => apiOauthPOST('/api/lock', {
 
 /**
  * Unlocks a post or comment.
- * @param {string} id The fullname of the submission or comment
- * @returns {Promise} Resolves to response data or rejects with a jqXHR
+ * @param id The fullname of the submission or comment
  */
 export const unlock = async (id: string) => post('/api/unlock', {
     uh: await getModhash(),
@@ -710,7 +687,6 @@ export const unlock = async (id: string) => post('/api/unlock', {
  * @param num The desired position of the sticky, either 1 or 2
  * @param state Set to false to unsticky the thread (for
  * internal use only; use {@link unstickyThread} instead)
- * @returns {Promise} Resolves with response data or rejects a jqXHR
  */
 export const stickyThread = async (id: string, num: number | undefined, state = true) => post('/api/set_subreddit_sticky', {
     id,
@@ -721,17 +697,15 @@ export const stickyThread = async (id: string, num: number | undefined, state = 
 
 /**
  * Unstickies a submission.
- * @param {string} id The fullname of the submission to sticky
- * @returns {Promise} Resolves with response data or rejects a jqXHR
+ * @param id The fullname of the submission to sticky
  */
 export const unstickyThread = (id: string) => stickyThread(id, undefined, false);
 
 /**
  * Posts a comment.
- * @function
- * @param {string} parent The fullname of the parent submission or comment
- * @param {string} text The text of the comment to post
- * @returns {Promise} Resolves to a response or rejects with an error or array of errors
+ * @param parent The fullname of the parent submission or comment
+ * @param text The text of the comment to post
+ * @returns Resolves to a response or rejects with an error or array of errors
  */
 export const postComment = async (parent: string, text: string) => {
     try {
@@ -757,11 +731,10 @@ export const postComment = async (parent: string, text: string) => {
 
 /**
  * Posts a link submission in a subreddit.
- * @function
- * @param {string} link The URL to submit
- * @param {string} title The title of the submission
- * @param {string} subreddit The subreddit to submit to
- * @returns {Promise} Resolves to a response or rejects with an error or array of errors
+ * @param link The URL to submit
+ * @param title The title of the submission
+ * @param subreddit The subreddit to submit to
+ * @returns Resolves to a response or rejects with an error or array of errors
  */
 export const postLink = async (link: string, title: string, subreddit: string) => {
     try {
@@ -791,13 +764,12 @@ export const postLink = async (link: string, title: string, subreddit: string) =
 
 /**
  * Sends a private message to a user.
- * @function
  * @param user The name of the user to send the message to
  * @param subject The message's subject
  * @param message The message's content
- * @param subreddit If provided, sends the message as a modmail
- * from the specified subreddit
- * @returns {Promise} Resolves to a response or rejects with an error or array of errors
+ * @param subreddit If provided, sends the message as a modmail from the
+ * specified subreddit
+ * @returns Resolves to a response or rejects with an error or array of errors
  */
 export const sendMessage = async (user: string, subject: string, message: string, subreddit?: string) => {
     try {
@@ -825,8 +797,7 @@ export const sendMessage = async (user: string, subject: string, message: string
 
 /**
  * Marks a message as read.
- * @param {string} id The fullname of the thing to mark as read
- * @returns {Promise}
+ * @param id The fullname of the thing to mark as read
  */
 export const markMessageRead = async (id: string) => post('/api/read_message', {
     api_type: 'json',
@@ -836,8 +807,8 @@ export const markMessageRead = async (id: string) => post('/api/read_message', {
 
 /**
  * Gets information about a user.
- * @param {string} user The name of the user
- * @returns {Promise} Resolves to JSON user info or rejects with error text
+ * @param user The name of the user
+ * @returns Resolves to JSON user info or rejects with error text
  */
 export const aboutUser = async (user: string) => getJSON(`/user/${user}/about.json`, {
     uh: await getModhash(),
@@ -848,8 +819,8 @@ export const aboutUser = async (user: string) => getJSON(`/user/${user}/about.js
 
 /**
  * Gets the timestamp of the last public activity on the user's profile.
- * @param {string} user The user to look for
- * @returns {Promise} Resolves to a number or rejects an error string
+ * @param user The user to look for
+ * @returns Resolves to a number or rejects an error string
  */
 export const getLastActive = async (user: string) => getJSON(`/user/${user}.json?limit=1&sort=new`, {
     uh: await getModhash(),
@@ -862,8 +833,8 @@ export const getLastActive = async (user: string) => getJSON(`/user/${user}.json
 
 /**
  * Gets the rules for a subreddit
- * @param {string} subreddit The name of the subreddit
- * @returns {Promise} Resolves to the rules as JSON or rejects with an error string
+ * @param subreddit The name of the subreddit
+ * @returns Resolves to the rules as JSON or rejects with an error string
  */
 export const getRules = async (sub: string) => getJSON(`/r/${sub}/about/rules.json`, {
     uh: await getModhash(),
@@ -877,7 +848,7 @@ export const getRules = async (sub: string) => getJSON(`/r/${sub}/about/rules.js
  * @param subreddit The name of the subreddit
  * @param user The name of a user
  * @param before ID of a mod note to search before (for pagination)
- * @returns {Promise} Resolves to an array of note objects or rejects an error
+ * @returns Resolves to an array of note objects or rejects an error
  */
 export const getModNotes = (subreddit: string, user: string, before: string) => apiOauthGET('/api/mod/notes', {
     subreddit,
@@ -894,9 +865,9 @@ export const getModNotes = (subreddit: string, user: string, before: string) => 
  * that user in that subreddit.
  * @param subreddits List of subreddit names
  * @param users List of user names
- * @returns {Promise} Resolves to an array of note objects, where each
- * corresponds to the user and subreddit at the same index; if a given user has
- * no notes in the given subreddit, the corresponding item will be `null`
+ * @returns Resolves to an array of note objects, where each corresponds to the
+ * user and subreddit at the same index; if a given user has no notes in the
+ * given subreddit, the corresponding item will be `null`
  */
 export const getRecentModNotes = (subreddits: string[], users: string[]) => apiOauthGET('/api/mod/notes/recent', {
     subreddits: subreddits.join(','),
@@ -908,13 +879,12 @@ export const getRecentModNotes = (subreddits: string[], users: string[]) => apiO
 
 /**
  * Creates a mod note on the given user in the given subreddit.
- * @param {object} data
- * @param {string} data.subreddit The name of the subreddit
- * @param {string} data.user The name of the user
- * @param {string} data.note The text of the note to add
- * @param {string} data.[label] One of Reddit's supported note labels
- * @param {string} data.[redditID] Fullname of an associated post or comment
- * @returns {Promise}
+ * @param data
+ * @param data.subreddit The name of the subreddit
+ * @param data.user The name of the user
+ * @param data.note The text of the note to add
+ * @param data.label One of Reddit's supported note labels
+ * @param data.redditID Fullname of an associated post or comment
  */
 export const createModNote = ({
     subreddit,
@@ -926,8 +896,8 @@ export const createModNote = ({
     subreddit: string;
     user: string;
     note: string;
-    label: string;
-    redditID: string;
+    label?: string;
+    redditID?: string;
 }) => apiOauthPOST('/api/mod/notes', {
     subreddit,
     user,
@@ -938,11 +908,10 @@ export const createModNote = ({
 
 /**
  * Deletes a mod note on the given user in the given subreddit.
- * @param {object} data
- * @param {string} subreddit The name of the subreddit
- * @param {string} user The name of the user
- * @param {string} id The ID of the note
- * @returns {Promise}
+ * @param data
+ * @param subreddit The name of the subreddit
+ * @param user The name of the user
+ * @param id The ID of the note
  */
 export const deleteModNote = ({subreddit, user, id}: {
     subreddit: string;

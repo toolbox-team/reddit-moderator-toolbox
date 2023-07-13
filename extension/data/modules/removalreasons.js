@@ -9,6 +9,28 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import TBListener from '../tblistener.js';
 
+// Error messages
+const STATUS_DEFAULT_TEXT = 'saving...',
+      APPROVE_ERROR = 'error, failed to approve post',
+      FLAIR_ERROR = 'error, failed to flair post',
+      NO_REASON_ERROR = 'error, no reason selected',
+      NO_REPLY_TYPE_ERROR = 'error, no reply type selected',
+      REPLY_ERROR = 'error, failed to post reply',
+      REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account',
+      PM_ERROR = 'error, failed to send PM',
+      MODMAIL_ERROR = 'error, failed to send Modmail',
+      MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail',
+      DISTINGUISH_ERROR = 'error, failed to distinguish reply',
+      LOCK_POST_ERROR = 'error, failed to lock post',
+      LOCK_COMMENT_ERROR = 'error, failed to lock reply',
+      LOG_REASON_MISSING_ERROR = 'error, public log reason missing',
+      LOG_POST_ERROR = 'error, failed to create log post';
+
+// Default texts
+const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}',
+      DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}',
+      DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
+
 export default new Module({
     name: 'Removal Reasons',
     id: 'RReasons',
@@ -102,28 +124,6 @@ export default new Module({
     }
 
     const $body = $('body');
-
-    // Error texts
-    const STATUS_DEFAULT_TEXT = 'saving...',
-          APPROVE_ERROR = 'error, failed to approve post',
-          FLAIR_ERROR = 'error, failed to flair post',
-          NO_REASON_ERROR = 'error, no reason selected',
-          NO_REPLY_TYPE_ERROR = 'error, no reply type selected',
-          REPLY_ERROR = 'error, failed to post reply',
-          REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account',
-          PM_ERROR = 'error, failed to send PM',
-          MODMAIL_ERROR = 'error, failed to send Modmail',
-          MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail',
-          DISTINGUISH_ERROR = 'error, failed to distinguish reply',
-          LOCK_POST_ERROR = 'error, failed to lock post',
-          LOCK_COMMENT_ERROR = 'error, failed to lock reply',
-          LOG_REASON_MISSING_ERROR = 'error, public log reason missing',
-          LOG_POST_ERROR = 'error, failed to create log post';
-
-    // Default texts
-    const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}',
-          DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}',
-          DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
 
     // Cached data
     const notEnabled = [];

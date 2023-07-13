@@ -478,21 +478,18 @@ export default new Module({
                 ],
                 // single footer
                 footer: `
-                    <attrs />
                     <input type="hidden" name="tom_or_not" value="no-tom">
                     <span class="status error" style="display:none">This is an easter egg.</span>
                     <button class="save tb-action-button">send</button>
                     <button class="no-reason tb-action-button">no reason</button>
                     <button class="cancel tb-action-button">cancel and approve</button>
                 `,
-                // TODO: use this instead of putting things on an <attrs>
-                details: {},
+                details: data,
                 tabOrientation: 'horizontal',
             });
 
             $popup.addClass('reason-popup');
             $popup.attr('id', `reason-popup-${data.subreddit}`);
-            $popup.find('attrs').attr(data);
 
             // RRs don't have a close button
             // TODO: is this desired? also if so, refactor this into an option
@@ -567,7 +564,9 @@ export default new Module({
 
         function openPopup () {
             // Reset state
-            $popup.find('attrs').attr(data);
+            Object.entries(data).forEach(([key, value]) => {
+                $popup.attr(`data-${key}`, value);
+            });
             $popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
             $popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
             $popup.find('.status').hide();// css('display: none;');
@@ -664,12 +663,11 @@ export default new Module({
 
     // 'cancel' button clicked
     $body.on('click', '.reason-popup .cancel', function () {
-        const popup = $(this).parents('.reason-popup'),
-              status = popup.find('.status'),
-              attrs = popup.find('attrs');
+        const $popup = $(this).parents('.reason-popup'),
+              status = $popup.find('.status');
 
-        TBApi.approveThing(attrs.attr('fullname')).then(() => {
-            removePopup(popup);
+        TBApi.approveThing($popup.attr('data-fullname')).then(() => {
+            removePopup($popup);
         }).catch(() => {
             status.text(APPROVE_ERROR);
         });
@@ -687,9 +685,8 @@ export default new Module({
               reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked'),
               checked = popup.find('.reason-check:checked'),
               status = popup.find('.status'),
-              attrs = popup.find('attrs'),
-              header = TBHelpers.htmlDecode(attrs.attr('header')),
-              footer = TBHelpers.htmlDecode(attrs.attr('footer')),
+              header = TBHelpers.htmlDecode(popup.attr('data-header')),
+              footer = TBHelpers.htmlDecode(popup.attr('data-footer')),
               logReason = popup.find('#log-reason-input').val(),
               data = {
                   subreddit: '',
@@ -707,8 +704,8 @@ export default new Module({
                   uri_body: '',
                   uri_title: '',
               };
-        let subject = attrs.attr('subject'),
-            logTitle = attrs.attr('logTitle');
+        let subject = popup.attr('data-subject'),
+            logTitle = popup.attr('data-logTitle');
 
         // Update status
         status.text(STATUS_DEFAULT_TEXT);
@@ -795,7 +792,7 @@ export default new Module({
 
         // // Convert attribs back to data.
         for (const i of Object.keys(data)) {
-            data[i] = attrs.attr(i);
+            data[i] = popup.attr(`data-${i}`);
         }
 
         reason = TBHelpers.replaceTokens(data, reason);

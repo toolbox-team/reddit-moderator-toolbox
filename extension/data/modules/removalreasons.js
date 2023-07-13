@@ -393,94 +393,108 @@ export default new Module({
                   footerText = data.footer ? parser.render(data.footer) : '';
 
             // Make box & add reason radio buttons
-            let popup = $(`
-                <div class="reason-popup" id="reason-popup-${data.subreddit}">
-                <attrs />
-                <div class="reason-popup-content">
-                <div class="reason-popup-header">Removal reasons for /r/${data.subreddit}:</div>
-                <div class="reason-popup-innercontent">
-                <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBHelpers.htmlEncode(data.title)}</a></p>
-                <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
-                    <p>
-                        <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
-                        <label id="reason-header">${headerText}</label>
-                    </p>
-                </div>
-                <table id="removal-reasons-table">
-                    <thead><tr>
-                        <th class="removal-toggle"></th>
-                        <th class="reason">reason</th>
-                        <th class="flair-text">flair text</th>
-                        <th class="flair-css">flair css</th>
-                        <th class="sort">sort</th>
-                    </tr></thead>
-                    <tbody id="reason-table" />
-                </table>
-                <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}">
-                    <p>
-                        <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />
-                        <label id="reason-footer">${footerText}</label>
-                    </p>
-                </div>
-                <div id="buttons">
-                <ul>
-                    <li>
-                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
-                        <ul>
-                            <li>
-                                <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky && data.kind === 'submission' ? 'checked' : ''}/><label for="type-stickied">Sticky the removal comment.</label>
-                            </li>
-                            <li>
-                                <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
-                            </li>
-                            <li>
-                                <input ${forced ? 'disabled' : ''} class="reason-comment-as-subreddit" id="type-reason-commnet-as-sub" type="checkbox"${reasonCommentAsSubreddit ? 'checked' : ''}/><label for="type-reason-commnet-as-sub">Send as /u/${data.subreddit}-ModTeam.</label>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
-                        <ul>
-                            <li>
-                                <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub" ${reasonAsSub ? 'checked ' : ''}/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
-                            </li>
-                            <li>
-                                <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${reasonAutoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
-                    </li>
-                    <li style="display:${selectNoneDisplay}"> /
-                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
-                    </li>
-                    <li>
-                        <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread && data.kind === 'submission' ? 'checked' : ''}/><label for="type-action-lock-thread">Lock the removed thread.</label>
-                    </li>
-                </ul>
-                </div>
-                <div id="log-reason" style="display:${logDisplay}">
-                    <p>Log Reason(s):
-                        <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
-                    </p>
-                    <p>
-                        (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>
-                    </p>
-                </div>
-                </div>
-                <div class="reason-popup-footer">
-                <input type="hidden" name="tom_or_not" value="no-tom">
-                <span class="status error" style="display:none">This is an easter egg.</span>
-                <button class="save tb-action-button">send</button>
-                <button class="no-reason tb-action-button">no reason</button>
-                <button class="cancel tb-action-button">cancel and approve</button>
-                </div>
-                </div>
-                </div>
-            `);
+            const $popup = TBui.overlay({
+                title: `Removal reasons for /r/${data.subreddit}`,
+                tabs: [
+                    {
+                        title: 'toolbox reasons',
+                        tooltip: 'Use a removal reason defined in your subreddit\'s Toolbox configuration',
+                        content: `
+                            <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBHelpers.htmlEncode(data.title)}</a></p>
+                            <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
+                                <p>
+                                    <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
+                                    <label id="reason-header">${headerText}</label>
+                                </p>
+                            </div>
+                            <table id="removal-reasons-table">
+                                <thead><tr>
+                                    <th class="removal-toggle"></th>
+                                    <th class="reason">reason</th>
+                                    <th class="flair-text">flair text</th>
+                                    <th class="flair-css">flair css</th>
+                                    <th class="sort">sort</th>
+                                </tr></thead>
+                                <tbody id="reason-table" />
+                            </table>
+                            <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}">
+                                <p>
+                                    <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />
+                                    <label id="reason-footer">${footerText}</label>
+                                </p>
+                            </div>
+                            <div id="buttons">
+                                <ul>
+                                    <li>
+                                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
+                                        <ul>
+                                            <li>
+                                                <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky && data.kind === 'submission' ? 'checked' : ''}/><label for="type-stickied">Sticky the removal comment.</label>
+                                            </li>
+                                            <li>
+                                                <input ${forced ? 'disabled' : ''} class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                                            </li>
+                                            <li>
+                                                <input ${forced ? 'disabled' : ''} class="reason-comment-as-subreddit" id="type-reason-commnet-as-sub" type="checkbox"${reasonCommentAsSubreddit ? 'checked' : ''}/><label for="type-reason-commnet-as-sub">Send as /u/${data.subreddit}-ModTeam.</label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
+                                        <ul>
+                                            <li>
+                                                <input ${forced ? 'disabled' : ''} class="reason-as-sub" type="checkbox" id="type-as-sub" ${reasonAsSub ? 'checked ' : ''}/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                                            </li>
+                                            <li>
+                                                <input ${forced ? 'disabled' : ''} class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${reasonAutoArchive ? 'checked ' : ''}/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
+                                    </li>
+                                    <li style="display:${selectNoneDisplay}"> /
+                                        <input ${forced ? 'disabled' : ''} class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
+                                    </li>
+                                    <li>
+                                        <input ${forced || data.kind !== 'submission' ? 'disabled' : ''} class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread && data.kind === 'submission' ? 'checked' : ''}/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div id="log-reason" style="display:${logDisplay}">
+                                <p>Log Reason(s):
+                                    <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
+                                </p>
+                                <p>
+                                    (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>
+                                </p>
+                            </div>
+                        `,
+                    },
+                    {
+                        title: 'Native reasons - TODO',
+                        content: 'nothing to see here yet',
+                    },
+                ],
+                // single footer
+                footer: `
+                    <attrs />
+                    <input type="hidden" name="tom_or_not" value="no-tom">
+                    <span class="status error" style="display:none">This is an easter egg.</span>
+                    <button class="save tb-action-button">send</button>
+                    <button class="no-reason tb-action-button">no reason</button>
+                    <button class="cancel tb-action-button">cancel and approve</button>
+                `,
+                // TODO: use this instead of putting things on an <attrs>
+                details: {},
+                tabOrientation: 'horizontal',
+            });
 
-            popup = $(popup).appendTo('body').find('attrs').attr(data).end();
+            $popup.addClass('reason-popup');
+            $popup.attr('id', `reason-popup-${data.subreddit}`);
+            $popup.find('attrs').attr(data);
+
+            $popup.appendTo('body');
 
             let reasons = [];
             if (isComment) {
@@ -536,11 +550,11 @@ export default new Module({
                     tr.find('.removal-reason-title').remove();
                 }
 
-                popup.find('#reason-table').append(tr);
+                $popup.find('#reason-table').append(tr);
             });
 
             // Pre-fill reason input elements which have IDs.
-            popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
+            $popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
                 this.id = `reason-input-${data.subreddit}-${this.id}`;
                 this.value = await TBStorage.getCache('RReasons', this.id, this.value);
             });

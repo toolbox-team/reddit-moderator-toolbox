@@ -31,7 +31,8 @@ type QueryParams = Record<string, string | undefined>;
 
 /**
  * A request body. If an object is provided, it is converted to a form data
- * body. Items with a value of `undefined` are excluded.
+ * body, where items with a value of `undefined` are excluded. JSON bodies
+ * should be passed through `JSON.stringify()` manually and passed as strings.
  */
 type RequestBody = string | Record<string, string | undefined>;
 

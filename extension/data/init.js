@@ -142,12 +142,6 @@ async function checkLoadConditions (tries = 3) {
         throw new Error('Toolbox has already been loaded in this window');
     }
 
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
-    // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
-    if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
-        throw new Error('Firefox is in Incognito mode, Toolbox will not work');
-    }
-
     // Check that we have details about the current user
     const userDetails = await TBApi.getUserDetails();
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {

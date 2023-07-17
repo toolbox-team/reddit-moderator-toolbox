@@ -3,17 +3,51 @@ import browser from 'webextension-polyfill';
 import {messageHandlers} from '../messageHandling';
 
 /**
+ * On platforms where the `"incognito": "split"` manifest key is unsupported, we
+ * have to rewrite the `Cookie` header to ensure that requests are sent with the
+ * cookies of the tab that initiated the request. This variable controls whether
+ * that rewriting is done.
+ */
+// NOTE: The only platform we care about that doesn't support this is Firefox.
+//       We don't use `webRequest` for anything else, so that permission is only
+//       included in the Firefox manifest, not the Chrome one. That means that
+//       we can use the presence of the `webRequest` API to determine whether to
+//       do manual cookie overwriting.
+const shouldRewriteRequestCookies = !!browser.webRequest;
+
+/** Name of the temporary header used to pass around the random request ID. */
+const REQUEST_ID_HEADER = 'X-Toolbox-Temp-RequestID';
+
+/** A map that stores metadata for outgoing requests Toolbox initiates. */
+const requestMetadata = new Map();
+
+/**
+ * Securely generates a random request ID.
+ * @returns {string}
+ */
+function generateRequestId () {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map(n => n.toString(16).padStart(2, '0')).join('');
+}
+
+/**
  * Retrieves the user's OAuth tokens from cookies.
+ * @param {string} cookieStoreId Sets what cookies to use for the request
  * @param {number} [tries=1] Number of tries to get the token (recursive)
  * @returns {Promise<Object>} An object with properties `accessToken`,
  * `refreshToken`, `scope`, and some others
  */
-async function getOAuthTokens (tries = 1) {
+async function getOAuthTokens (cookieStoreId, tries = 1) {
     // This function will fetch the cookie and if there is no cookie attempt to create one by visiting modmail.
     // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
 
     // Grab the current token cookie
-    const cookieInfo = {url: 'https://mod.reddit.com', name: 'token'};
+    const cookieInfo = {
+        url: 'https://mod.reddit.com',
+        name: 'token',
+        storeId: cookieStoreId,
+    };
     let rawCookie;
     try {
         rawCookie = await browser.cookies.get(cookieInfo);
@@ -52,8 +86,8 @@ async function getOAuthTokens (tries = 1) {
         await makeRequest({
             endpoint: 'https://mod.reddit.com/mail/all',
             absolute: true,
-        });
-        return getOAuthTokens(tries + 1);
+        }, cookieStoreId);
+        return getOAuthTokens(cookieStoreId, tries + 1);
     } else {
         // If we tried that 3 times and still no dice, the user probably isn't logged
         // into modmail, which means this trick won't work. Prompt the user to log
@@ -137,6 +171,7 @@ function makeFormData (obj) {
  * @param {boolean?} [options.absolute] If true, the request endpoint will be
  * treated as a full URL; if false, the endpoint will be treated as a path on
  * `https://old.reddit.com` (or `https://oauth.reddit.com` for oauth requests)
+ * @param {string} cookieStoreId Sets what cookie store to pull from
  * @returns {Promise} Resolves to a Response object, or rejects an Error
  */
 export async function makeRequest ({
@@ -147,7 +182,7 @@ export async function makeRequest ({
     oauth,
     okOnly,
     absolute,
-}) {
+}, cookieStoreId) {
     // Construct the request URL
     query = queryString(query);
     // If we have a query object and additional parameters in the endpoint, we
@@ -164,7 +199,10 @@ export async function makeRequest ({
         redirect: 'error', // prevents strange reddit API shenanigans
         method,
         cache: 'no-store',
+        headers: {},
     };
+
+    // Attach request body if one is provided
     if (body) {
         if (typeof body === 'object') {
             // If the body is passed as an object, convert it to FormData (this
@@ -175,15 +213,28 @@ export async function makeRequest ({
             fetchOptions.body = body;
         }
     }
+
     // If requested, fetch OAuth tokens and add `Authorization` header
     if (oauth) {
         try {
-            const tokens = await getOAuthTokens();
-            fetchOptions.headers = {Authorization: `bearer ${tokens.accessToken}`};
+            const tokens = await getOAuthTokens(cookieStoreId);
+            fetchOptions.headers['Authorization'] = `bearer ${tokens.accessToken}`;
         } catch (error) {
             console.error('getOAuthTokens: ', error);
             throw error;
         }
+    }
+
+    // If we need to rewrite the `Cookie` header, pass a temporary header
+    // containing a request ID and store the cookie store ID as  metadata. This
+    // will be intercepted and replaced with a new `Cookie` header by the
+    // `onBeforeSendHeaders` listener below.
+    if (shouldRewriteRequestCookies) {
+        const requestId = generateRequestId();
+        fetchOptions.headers[REQUEST_ID_HEADER] = requestId;
+        requestMetadata.set(requestId, {
+            cookieStoreId,
+        });
     }
 
     // Perform the request
@@ -207,7 +258,7 @@ export async function makeRequest ({
 }
 
 // Makes a request and sends a reply with response and error properties
-messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions).then(
+messageHandlers.set('tb-request', (requestOptions, sender) => makeRequest(requestOptions, sender.tab.cookieStoreId).then(
     // For succeeded requests, we send only the raw `response`
     async response => ({
         response: await serializeResponse(response),
@@ -222,3 +273,49 @@ messageHandlers.set('tb-request', requestOptions => makeRequest(requestOptions).
         response: error.response ? await serializeResponse(error.response) : undefined,
     }),
 ));
+
+// Intercept our own requests and rewrite their cookies, if needed
+if (shouldRewriteRequestCookies) {
+    browser.webRequest.onBeforeSendHeaders.addListener(async ({requestHeaders, url}) => {
+        const requestId = requestHeaders.find(header => header.name === REQUEST_ID_HEADER)?.value;
+        // If we didn't set the temporary header, do nothing
+        if (!requestId) {
+            return {};
+        }
+
+        // If we didn't save a cookie store for this request, do nothing
+        const storeId = requestMetadata.get(requestId)?.cookieStoreId;
+        if (!storeId) {
+            return {};
+        }
+
+        // Delete the request's metadata so it can't be reused
+        requestMetadata.delete(requestId);
+
+        // Retrieve cookies for this URL from the specified cookie store
+        const cookies = await browser.cookies.getAll({storeId, url});
+        console.log('a', url, storeId, '\nheaders:', requestHeaders, '\ncookies:', cookies);
+
+        // Rewrite the response with modified headers
+        requestHeaders = requestHeaders
+            // Remove temporary header and old `Cookie` header
+            .filter(header => !['Cookie', REQUEST_ID_HEADER].includes(header.name))
+            // Add a new `Cookie` header with the cookies we retrieved
+            .concat({
+                name: 'Cookie',
+                value: cookies.map(c => `${c.name}=${c.value}`).join(';'),
+            });
+
+        console.log(requestHeaders);
+        return {
+            requestHeaders,
+        };
+    }, {
+        urls: [
+            'https://*.reddit.com/*',
+        ],
+    }, [
+        'blocking',
+        'requestHeaders',
+    ]);
+}

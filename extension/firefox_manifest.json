@@ -23,6 +23,8 @@
         "unlimitedStorage",
         "notifications",
         "webNavigation",
+        "webRequest",
+        "webRequestBlocking",
         "alarms"
     ],
     "icons": {

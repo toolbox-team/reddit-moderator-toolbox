@@ -58,7 +58,7 @@ function waitForCacheRefresh (subreddit) {
     });
 }
 
-messageHandlers.set('tb-modqueue', async request => {
+messageHandlers.set('tb-modqueue', async (request, sender) => {
     const {subreddit, thingName, thingTimestamp} = request;
     // Check if we need to fetch data.
     let lastRefresh = 0;
@@ -100,7 +100,7 @@ messageHandlers.set('tb-modqueue', async request => {
                     limit: 100,
                 },
                 okOnly: true,
-            });
+            }, sender.tab.cookieStoreId);
             const updatedQueue = await response.json();
             const nowRefresh = Date.now();
             const newCacheObject = {

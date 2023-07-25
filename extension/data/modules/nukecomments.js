@@ -44,6 +44,7 @@ export default new Module({
     let distinguishedComments = [];
     // If we do get api errors we put the comment id in here so we can retry removing them.
     let missedComments = [];
+    let retryExecutionType = '';
     let removalRunning = false;
     let nukeOpen = false;
     const $body = $('body');
@@ -62,6 +63,7 @@ export default new Module({
         nukeOpen = true;
         removalChain = [];
         missedComments = [];
+        retryExecutionType = '';
         distinguishedComments = [];
 
         const $this = $(this);
@@ -130,11 +132,13 @@ export default new Module({
             const $nukeFeedback = $popup.find('.tb-nuke-feedback');
             const $nukeDetails = $popup.find('.tb-nuke-details');
             const temptIgnoreDistinguished = $popup.find('.tb-ignore-distinguished-checkbox').prop('checked');
-            const executionType = $popup.find('.tb-execution-type-radio:checked').val();
+            let executionType = '';
             if ($this.hasClass('tb-retry-nuke')) {
+                executionType = retryExecutionType;
                 commentArray = missedComments;
                 missedComments = [];
             } else {
+                executionType = $popup.find('.tb-execution-type-radio:checked').val();
                 if (temptIgnoreDistinguished) {
                     commentArray = removalChain;
                 } else {
@@ -167,6 +171,7 @@ export default new Module({
                 $nukeFeedback.text(`Done ${executionType === 'remove' ? 'removing' : 'locking'} comments.`);
                 const missedLength = missedComments.length;
                 if (missedLength) {
+                    retryExecutionType = executionType;
                     $nukeDetails.text(`${missedLength}: not ${executionType === 'remove' ? 'removed' : 'locked'} because of API errors. Hit retry to attempt removing them again.`);
                     $popup.find('.tb-retry-nuke').show();
                 } else {

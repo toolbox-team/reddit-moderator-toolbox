@@ -123,9 +123,9 @@ export default new Module({
 
         // There is no open overlay so we'll create a new one.
         if (!$overlay.length) {
-            $overlay = TBui.overlay(
-                'Toolbox queues',
-                [
+            $overlay = TBui.overlay({
+                title: 'Toolbox queues',
+                tabs: [
                     {
                         title: 'modqueue',
                         tooltip: 'Moderation queue.',
@@ -182,13 +182,11 @@ export default new Module({
                         footer: '',
                     },
                 ],
-                [], // extra header buttons
-                'tb-queue-overlay tb-overlay-horizontal-tabs', // class
-                false, // single overriding footer
-                {
+                cssClass: 'tb-queue-overlay tb-overlay-horizontal-tabs',
+                details: {
                     subreddit,
                 },
-            ).appendTo('body');
+            }).appendTo('body');
 
             $body.css('overflow', 'hidden');
 

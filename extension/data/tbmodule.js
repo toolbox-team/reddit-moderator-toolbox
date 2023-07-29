@@ -268,19 +268,14 @@ const TBModule = {
         // This was a clever idea, but for now it's easier to inject them
         // settingsTabs.push.apply(settingsTabs, this.generateSettings());
 
-        const $settingsDialog = TBui.overlay(
-            // title
-            'toolbox Settings',
-            // tabs
-            settingsTabs,
-            // extra header buttons TODO: make this generic
-            `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
-            // overlay main class
-            'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
-            // optional, overriding single footer
+        const $settingsDialog = TBui.overlay({
+            title: 'toolbox Settings',
+            buttons: `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
+            tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
-            `<input class="tb-save tb-action-button" type="button" value="save">${debugMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
-        );
+            footer: `<input class="tb-save tb-action-button" type="button" value="save">${debugMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
+            cssClass: 'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
+        });
 
         // Add ordering attributes to the existing tabs so we can insert other special tabs around them
         $settingsDialog.find('a[data-module="toolbox"]').attr('data-order', 1);

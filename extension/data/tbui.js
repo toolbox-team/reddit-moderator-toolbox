@@ -364,7 +364,8 @@ export function switchOverlayTab (overlayClass, tabName) {
  * @param {object} [options.details] An object of metadata attached to the
  * overlay, where each key:val of the object is mapped to a `data-key="val"`
  * attribute
- * @param {bool} options.verticalTabs Pass false to use horizontal tabs instead
+ * @param {'vertical' | 'horizontal'} options.tabOrientation Orientation of the
+ * tab bar
  */
 export function overlay ({
     title,
@@ -373,7 +374,7 @@ export function overlay ({
     cssClass,
     footer,
     details,
-    verticalTabs = true,
+    tabOrientation = 'vertical',
 }) {
     buttons = typeof buttons !== 'undefined' ? buttons : '';
     cssClass = typeof cssClass !== 'undefined' ? cssClass : '';
@@ -382,7 +383,7 @@ export function overlay ({
     // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
     const $overlay = $(`
         <div class="tb-page-overlay ${cssClass ? ` ${cssClass}` : ''}">
-            <div class="tb-window tb-window-large ${verticalTabs ? 'tb-window-vertical-tabs' : ''}">
+            <div class="tb-window tb-window-large ${tabOrientation === 'vertical' ? 'tb-window-vertical-tabs' : ''}">
                 <div class="tb-window-header">
                     <div class="tb-window-title">${title}</div>
                     <div class="buttons">

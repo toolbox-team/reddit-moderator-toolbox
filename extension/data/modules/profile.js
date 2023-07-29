@@ -631,11 +631,11 @@ export default new Module({
                         footer: '',
                     },
                 ],
+                tabOrientation: 'horizontal',
                 cssClass: 'tb-profile-overlay tb-overlay-horizontal-tabs',
                 details: {
                     user,
                 },
-                verticalTabs: false,
             }).appendTo('body');
 
             $body.css('overflow', 'hidden');

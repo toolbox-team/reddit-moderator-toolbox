@@ -1033,9 +1033,9 @@ function startUsernotesManager ({unManagerLink}) {
                             <span>-</span>
                         </div>
                     `);
-                const noteTime = TBui.relativeTime(new Date(val.time));
-                noteTime.classList.add('live-timestamp');
-                $note.append(noteTime);
+                const $noteTime = TBui.relativeTime(new Date(val.time));
+                $noteTime.addClass('live-timestamp');
+                $note.append($noteTime);
 
                 if (color.key === 'none') {
                     $note.find('.note-type').hide();

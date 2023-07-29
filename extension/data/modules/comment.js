@@ -386,8 +386,9 @@ function init ({
                     footer: '',
                 },
             ],
-            cssClass: 'tb-flat-view',
-        }).appendTo('body');
+        })
+            .addClass('tb-flat-view')
+            .appendTo('body');
 
         $flatViewOverlay.hide();
 

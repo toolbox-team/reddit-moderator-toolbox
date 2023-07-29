@@ -1092,8 +1092,9 @@ function startUsernotesManager ({unManagerLink}) {
                     footer: '',
                 },
             ],
-            cssClass: 'tb-un-editor',
-        }).appendTo('body');
+        })
+            .addClass('tb-un-editor')
+            .appendTo('body');
         $body.css('overflow', 'hidden');
 
         // Variables to store the filter text

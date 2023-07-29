@@ -632,11 +632,12 @@ export default new Module({
                     },
                 ],
                 tabOrientation: 'horizontal',
-                cssClass: 'tb-profile-overlay tb-overlay-horizontal-tabs',
                 details: {
                     user,
                 },
-            }).appendTo('body');
+            })
+                .addClass('tb-profile-overlay')
+                .appendTo('body');
 
             $body.css('overflow', 'hidden');
 

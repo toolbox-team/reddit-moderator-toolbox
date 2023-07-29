@@ -358,7 +358,6 @@ export function switchOverlayTab (overlayClass, tabName) {
  * @param {object[]} options.tabs An array of tab objects
  * @param {string} [options.buttons] Additional buttons to add to the window's
  * header as an HTML string
- * @param {string} [options.cssClass] Additional CSS classes to add to the overlay
  * @param {string} [options.footer] If provided, a single footer to use for all
  * tabs rather than relying on the footer data from each provided tab object
  * @param {object} [options.details] An object of metadata attached to the
@@ -371,18 +370,16 @@ export function overlay ({
     title,
     tabs,
     buttons,
-    cssClass,
     footer,
     details,
     tabOrientation = 'vertical',
 }) {
     buttons = typeof buttons !== 'undefined' ? buttons : '';
-    cssClass = typeof cssClass !== 'undefined' ? cssClass : '';
     footer = typeof footer !== 'undefined' ? footer : false;
 
     // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
     const $overlay = $(`
-        <div class="tb-page-overlay ${cssClass ? ` ${cssClass}` : ''}">
+        <div class="tb-page-overlay">
             <div class="tb-window tb-window-large ${tabOrientation === 'vertical' ? 'tb-window-vertical-tabs' : ''}">
                 <div class="tb-window-header">
                     <div class="tb-window-title">${title}</div>
@@ -408,7 +405,7 @@ export function overlay ({
     // $overlay.on('click', '.buttons .close', function () {});
     if (tabs.length === 1) {
         $overlay.find('.tb-window').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
-        $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(footer ? footer : tabs[0].footer));
+        $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(footer ?? tabs[0].footer));
     } else if (tabs.length > 1) {
         $overlay.find('.tb-window').append($('<div class="tb-window-tabs"></div>'));
         $overlay.find('.tb-window').append($('<div class="tb-window-tabs-wrapper"></div>'));

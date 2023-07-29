@@ -182,11 +182,13 @@ export default new Module({
                         footer: '',
                     },
                 ],
-                cssClass: 'tb-queue-overlay tb-overlay-horizontal-tabs',
+                tabOrientation: 'horizontal',
                 details: {
                     subreddit,
                 },
-            }).appendTo('body');
+            })
+                .addClass('tb-queue-overlay')
+                .appendTo('body');
 
             $body.css('overflow', 'hidden');
 

@@ -317,8 +317,9 @@ const self = new Module({
                     footer: '<input class="save-ban-macro tb-action-button" type="button" value="Save ban macro">',
                 },
             ],
-            cssClass: 'tb-config', // class
-        }).appendTo('body');
+        })
+            .addClass('tb-config')
+            .appendTo('body');
 
         $body.css('overflow', 'hidden');
     }

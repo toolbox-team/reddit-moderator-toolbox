@@ -115,8 +115,9 @@ export default new Module({
                     footer: '',
                 },
             ],
-            cssClass: 'tb-comment-ui-test', // class
-        }).appendTo('body');
+        })
+            .addClass('tb-comment-ui-test')
+            .appendTo('body');
 
         $body.css('overflow', 'hidden');
         $body.on('click', '.tb-comment-ui-test .close', () => {

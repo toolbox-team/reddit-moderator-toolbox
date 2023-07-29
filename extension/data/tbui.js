@@ -364,8 +364,8 @@ export function switchOverlayTab (overlayClass, tabName) {
  * @param {object} [options.details] An object of metadata attached to the
  * overlay, where each key:val of the object is mapped to a `data-key="val"`
  * attribute
- * @param {'vertical' | 'horizontal'} options.tabOrientation Orientation of the
- * tab bar
+ * @param {'vertical' | 'horizontal'} [options.tabOrientation='vertical']
+ * Orientation of the tab bar
  */
 export function overlay ({
     title,

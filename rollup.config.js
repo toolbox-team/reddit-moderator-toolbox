@@ -12,7 +12,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         output: {
             file: `build/${platform}/data/init.js`,
             // Sourcemaps without extra `web_accessible_resources` entries
-            sourcemap: false,
+            sourcemap: process.env.NODE_ENV === 'production' ? false : 'inline',
         },
         plugins: [
             nodeResolve(),
@@ -39,7 +39,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         input: 'extension/data/background/index.js',
         output: {
             file: `build/${platform}/data/background/index.js`,
-            sourcemap: 'inline',
+            sourcemap: process.env.NODE_ENV === 'production' ? false : 'inline',
         },
         plugins: [
             nodeResolve(),

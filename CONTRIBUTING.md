@@ -43,7 +43,7 @@ You can find the documentation for all this on the following locations:
 - `extension/data/tbstorage.js`: Everything storage related.
 - `extension/data/tbui.js`: Handles creating UI elements.
 - `extension/data/tbhelpers.js`: Contains standalone utility functions. Public functions all are part of the `TBHelpers` object.
-- `extension/data/tbapi.js`: Contains reddit api utility functions. Public functions all are part of the `TBApi` object.
+- `extension/data/tbapi.ts`: Contains reddit api utility functions. Public functions all are part of the `TBApi` object.
 - `extension/data/tbcore.js`: TBCore is one of the core blocks on which toolbox is build. It contains a lot of information about the state of toolbox and reddit.
 - `extension/data/background/`: Contains extension background scripts
 - `extension/data/images/`: Images used by toolbox.

@@ -4,7 +4,7 @@ import CodeMirror from 'codemirror';
 import {Module} from '../tbmodule.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBui from '../tbui.js';
-import * as TBApi from '../tbapi.js';
+import * as TBApi from '../tbapi.ts';
 import * as TBStorage from '../tbstorage.js';
 import * as TBCore from '../tbcore.js';
 

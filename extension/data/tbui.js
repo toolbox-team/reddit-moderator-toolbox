@@ -4,7 +4,7 @@ import tinycolor from 'tinycolor2';
 
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
-import * as TBApi from './tbapi.js';
+import * as TBApi from './tbapi.ts';
 import * as TBHelpers from './tbhelpers.js';
 import * as TBCore from './tbcore.js';
 

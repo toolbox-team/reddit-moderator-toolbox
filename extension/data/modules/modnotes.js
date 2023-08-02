@@ -3,7 +3,7 @@ import $ from 'jquery';
 import {Module} from '../tbmodule.js';
 import {link, isModSub, isNewModmail} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
-import * as TBApi from '../tbapi.js';
+import * as TBApi from '../tbapi.ts';
 import {
     drawPosition,
     FEEDBACK_NEGATIVE,

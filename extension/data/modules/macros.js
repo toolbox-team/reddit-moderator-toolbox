@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import {Module} from '../tbmodule.js';
-import * as TBApi from '../tbapi.js';
+import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';

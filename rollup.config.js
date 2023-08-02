@@ -4,11 +4,12 @@
 import copy from 'rollup-plugin-copy';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import typescript from '@rollup/plugin-typescript';
 
 // TODO: Pull entry point info and copied files from manifest itself
 export default ['chrome', 'firefox'].flatMap(platform => [
     {
-        input: 'extension/data/init.js',
+        input: 'extension/data/init.ts',
         output: {
             file: `build/${platform}/data/init.js`,
             // Sourcemaps without extra `web_accessible_resources` entries
@@ -17,6 +18,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         plugins: [
             nodeResolve(),
             commonjs(),
+            typescript(),
             // Copy files not processed by Rollup over to the build directory
             copy({
                 targets: [
@@ -36,7 +38,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         ],
     },
     {
-        input: 'extension/data/background/index.js',
+        input: 'extension/data/background/index.ts',
         output: {
             file: `build/${platform}/data/background/index.js`,
             sourcemap: process.env.NODE_ENV === 'production' ? false : 'inline',
@@ -44,6 +46,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         plugins: [
             nodeResolve(),
             commonjs(),
+            typescript(),
         ],
     },
 ]);

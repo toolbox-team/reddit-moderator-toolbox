@@ -369,14 +369,11 @@ export function switchOverlayTab (overlayClass, tabName) {
 export function overlay ({
     title,
     tabs,
-    buttons,
+    buttons = '',
     footer,
     details,
     tabOrientation = 'vertical',
 }) {
-    buttons = typeof buttons !== 'undefined' ? buttons : '';
-    footer = typeof footer !== 'undefined' ? footer : false;
-
     // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
     const $overlay = $(`
         <div class="tb-page-overlay">

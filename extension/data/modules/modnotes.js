@@ -172,12 +172,12 @@ export function getParentFullname (commentFullname) {
 
     // Fetch the parent fullname fresh
     // Note that we're not awaiting this - we want the full promise
-    const fetched = TBApi.getInfo(commentFullname)
+    const parentFullnamePromise = TBApi.getInfo(commentFullname)
         .then(info => info.data.parent_id);
 
     // Write to cache and return
-    parentFullnamesCache[commentFullname] = fetched;
-    return fetched;
+    parentFullnamesCache[commentFullname] = parentFullnamePromise;
+    return parentFullnamePromise;
 }
 
 /**

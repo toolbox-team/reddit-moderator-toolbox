@@ -29,9 +29,9 @@ const self = new Module({
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
     function showConfig (subredditConfig, configData) {
-        TBui.overlay(
-            `toolbox Configuration - /r/${subredditConfig}`,
-            [
+        TBui.overlay({
+            title: `toolbox Configuration - /r/${subredditConfig}`,
+            tabs: [
                 {
                     title: 'Settings Home',
                     tooltip: 'Pointers and handy links.',
@@ -317,10 +317,9 @@ const self = new Module({
                     footer: '<input class="save-ban-macro tb-action-button" type="button" value="Save ban macro">',
                 },
             ],
-            [], // extra header buttons
-            'tb-config', // class
-            false, // single overriding footer
-        ).appendTo('body');
+        })
+            .addClass('tb-config')
+            .appendTo('body');
 
         $body.css('overflow', 'hidden');
     }

@@ -600,9 +600,9 @@ export default new Module({
         let $overlay = $body.find('.tb-profile-overlay');
 
         if (!$overlay.length) {
-            $overlay = TBui.overlay(
-                `Toolbox profile for /u/${user}`,
-                [
+            $overlay = TBui.overlay({
+                title: `Toolbox profile for /u/${user}`,
+                tabs: [
                     {
                         title: 'overview',
                         tooltip: 'Overview profile.',
@@ -631,14 +631,13 @@ export default new Module({
                         footer: '',
                     },
                 ],
-                [], // extra header buttons
-                'tb-profile-overlay tb-overlay-horizontal-tabs', // class
-                false, // single overriding footer
-                {
+                tabOrientation: 'horizontal',
+                details: {
                     user,
                 },
-                false, // use horizontal tabs instead of vertical
-            ).appendTo('body');
+            })
+                .addClass('tb-profile-overlay')
+                .appendTo('body');
 
             $body.css('overflow', 'hidden');
 

@@ -1082,9 +1082,9 @@ function startUsernotesManager ({unManagerLink}) {
         $overlayContent.append($pager);
 
         // Gang's all here, present the overlay
-        TBui.overlay(
-            `usernotes - /r/${sub}`,
-            [
+        TBui.overlay({
+            title: `usernotes - /r/${sub}`,
+            tabs: [
                 {
                     title: `usernotes - /r/${sub}`,
                     tooltip: `edit usernotes for /r/${sub}`,
@@ -1092,10 +1092,9 @@ function startUsernotesManager ({unManagerLink}) {
                     footer: '',
                 },
             ],
-            [], // extra header buttons
-            'tb-un-editor', // class
-            false, // single overriding footer
-        ).appendTo('body');
+        })
+            .addClass('tb-un-editor')
+            .appendTo('body');
         $body.css('overflow', 'hidden');
 
         // Variables to store the filter text

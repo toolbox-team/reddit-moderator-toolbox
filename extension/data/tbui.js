@@ -353,38 +353,46 @@ export function switchOverlayTab (overlayClass, tabName) {
 
 /**
  * Generates an overlay containing a single large window.
- * @param {string} title The title of the window
- * @param {object[]} tabs An array of tab objects
- * @param {string} buttons Additional buttons to add to the window's header
- * as an HTML string
- * @param {string} css_class Additional CSS classes to add to the overlay
- * @param {string} single_footer If provided, a single footer to use for all
+ * @param {object} options
+ * @param {string} options.title The title of the window
+ * @param {object[]} options.tabs An array of tab objects
+ * @param {string} [options.buttons] Additional buttons to add to the window's
+ * header as an HTML string
+ * @param {string} [options.footer] If provided, a single footer to use for all
  * tabs rather than relying on the footer data from each provided tab object
- * @param {object} details An object of metadata attached to the overlay,
- * where each key:val of the object is mapped to a `data-key="val"` attribute
- * @param {bool} verticalTabs Pass false to use horizontal tabs instead
+ * @param {object} [options.details] An object of metadata attached to the
+ * overlay, where each key:val of the object is mapped to a `data-key="val"`
+ * attribute
+ * @param {'vertical' | 'horizontal'} [options.tabOrientation='vertical']
+ * Orientation of the tab bar
  */
-export function overlay (title, tabs, buttons, css_class, single_footer, details, verticalTabs = true) {
+export function overlay ({
+    title,
+    tabs,
+    buttons,
+    footer,
+    details,
+    tabOrientation = 'vertical',
+}) {
     buttons = typeof buttons !== 'undefined' ? buttons : '';
-    css_class = typeof css_class !== 'undefined' ? css_class : '';
-    single_footer = typeof single_footer !== 'undefined' ? single_footer : false;
+    footer = typeof footer !== 'undefined' ? footer : false;
 
     // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
     const $overlay = $(`
-            <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
-                <div class="tb-window tb-window-large ${verticalTabs ? 'tb-window-vertical-tabs' : ''}">
-                    <div class="tb-window-header">
-                        <div class="tb-window-title">${title}</div>
-                        <div class="buttons">
-                            ${buttons}
-                            <a class="close" href="javascript:;">
-                                <i class="tb-icons">${icons.close}</i>
-                            </a>
-                        </div>
+        <div class="tb-page-overlay">
+            <div class="tb-window tb-window-large ${tabOrientation === 'vertical' ? 'tb-window-vertical-tabs' : ''}">
+                <div class="tb-window-header">
+                    <div class="tb-window-title">${title}</div>
+                    <div class="buttons">
+                        ${buttons}
+                        <a class="close" href="javascript:;">
+                            <i class="tb-icons">${icons.close}</i>
+                        </a>
                     </div>
                 </div>
             </div>
-        `);
+        </div>
+    `);
 
     if (details) {
         Object.entries(details).forEach(([key, value]) => {
@@ -397,7 +405,7 @@ export function overlay (title, tabs, buttons, css_class, single_footer, details
     // $overlay.on('click', '.buttons .close', function () {});
     if (tabs.length === 1) {
         $overlay.find('.tb-window').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
-        $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(single_footer ? single_footer : tabs[0].footer));
+        $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(footer ?? tabs[0].footer));
     } else if (tabs.length > 1) {
         $overlay.find('.tb-window').append($('<div class="tb-window-tabs"></div>'));
         $overlay.find('.tb-window').append($('<div class="tb-window-tabs-wrapper"></div>'));
@@ -438,7 +446,7 @@ export function overlay (title, tabs, buttons, css_class, single_footer, details
                 $overlay.find(`.tb-window-tab.${tab.id}`).show();
 
                 // Only hide and show the footer if we have multiple options for it.
-                if (!single_footer) {
+                if (!footer) {
                     $overlay.find('.tb-window-footer').hide();
                     $overlay.find(`.tb-window-footer.${tab.id}`).show();
                 }
@@ -454,7 +462,7 @@ export function overlay (title, tabs, buttons, css_class, single_footer, details
             // $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
             $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
             // individual tab footers (as used in .tb-config)
-            if (!single_footer) {
+            if (!footer) {
                 $overlay.find('.tb-window').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
                 const $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
@@ -479,8 +487,8 @@ export function overlay (title, tabs, buttons, css_class, single_footer, details
     }
 
     // single footer for all tabs (as used in .tb-settings)
-    if (single_footer) {
-        $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(single_footer));
+    if (footer) {
+        $overlay.find('.tb-window').append($('<div class="tb-window-footer"></div>').append(footer));
     }
 
     return $overlay;

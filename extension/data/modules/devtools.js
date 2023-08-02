@@ -85,9 +85,9 @@ export default new Module({
     }
 
     $body.on('click', '#tb-testCommentUI-link', () => {
-        TBui.overlay(
-            'Comment UI tester',
-            [
+        TBui.overlay({
+            title: 'Comment UI tester',
+            tabs: [
                 {
                     title: 'UI tester',
                     tooltip: 'UItester.',
@@ -115,10 +115,9 @@ export default new Module({
                     footer: '',
                 },
             ],
-            [], // extra header buttons
-            'tb-comment-ui-test', // class
-            false, // single overriding footer
-        ).appendTo('body');
+        })
+            .addClass('tb-comment-ui-test')
+            .appendTo('body');
 
         $body.css('overflow', 'hidden');
         $body.on('click', '.tb-comment-ui-test .close', () => {

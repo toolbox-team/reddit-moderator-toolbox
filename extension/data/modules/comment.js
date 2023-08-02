@@ -376,9 +376,9 @@ function init ({
             <div id="tb-sitetable"></div>`);
 
         // add the new comment list to the page.
-        const $flatViewOverlay = TBui.overlay(
-            'Flatview',
-            [
+        const $flatViewOverlay = TBui.overlay({
+            title: 'Flatview',
+            tabs: [
                 {
                     title: 'Flatview',
                     tooltip: 'commentFlatview.',
@@ -386,10 +386,9 @@ function init ({
                     footer: '',
                 },
             ],
-            [], // extra header buttons
-            'tb-flat-view', // class
-            false, // single overriding footer
-        ).appendTo('body');
+        })
+            .addClass('tb-flat-view')
+            .appendTo('body');
 
         $flatViewOverlay.hide();
 

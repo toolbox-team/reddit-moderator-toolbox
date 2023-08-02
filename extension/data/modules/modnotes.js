@@ -15,6 +15,7 @@ import {
     textFeedback,
 } from '../tbui.js';
 import TBListener from '../tblistener.js';
+import {setSettingAsync} from '../tbstorage.js';
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -532,15 +533,13 @@ export default new Module({
             ],
             default: 'none',
         },
-        {
-            id: 'cachedParentFullnames',
-            description: 'Array of arrays mapping comment fullnames to parent post fullnames',
-            type: 'JSON',
-            hidden: true,
-            default: [],
-        },
     ],
 }, function ({defaultTabName, defaultNoteLabel}) {
+    // Clean up old broken cache storage key
+    // TODO: Remove this a couple versions from now when people have reasonably
+    //       probably updated past this
+    setSettingAsync(this.id, 'cachedParentFullnames', undefined);
+
     // Handle authors showing up on the page
     TBListener.on('author', async e => {
         const subreddit = e.detail.data.subreddit.name;

@@ -16,9 +16,6 @@ import {
 } from '../tbui.js';
 import TBListener from '../tblistener.js';
 
-/** The maximum number of entries in the parent fullnames cache. */
-const PARENT_FULLNAMES_CACHE_MAX_SIZE = 10000;
-
 /**
  * An object mapping modnote types to human-friendly display names.
  * @constant {object}
@@ -152,43 +149,34 @@ function getLatestModNote (subreddit, user) {
 }
 
 /**
+ * In-page cache of comment fullnames to the fullnames of their parent posts.
+ * Values of this object are promises which resolve to fullnames, rather than
+ * bare strings - we keep the promises around after they're resolved, and always
+ * deal with this cache asynchronously.
+ * @constant {Record<string, Promise<string>>}
+ */
+const parentFullnamesCache = Object.create(null);
+
+/**
  * Gets the parent fullname of a comment.
  * @param {string} commentFullname Fullname of a comment
  * @returns {Promise<string>} Fullname of the comment's parent post
  */
-async function getParentFullname (commentFullname) {
-    // NOTE: This function isn't called until the module is initialized, so it's
-    //       safe to reference `self` in order to read/write settings
-    /* eslint-disable no-use-before-define */
-
-    /** @type {[commentFullname: string, parentFullname: string][]} */
-    let cachedParentFullnames = await self.get('cachedParentFullnames');
-
-    // Search the cache for an answer first
-    const matchingIndex = cachedParentFullnames.findIndex(entry => entry[0] === commentFullname);
-    if (matchingIndex !== -1) {
-        const parentFullname = cachedParentFullnames[matchingIndex][1];
-
-        // Move the cache entry to the head of the array since we just used it
-        cachedParentFullnames.splice(matchingIndex, 1);
-        cachedParentFullnames.unshift([commentFullname, parentFullname]);
-
-        // Write back to the cache and return the cached parent fullname
-        self.set('cachedParentFullnames', cachedParentFullnames);
-        return parentFullname;
+export function getParentFullname (commentFullname) {
+    // If it's in cache, return that
+    const cached = parentFullnamesCache[commentFullname];
+    if (cached) {
+        return cached;
     }
 
-    // No cached value, so fetch from API instead
-    const parentFullname = await TBApi.getInfo(commentFullname).then(info => info.data.parent_id);
+    // Fetch the parent fullname fresh
+    // Note that we're not awaiting this - we want the full promise
+    const fetched = TBApi.getInfo(commentFullname)
+        .then(info => info.data.parent_id);
 
-    // Write result to cache and trim the cache size; fetch the cache value
-    // again before changing it since others may have touched it in the meantime
-    cachedParentFullnames = await self.get('cachedParentFullnames');
-    cachedParentFullnames.unshift([commentFullname, parentFullname]);
-    await self.set('cachedParentFullnames', cachedParentFullnames.slice(0, PARENT_FULLNAMES_CACHE_MAX_SIZE));
-    return parentFullname;
-
-    /* eslint-enable no-use-before-define */
+    // Write to cache and return
+    parentFullnamesCache[commentFullname] = fetched;
+    return fetched;
 }
 
 /**
@@ -508,13 +496,16 @@ function generateNoteTableRow (note) {
         if (!contextURL) {
             return;
         }
+
+        // the row may no longer be displayed at this point, but if it's gone
+        // then jQuery will just do nothing, so it's fine
         $noteRow.find('time').wrap(`<a href="${escapeHTML(contextURL)}">`);
     });
 
     return $noteRow;
 }
 
-const self = new Module({
+export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
     beta: true,
@@ -677,4 +668,3 @@ const self = new Module({
         }
     });
 });
-export default self;

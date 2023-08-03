@@ -274,7 +274,9 @@ const TBModule = {
             tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
             footer: `<input class="tb-save tb-action-button" type="button" value="save">${debugMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
-        }).addClass('tb-settings', 'tb-personal-settings');
+        })
+            .addClass('tb-settings')
+            .addClass('tb-personal-settings');
 
         // Add ordering attributes to the existing tabs so we can insert other special tabs around them
         $settingsDialog.find('a[data-module="toolbox"]').attr('data-order', 1);

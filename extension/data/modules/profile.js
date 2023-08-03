@@ -324,7 +324,7 @@ export default new Module({
                   commentKarma = data.data.comment_karma,
                   displayName = data.data.subreddit.title,
                   publicDescription = data.data.subreddit.public_description;
-            const createdAt = new Date(userCreated * 1000).toISOString();
+            const createdAt = new Date(userCreated * 1000);
 
             const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}

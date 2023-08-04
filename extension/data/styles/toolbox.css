@@ -1398,7 +1398,8 @@ body.mod-toolbox-rd .tb-action-button:active {
 }
 
 .mod-toolbox-rd select.tb-action-button {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFBAMAAACOSmBbAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAMFBMVEUAAAByhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhpoAAAAzyklRAAAADnRSTlMAg+bd3+d6pqKNlZOkqEeC9h4AAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAAAJklEQVQI12OQU3YxfcbA/u7duwYGhnnvXjEwMHC/OwAkGfYyMAAApLAJ3r+t9WUAAAAASUVORK5CYII=');    background-repeat: no-repeat;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1" width="10" height="5"><polygon points="0,0 1,1 2,0" fill="%2372869A"/></svg>');
+    background-repeat: no-repeat;
     background-position: right 5px center;
     -moz-appearance:none; /* Firefox */
     -webkit-appearance:none; /* Safari and Chrome */

@@ -273,7 +273,10 @@ const TBModule = {
             buttons: `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
             tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
-            footer: `<input class="tb-save tb-action-button" type="button" value="save">${debugMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`,
+            footer: `
+                <input class="tb-save tb-action-button" type="button" value="save">
+                ${debugMode ? '<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}
+            `,
         })
             .addClass('tb-settings')
             .addClass('tb-personal-settings');

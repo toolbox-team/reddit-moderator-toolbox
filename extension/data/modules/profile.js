@@ -342,7 +342,7 @@ export default new Module({
                     </div>
                     ` : ''}
                 </div>`);
-            $sidebar.find('tb-user-detail-join-date').append(TBui.relativeTime(createdAt));
+            $sidebar.find('.tb-user-detail-join-date').append(TBui.relativeTime(createdAt));
             $tabWrapper.after($sidebar);
 
             addModSubsToSidebar(user, $sidebar);

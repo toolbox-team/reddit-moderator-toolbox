@@ -120,6 +120,7 @@ body.mod-toolbox-rd.mod-toolbox-rd .tb-window-footer .tb-input {
     line-height: initial;
     border-color: #72869A;
     padding: 5px;
+    border-radius: 1px;
 }
 body.mod-toolbox-rd.mod-toolbox-rd .tb-window-footer .tb-action-button {
     line-height: initial !important;

@@ -38,7 +38,7 @@
         "docdash": "^2.0.1",
         "eslint": "^8.46.0",
         "eslint-plugin-import": "^2.28.0",
-        "inquirer": "^9.2.9",
+        "inquirer": "^9.2.10",
         "jsdoc": "^4.0.2",
         "rollup": "^3.2.3",
         "rollup-plugin-copy": "^3.4.0",

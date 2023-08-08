@@ -398,7 +398,7 @@ function createModNotesPopup ({
 
         // Generate a table for the notes we have and display that
         const $notesPager = progressivePagerForItems({
-            perPage: 25,
+            perPage: 20,
             controlPosition: 'bottom',
             wrapper: `
                 <table class="tb-modnote-table">

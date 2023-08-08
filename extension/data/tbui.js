@@ -2,6 +2,8 @@ import browser from 'webextension-polyfill';
 import $ from 'jquery';
 import tinycolor from 'tinycolor2';
 
+import {pipeAsync, map, page} from 'iter-ops';
+
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.ts';
@@ -1973,28 +1975,13 @@ export function progressivePagerForItems ({
         preloadNext,
         controlPosition,
         emptyContent,
-    }, (async function * () {
-        let $wrapper = $(wrapper);
-        // track size separately from $wrapper.children().length since
-        // sometimes the wrapper has other children we don't control
-        let size = 0;
-
-        // stuff items into pages and yield each page when it's full
-        for await (const item of itemIterable) {
-            $wrapper.append(item);
-            size += 1;
-            if (size >= perPage) {
-                yield $wrapper;
-                $wrapper = $(wrapper);
-                size = 0;
-            }
-        }
-
-        // if there's an incomplete page left over when we're done, yield it
-        if (size) {
-            yield $wrapper;
-        }
-    })());
+    }, pipeAsync(
+        itemIterable,
+        // collect items into pages
+        page(perPage),
+        // create the page wrapper and fill it with items
+        map(pageItems => $(wrapper).append(...pageItems)),
+    ));
 }
 
 /**

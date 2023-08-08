@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import {pipeAsync, map} from 'iter-ops';
+
 import {Module} from '../tbmodule.js';
 import {link, isModSub, isNewModmail} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
@@ -418,12 +420,10 @@ function createModNotesPopup ({
                     </thead>
                 </table>
             `,
-        }, (async function * () {
-            // Yield a table row for each note that belongs in the tab
-            for await (const note of tabModNotes) {
-                yield buildNoteTableRow(note);
-            }
-        })());
+        }, pipeAsync(
+            tabModNotes,
+            map(note => buildNoteTableRow(note)),
+        ));
         $content.append($notesPager);
     });
 

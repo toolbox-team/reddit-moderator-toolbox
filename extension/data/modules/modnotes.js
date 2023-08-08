@@ -389,7 +389,8 @@ function createModNotesPopup ({
         let filter;
         if ($tabContainer.hasClass('tb-modnote-tab-notes')) {
             filter = 'NOTE';
-        } else if ($tabContainer.hasClass('tb-modnote-tab-actions')) {
+        }
+        if ($tabContainer.hasClass('tb-modnote-tab-actions')) {
             filter = 'MOD_ACTION';
         }
 
@@ -400,6 +401,11 @@ function createModNotesPopup ({
         const $notesPager = progressivePagerForItems({
             perPage: 20,
             controlPosition: 'bottom',
+            emptyContent: `
+                <p>
+                    No notes
+                </p>
+            `,
             wrapper: `
                 <table class="tb-modnote-table">
                     <thead>
@@ -411,9 +417,6 @@ function createModNotesPopup ({
                         </tr>
                     </thead>
                 </table>
-            `,
-            emptyContent: `
-                <p>No notes!</p>
             `,
         }, (async function * () {
             // Yield a table row for each note that belongs in the tab

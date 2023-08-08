@@ -864,7 +864,12 @@ export const getModNotes = (subreddit: string, user: string, before: string) => 
     limit: '100',
 }).then(response => response.json()).then(response => {
     TBStorage.purifyObject(response);
-    return response.mod_notes;
+    return {
+        notes: response.mod_notes,
+        startCursor: response.start_cursor,
+        endCursor: response.end_cursor,
+        hasNextPage: response.has_next_page,
+    };
 });
 
 /**

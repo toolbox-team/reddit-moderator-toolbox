@@ -581,7 +581,7 @@ export default new Module({
                 try {
                     // TODO: store these somewhere persistent so they can be
                     //       added to later if the user wants to load more
-                    notes = await TBApi.getModNotes(subreddit, author);
+                    notes = (await TBApi.getModNotes(subreddit, author)).notes;
                 } catch (error) {
                     this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}`, error);
                 }

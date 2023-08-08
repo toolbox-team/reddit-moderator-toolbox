@@ -1740,6 +1740,8 @@ export function makeCommentThread (jsonInput, commentOptions) {
  * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
+ * @param {string | JQuery} options.emptyContent Content to display if there are
+ * no pages to show
  * @param {AsyncGenerator<string | JQuery, void, unknown>} contentGenerator A
  * generator which yields content for each page
  * @returns {JQuery}
@@ -1748,6 +1750,7 @@ export function progressivePager ({
     lazy = true,
     preloadNext = true,
     controlPosition = 'top',
+    emptyContent,
 }, contentGenerator) {
     // Create elements for the content view and the pagination controls
     const $pagerContent = $('<div class="tb-pager-content"/>');
@@ -1826,9 +1829,16 @@ export function progressivePager ({
         let pageContent = await getPage(pageIndex);
 
         // If we just tried to fetch a page and hit the end of the generator
-        // instead, display the last page instead - but continue with the
-        // update to make sure the buttons are up-to-date
         if (pagesDone && pageIndex >= pages.length) {
+            // If we have *no* pages, scrap everything and display a message
+            if (!pages.length) {
+                $pagerControls.empty();
+                $pagerContent.empty().append(emptyContent || '<p>No content</p>');
+                return;
+            }
+
+            // Display the last page - but continue with the update to
+            // make sure the buttons are up-to-date
             pageIndex = pages.length - 1;
             pageContent = await getPage(pageIndex);
         }
@@ -1932,6 +1942,8 @@ export function progressivePager ({
  * to display on each page of the pager
  * @param {number} [options.wrapper] Used to provide custom wrapper markup for
  * each page of items
+ * @param {string | JQuery} options.emptyContent Content to display if there are
+ * no pages to show
  * @param {AsyncGenerator<string | JQuery, void, unknown>} itemGenerator A
  * generator which yields content for each item displayed on the page
  * @returns {JQuery}
@@ -1942,11 +1954,13 @@ export function progressivePagerForItems ({
     controlPosition,
     perPage,
     wrapper = '<div>',
+    emptyContent,
 }, itemGenerator) {
     return progressivePager({
         lazy,
         preloadNext,
         controlPosition,
+        emptyContent,
     }, (async function * () {
         let $wrapper = $(wrapper);
         // track size separately from $wrapper.children().length since

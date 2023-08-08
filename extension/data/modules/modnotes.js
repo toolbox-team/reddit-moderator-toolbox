@@ -412,6 +412,9 @@ function createModNotesPopup ({
                     </thead>
                 </table>
             `,
+            emptyContent: `
+                <p>No notes!</p>
+            `,
         }, (async function * () {
             // Yield a table row for each note that belongs in the tab
             for await (const note of tabModNotes) {

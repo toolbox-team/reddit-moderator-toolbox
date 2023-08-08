@@ -2006,6 +2006,11 @@ export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
         controlPosition,
     }, (function * () {
         for (let i = 0; i < pageCount; i += 1) {
+            /**
+             * @callback TBui~pagerCallback
+             * @param {number} page The zero-indexed number of the page to generate
+             * @returns {string | jQuery} The content of the page
+             */
             yield contentFunction(i);
         }
     })());

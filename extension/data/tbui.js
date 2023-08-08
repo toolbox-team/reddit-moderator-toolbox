@@ -1832,7 +1832,7 @@ export function progressivePager ({
         if (pagesDone && pageIndex >= pages.length) {
             // If we have *no* pages, scrap everything and display a message
             if (!pages.length) {
-                $pagerControls.empty();
+                $pagerControls.remove();
                 $pagerContent.empty().append(emptyContent || '<p>No content</p>');
                 return;
             }

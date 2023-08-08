@@ -1752,6 +1752,11 @@ export function progressivePager ({
     controlPosition = 'top',
     emptyContent,
 }, contentGenerator) {
+    // if we're not lazy, preloadNext is useless - don't do its extra work
+    if (!lazy) {
+        preloadNext = false;
+    }
+
     // Create elements for the content view and the pagination controls
     const $pagerContent = $('<div class="tb-pager-content"/>');
     const $pagerControls = $('<div class="tb-pager-controls"/>');

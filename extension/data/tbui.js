@@ -1735,6 +1735,9 @@ export function makeCommentThread (jsonInput, commentOptions) {
  * visible from the start. If `true`, the pager will display a "next page"
  * button which loads new pages from the generator one at a time until it is
  * exhausted.
+ * @param {boolean} [options.preloadNext=true] If `true`, the generator will be
+ * iterated one page ahead in order to determine whether the current page is the
+ * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
  * @param {AsyncGenerator<string | JQuery, void, unknown>} contentGenerator A
@@ -1743,6 +1746,7 @@ export function makeCommentThread (jsonInput, commentOptions) {
  */
 export function progressivePager ({
     lazy = true,
+    preloadNext = true,
     controlPosition = 'top',
 }, contentGenerator) {
     // Create elements for the content view and the pagination controls
@@ -1767,19 +1771,53 @@ export function progressivePager ({
         return $button;
     }
 
+    // If we're preloading stuff, wrap the generator with the preload helper
+    const generator = preloadNext ? TBHelpers.wrapWithLastValue(contentGenerator) : contentGenerator;
+
+    // Function to get the content of the given page
     async function getPage (i) {
+        // If we already generated this page, return it
         if (i < pages.length) {
             return pages[i];
         }
+
+        // If the generator is finished and we still don't have this page, don't
+        // bother trying to fetch again
+        if (pagesDone) {
+            return undefined;
+        }
+
+        // Advance the generator from where it is now to the needed page
         for (let j = pages.length; j <= i; j += 1) {
-            const {value, done} = await contentGenerator.next();
+            const {value, done} = await generator.next();
+
+            // If we hit the end of the generator while advancing, mark that
+            // we're done and return nothing
             if (done) {
                 pagesDone = true;
+                return undefined;
+            }
+
+            // If we're preloading, we're dealing with a wrapper that lets us
+            // also check if this the generator is *about to* end
+            if (preloadNext) {
+                // Unwrap the value and push the page to the array
+                pages.push(value.item);
+
+                // If the preloading wrapper tells us this is the last item,
+                // mark that we're done
+                if (value.last) {
+                    pagesDone = true;
+                    break;
+                }
             } else {
+                // Nothing else to check - push the page to the array
                 pages.push(value);
-                return value;
             }
         }
+
+        // Return whatever we found - could be `undefined`
+        return pages[i];
     }
 
     // A function that refreshes the displayed buttons based on the selected page
@@ -1885,6 +1923,9 @@ export function progressivePager ({
  * visible from the start. If `true`, the pager will display a "next page"
  * button which loads new items from the generator one at a time until it is
  * exhausted.
+ * @param {boolean} [options.preloadNext=true] If `true`, the generator will be
+ * iterated one page ahead in order to determine whether the current page is the
+ * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
  * @param {number} options.perPage The number of items from the item generator
@@ -1896,13 +1937,15 @@ export function progressivePager ({
  * @returns {JQuery}
  */
 export function progressivePagerForItems ({
-    lazy = true,
+    lazy,
+    preloadNext,
     controlPosition,
     perPage,
     wrapper = '<div>',
 }, itemGenerator) {
     return progressivePager({
         lazy,
+        preloadNext,
         controlPosition,
     }, (async function * () {
         let $wrapper = $(wrapper);

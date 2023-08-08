@@ -2,8 +2,6 @@ import browser from 'webextension-polyfill';
 import $ from 'jquery';
 import tinycolor from 'tinycolor2';
 
-import {pipeAsync, map, page} from 'iter-ops';
-
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.ts';
@@ -1934,54 +1932,6 @@ export function progressivePager ({
     }
 
     return $pager;
-}
-
-/**
- * Creates a jQuery element that displays paginated content provided by a
- * generator or other iterable, possibly asynchronous. Each item of the iterable
- * is content for an individual item, and output is aggregated into pages, with
- * the given number of items shown per page. Lazy loading of items is supported.
- * @param {object} options Options for the pager
- * @param {boolean} [options.lazy=true] If `false`, the item iterable will be
- * iterated to completion immediately, and controls for all pages will be
- * visible from the start. If `true`, the pager will display a "next page"
- * button which loads new items from the iterable one at a time until it is
- * exhausted.
- * @param {boolean} [options.preloadNext=true] If `true`, the iterable will be
- * iterated one page ahead in order to determine whether the current page is the
- * last one without additional interaction
- * @param {string} options.controlPosition Where to display the pager's
- * controls, either 'top' or 'bottom'
- * @param {number} options.perPage The number of items from the item iterable to
- * display on each page of the pager
- * @param {string} [options.wrapper] Used to provide custom wrapper markup for
- * each page of items
- * @param {string | JQuery} options.emptyContent Content to display if there are
- * no pages to show
- * @param {AsyncIterable<string | JQuery>} itemIterable An iterable, possibly
- * asynchronous, whose items provide content for each displayed item
- * @returns {JQuery}
- */
-export function progressivePagerForItems ({
-    lazy,
-    preloadNext,
-    controlPosition,
-    perPage,
-    wrapper = '<div>',
-    emptyContent,
-}, itemIterable) {
-    return progressivePager({
-        lazy,
-        preloadNext,
-        controlPosition,
-        emptyContent,
-    }, pipeAsync(
-        itemIterable,
-        // collect items into pages
-        page(perPage),
-        // create the page wrapper and fill it with items
-        map(pageItems => $(wrapper).append(...pageItems)),
-    ));
 }
 
 /**

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import {pipeAsync, map} from 'iter-ops';
+import {pipeAsync, map, page} from 'iter-ops';
 
 import {Module} from '../tbmodule.js';
 import {link, isModSub, isNewModmail} from '../tbcore.js';
@@ -12,7 +12,7 @@ import {
     FEEDBACK_POSITIVE,
     icons,
     popup,
-    progressivePagerForItems,
+    progressivePager,
     relativeTime,
     textFeedback,
 } from '../tbui.js';
@@ -400,29 +400,37 @@ function createModNotesPopup ({
         const tabModNotes = getAllModNotes(subreddit, user, filter);
 
         // Generate a table for the notes we have and display that
-        const $notesPager = progressivePagerForItems({
-            perPage: 20,
+        const $notesPager = progressivePager({
             controlPosition: 'bottom',
             emptyContent: `
                 <p>
                     No notes
                 </p>
             `,
-            wrapper: `
-                <table class="tb-modnote-table">
-                    <thead>
-                        <tr>
-                            <th>Author</th>
-                            <th>Type</th>
-                            <th>Details</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                </table>
-            `,
         }, pipeAsync(
             tabModNotes,
+            // build table rows for each note
             map(note => buildNoteTableRow(note)),
+            // group into pages of 20 items each
+            page(20),
+            // construct the table and insert the generated rows
+            map(pageItems => {
+                const $wrapper = $(`
+                    <table class="tb-modnote-table">
+                        <thead>
+                            <tr>
+                                <th>Author</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                `);
+                $wrapper.find('tbody').append(...pageItems);
+                return $wrapper;
+            }),
         ));
         $content.append($notesPager);
     });

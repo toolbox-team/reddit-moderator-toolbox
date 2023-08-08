@@ -154,6 +154,7 @@ function getLatestModNote (subreddit, user) {
  * subreddit that match the given filter.
  * @param {string} subreddit The name of the subreddit
  * @param {string} user The name of the user
+ * @param {string} filter Criteria for filtering notes
  * @returns {AsyncGenerator<any, void, unknown>}
  */
 async function * getAllModNotes (subreddit, user, filter) {

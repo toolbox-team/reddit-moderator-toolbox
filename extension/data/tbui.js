@@ -1945,7 +1945,7 @@ export function progressivePager ({
  * controls, either 'top' or 'bottom'
  * @param {number} options.perPage The number of items from the item generator
  * to display on each page of the pager
- * @param {number} [options.wrapper] Used to provide custom wrapper markup for
+ * @param {string} [options.wrapper] Used to provide custom wrapper markup for
  * each page of items
  * @param {string | JQuery} options.emptyContent Content to display if there are
  * no pages to show

@@ -2004,12 +2004,11 @@ export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
     return progressivePager({
         lazy: false,
         controlPosition,
-        contentGenerator: (function * () {
-            for (let i = 0; i < pageCount; i += 1) {
-                yield contentFunction(i);
-            }
-        })(),
-    });
+    }, (function * () {
+        for (let i = 0; i < pageCount; i += 1) {
+            yield contentFunction(i);
+        }
+    })());
 }
 
 /**

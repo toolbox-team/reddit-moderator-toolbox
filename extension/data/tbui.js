@@ -1742,7 +1742,7 @@ export function makeCommentThread (jsonInput, commentOptions) {
  * controls, either 'top' or 'bottom'
  * @param {string | JQuery} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncGenerator<string | JQuery, void, unknown>} contentGenerator A
+ * @param {AsyncIterator<string | JQuery, void>} contentGenerator A
  * generator which yields content for each page
  * @returns {JQuery}
  */
@@ -1944,7 +1944,7 @@ export function progressivePager ({
  * each page of items
  * @param {string | JQuery} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncGenerator<string | JQuery, void, unknown>} itemGenerator A
+ * @param {AsyncIterable<string | JQuery, void>} itemGenerator A
  * generator which yields content for each item displayed on the page
  * @returns {JQuery}
  */

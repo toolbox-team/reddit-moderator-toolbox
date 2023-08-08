@@ -155,7 +155,7 @@ function getLatestModNote (subreddit, user) {
  * @param {string} subreddit The name of the subreddit
  * @param {string} user The name of the user
  * @param {string} filter Criteria for filtering notes
- * @returns {AsyncGenerator<any, void, unknown>}
+ * @returns {AsyncGenerator<any, void>}
  */
 async function * getAllModNotes (subreddit, user, filter) {
     // Starts with the latest page of notes

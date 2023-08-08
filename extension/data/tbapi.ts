@@ -855,7 +855,8 @@ export const getRules = async (sub: string) => getJSON(`/r/${sub}/about/rules.js
  * @param subreddit The name of the subreddit
  * @param user The name of a user
  * @param filter Filter to apply (useful values are `NOTE` and `MOD_ACTION`)
- * @param before ID of a mod note to search before (for pagination)
+ * @param before End cursor returned by a previous call; used to fetch modnotes
+ * further back than the first page
  * @returns Resolves to an array of note objects or rejects an error
  */
 export const getModNotes = ({subreddit, user, filter, before}: {

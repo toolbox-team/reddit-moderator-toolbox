@@ -795,3 +795,36 @@ export function zlibDeflate (objThing) {
  * Provides an initialized SnuOwnd parser.
  */
 export const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
+
+/**
+ * Wraps each of an iterator's yielded values with an object that indicates
+ * which item is the last one in the sequence by always reading one item ahead
+ * in the iterator to check for `{done: true}` before yielding the current item.
+ * @template Yielded
+ * @template Returned
+ * @param {AsyncIterator<Yielded, Returned>} generator
+ * @returns {AsyncGenerator<{item: Yielded, last: boolean}, Returned>}
+ */
+export async function * wrapWithLastValue (generator) {
+    // fetch the first item
+    let current = await generator.next();
+
+    // yield nothing for empty sequences
+    if (current.done) {
+        return;
+    }
+
+    while (true) {
+        // fetch the next item and see if it yields anything
+        const next = await generator.next();
+        if (next.done) {
+            // the iterator has returned; the previous result is the last, and
+            // this result is the return value
+            yield {item: current.value, last: true};
+            return next.value;
+        }
+        // the iterator isn't done yet; yield previous item and keep going
+        yield {item: current.value, last: false};
+        current = next;
+    }
+}

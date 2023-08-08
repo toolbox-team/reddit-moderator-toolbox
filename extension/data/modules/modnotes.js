@@ -387,7 +387,7 @@ function createModNotesPopup ({
         const $content = $tabContainer.find('.tb-window-content');
         $content.empty();
 
-        // Create a generator that filters notes for this specific tab
+        // Set the filter criteria based on what tab this is
         let filter;
         if ($tabContainer.hasClass('tb-modnote-tab-notes')) {
             filter = 'NOTE';
@@ -396,10 +396,6 @@ function createModNotesPopup ({
             filter = 'MOD_ACTION';
         }
 
-        // Get a generator for all matching notes
-        const tabModNotes = getAllModNotes(subreddit, user, filter);
-
-        // Generate a table for the notes we have and display that
         const $notesPager = progressivePager({
             controlPosition: 'bottom',
             emptyContent: `
@@ -408,12 +404,13 @@ function createModNotesPopup ({
                 </p>
             `,
         }, pipeAsync(
-            tabModNotes,
+            // fetch mod notes that match this tab
+            getAllModNotes(subreddit, user, filter),
             // build table rows for each note
             map(note => buildNoteTableRow(note)),
             // group into pages of 20 items each
             page(20),
-            // construct the table and insert the generated rows
+            // construct the table and insert the generated rows for each page
             map(pageItems => {
                 const $wrapper = $(`
                     <table class="tb-modnote-table">

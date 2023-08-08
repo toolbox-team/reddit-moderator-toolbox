@@ -1910,19 +1910,19 @@ export function progressivePager ({
         throw new TypeError('Invalid controlPosition');
     }
 
-    (async () => {
-        // Preload the content for the first page
-        await loadPage(0);
-
-        // if we're not lazy, preload all pages from the generator
-        if (!lazy) {
-            (async () => {
-                while (!pagesDone) {
-                    await getPage(pages.length);
-                }
-            })();
-        }
-    })();
+    // Set up initial display
+    if (lazy) {
+        // Load the first page
+        loadPage(0);
+    } else {
+        // Preload *every* page before displaying the first page
+        (async () => {
+            while (!pagesDone) {
+                await getPage(pages.length);
+            }
+            await loadPage(0);
+        })();
+    }
 
     return $pager;
 }

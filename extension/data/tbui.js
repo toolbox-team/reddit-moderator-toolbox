@@ -1728,22 +1728,23 @@ export function makeCommentThread (jsonInput, commentOptions) {
 
 /**
  * Creates a jQuery element that displays paginated content provided by a
- * generator. Lazy loading is supported.
+ * generator or other iterable, possibly asynchronous. Lazy loading is
+ * supported.
  * @param {object} options Options for the pager
- * @param {boolean} [options.lazy=true] If `false`, the page generator will be
+ * @param {boolean} [options.lazy=true] If `false`, the page iterable will be
  * iterated to completion immediately, and controls for all pages will be
  * visible from the start. If `true`, the pager will display a "next page"
- * button which loads new pages from the generator one at a time until it is
+ * button which loads new pages from the iterable one at a time until it is
  * exhausted.
- * @param {boolean} [options.preloadNext=true] If `true`, the generator will be
+ * @param {boolean} [options.preloadNext=true] If `true`, the iterable will be
  * iterated one page ahead in order to determine whether the current page is the
  * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
  * @param {string | JQuery} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncIterator<string | JQuery, void>} contentGenerator A
- * generator which yields content for each page
+ * @param {AsyncIterable<string | JQuery>} contentIterable An iterable, possibly
+ * asynchronous, whose items provide content for each page
  * @returns {JQuery}
  */
 export function progressivePager ({
@@ -1751,7 +1752,7 @@ export function progressivePager ({
     preloadNext = true,
     controlPosition = 'top',
     emptyContent,
-}, contentGenerator) {
+}, contentIterable) {
     // if we're not lazy, preloadNext is useless - don't do its extra work
     if (!lazy) {
         preloadNext = false;
@@ -1763,7 +1764,7 @@ export function progressivePager ({
 
     // An array of all the pages that could be displayed
     const pages = [];
-    // If true, the generator is finished and there will be no more pages added
+    // If true, the iterator is finished and there will be no more pages added
     let pagesDone = false;
 
     function makeButton (i) {
@@ -1779,8 +1780,14 @@ export function progressivePager ({
         return $button;
     }
 
-    // If we're preloading stuff, wrap the generator with the preload helper
-    const generator = preloadNext ? TBHelpers.wrapWithLastValue(contentGenerator) : contentGenerator;
+    // If we're preloading stuff, wrap the iterable with the preload helper
+    const iterable = preloadNext ? TBHelpers.wrapWithLastValue(contentIterable) : contentIterable;
+
+    // we want to work with the iterator directly - we're doing fancy stuff
+    const iterator = iterable[Symbol.asyncIterator]?.() ?? iterable[Symbol.iterator]?.();
+    if (!iterator) {
+        throw new TypeError('contentIterable is not iterable');
+    }
 
     // Function to get the content of the given page
     async function getPage (i) {
@@ -1789,17 +1796,17 @@ export function progressivePager ({
             return pages[i];
         }
 
-        // If the generator is finished and we still don't have this page, don't
+        // If the iterator is finished and we still don't have this page, don't
         // bother trying to fetch again
         if (pagesDone) {
             return undefined;
         }
 
-        // Advance the generator from where it is now to the needed page
+        // Advance the iterator from where it is now to the needed page
         for (let j = pages.length; j <= i; j += 1) {
-            const {value, done} = await generator.next();
+            const {value, done} = await iterator.next();
 
-            // If we hit the end of the generator while advancing, mark that
+            // If we hit the end of the iterator while advancing, mark that
             // we're done and return nothing
             if (done) {
                 pagesDone = true;
@@ -1807,7 +1814,7 @@ export function progressivePager ({
             }
 
             // If we're preloading, we're dealing with a wrapper that lets us
-            // also check if this the generator is *about to* end
+            // also check if this the iterator is *about to* end
             if (preloadNext) {
                 // Unwrap the value and push the page to the array
                 pages.push(value.item);
@@ -1833,7 +1840,7 @@ export function progressivePager ({
         // Get the content for this page
         let pageContent = await getPage(pageIndex);
 
-        // If we just tried to fetch a page and hit the end of the generator
+        // If we just tried to fetch a page and hit the end of the iterator
         if (pagesDone && pageIndex >= pages.length) {
             // If we have *no* pages, scrap everything and display a message
             if (!pages.length) {
@@ -1929,28 +1936,28 @@ export function progressivePager ({
 
 /**
  * Creates a jQuery element that displays paginated content provided by a
- * generator. The generator outputs markup for individual items, and output is
- * aggregated into pages, with the given number of items per page. Lazy loading
- * of items is supported.
+ * generator or other iterable, possibly asynchronous. Each item of the iterable
+ * is content for an individual item, and output is aggregated into pages, with
+ * the given number of items shown per page. Lazy loading of items is supported.
  * @param {object} options Options for the pager
- * @param {boolean} [options.lazy=true] If `false`, the item generator will be
+ * @param {boolean} [options.lazy=true] If `false`, the item iterable will be
  * iterated to completion immediately, and controls for all pages will be
  * visible from the start. If `true`, the pager will display a "next page"
- * button which loads new items from the generator one at a time until it is
+ * button which loads new items from the iterable one at a time until it is
  * exhausted.
- * @param {boolean} [options.preloadNext=true] If `true`, the generator will be
+ * @param {boolean} [options.preloadNext=true] If `true`, the iterable will be
  * iterated one page ahead in order to determine whether the current page is the
  * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
- * @param {number} options.perPage The number of items from the item generator
- * to display on each page of the pager
+ * @param {number} options.perPage The number of items from the item iterable to
+ * display on each page of the pager
  * @param {string} [options.wrapper] Used to provide custom wrapper markup for
  * each page of items
  * @param {string | JQuery} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncIterable<string | JQuery, void>} itemGenerator A
- * generator which yields content for each item displayed on the page
+ * @param {AsyncIterable<string | JQuery>} itemIterable An iterable, possibly
+ * asynchronous, whose items provide content for each displayed item
  * @returns {JQuery}
  */
 export function progressivePagerForItems ({
@@ -1960,7 +1967,7 @@ export function progressivePagerForItems ({
     perPage,
     wrapper = '<div>',
     emptyContent,
-}, itemGenerator) {
+}, itemIterable) {
     return progressivePager({
         lazy,
         preloadNext,
@@ -1973,7 +1980,7 @@ export function progressivePagerForItems ({
         let size = 0;
 
         // stuff items into pages and yield each page when it's full
-        for await (const item of itemGenerator) {
+        for await (const item of itemIterable) {
             $wrapper.append(item);
             size += 1;
             if (size >= perPage) {

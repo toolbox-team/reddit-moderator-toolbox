@@ -23,15 +23,17 @@ const logTypes = {
     },
 };
 
+/** A valid log message type. */
+type LogType = keyof typeof logTypes;
+
 /**
  * Executes a log of a given type.
  * @private
- * @function
- * @param {object|string} caller The caller, if any, a TB module or a string
- * @param {string} type The name of the log type to use
- * @param {...any} args Arbitrary content passed through to the console
+ * @param caller The caller, if any, a TB module or a string
+ * @param type The name of the log type to use
+ * @param args Arbitrary content passed through to the console
  */
-function log (caller, type, ...args) {
+function log (caller: string | {id: string} | undefined, type: LogType, ...args: any[]) {
     let callerName;
     if (!caller) {
         callerName = 'unknown';
@@ -44,7 +46,9 @@ function log (caller, type, ...args) {
         callerName = caller;
     }
     // Get the appropriate styles for this log type, and send the message
-    const {color, background, text, func} = logTypes[type];
+    const config = logTypes[type];
+    const {color, background, func} = config;
+    const text = ('text' in config) ? config.text : type;
     func(
         // First part of the message line
         `tb: %c[${callerName}] %c${text || type}`,
@@ -57,30 +61,33 @@ function log (caller, type, ...args) {
     );
 }
 
+/** A logger associated with an aribitrary caller. */
+type Logger = {
+    [type in LogType | 'log']:
+        (...args: any[]) => void;
+}
+
 /**
  * Creates a logger object with a given caller.
- * @function
- * @param {string|object} caller A module serving as the caller, or a string
+ * @param caller A module serving as the caller, or a string
  * representing the name of non-module callers
  */
-function TBLog (caller) {
+function TBLog (caller?: string | {id: string}) {
     // Create a new object
-    const obj = {};
+    const obj: Partial<Logger> = {};
     // The object gets a function for every log type
-    for (const type of Object.keys(logTypes)) {
+    for (const type of Object.keys(logTypes) as LogType[]) {
         // `this` arg is the caller, first arg is the log type
         obj[type] = log.bind(undefined, caller, type);
     }
     // This isn't a type, but we map it to debug for backwards compatibility
     // Eventually we should remove this
     obj.log = obj.debug;
-    return obj;
+    return obj as Logger;
 }
 
 // This is a bit of cleverness - we make a logger with no caller, and then
 // assign that logger's properties to the function, so it can be used as a
 // default logger instance
 Object.assign(TBLog, TBLog());
-
-// Huzzah!
-export default TBLog;
+export default TBLog as (typeof TBLog & ReturnType<typeof TBLog>);

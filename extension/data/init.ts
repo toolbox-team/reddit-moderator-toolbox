@@ -261,7 +261,6 @@ async function doSettingsUpdates () {
     try {
         await checkLoadConditions();
     } catch (error) {
-        // @ts-expect-error logger types are still broken
         logger.error('Load condition not met:', (error as Error).message);
         return;
     }
@@ -346,7 +345,6 @@ async function doSettingsUpdates () {
         Achievements,
         OldReddit,
     ]) {
-        // @ts-expect-error TODO logger types are still broken
         logger.debug('Registering module', m);
         TBModule.register_module(m);
     }

@@ -2,13 +2,13 @@ import browser from 'webextension-polyfill';
 import $ from 'jquery';
 import tinycolor from 'tinycolor2';
 
-import TBLog from './tblog.js';
+import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.ts';
 import * as TBHelpers from './tbhelpers.js';
 import * as TBCore from './tbcore.js';
 
-import {icons} from './tbconstants';
+import {icons} from './tbconstants.ts';
 export {icons};
 
 const logger = TBLog('TBui');

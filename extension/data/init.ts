@@ -24,7 +24,7 @@ import 'codemirror/mode/yaml/yaml.js';
 
 import './tbplugins.js';
 
-import TBLog from './tblog.js';
+import TBLog from './tblog';
 import * as TBStorage from './tbstorage.js';
 import {delay} from './tbhelpers.js';
 import TBModule from './tbmodule.js';

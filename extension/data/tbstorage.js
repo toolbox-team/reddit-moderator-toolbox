@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import $ from 'jquery';
 import DOMPurify from 'dompurify';
 
-import TBLog from './tblog.js';
+import TBLog from './tblog.ts';
 
 const logger = TBLog('TBStorage');
 

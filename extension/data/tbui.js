@@ -1727,84 +1727,183 @@ export function makeCommentThread (jsonInput, commentOptions) {
 }
 
 /**
- * Creates a jQuery element that dynamically displays paginated content.
+ * Creates a jQuery element that displays paginated content provided by a
+ * generator or other iterable, possibly asynchronous. Lazy loading is
+ * supported.
  * @param {object} options Options for the pager
- * @param {number} options.pageCount The number of pages to present
+ * @param {boolean} [options.lazy=true] If `false`, the page iterable will be
+ * iterated to completion immediately, and controls for all pages will be
+ * visible from the start. If `true`, the pager will display a "next page"
+ * button which loads new pages from the iterable one at a time until it is
+ * exhausted.
+ * @param {boolean} [options.preloadNext=true] If `true`, the iterable will be
+ * iterated one page ahead in order to determine whether the current page is the
+ * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
- * @param {TBui~pagerCallback} contentFunction A function which generates
- * content for a given page
- * @returns {jQuery}
+ * @param {string | JQuery} options.emptyContent Content to display if there are
+ * no pages to show
+ * @param {AsyncIterable<string | JQuery>} contentIterable An iterable, possibly
+ * asynchronous, whose items provide content for each page
+ * @returns {JQuery}
  */
-// TODO: optionally support caching calls to the content function to avoid wasting time regenerating identical pages
-export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
+export function progressivePager ({
+    lazy = true,
+    preloadNext = true,
+    controlPosition = 'top',
+    emptyContent,
+}, contentIterable) {
+    // if we're not lazy, preloadNext is useless - don't do its extra work
+    if (!lazy) {
+        preloadNext = false;
+    }
+
     // Create elements for the content view and the pagination controls
     const $pagerContent = $('<div class="tb-pager-content"/>');
     const $pagerControls = $('<div class="tb-pager-controls"/>');
 
-    // An array of all the button elements that could be displayed, one for each page
-    const buttons = [];
+    // An array of all the pages that could be displayed
+    const pages = [];
+    // If true, the iterator is finished and there will be no more pages added
+    let pagesDone = false;
+
+    function makeButton (i) {
+        // Create the button, translating 0-indexed to 1-indexed pages for human eyes
+        const $button = $(button(i + 1, 'tb-pager-control'));
+        $button.attr('data-page-index', i);
+
+        // When the button is clicked, go to the correct page
+        $button.on('click', () => {
+            loadPage(i);
+        });
+
+        return $button;
+    }
+
+    // If we're preloading stuff, wrap the iterable with the preload helper
+    const iterable = preloadNext ? TBHelpers.wrapWithLastValue(contentIterable) : contentIterable;
+
+    // we want to work with the iterator directly - we're doing fancy stuff
+    const iterator = iterable[Symbol.asyncIterator]?.() ?? iterable[Symbol.iterator]?.();
+    if (!iterator) {
+        throw new TypeError('contentIterable is not iterable');
+    }
+
+    // Function to get the content of the given page
+    async function getPage (i) {
+        // If we already generated this page, return it
+        if (i < pages.length) {
+            return pages[i];
+        }
+
+        // If the iterator is finished and we still don't have this page, don't
+        // bother trying to fetch again
+        if (pagesDone) {
+            return undefined;
+        }
+
+        // Advance the iterator from where it is now to the needed page
+        for (let j = pages.length; j <= i; j += 1) {
+            const {value, done} = await iterator.next();
+
+            // If we hit the end of the iterator while advancing, mark that
+            // we're done and return nothing
+            if (done) {
+                pagesDone = true;
+                return undefined;
+            }
+
+            // If we're preloading, we're dealing with a wrapper that lets us
+            // also check if this the iterator is *about to* end
+            if (preloadNext) {
+                // Unwrap the value and push the page to the array
+                pages.push(value.item);
+
+                // If the preloading wrapper tells us this is the last item,
+                // mark that we're done
+                if (value.last) {
+                    pagesDone = true;
+                    break;
+                }
+            } else {
+                // Nothing else to check - push the page to the array
+                pages.push(value);
+            }
+        }
+
+        // Return whatever we found - could be `undefined`
+        return pages[i];
+    }
 
     // A function that refreshes the displayed buttons based on the selected page
-    function loadPage (pageIndex) {
-        // If we have more than 10 pages, refresh the buttons that are being actively displayed
-        if (pageCount > 10) {
-            // Empty the existing buttons out, using .detach to maintain event listeners, then using .empty() to
-            // remove the text left behind (thanks jQuery)
-            $pagerControls.children().detach();
-            $pagerControls.empty();
+    async function loadPage (pageIndex) {
+        // Get the content for this page
+        let pageContent = await getPage(pageIndex);
 
-            // Add the buttons in the center
-            const leftBound = Math.max(pageIndex - 4, 0);
-            const rightBound = Math.min(pageIndex + 4, pageCount - 1);
-            for (let buttonIndex = leftBound; buttonIndex <= rightBound; buttonIndex += 1) {
-                $pagerControls.append(buttons[buttonIndex]);
+        // If we just tried to fetch a page and hit the end of the iterator
+        if (pagesDone && pageIndex >= pages.length) {
+            // If we have *no* pages, scrap everything and display a message
+            if (!pages.length) {
+                $pagerControls.remove();
+                $pagerContent.empty().append(emptyContent || '<p>No content</p>');
+                return;
             }
 
-            // Add the first and last page buttons, along with "..." between them and the other buttons if there's
-            // distance between them
-            if (leftBound > 1) {
-                $pagerControls.prepend('...');
-            }
-            if (leftBound > 0) {
-                $pagerControls.prepend(buttons[0]);
-            }
-            if (rightBound < pageCount - 2) {
-                $pagerControls.append('...');
-            }
-            if (rightBound < pageCount - 1) {
-                $pagerControls.append(buttons[pageCount - 1]);
-            }
-        } else if ($pagerControls.children().length === 0) {
-            // If we have less than 10 items, then we only need to refresh the buttons the first time they're loaded
-            buttons.forEach($button => $pagerControls.append($button));
+            // Display the last page - but continue with the update to
+            // make sure the buttons are up-to-date
+            pageIndex = pages.length - 1;
+            pageContent = await getPage(pageIndex);
+        }
+
+        // Display content for the new page
+        $pagerContent.empty().append(pageContent);
+
+        // Empty the existing buttons out, using .detach to maintain event listeners, then using .empty() to
+        // remove the text left behind (thanks jQuery)
+        $pagerControls.children().detach();
+        $pagerControls.empty();
+
+        let leftBound = 0;
+        let rightBound = pages.length - 1;
+
+        // If we have more than 10 pages, only display first and last buttons,
+        // plus some around where we are now
+        if (pages.length > 10) {
+            leftBound = Math.max(pageIndex - 4, 0);
+            rightBound = Math.min(pageIndex + 4, pages.length - 1);
+        }
+
+        // Add all the buttons within the bounds
+        for (let buttonIndex = leftBound; buttonIndex <= rightBound; buttonIndex += 1) {
+            $pagerControls.append(makeButton(buttonIndex));
+        }
+
+        // Add the first and last page buttons, along with "..." between them and the other buttons if there's
+        // distance between them
+        if (leftBound > 1) {
+            $pagerControls.prepend('...');
+        }
+        if (leftBound > 0) {
+            $pagerControls.prepend(makeButton(0));
+        }
+        if (rightBound < pages.length - 2) {
+            $pagerControls.append('...');
+        }
+        if (rightBound < pages.length - 1) {
+            $pagerControls.append(makeButton(pages.length - 1));
+        }
+
+        // Include a button to load another page if we still can
+        if (!pagesDone) {
+            const $nextPageButton = makeButton(pages.length);
+            $nextPageButton.text('load more...');
+            $nextPageButton.attr('title', 'load next page');
+            $pagerControls.append($nextPageButton);
         }
 
         // Move selection to the correct button
         $pagerControls.children().toggleClass('tb-pager-control-active', false);
-        buttons[pageIndex].toggleClass('tb-pager-control-active', true);
-
-        // Generate and display content for the new page
-        /**
-         * @callback TBui~pagerCallback
-         * @param {number} page The zero-indexed number of the page to generate
-         * @returns {string | jQuery} The content of the page
-         */
-        $pagerContent.empty().append(contentFunction(pageIndex));
-    }
-
-    // Create all the buttons
-    for (let page = 0; page < pageCount; page += 1) {
-        // Create the button, translating 0-indexed to 1-indexed pages fur human eyes
-        const $button = $(button(page + 1, 'tb-pager-control'));
-
-        // When the button is clicked, go to the correct page
-        $button.on('click', () => {
-            loadPage(page);
-        });
-
-        // Add to the array
-        buttons.push($button);
+        $pagerControls.find(`[data-page-index="${pageIndex}"]`).toggleClass('tb-pager-control-active', true);
     }
 
     // Construct the pager itself
@@ -1818,10 +1917,47 @@ export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
         throw new TypeError('Invalid controlPosition');
     }
 
-    // Preload the content for the first page
-    loadPage(0);
+    // Set up initial display
+    if (lazy) {
+        // Load the first page
+        loadPage(0);
+    } else {
+        // Preload *every* page before displaying the first page
+        (async () => {
+            while (!pagesDone) {
+                await getPage(pages.length);
+            }
+            await loadPage(0);
+        })();
+    }
 
     return $pager;
+}
+
+/**
+ * Creates a jQuery element that dynamically displays paginated content.
+ * @param {object} options Options for the pager
+ * @param {number} options.pageCount The number of pages to present
+ * @param {string} options.controlPosition Where to display the pager's
+ * controls, either 'top' or 'bottom'
+ * @param {TBui~pagerCallback} contentFunction A function which generates
+ * content for a given page
+ * @returns {jQuery}
+ */
+export function pager ({pageCount, controlPosition = 'top'}, contentFunction) {
+    return progressivePager({
+        lazy: false,
+        controlPosition,
+    }, (function * () {
+        for (let i = 0; i < pageCount; i += 1) {
+            /**
+             * @callback TBui~pagerCallback
+             * @param {number} page The zero-indexed number of the page to generate
+             * @returns {string | jQuery} The content of the page
+             */
+            yield contentFunction(i);
+        }
+    })());
 }
 
 /**

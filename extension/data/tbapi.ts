@@ -854,17 +854,30 @@ export const getRules = async (sub: string) => getJSON(`/r/${sub}/about/rules.js
  * Fetches a page of mod notes for the given user in the given subreddit.
  * @param subreddit The name of the subreddit
  * @param user The name of a user
- * @param before ID of a mod note to search before (for pagination)
+ * @param filter Filter to apply (useful values are `NOTE` and `MOD_ACTION`)
+ * @param before End cursor returned by a previous call; used to fetch modnotes
+ * further back than the first page
  * @returns Resolves to an array of note objects or rejects an error
  */
-export const getModNotes = (subreddit: string, user: string, before: string) => apiOauthGET('/api/mod/notes', {
+export const getModNotes = ({subreddit, user, filter, before}: {
+    subreddit: string,
+    user: string,
+    filter?: string,
+    before?: string,
+}) => apiOauthGET('/api/mod/notes', {
     subreddit,
     user,
+    filter,
     before,
     limit: '100',
 }).then(response => response.json()).then(response => {
     TBStorage.purifyObject(response);
-    return response.mod_notes;
+    return {
+        notes: response.mod_notes,
+        startCursor: response.start_cursor,
+        endCursor: response.end_cursor,
+        hasNextPage: response.has_next_page,
+    };
 });
 
 /**

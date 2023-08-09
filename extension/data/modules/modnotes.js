@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import {pipeAsync, map, page} from 'iter-ops';
+
 import {Module} from '../tbmodule.js';
 import {link, isModSub, isNewModmail} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
@@ -9,8 +11,8 @@ import {
     FEEDBACK_NEGATIVE,
     FEEDBACK_POSITIVE,
     icons,
-    pagerForItems,
     popup,
+    progressivePager,
     relativeTime,
     textFeedback,
 } from '../tbui.js';
@@ -150,6 +152,41 @@ function getLatestModNote (subreddit, user) {
 }
 
 /**
+ * Creates a generator which lazily fetches all mod notes for a user in a
+ * subreddit that match the given filter.
+ * @param {string} subreddit The name of the subreddit
+ * @param {string} user The name of the user
+ * @param {string} filter Criteria for filtering notes
+ * @returns {AsyncGenerator<any, void>}
+ */
+async function * getAllModNotes (subreddit, user, filter) {
+    // Starts with the latest page of notes
+    let before = undefined;
+    while (true) {
+        // Fetch the next page of notes
+        const {notes, endCursor, hasNextPage} = await TBApi.getModNotes({
+            subreddit,
+            user,
+            filter,
+            before,
+        });
+
+        // Yield each note we fetched
+        for (const note of notes) {
+            yield note;
+        }
+
+        // End the generator if there's no next page to fetch
+        if (!hasNextPage) {
+            return;
+        }
+
+        // Set `before` so the next page is fetched next pass
+        before = endCursor;
+    }
+}
+
+/**
  * In-page cache of comment fullnames to the fullnames of their parent posts.
  * Values of this object are promises which resolve to fullnames, rather than
  * bare strings - we keep the promises around after they're resolved, and always
@@ -278,7 +315,6 @@ function createModNotesPopup ({
     user,
     subreddit,
     contextID,
-    notes,
     defaultTabName,
     defaultNoteLabel,
 }) {
@@ -289,6 +325,7 @@ function createModNotesPopup ({
         defaultTabID = 'tb-modnote-tab-actions';
     }
 
+    // Create the base popup
     const $popup = popup({
         title: `Mod notes for /u/${user} in /r/${subreddit}`,
         tabs: [
@@ -343,22 +380,6 @@ function createModNotesPopup ({
     $popup.attr('data-subreddit', subreddit);
     $popup.attr('data-context-id', contextID);
 
-    updateModNotesPopup($popup, {
-        notes,
-    });
-
-    return $popup;
-}
-
-/**
- * Updates a mod notes popup in place with the given information.
- * @param {jQuery} $popup The popup to update
- * @param {object} data
- * @param {object[]} [data.notes] Note objects for the user, or null/undefined
- */
-function updateModNotesPopup ($popup, {
-    notes,
-}) {
     // Build a table for each tab containing the right subset of notes
     $popup.find('.tb-window-tab').each(function () {
         const $tabContainer = $(this);
@@ -366,42 +387,32 @@ function updateModNotesPopup ($popup, {
         const $content = $tabContainer.find('.tb-window-content');
         $content.empty();
 
-        if (!notes) {
-            // Notes being null/undefined indicates notes couldn't be fetched
-            // TODO: probably pass errors into this function for display, and
-            //       also to distinguish "failed to load" from "still loading"
-            $content.append(`
-                <p class="error">
-                    Error fetching mod notes
-                </p>
-            `);
-            return;
-        }
-
-        // Filter notes as appropriate for this tab
-        let filteredNotes = notes;
+        // Set the filter criteria based on what tab this is
+        let filter;
         if ($tabContainer.hasClass('tb-modnote-tab-notes')) {
-            filteredNotes = notes.filter(note => note.user_note_data?.note);
+            filter = 'NOTE';
         }
         if ($tabContainer.hasClass('tb-modnote-tab-actions')) {
-            filteredNotes = notes.filter(note => note.mod_action_data?.action);
+            filter = 'MOD_ACTION';
         }
 
-        if (!filteredNotes.length) {
-            // If the notes list is empty, our job is very easy
-            $content.append(`
+        const $notesPager = progressivePager({
+            controlPosition: 'bottom',
+            emptyContent: `
                 <p>
                     No notes
                 </p>
-            `);
-        } else {
-            // Generate a table for the notes we have and display that
-            const $notesPager = pagerForItems({
-                items: filteredNotes,
-                perPage: 10,
-                controlPosition: 'bottom',
-                displayItem: generateNoteTableRow,
-                wrapper: `
+            `,
+        }, pipeAsync(
+            // fetch mod notes that match this tab
+            getAllModNotes(subreddit, user, filter),
+            // build table rows for each note
+            map(note => buildNoteTableRow(note)),
+            // group into pages of 20 items each
+            page(20),
+            // construct the table and insert the generated rows for each page
+            map(pageItems => {
+                const $wrapper = $(`
                     <table class="tb-modnote-table">
                         <thead>
                             <tr>
@@ -411,20 +422,25 @@ function updateModNotesPopup ($popup, {
                                 <th></th>
                             </tr>
                         </thead>
+                        <tbody></tbody>
                     </table>
-                `,
-            });
-            $content.append($notesPager);
-        }
+                `);
+                $wrapper.find('tbody').append(...pageItems);
+                return $wrapper;
+            }),
+        ));
+        $content.append($notesPager);
     });
+
+    return $popup;
 }
 
 /**
- * Generates a table of the given notes.
+ * Builds a row of the notes table for the given note.
  * @param {object} note A note object
  * @returns {jQuery} The generated table row
  */
-function generateNoteTableRow (note) {
+function buildNoteTableRow (note) {
     const createdAt = new Date(note.created_at * 1000);
     const mod = note.operator; // TODO: can [deleted] show up here?
 
@@ -572,26 +588,12 @@ export default new Module({
                 subreddit: e.detail.data.subreddit.name,
             });
             // TODO: don't register this directly on the badge, use $body.on('click', selector, ...)
-            $badge.on('click', async clickEvent => {
-                // TODO: open popup with more information for this user
-                this.info(`clicked badge for /u/${author} in /r/${subreddit}`);
-
-                // Fetch all usernotes for this user
-                let notes;
-                try {
-                    // TODO: store these somewhere persistent so they can be
-                    //       added to later if the user wants to load more
-                    notes = await TBApi.getModNotes(subreddit, author);
-                } catch (error) {
-                    this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}`, error);
-                }
-
+            $badge.on('click', clickEvent => {
                 // Create, position, and display popup
                 const positions = drawPosition(clickEvent);
                 const $popup = createModNotesPopup({
                     user: author,
                     subreddit,
-                    notes,
                     contextID,
                     defaultTabName,
                     defaultNoteLabel,

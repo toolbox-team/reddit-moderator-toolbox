@@ -261,10 +261,10 @@ export default new Module({
 
                 TBCore.forEachChunkedDynamic(data.data, subreddit => {
                     subCount++;
-                    const subredditName = subreddit.sr,
-                          iconImage = subreddit.icon_img,
-                          over18 = subreddit.over_18,
-                          subscribers = subreddit.subscribers;
+                    const subredditName = subreddit.sr;
+                    const iconImage = subreddit.icon_img;
+                    const over18 = subreddit.over_18;
+                    const subscribers = subreddit.subscribers;
 
                     const liElement = `<li>
                             <a href="${TBCore.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
@@ -317,13 +317,13 @@ export default new Module({
         const inputURL = `/user/${user}/about.json`;
         TBApi.getJSON(inputURL).then(data => {
             TBStorage.purifyObject(data);
-            const userThumbnail = data.data.icon_img,
-                  userCreated = data.data.created_utc,
-                  verifiedMail = data.data.has_verified_email,
-                  linkKarma = data.data.link_karma,
-                  commentKarma = data.data.comment_karma,
-                  displayName = data.data.subreddit.title,
-                  publicDescription = data.data.subreddit.public_description;
+            const userThumbnail = data.data.icon_img;
+            const userCreated = data.data.created_utc;
+            const verifiedMail = data.data.has_verified_email;
+            const linkKarma = data.data.link_karma;
+            const commentKarma = data.data.comment_karma;
+            const displayName = data.data.subreddit.title;
+            const publicDescription = data.data.subreddit.public_description;
             const createdAt = new Date(userCreated * 1000);
 
             const $sidebar = $(`<div class="tb-profile-sidebar">
@@ -471,9 +471,9 @@ export default new Module({
         const typeListing = $siteTable.attr('data-listing');
 
         let subredditsearch = $this.find('.tb-subredditsearch').val();
-        const usersearch = $this.closest('.tb-page-overlay').attr('data-user'),
-              contentsearch = $this.find('.tb-contentsearch').val(),
-              useSort = $this.find('.tb-search-sort').is(':checked');
+        const usersearch = $this.closest('.tb-page-overlay').attr('data-user');
+        const contentsearch = $this.find('.tb-contentsearch').val();
+        const useSort = $this.find('.tb-search-sort').is(':checked');
 
         let sortMethod = 'new';
 
@@ -535,8 +535,8 @@ export default new Module({
 
     function liveSearch (liveSearchValue) {
         $body.find('#tb-search-suggest table#tb-search-suggest-list tr').each(function () {
-            const $this = $(this),
-                  subredditName = $this.attr('data-subreddit');
+            const $this = $(this);
+            const subredditName = $this.attr('data-subreddit');
 
             if (subredditName.toUpperCase().indexOf(liveSearchValue.toUpperCase()) < 0) {
                 $this.hide();
@@ -703,10 +703,10 @@ export default new Module({
         TBui.switchOverlayTab('tb-profile-overlay', type);
 
         if (search) {
-            const $subreddit = $options.find('.tb-searchuser .tb-subredditsearch'),
-                  $content = $options.find('.tb-searchuser .tb-contentsearch'),
-                  $searchSort = $options.find('.tb-searchuser .tb-search-sort'),
-                  $searchForm = $options.find('.tb-searchuser');
+            const $subreddit = $options.find('.tb-searchuser .tb-subredditsearch');
+            const $content = $options.find('.tb-searchuser .tb-contentsearch');
+            const $searchSort = $options.find('.tb-searchuser .tb-search-sort');
+            const $searchForm = $options.find('.tb-searchuser');
 
             $subreddit.val(subreddit);
             $content.val(content);
@@ -749,10 +749,10 @@ export default new Module({
     $body.on('click', '.tb-load-more', function () {
         const $this = $(this);
         const $siteTable = $this.closest('.tb-sitetable');
-        const after = $this.attr('data-after'),
-              user = $siteTable.attr('data-user'),
-              listing = $siteTable.attr('data-listing'),
-              sort = $siteTable.attr('data-sort');
+        const after = $this.attr('data-after');
+        const user = $siteTable.attr('data-user');
+        const listing = $siteTable.attr('data-listing');
+        const sort = $siteTable.attr('data-sort');
         makeProfile(user, listing, {sort, renew: false, after});
 
         $this.remove();
@@ -760,9 +760,9 @@ export default new Module({
 
     $body.on('change keydown', '.tb-sort-select', function () {
         const $this = $(this);
-        const newSort = $this.val(),
-              user = $this.closest('.tb-page-overlay').attr('data-user'),
-              listing = $this.attr('data-type');
+        const newSort = $this.val();
+        const user = $this.closest('.tb-page-overlay').attr('data-user');
+        const listing = $this.attr('data-type');
         makeProfile(user, listing, {sort: newSort, renew: true});
     });
 
@@ -798,15 +798,15 @@ export default new Module({
 
         // Start creating specific listing overlay tab
         const $this = $(this);
-        const listing = $this.attr('data-module'),
-              user = $this.closest('.tb-page-overlay').attr('data-user');
+        const listing = $this.attr('data-module');
+        const user = $this.closest('.tb-page-overlay').attr('data-user');
         makeProfile(user, listing, {sort: 'new'});
     });
 
     window.addEventListener('TBNewPage', event => {
         if (event.detail.pageType === 'userProfile' && listingTypes.includes(event.detail.pageDetails.listing)) {
-            const user = event.detail.pageDetails.user,
-                  listing = event.detail.pageDetails.listing;
+            const user = event.detail.pageDetails.user;
+            const listing = event.detail.pageDetails.listing;
             TBui.contextTrigger('tb-user-profile', {
                 addTrigger: true,
                 triggerText: 'toolbox profile',
@@ -864,9 +864,9 @@ export default new Module({
 
     $body.on('click', '#tb-user-profile, .tb-user-profile', function () {
         const $this = $(this);
-        const user = $this.attr('data-user'),
-              listing = $this.attr('data-listing'),
-              subreddit = $this.attr('data-subreddit');
+        const user = $this.attr('data-user');
+        const listing = $this.attr('data-listing');
+        const subreddit = $this.attr('data-subreddit');
 
         const options = {
             sort: 'new',

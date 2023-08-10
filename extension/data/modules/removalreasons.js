@@ -104,26 +104,26 @@ export default new Module({
     const $body = $('body');
 
     // Error texts
-    const STATUS_DEFAULT_TEXT = 'saving...',
-          APPROVE_ERROR = 'error, failed to approve post',
-          FLAIR_ERROR = 'error, failed to flair post',
-          NO_REASON_ERROR = 'error, no reason selected',
-          NO_REPLY_TYPE_ERROR = 'error, no reply type selected',
-          REPLY_ERROR = 'error, failed to post reply',
-          REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account',
-          PM_ERROR = 'error, failed to send PM',
-          MODMAIL_ERROR = 'error, failed to send Modmail',
-          MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail',
-          DISTINGUISH_ERROR = 'error, failed to distinguish reply',
-          LOCK_POST_ERROR = 'error, failed to lock post',
-          LOCK_COMMENT_ERROR = 'error, failed to lock reply',
-          LOG_REASON_MISSING_ERROR = 'error, public log reason missing',
-          LOG_POST_ERROR = 'error, failed to create log post';
+    const STATUS_DEFAULT_TEXT = 'saving...';
+    const APPROVE_ERROR = 'error, failed to approve post';
+    const FLAIR_ERROR = 'error, failed to flair post';
+    const NO_REASON_ERROR = 'error, no reason selected';
+    const NO_REPLY_TYPE_ERROR = 'error, no reply type selected';
+    const REPLY_ERROR = 'error, failed to post reply';
+    const REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account';
+    const PM_ERROR = 'error, failed to send PM';
+    const MODMAIL_ERROR = 'error, failed to send Modmail';
+    const MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail';
+    const DISTINGUISH_ERROR = 'error, failed to distinguish reply';
+    const LOCK_POST_ERROR = 'error, failed to lock post';
+    const LOCK_COMMENT_ERROR = 'error, failed to lock reply';
+    const LOG_REASON_MISSING_ERROR = 'error, public log reason missing';
+    const LOG_POST_ERROR = 'error, failed to create log post';
 
     // Default texts
-    const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}',
-          DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}',
-          DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
+    const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}';
+    const DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}';
+    const DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
 
     // Cached data
     const notEnabled = [];
@@ -165,14 +165,14 @@ export default new Module({
     $('body').on('click', 'button:contains("remove"), button:contains("Remove"), button:contains("Confirm removal"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button, .tb-submission-button-remove, .tb-comment-button-remove', async function (event) {
         console.error('trigger');
         const $button = $(this);
-        let thingID,
-            thingSubreddit,
-            isComment = false; // default to false for new Reddit
+        let thingID;
+        let thingSubreddit;
+        let isComment = false; // default to false for new Reddit
 
         // For now, removals on Toolbox-generated posts/comments work the same way as on old Reddit (without jsAPI)
         if (TBCore.isOldReddit || $button.is('.tb-submission-button-remove, .tb-comment-button-remove')) {
-            const $yes = $button.find('.yes')[0],
-                  $thing = $button.closest('.thing, .tb-thing');
+            const $yes = $button.find('.yes')[0];
+            const $thing = $button.closest('.thing, .tb-thing');
             isComment = $thing.hasClass('comment') || $thing.hasClass('was-comment') || $thing.hasClass('tb-comment');
 
             if ($yes) {
@@ -340,20 +340,20 @@ export default new Module({
             self.log('Creating removal reason popup');
 
             // Options
-            const selectNoneDisplay = data.logSub ? '' : 'none', // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
-                  logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none', // if {reason}  is present we want to fill it.
-                  headerDisplay = data.header ? '' : 'none',
-                  footerDisplay = data.footer ? '' : 'none',
-                  removalOption = data.removalOption,
-                  typeReply = data.typeReply,
-                  typeStickied = data.typeStickied,
-                  typeCommentAsSubreddit = data.typeCommentAsSubreddit,
-                  typeLockComment = data.typeLockComment,
-                  typeAsSub = data.typeAsSub,
-                  autoArchive = data.autoArchive,
-                  typeLockThread = data.typeLockThread,
-                  leaveUpToMods = removalOption === undefined || removalOption === 'leave',
-                  forced = removalOption === 'force';
+            const selectNoneDisplay = data.logSub ? '' : 'none'; // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
+            const logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none'; // if {reason}  is present we want to fill it.
+            const headerDisplay = data.header ? '' : 'none';
+            const footerDisplay = data.footer ? '' : 'none';
+            const removalOption = data.removalOption;
+            const typeReply = data.typeReply;
+            const typeStickied = data.typeStickied;
+            const typeCommentAsSubreddit = data.typeCommentAsSubreddit;
+            const typeLockComment = data.typeLockComment;
+            const typeAsSub = data.typeAsSub;
+            const autoArchive = data.autoArchive;
+            const typeLockThread = data.typeLockThread;
+            const leaveUpToMods = removalOption === undefined || removalOption === 'leave';
+            const forced = removalOption === 'force';
 
             let reasonType = typeReply;
             if (leaveUpToMods) {
@@ -389,8 +389,8 @@ export default new Module({
             const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
 
             // Render header and footer
-            const headerText = data.header ? parser.render(data.header) : '',
-                  footerText = data.footer ? parser.render(data.footer) : '';
+            const headerText = data.header ? parser.render(data.header) : '';
+            const footerText = data.footer ? parser.render(data.footer) : '';
 
             // Make box & add reason radio buttons
             let popup = $(`
@@ -580,9 +580,9 @@ export default new Module({
             return;
         }
         const $this = $(this);
-        const checkBox = $this.find('.reason-check'),
-              isChecked = checkBox.is(':checked'),
-              targetIsCheckBox = $(e.target).is('.reason-check');
+        const checkBox = $this.find('.reason-check');
+        const isChecked = checkBox.is(':checked');
+        const targetIsCheckBox = $(e.target).is('.reason-check');
         const hasTitle = $this.find('.removal-reason-title').length;
 
         if (!isChecked && !targetIsCheckBox) {
@@ -612,8 +612,8 @@ export default new Module({
 
     // live sorting of removal reasons
     $body.on('click', '.reason-popup .tb-live-sort-up', function () {
-        const $row = $(this).closest('tr'),
-              $prev = $row.prev();
+        const $row = $(this).closest('tr');
+        const $prev = $row.prev();
 
         if ($prev && $prev.length > 0) {
             $row.fadeOut(100, () => {
@@ -625,8 +625,8 @@ export default new Module({
     });
 
     $body.on('click', '.reason-popup  .tb-live-sort-down ', function () {
-        const $row = $(this).closest('tr'),
-              $next = $row.next();
+        const $row = $(this).closest('tr');
+        const $next = $row.next();
 
         if ($next && $next.length > 0) {
             $row.fadeOut(100, () => {
@@ -645,9 +645,9 @@ export default new Module({
 
     // 'cancel' button clicked
     $body.on('click', '.reason-popup .cancel', function () {
-        const popup = $(this).parents('.reason-popup'),
-              status = popup.find('.status'),
-              attrs = popup.find('attrs');
+        const popup = $(this).parents('.reason-popup');
+        const status = popup.find('.status');
+        const attrs = popup.find('attrs');
 
         TBApi.approveThing(attrs.attr('fullname')).then(() => {
             removePopup(popup);
@@ -658,38 +658,38 @@ export default new Module({
 
     // 'save' button clicked
     $body.on('click', '.reason-popup .save', function () {
-        const popup = $(this).parents('.reason-popup'),
-              notifyBy = popup.find('.reason-type:checked').val(),
-              notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
-              autoArchive = popup.find('.reason-auto-archive').prop('checked'),
-              notifySticky = popup.find('.reason-sticky').prop('checked'),
-              actionLockThread = popup.find('.action-lock-thread').prop('checked'),
-              actionLockComment = popup.find('.action-lock-comment').prop('checked'),
-              reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked'),
-              checked = popup.find('.reason-check:checked'),
-              status = popup.find('.status'),
-              attrs = popup.find('attrs'),
-              header = TBHelpers.htmlDecode(attrs.attr('header')),
-              footer = TBHelpers.htmlDecode(attrs.attr('footer')),
-              logReason = popup.find('#log-reason-input').val(),
-              data = {
-                  subreddit: '',
-                  fullname: '',
-                  author: '',
-                  title: '',
-                  kind: '',
-                  mod: '',
-                  url: '',
-                  link: '',
-                  domain: '',
-                  logSub: '',
-                  body: '',
-                  raw_body: '',
-                  uri_body: '',
-                  uri_title: '',
-              };
-        let subject = attrs.attr('subject'),
-            logTitle = attrs.attr('logTitle');
+        const popup = $(this).parents('.reason-popup');
+        const notifyBy = popup.find('.reason-type:checked').val();
+        const notifyAsSub = popup.find('.reason-as-sub').prop('checked');
+        const autoArchive = popup.find('.reason-auto-archive').prop('checked');
+        const notifySticky = popup.find('.reason-sticky').prop('checked');
+        const actionLockThread = popup.find('.action-lock-thread').prop('checked');
+        const actionLockComment = popup.find('.action-lock-comment').prop('checked');
+        const reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked');
+        const checked = popup.find('.reason-check:checked');
+        const status = popup.find('.status');
+        const attrs = popup.find('attrs');
+        const header = TBHelpers.htmlDecode(attrs.attr('header'));
+        const footer = TBHelpers.htmlDecode(attrs.attr('footer'));
+        const logReason = popup.find('#log-reason-input').val();
+        const data = {
+            subreddit: '',
+            fullname: '',
+            author: '',
+            title: '',
+            kind: '',
+            mod: '',
+            url: '',
+            link: '',
+            domain: '',
+            logSub: '',
+            body: '',
+            raw_body: '',
+            uri_body: '',
+            uri_title: '',
+        };
+        let subject = attrs.attr('subject');
+        let logTitle = attrs.attr('logTitle');
 
         // Update status
         status.text(STATUS_DEFAULT_TEXT);
@@ -706,9 +706,9 @@ export default new Module({
         // Get custom reason input
         const markdownReasons = [];
         const customInput = [];
-        let flairText = '',
-            flairCSS = '',
-            flairTemplateID = '';
+        let flairText = '';
+        let flairCSS = '';
+        let flairTemplateID = '';
 
         checked.closest('.selectable-reason').each(function () {
             const $this = $(this);
@@ -819,8 +819,8 @@ export default new Module({
 
             // Submit log post
             TBApi.postLink(data.url || data.link, TBHelpers.removeQuotes(logTitle), data.logSub).then(response => {
-                const logThingId = response.json.data.name,
-                      loglinkToken = response.json.data.url;
+                const logThingId = response.json.data.name;
+                const loglinkToken = response.json.data.url;
                 TBApi.approveThing(logThingId);
 
                 if (noneSelected === 'none') {
@@ -871,10 +871,10 @@ export default new Module({
                 }
             }
 
-            const subredditData = mySubsData.find(s => s.subreddit === data.subreddit),
-                  notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
-                  notifyByReply = notifyBy === 'reply' || notifyBy === 'both',
-                  notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
+            const subredditData = mySubsData.find(s => s.subreddit === data.subreddit);
+            const notifyByPM = notifyBy === 'pm' || notifyBy === 'both';
+            const notifyByReply = notifyBy === 'reply' || notifyBy === 'both';
+            const notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData && subredditData.is_enrolled_in_new_modmail;
 
             // Reply to submission/comment
             if (notifyByReply) {

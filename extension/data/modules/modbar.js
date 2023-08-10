@@ -137,25 +137,25 @@ export default new Module({
     // preload some generic variables
     //
 
-    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false),
+    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
 
-          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod'),
-          unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0),
-          modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0),
-          unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0),
-          modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0),
-          newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0),
-          notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true),
-          modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0),
+    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0);
+    const modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0);
+    const unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0);
+    const modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0);
+    const newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0);
+    const notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true);
+    const modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0);
 
-          modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
-          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Ready some details for new modmail linking
-    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail'),
-          openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
-          newModmailBaseUrl = 'https://mod.reddit.com/mail/';
+    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail');
+    const openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail;
+    const newModmailBaseUrl = 'https://mod.reddit.com/mail/';
     let newModmailUrl;
 
     switch (modmailLink) {
@@ -332,8 +332,8 @@ export default new Module({
 
             let subList = '';
 
-            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false),
-                  usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
+            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false);
+            const usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
             this.log('got mod subs');
             this.log(mySubsData.length);
 
@@ -393,8 +393,8 @@ export default new Module({
                 $body.find('#tb-livefilter-input').keyup(function () {
                     const LiveSearchValue = $(this).val();
                     $body.find('#tb-my-subreddits table tr').each(function () {
-                        const $this = $(this),
-                              subredditName = $this.attr('data-subreddit');
+                        const $this = $(this);
+                        const subredditName = $this.attr('data-subreddit');
 
                         if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
                             $this.hide();
@@ -499,8 +499,8 @@ export default new Module({
 
     // check for passed settings.
     function switchTab (module) {
-        const $this = $body.find(`[data-module="${module}"]`),
-              $tb_help_mains = $('.tb-help-main');
+        const $this = $body.find(`[data-module="${module}"]`);
+        const $tb_help_mains = $('.tb-help-main');
 
         // achievement support
         if (module === 'about') {
@@ -559,8 +559,8 @@ export default new Module({
 });
 
 function getDirectingTo () {
-    let url = window.location.href.replace(/^http:/, 'https:'),
-        directingTo;
+    let url = window.location.href.replace(/^http:/, 'https:');
+    let directingTo;
     if (url.startsWith('https://old.')) {
         url = url.replace('old.', 'www.');
         directingTo = 'new Reddit';

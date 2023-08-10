@@ -20,9 +20,9 @@ export default new Module({
         },
     ],
 }, function init ({showMacroPreview}) {
-    const $body = $('body'),
-          self = this,
-          MACROS = 'TB-MACROS';
+    const $body = $('body');
+    const self = this;
+    const MACROS = 'TB-MACROS';
 
     async function getConfig (sub, callback) {
         const config = await TBCore.getConfig(sub);
@@ -37,8 +37,8 @@ export default new Module({
 
     function populateSelect (selectClass, subreddit, config, type) {
         $(selectClass).each(function () {
-            const $select = $(this),
-                  sub = $select.attr('data-subreddit');
+            const $select = $(this);
+            const sub = $select.attr('data-subreddit');
 
             self.log($select);
             self.log(`${sub} ${subreddit}`);
@@ -85,8 +85,8 @@ export default new Module({
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
                         const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
-                        const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                              macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TBCore.post_site}"><option value=${MACROS}>macros</option></select>`;
+                        const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons');
+                        const macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TBCore.post_site}"><option value=${MACROS}>macros</option></select>`;
 
                         if ($tbUsertextButtons.length) {
                             $tbUsertextButtons.append(macroButtonHtml);
@@ -104,8 +104,8 @@ export default new Module({
         $body.on('click', 'ul.buttons a', async function () {
             const $this = $(this);
             if ($this.text() === 'reply') {
-                const $thing = $this.closest('.thing'),
-                      info = await TBCore.getThingInfo($thing, true);
+                const $thing = $this.closest('.thing');
+                const info = await TBCore.getThingInfo($thing, true);
 
                 // This is because reddit clones the top-level reply box for all reply boxes.
                 // We need to remove it before adding the new one, because the new one works differently.
@@ -125,8 +125,8 @@ export default new Module({
                 getConfig(info.subreddit, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
-                        const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
-                              macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+                        const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons');
+                        const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
 
                         if ($tbUsertextButtons.length) {
                             $tbUsertextButtons.append(macroButtonHtml);
@@ -143,8 +143,8 @@ export default new Module({
 
     // Add macro button in new modmail
     async function addNewMMMacro () {
-        const $thing = $body.find('.InfoBar'),
-              info = await TBCore.getThingInfo($thing, true);
+        const $thing = $body.find('.InfoBar');
+        const info = await TBCore.getThingInfo($thing, true);
 
         // Don't add macro button twice.
         if ($body.find('.tb-usertext-buttons').length) {
@@ -262,9 +262,9 @@ export default new Module({
         const distinguish = macro.sticky || macro.distinguish === undefined ? true : macro.distinguish;
         const kind = info.kind;
 
-        let $usertext = dropdown.closest('.usertext-edit'),
-            comment = unescape(macro.text),
-            actionList = 'The following actions will be performed:<br>- Your reply will be saved';
+        let $usertext = dropdown.closest('.usertext-edit');
+        let comment = unescape(macro.text);
+        let actionList = 'The following actions will be performed:<br>- Your reply will be saved';
 
         if (!$usertext.length) {
             $usertext = dropdown.closest('.Comment');
@@ -336,12 +336,12 @@ export default new Module({
         // replace token.
         comment = TBHelpers.replaceTokens(info, comment);
 
-        const offset = $usertext.offset(),
-              offsetLeft = offset.left,
-              offsetTop = offset.top,
-              minHeight = $usertext.outerHeight(),
-              editMinWidth = $usertext.outerWidth(),
-              editMinHeight = minHeight - 74;
+        const offset = $usertext.offset();
+        const offsetLeft = offset.left;
+        const offsetTop = offset.top;
+        const minHeight = $usertext.outerHeight();
+        const editMinWidth = $usertext.outerWidth();
+        const editMinHeight = minHeight - 74;
 
         const title = dropdown.find('option:selected').text();
         self.log(title);
@@ -405,9 +405,9 @@ export default new Module({
         }
 
         $macroPopup.on('click', `.macro-send-${info.id}`, function () {
-            const $currentMacroPopup = $(this).closest('.macro-popup'),
-                  $selectElement = $body.find(`#macro-dropdown-${info.id}`),
-                  editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
+            const $currentMacroPopup = $(this).closest('.macro-popup');
+            const $selectElement = $body.find(`#macro-dropdown-${info.id}`);
+            const editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
             if ($selectElement.val() !== MACROS) {
                 self.log('Replying with:');
@@ -569,11 +569,11 @@ export default new Module({
     }
 
     $body.on('change', '.tb-top-macro-select, .tb-macro-select', async function () {
-        const $this = $(this),
-              sub = $this.closest('select').attr('data-subreddit'),
-              thingID = $this.closest('select').attr('data-thingID'),
-              index = $this.val(),
-              topLevel = $this.hasClass('tb-top-macro-select');
+        const $this = $(this);
+        const sub = $this.closest('select').attr('data-subreddit');
+        const thingID = $this.closest('select').attr('data-thingID');
+        const index = $this.val();
+        const topLevel = $this.hasClass('tb-top-macro-select');
         let info;
 
         self.log(`Macro selected: index=${index}`);

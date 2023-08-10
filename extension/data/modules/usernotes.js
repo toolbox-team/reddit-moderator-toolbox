@@ -58,8 +58,8 @@ const self = new Module({
 export default self;
 
 function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
-    const subs = [],
-          $body = $('body');
+    const subs = [];
+    const $body = $('body');
     const self = this;
     let firstRun = true;
 
@@ -255,9 +255,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 
         TBCore.forEachChunked(things, 20, 100, thing => {
             // Get all tags related to the current subreddit
-            const $thing = $(thing),
-                  user = $thing.attr('data-author'),
-                  u = getUser(notes.users, user);
+            const $thing = $(thing);
+            const user = $thing.attr('data-author');
+            const u = getUser(notes.users, user);
 
             let $usertag;
             if (TBCore.isEditUserPage) {
@@ -267,8 +267,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             }
 
             // Only happens if you delete the last note.
-            const defaultButtonText = $usertag.attr('data-default-text'),
-                  currentText = $usertag.text();
+            const defaultButtonText = $usertag.attr('data-default-text');
+            const currentText = $usertag.text();
             if ((u === undefined || u.notes.length < 1) && currentText !== defaultButtonText) {
                 $usertag.css('color', '');
                 $usertag.empty();
@@ -278,8 +278,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                 return;
             }
 
-            const noteData = u.notes[0],
-                  date = new Date(noteData.time);
+            const noteData = u.notes[0];
+            const date = new Date(noteData.time);
             let note = noteData.note;
 
             // Add title before note concat.
@@ -361,8 +361,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         });
 
         // defined so we can easily add things to these specific areas after loading the notes.
-        const $noteList = $popup.find('.utagger-content .utagger-notes tbody'),
-              $typeList = $popup.find('.utagger-types .utagger-type-list');
+        const $noteList = $popup.find('.utagger-content .utagger-notes tbody');
+        const $typeList = $popup.find('.utagger-types .utagger-type-list');
 
         // We want to make sure windows fit on the screen.
         const positions = TBui.drawPosition(e);
@@ -441,9 +441,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                     // to be saved — and therefore still retain millisecond accuracy — may not be considered
                     // equal to saved versions if compared. This caused problems when deleting new notes,
                     // which searches a saved version based on ID.
-                    const noteId = Math.trunc(note.time / 1000) * 1000,
-                          noteString = TBHelpers.htmlEncode(note.note),
-                          date = new Date(note.time);
+                    const noteId = Math.trunc(note.time / 1000) * 1000;
+                    const noteString = TBHelpers.htmlEncode(note.note);
+                    const date = new Date(note.time);
 
                     // Construct some elements separately
                     let $noteTime = TBui.relativeTime(date);
@@ -493,9 +493,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         const $thing = $target.closest('.ut-thing');
         const $button = $thing.find('#add-user-tag');
 
-        const subreddit = $button.attr('data-subreddit'),
-              user = $button.attr('data-author'),
-              disableLink = false; // FIXME: change to thing type
+        const subreddit = $button.attr('data-subreddit');
+        const user = $button.attr('data-author');
+        const disableLink = false; // FIXME: change to thing type
         let link;
 
         if (TBCore.isNewModmail) {
@@ -531,14 +531,14 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
     // Save or delete button clicked
     $body.on('click', '.utagger-save-user, .utagger-remove-note', async function (e) {
         self.log('Save or delete pressed');
-        const $popup = $(this).closest('.utagger-popup'),
-              $unote = $popup.find('.utagger-user-note'),
-              subreddit = $unote.attr('data-subreddit'),
-              user = $unote.attr('data-user'),
-              noteId = $(e.target).attr('data-note-id'),
-              noteText = $unote.val(),
-              deleteNote = $(e.target).hasClass('utagger-remove-note'),
-              type = $popup.find('.utagger-type input:checked').val();
+        const $popup = $(this).closest('.utagger-popup');
+        const $unote = $popup.find('.utagger-user-note');
+        const subreddit = $unote.attr('data-subreddit');
+        const user = $unote.attr('data-user');
+        const noteId = $(e.target).attr('data-note-id');
+        const noteText = $unote.val();
+        const deleteNote = $(e.target).hasClass('utagger-remove-note');
+        const type = $popup.find('.utagger-type input:checked').val();
         let link = '';
 
         if ($popup.find('.utagger-include-link input').is(':checked')) {
@@ -690,8 +690,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 }
 
 function startUsernotesManager ({unManagerLink}) {
-    const $body = $('body'),
-          showLink = unManagerLink;
+    const $body = $('body');
+    const showLink = unManagerLink;
     const self = this;
     let subUsenotes;
 
@@ -910,9 +910,9 @@ function startUsernotesManager ({unManagerLink}) {
 
         // Update user status.
         $body.on('click', '.tb-un-refresh', async function () {
-            const $this = $(this),
-                  user = $this.attr('data-user'),
-                  $userSpan = $this.parent().find('.user');
+            const $this = $(this);
+            const user = $this.attr('data-user');
+            const $userSpan = $this.parent().find('.user');
             if (!$this.hasClass('tb-un-refreshed')) {
                 $this.addClass('tb-un-refreshed');
                 self.log(`refreshing user: ${user}`);
@@ -926,9 +926,9 @@ function startUsernotesManager ({unManagerLink}) {
 
         // Delete all notes for user.
         $body.on('click', '.tb-un-delete', async function () {
-            const $this = $(this),
-                  user = $this.attr('data-user'),
-                  $userSpan = $this.parent();
+            const $this = $(this);
+            const user = $this.attr('data-user');
+            const $userSpan = $this.parent();
 
             const r = confirm(`This will delete all notes for /u/${user}.  Would you like to proceed?`);
             if (r === true) {
@@ -949,10 +949,10 @@ function startUsernotesManager ({unManagerLink}) {
 
         // Delete individual notes for user.
         $body.on('click', '.tb-un-notedelete', async function () {
-            const $this = $(this),
-                  user = $this.attr('data-user'),
-                  note = $this.attr('data-note'),
-                  $noteSpan = $this.parent();
+            const $this = $(this);
+            const user = $this.attr('data-user');
+            const note = $this.attr('data-note');
+            const $noteSpan = $this.parent();
 
             self.log(`deleting note for ${user}`);
             subUsenotes.users[user].notes.splice(note, 1);
@@ -1461,12 +1461,12 @@ function _squashPermalink (permalink) {
     }
 
     // Compatibility with Sweden
-    const COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/,
-          MODMAIL_LINK_RE = /\/messages\/(\w+)/;
+    const COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/;
+    const MODMAIL_LINK_RE = /\/messages\/(\w+)/;
 
-    const linkMatches = permalink.match(COMMENTS_LINK_RE),
-          modMailMatches = permalink.match(MODMAIL_LINK_RE),
-          newModMailMatches = permalink.startsWith('https://mod.reddit.com');
+    const linkMatches = permalink.match(COMMENTS_LINK_RE);
+    const modMailMatches = permalink.match(MODMAIL_LINK_RE);
+    const newModMailMatches = permalink.startsWith('https://mod.reddit.com');
 
     if (linkMatches) {
         let squashed = `l,${linkMatches[1]}`;

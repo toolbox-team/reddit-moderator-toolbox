@@ -33,8 +33,8 @@ self.sort = {
 
 // Saves
 function Manager () {
-    let saves = [],
-        saveIndex = 0;
+    let saves = [];
+    let saveIndex = 0;
 
     const achievements = [];
 
@@ -62,8 +62,8 @@ function Manager () {
 
         const achievementsBlock = [];
         for (let i = 0; i < maxValues.length; i++) {
-            const title = titles[i],
-                  maxValue = maxValues[i];
+            const title = titles[i];
+            const maxValue = maxValues[i];
 
             self.log('Registering Achievement');
             if (debugMode) {
@@ -206,8 +206,8 @@ function init ({lastSeen}) {
 
     // Random awesome
     self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", saveIndex => {
-        const awesome = 7,
-              chanceOfBeingAwesome = TBHelpers.getRandomNumber(10000);
+        const awesome = 7;
+        const chanceOfBeingAwesome = TBHelpers.getRandomNumber(10000);
 
         self.log(`You rolled a: ${chanceOfBeingAwesome}`);
         if (awesome === chanceOfBeingAwesome) {
@@ -219,9 +219,9 @@ function init ({lastSeen}) {
     self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', saveIndex => {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
-        const now = TBHelpers.getTime(),
-              timeSince = now - lastSeen,
-              daysSince = TBHelpers.millisecondsToDays(timeSince);
+        const now = TBHelpers.getTime();
+        const timeSince = now - lastSeen;
+        const daysSince = TBHelpers.millisecondsToDays(timeSince);
         self.log(`daysSince: ${daysSince}`);
 
         if (daysSince >= 7) {

@@ -258,11 +258,11 @@ export function catchEvent (tbuEvent, callback) {
 
 // Platform and debugging information
 
-const CHROME = 'chrome',
-      FIREFOX = 'firefox',
-      OPERA = 'opera',
-      EDGE = 'edge',
-      UNKNOWN_BROWSER = 'unknown';
+const CHROME = 'chrome';
+const FIREFOX = 'firefox';
+const OPERA = 'opera';
+const EDGE = 'edge';
+const UNKNOWN_BROWSER = 'unknown';
 /** The name of the current browser. */
 export const browserName =
     typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style
@@ -646,9 +646,9 @@ export function forEachChunked (array, chunkSize, delay, call, complete, start) 
 
 // Chunking abused for ratelimiting
 export function forEachChunkedRateLimit (array, chunkSize, call, complete, start) {
-    let length,
-        limit,
-        counter;
+    let length;
+    let limit;
+    let counter;
     const delay = 100;
 
     if (array === null) {
@@ -715,8 +715,8 @@ export function forEachChunkedRateLimit (array, chunkSize, call, complete, start
 
             if (chunkSize + limit > parseInt(ratelimitRemaining)) {
                 $body.find('#ratelimit-counter').show();
-                let count = parseInt(ratelimitReset),
-                    counter = 0;
+                let count = parseInt(ratelimitReset);
+                let counter = 0;
 
                 counter = setInterval(() => {
                     count = timer(count, $body, ratelimitRemaining);
@@ -741,28 +741,28 @@ export function forEachChunkedDynamic (array, process, options) {
         return;
     }
     const arr = Array.from(array);
-    let start,
-        stop,
-        fr,
-        started = false;
+    let start;
+    let stop;
+    let fr;
+    let started = false;
     const opt = Object.assign({
         size: 25, // starting size
         framerate: 30, // target framerate
         nerf: 0.9, // Be careful with this one
     }, options);
     let size = opt.size;
-    const nerf = opt.nerf,
-          framerate = opt.framerate,
+    const nerf = opt.nerf;
+    const framerate = opt.framerate;
 
-          now = () => window.performance.now(),
+    const now = () => window.performance.now();
 
-          again = typeof window.requestAnimationFrame === 'function' ?
-              function (callback) {
-                  window.requestAnimationFrame(callback);
-              } :
-              function (callback) {
-                  setTimeout(callback, 1000 / opt.framerate);
-              };
+    const again = typeof window.requestAnimationFrame === 'function' ?
+        function (callback) {
+            window.requestAnimationFrame(callback);
+        } :
+        function (callback) {
+            setTimeout(callback, 1000 / opt.framerate);
+        };
 
     function optimize () {
         stop = now();
@@ -831,8 +831,8 @@ export function exportSettings (subreddit, callback) {
             return;
         } // don't backup the setting registry.
 
-        const key = this.split('.'),
-              setting = TBStorage.getSetting(key[0], key[1], null);
+        const key = this.split('.');
+        const setting = TBStorage.getSetting(key[0], key[1], null);
 
         if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
             settingsObject[this] = setting;
@@ -910,23 +910,23 @@ export async function getThingInfo (sender, modCheck) {
 
     const currentUser = await TBApi.getCurrentUser();
 
-    let subreddit,
-        permalink,
-        permalink_newmodmail,
-        domain,
-        id,
-        postID,
-        body,
-        title,
-        kind,
-        postlink,
-        banned_by,
-        spam,
-        ham,
-        user,
-        approved_by,
-        $textBody,
-        subredditType;
+    let subreddit;
+    let permalink;
+    let permalink_newmodmail;
+    let domain;
+    let id;
+    let postID;
+    let body;
+    let title;
+    let kind;
+    let postlink;
+    let banned_by;
+    let spam;
+    let ham;
+    let user;
+    let approved_by;
+    let $textBody;
+    let subredditType;
 
     // If new modmail the method is slightly different.
     if (isNewModmail) {
@@ -1121,10 +1121,10 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
         TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {
             TBStorage.purifyObject(response);
             const message = findMessage(response, shortID);
-            const body = message.data.body,
-                  user = message.data.author,
-                  title = message.data.subject,
-                  permalink = `/message/messages/${shortID}`;
+            const body = message.data.body;
+            const user = message.data.author;
+            const title = message.data.subject;
+            const permalink = `/message/messages/${shortID}`;
 
             let subreddit = message.data.subreddit || '';
 
@@ -1397,8 +1397,8 @@ function refreshHashContext () {
             const params = hash.split('&');
             params.forEach(param => {
                 const keyval = param.split('=');
-                const key = keyval[0].replace('?', ''),
-                      val = keyval[1];
+                const key = keyval[0].replace('?', '');
+                const val = keyval[1];
                 paramObject[key] = val;
             });
             setTimeout(() => {
@@ -1599,8 +1599,8 @@ if ($('#header').length) {
     // create an observer instance
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            const $target = $(mutation.target),
-                  $parentNode = $(mutation.target.parentNode);
+            const $target = $(mutation.target);
+            const $parentNode = $(mutation.target.parentNode);
 
             if ($target.hasClass('expando')) {
                 const expandoEvent = new CustomEvent('tbNewExpando');

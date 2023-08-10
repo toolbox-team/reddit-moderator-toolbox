@@ -136,12 +136,12 @@ export default new Module({
     }
 
     // Are we on a wiki edit or create page?
-    const wikiRegex = /\/wiki\/(?:edit|create)\/?([a-z0-9-_/]*[a-z0-9-_])/,
-          wikiMatch = location.pathname.match(wikiRegex);
+    const wikiRegex = /\/wiki\/(?:edit|create)\/?([a-z0-9-_/]*[a-z0-9-_])/;
+    const wikiMatch = location.pathname.match(wikiRegex);
     // Are we on a page from the list in the settings?
     if (wikiMatch) {
-        const wikiPage = wikiMatch[1], // make sure wikiMatch exists before referencing it
-              language = wikiPages[wikiPage];
+        const wikiPage = wikiMatch[1]; // make sure wikiMatch exists before referencing it
+        const language = wikiPages[wikiPage];
         if (language) {
             // we've checked the current page is the edit page for one of the pages in the settings, replace the textarea with CodeMirror
             let miscEditor;

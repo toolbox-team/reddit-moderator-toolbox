@@ -126,17 +126,17 @@ export default new Module({
         });
 
         $body.on('click', '.tb-test-notification-button', () => {
-            const title = $body.find('#tb-test-notification-title').val(),
-                  body = $body.find('#tb-test-notification-body').val(),
-                  path = $body.find('#tb-test-notification-path').val(),
-                  markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
+            const title = $body.find('#tb-test-notification-title').val();
+            const body = $body.find('#tb-test-notification-body').val();
+            const path = $body.find('#tb-test-notification-path').val();
+            const markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
 
             TBCore.notification(title, body, path, markreadid);
         });
 
         $body.on('click', '.tb-testCommentUI-button', async function () {
-            const $this = $(this),
-                  $siteTable = $body.find('#tb-comment-sitetable');
+            const $this = $(this);
+            const $siteTable = $body.find('#tb-comment-sitetable');
             $siteTable.empty();
             // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
             const inputURL = $body.find('#tb-testCommentUI-input-url').val();

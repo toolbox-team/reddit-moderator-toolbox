@@ -38,8 +38,8 @@ export default new Module({
         return;
     }
     const $body = $('body');
-    let notesArray = [],
-        notesPopupContent;
+    let notesArray = [];
+    let notesPopupContent;
 
     // Template HTML for each item in the note list
     const noteListTemplate = `
@@ -195,8 +195,8 @@ export default new Module({
                         if (count === 0) {
                             notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
                         } else {
-                            let notecount = 0,
-                                noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
+                            let notecount = 0;
+                            let noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
 
                             json.data.forEach(value => {
                                 if (/notes\//.test(value)) {
@@ -232,8 +232,8 @@ export default new Module({
 
     // When clicking a wiki page.
     $body.on('click', '.personal-notes-popup .tb-personal-note-link', function () {
-        const $this = $(this),
-              wikiPage = $this.data('wiki');
+        const $this = $(this);
+        const wikiPage = $this.data('wiki');
         // $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
         $body.find('#tb-personal-notes-ul').find('li').removeClass('tb-personal-notes-active');
         // $this.addClass('tb-personal-notes-active');
@@ -285,9 +285,9 @@ export default new Module({
 
     $body.on('click', '.personal-notes-popup #save-personal-note', function () {
         const $this = $(this);
-        const page = $this.attr('data-note'),
-              data = $body.find('#tb-personal-notes-editarea').val(),
-              reason = 'Saving personal toolbox note';
+        const page = $this.attr('data-note');
+        const data = $body.find('#tb-personal-notes-editarea').val();
+        const reason = 'Saving personal toolbox note';
         saveNoteWiki(page, notewiki, data, reason, false);
     });
 

@@ -149,9 +149,9 @@ function initModSave () {
     const $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
 
     const $saveButton = $usertextButtons.find('.save');
-    const $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons'),
-          $modSaveButton = $('<button>').addClass('save-mod tb-action-button').text('mod save'),
-          $stickySaveButton = $('<button>').addClass('save-sticky tb-action-button').text('mod save + sticky');
+    const $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
+    const $modSaveButton = $('<button>').addClass('save-mod tb-action-button').text('mod save');
+    const $stickySaveButton = $('<button>').addClass('save-sticky tb-action-button').text('mod save + sticky');
     if ($tbUsertextButtons.length) {
         $tbUsertextButtons.prepend($modSaveButton, $stickySaveButton);
     } else {
@@ -219,8 +219,8 @@ function initDistinguishToggle () {
         const distinguished = getDistinguishState($parentPost);
 
         // Lets ready the buttons we want to click later on.
-        const firstDistinguishButton = $this.find('.option > a')[0],
-              secondDistinguishButton = $this.find('.option > a')[1];
+        const firstDistinguishButton = $this.find('.option > a')[0];
+        const secondDistinguishButton = $this.find('.option > a')[1];
 
         // User initiated click, this is the distinguish toggle on a top level comment
 
@@ -325,8 +325,8 @@ function initRemoveConfirmation () {
     });
     // Remove and spam
     $body.on('click', '.flat-list .remove-button .togglebutton', async function () {
-        const $button = $(this).closest('.remove-button'),
-              yes = $button.find('.yes')[0];
+        const $button = $(this).closest('.remove-button');
+        const yes = $button.find('.yes')[0];
 
         // Don't remove if removal reasons are enabled and the button isn't for spam
         if (!$body.hasClass('tb-removal-reasons')
@@ -345,8 +345,8 @@ function initAutoApprove () {
 
     $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
         self.log('Ignore reports pressed');
-        const $button = $(this).parent().find('> span > .positive'),
-              button = $button[0];
+        const $button = $(this).parent().find('> span > .positive');
+        const button = $button[0];
         if (!$button.hasClass('pressed')) {
             if (button) {
                 button.click();
@@ -359,8 +359,8 @@ function initAutoIgnoreReports () {
     self.log('Adding approve toggle events');
 
     $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
-        const $button = $(this).closest('.big-mod-buttons').find('> .neutral'),
-              button = $button[0];
+        const $button = $(this).closest('.big-mod-buttons').find('> .neutral');
+        const button = $button[0];
         if (!$button.hasClass('pressed')) {
             if (button) {
                 button.click();
@@ -412,8 +412,8 @@ function initStickyButtons () {
     }
     const $things = $('.listing-page .content .thing.link');
     $things.each(function () {
-        const $thing = $(this),
-              $buttons = $thing.find('.flat-list');
+        const $thing = $(this);
+        const $buttons = $thing.find('.flat-list');
         const unsticky = $thing.hasClass('stickied');
 
         // Make sure this is a post in a sub we mod by checking for the remove button.
@@ -435,9 +435,9 @@ function initStickyButtons () {
     });
 
     $('.thing .sticky-button .tb-sticky-choice').click(function () {
-        const $button = $(this),
-              $positionButton = $button.siblings('.tb-sticky-position'),
-              attr = $button.attr('data-tb-stickied');
+        const $button = $(this);
+        const $positionButton = $button.siblings('.tb-sticky-position');
+        const attr = $button.attr('data-tb-stickied');
         if (typeof attr !== typeof undefined && attr !== false) {
             const id = $button.parents('.thing').attr('data-fullname');
             TBApi.unstickyThread(id).then(() => {
@@ -454,9 +454,9 @@ function initStickyButtons () {
     });
 
     $('.thing .sticky-button .tb-sticky-post').click(function () {
-        const $button = $(this),
-              $thing = $button.parents('.thing'),
-              id = $thing.attr('data-fullname');
+        const $button = $(this);
+        const $thing = $button.parents('.thing');
+        const id = $thing.attr('data-fullname');
         const position = $button.attr('data-sticky-spot');
         TBApi.stickyThread(id, position).then(() => {
             $button.parent().siblings('.success').show();

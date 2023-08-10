@@ -502,8 +502,8 @@ export function setCache (module, setting, inputValue) {
 // added recursive object checks - al
 function isEquivalent (a, b) {
     // Create arrays of property names
-    const aProps = Object.getOwnPropertyNames(a),
-          bProps = Object.getOwnPropertyNames(b);
+    const aProps = Object.getOwnPropertyNames(a);
+    const bProps = Object.getOwnPropertyNames(b);
 
     // If number of properties is different,
     // objects are not equivalent
@@ -514,8 +514,8 @@ function isEquivalent (a, b) {
 
     for (let i = 0; i < aProps.length; i++) {
         const propName = aProps[i];
-        const propA = a[propName],
-              propB = b[propName];
+        const propA = a[propName];
+        const propB = b[propName];
 
         // If values of same property are not equal,
         // objects are not equivalent

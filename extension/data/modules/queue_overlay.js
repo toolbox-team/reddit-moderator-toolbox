@@ -27,10 +27,10 @@ export default new Module({
 }, async ({overlayFromBarRedesign, overlayFromBarOld}) => {
     const $body = $('body');
 
-    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
-          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false),
-          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
 
     // Array used to keep track of loading iframes so that when the overlay gets closed we can properly stop all long load animations.
     let activeLoading = [];

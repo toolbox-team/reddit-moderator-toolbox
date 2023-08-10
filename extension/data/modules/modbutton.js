@@ -60,8 +60,8 @@ const self = new Module({
 }, init);
 export default self;
 
-const $body = $('body'),
-      titleText = 'Perform various mod actions on this user';
+const $body = $('body');
+const titleText = 'Perform various mod actions on this user';
 
 self.runRedesign = async function () {
     // Not a mod, don't bother.
@@ -119,8 +119,8 @@ self.updateSavedSubs = async function () {
     //
     // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
     //
-    const $popups = $body.find('.mod-popup'),
-          $savedSubsLists = $popups.find('.saved-subs');
+    const $popups = $body.find('.mod-popup');
+    const $savedSubsLists = $popups.find('.saved-subs');
 
     // clear out the current stuff
     $savedSubsLists.html('');
@@ -128,9 +128,9 @@ self.updateSavedSubs = async function () {
     // add our saved subs to the "remove saved subs" dropdown on the setting tab
     // and to the saved subs savedSubsList on the role tab
     $popups.each(function () {
-        const $popup = $(this),
-              $savedSubsList = $popup.find('.saved-subs'),
-              currentSub = $popup.find('.subreddit').text();
+        const $popup = $(this);
+        const $savedSubsList = $popup.find('.saved-subs');
+        const currentSub = $popup.find('.subreddit').text();
 
         // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
@@ -172,9 +172,9 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
         const lastaction = await self.get('lastAction');
 
-        const subreddit = info.subreddit,
-              user = info.user,
-              thing_id = info.id;
+        const subreddit = info.subreddit;
+        const user = info.user;
+        const thing_id = info.id;
 
         // no user?
         if (!user) {
@@ -404,10 +404,10 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
         // show/hide ban reason text feild.
         $actionSelect.change(function () {
-            const $banNote = $popup.find('.ban-note'),
-                  $banMessage = $popup.find('textarea.ban-message'),
-                  $banDuration = $popup.find('.ban-duration'),
-                  $banIncludeTime = $popup.find('.ban-span-include-time');
+            const $banNote = $popup.find('.ban-note');
+            const $banMessage = $popup.find('textarea.ban-message');
+            const $banDuration = $popup.find('.ban-duration');
+            const $banIncludeTime = $popup.find('.ban-span-include-time');
             if ($(this).val() === 'ban') {
                 $banNote.show();
                 $banMessage.show();
@@ -482,19 +482,19 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
     $body.on('click', '.mod-popup .save, .global-button', async function () {
-        const $button = $(this),
-              $popup = $button.parents('.mod-popup'),
-              $selected = $popup.find('.mod-action :selected'),
-              api = $selected.attr('data-api'),
-              action = $selected.attr('data-action'),
-              actionName = $selected.val(),
-              settingState = api === 'friend',
-              $status = $popup.find('.status'),
-              banReason = $popup.find('.ban-note').val(),
-              banDuration = $popup.find('.ban-duration').val(),
-              banContext = $popup.find('.thing_id').text(),
-              subreddits = [],
-              user = $popup.find('.user').text();
+        const $button = $(this);
+        const $popup = $button.parents('.mod-popup');
+        const $selected = $popup.find('.mod-action :selected');
+        const api = $selected.attr('data-api');
+        const action = $selected.attr('data-action');
+        const actionName = $selected.val();
+        const settingState = api === 'friend';
+        const $status = $popup.find('.status');
+        const banReason = $popup.find('.ban-note').val();
+        const banDuration = $popup.find('.ban-duration').val();
+        const banContext = $popup.find('.thing_id').text();
+        const subreddits = [];
+        const user = $popup.find('.user').text();
 
         const banMessage = $popup.find('textarea.ban-message').val();
 
@@ -627,15 +627,15 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
     // send a message to the user.
     $body.on('click', '.mod-popup .message-send', function () {
-        let subject,
-            message;
+        let subject;
+        let message;
         TBui.longLoadSpinner(true);
-        const $popup = $(this).parents('.mod-popup'),
-              user = $popup.find('.user').text(),
-              subreddit = $popup.find('.subreddit').text(),
-              $callbackSpan = $popup.find('#subreddit-message-callback'),
-              $subredditMessageSubject = $popup.find('.subreddit-message-subject'),
-              $subredditMessage = $popup.find('.subreddit-message');
+        const $popup = $(this).parents('.mod-popup');
+        const user = $popup.find('.user').text();
+        const subreddit = $popup.find('.subreddit').text();
+        const $callbackSpan = $popup.find('#subreddit-message-callback');
+        const $subredditMessageSubject = $popup.find('.subreddit-message-subject');
+        const $subredditMessage = $popup.find('.subreddit-message');
 
         if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
             $callbackSpan.text('You forgot a subject or message');
@@ -666,12 +666,12 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
     // Flair ALL THE THINGS
     $body.on('click', '.tb-window-tabs .user_flair', async function () {
-        const $popup = $(this).parents('.mod-popup'),
-              user = $popup.find('.user').text(),
-              subreddit = $popup.find('.subreddit').text(),
-              $textinput = $popup.find('.flair-text'),
-              $classinput = $popup.find('.flair-class'),
-              $flairDropdown = $popup.find('#flair-template-id-select');
+        const $popup = $(this).parents('.mod-popup');
+        const user = $popup.find('.user').text();
+        const subreddit = $popup.find('.subreddit').text();
+        const $textinput = $popup.find('.flair-text');
+        const $classinput = $popup.find('.flair-class');
+        const $flairDropdown = $popup.find('#flair-template-id-select');
 
         if (!user || !subreddit) {
             return;
@@ -728,13 +728,13 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
     // Edit save button clicked.
     $body.on('click', '.flair-save', function () {
-        const $popup = $(this).parents('.mod-popup'),
-              $status = $popup.find('.status'),
-              user = $popup.find('.user').text(),
-              subreddit = $popup.find('.subreddit').text(),
-              text = $popup.find('.flair-text').val(),
-              css_class = $popup.find('.flair-class').val(),
-              templateID = $popup.find('#flair-template-id-select').val();
+        const $popup = $(this).parents('.mod-popup');
+        const $status = $popup.find('.status');
+        const user = $popup.find('.user').text();
+        const subreddit = $popup.find('.subreddit').text();
+        const text = $popup.find('.flair-text').val();
+        const css_class = $popup.find('.flair-class').val();
+        const templateID = $popup.find('#flair-template-id-select').val();
 
         TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 

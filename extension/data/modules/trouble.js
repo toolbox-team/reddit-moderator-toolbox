@@ -60,9 +60,9 @@ self.sorted = false;
 self.pending = [];
 
 function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highlightAuto, sortOnMoreChildren, displayNChildren, displayNChildrenTop}) {
-    const $body = $('body'),
-          $buttons = $('<div id="tb-trouble-buttons">'),
-          $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start);
+    const $body = $('body');
+    const $buttons = $('<div id="tb-trouble-buttons">');
+    const $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start);
     let $sitetable;
 
     if (!TBCore.isMod) {
@@ -155,8 +155,8 @@ function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highl
     }
 
     async function score () {
-        const $this = $(this),
-              $thing = $this.closest('.thing');
+        const $this = $(this);
+        const $thing = $this.closest('.thing');
         let neg_thresh = negHighlightThreshold;
 
         // lower the threashold by one for user's comments

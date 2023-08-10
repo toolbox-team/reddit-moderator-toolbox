@@ -62,8 +62,8 @@ export default new Module({
 
         const subs = {};
         await Promise.all($things.toArray().map(async thing => {
-            const $thing = $(thing),
-                  sub = $thing.attr('data-subreddit');
+            const $thing = $(thing);
+            const sub = $thing.attr('data-subreddit');
 
             // Mark non-mySubs as processed and remove them from collection
             if (!await TBCore.isModSub(sub)) {
@@ -161,12 +161,12 @@ export default new Module({
         }
 
         TBCore.forEachChunkedDynamic(things, thing => {
-            const $thing = $(thing),
-                  $entry = $thing.find('.entry'),
-                  $domain = $entry.find('span.domain'),
-                  domain = getThingDomain($thing),
-                  thingID = $thing.attr('data-fullname'),
-                  tagged = [];
+            const $thing = $(thing);
+            const $entry = $thing.find('.entry');
+            const $domain = $entry.find('span.domain');
+            const domain = getThingDomain($thing);
+            const thingID = $thing.attr('data-fullname');
+            const tagged = [];
 
             domainTags.forEach(d => {
                 // Check if the domain ends with a tagged domain (to allow for subdomains)
@@ -184,12 +184,12 @@ export default new Module({
     // Button events
 
     $body.on('click', '.add-domain-tag', e => {
-        const $this = $(e.target),
-              $domain = $this.siblings('.domain'),
-              currentColor = TBHelpers.colorNameToHex($domain.data('color') || '#cee3f8db'),
-              $thing = $this.closest('.thing'),
-              domain = getThingDomain($thing),
-              subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
+        const $this = $(e.target);
+        const $domain = $this.siblings('.domain');
+        const currentColor = TBHelpers.colorNameToHex($domain.data('color') || '#cee3f8db');
+        const $thing = $this.closest('.thing');
+        const domain = getThingDomain($thing);
+        const subreddit = TBHelpers.cleanSubredditName($thing.attr('data-subreddit'));
 
         function createPopup () {
             const $popupContent = $('<div>').addClass('dt-popup-content').append($('<span>').addClass('dt-popup-color-content').append($('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)).append($('<input>').prop('type', 'color').addClass('domain-color').val(currentColor))).append($('<p>').text('This will tag the domain as shown.')).append($('<p>').text('Ex: i.imgur.com is not imgur.com'));
@@ -222,8 +222,8 @@ export default new Module({
     });
 
     $body.on('click', '.save-domain', function () {
-        const $popup = $(this).closest('.dtagger-popup'),
-              subreddit = $popup.find('.domain-name').attr('data-subreddit');
+        const $popup = $(this).closest('.dtagger-popup');
+        const subreddit = $popup.find('.domain-name').attr('data-subreddit');
 
         const domainTag = {
             name: $popup.find('.domain-name').val(),

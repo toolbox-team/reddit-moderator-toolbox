@@ -477,16 +477,16 @@ self.updateFilters = function () {
 
 self.refreshTable = function () {
     this.updateFilters();
-    const hasModFilter = self.modFilter != null && !$.isEmptyObject(self.modFilter),
-          hasActionFilter = self.actionFilter != null && !$.isEmptyObject(self.actionFilter),
-          matrix = $('#mod-matrix');
+    const hasModFilter = self.modFilter != null && !$.isEmptyObject(self.modFilter);
+    const hasActionFilter = self.actionFilter != null && !$.isEmptyObject(self.actionFilter);
+    const matrix = $('#mod-matrix');
 
     // modLogMatrix.filterModeratorActions();
 
     // Mod numbers
     for (const mod of Object.keys(this.subredditModerators)) {
-        const moderator = self.subredditModerators[mod],
-              modRow = matrix.find(`.moderator-${mod}`);
+        const moderator = self.subredditModerators[mod];
+        const modRow = matrix.find(`.moderator-${mod}`);
         for (const action of Object.keys(moderator)) {
             const value = parseInt(moderator[action]);
             modRow.find(`.action-${action} .action-number`).text(value);
@@ -665,8 +665,8 @@ self.getSubredditModerators = function () {
     modItems = $.makeArray(modItems);
 
     modItems.sort((a, b) => {
-        const aText = $(a).text().toLowerCase(),
-              bText = $(b).text().toLowerCase();
+        const aText = $(a).text().toLowerCase();
+        const bText = $(b).text().toLowerCase();
         if (aText === bText) {
             return 0;
         } else {
@@ -715,8 +715,8 @@ self.getQuerystringByName = function (name, url) {
         url = location.search;
     }
     name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
-    const regex = new RegExp(`[\\?&]${name}=([^&#]*)`),
-          results = regex.exec(url);
+    const regex = new RegExp(`[\\?&]${name}=([^&#]*)`);
+    const results = regex.exec(url);
     return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 

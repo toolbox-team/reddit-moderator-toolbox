@@ -62,19 +62,19 @@ const TBModule = {
         //
         // preload some generic variables
         //
-        const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false),
-              betaMode = await TBStorage.getSettingAsync('Utils', 'betaMode', false),
-              advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false),
+        const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
+        const betaMode = await TBStorage.getSettingAsync('Utils', 'betaMode', false);
+        const advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false);
 
-              settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', ''),
-              shortLength = await TBStorage.getSettingAsync('Utils', 'shortLength', 15),
-              longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45),
+        const settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', '');
+        const shortLength = await TBStorage.getSettingAsync('Utils', 'shortLength', 15);
+        const longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45);
 
-              // last export stuff
-              lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport'),
-              showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder'),
-              lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport)),
-              lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
+        // last export stuff
+        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport');
+        const showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder');
+        const lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport));
+        const lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
         let lastExportState = '';
 
@@ -165,9 +165,9 @@ const TBModule = {
         });
 
         $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
-            const $this = $(this),
-                  tbSet = $this.attr('data-setting'),
-                  $inputSetting = $(`.tb-setting-input-${tbSet}`);
+            const $this = $(this);
+            const tbSet = $this.attr('data-setting');
+            const $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
             if ($inputSetting.is(':visible')) {
                 $this.removeClass('active-link');
@@ -309,8 +309,8 @@ const TBModule = {
         });
 
         $settingsDialog.on('click', '.tb-save, .tb-save-reload', async e => {
-            const settingsDialog = e.delegateTarget,
-                  reload = $(e.target).hasClass('tb-save-reload');
+            const settingsDialog = e.delegateTarget;
+            const reload = $(e.target).hasClass('tb-save-reload');
 
             // save export sub
             let sub = $('input[name=settingssub]').val();
@@ -452,8 +452,8 @@ const TBModule = {
             //
 
             let moduleHasSettingTab = false; // we set this to true later, if there's a visible setting
-            const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.id.toLowerCase()}" data-module="${module.id.toLowerCase()}">${module.name}</a>`),
-                  $settings = $(`
+            const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.id.toLowerCase()}" data-module="${module.id.toLowerCase()}">${module.name}</a>`);
+            const $settings = $(`
                             <div class="tb-window-tab ${module.id.toLowerCase()}" style="display: none;">
                                 <div class="tb-window-content">
                                     <div class="tb-settings"></div>
@@ -686,8 +686,8 @@ body {
 
                     logger.debug('----------');
                     logger.debug('GENERATING ACHIEVEMENT PAGE');
-                    const total = module.manager.getAchievementTotal(),
-                          unlocked = module.manager.getUnlockedCount();
+                    const total = module.manager.getAchievementTotal();
+                    const unlocked = module.manager.getUnlockedCount();
 
                     logger.debug(`  total=${total}`);
                     logger.debug(`  unlocked=${unlocked}`);
@@ -705,9 +705,9 @@ body {
                         logger.debug(`  saveIndex: ${saveIndex}`);
                         for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
                             logger.debug(`  index: ${index}`);
-                            let aTitle = '???',
-                                aDescr = '??????',
-                                aClass = '';
+                            let aTitle = '???';
+                            let aDescr = '??????';
+                            let aClass = '';
 
                             // FIXME: Use a dedicated setting instead of just using debug mode
                             if (module.manager.isUnlocked(saveIndex, index, save) || debugMode) {
@@ -738,12 +738,12 @@ body {
                 }
                 }
                 if (!noWrap) {
-                    const moduleName = module.id.toLowerCase(),
-                          settingName = setting.toLowerCase(),
-                          linkClass = `tb-setting-link-${settingName}`,
-                          inputClass = `tb-setting-input-${settingName}`,
-                          redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
-                          internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
+                    const moduleName = module.id.toLowerCase();
+                    const settingName = setting.toLowerCase();
+                    const linkClass = `tb-setting-link-${settingName}`;
+                    const inputClass = `tb-setting-input-${settingName}`;
+                    const redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`;
+                    const internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
                     $setting.append(`&nbsp;<a ${displaySetting ? '' : 'style="display:none;"'
                     } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${TBConstants.icons.tbSettingLink}</a>` +
@@ -758,8 +758,8 @@ body {
 
                     // TODO: somebody document this
                     $body.on('click', `.${linkClass}`, function () {
-                        const $this = $(this),
-                              tbSet = $this.attr('data-setting');
+                        const $this = $(this);
+                        const tbSet = $this.attr('data-setting');
 
                         const $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
@@ -901,8 +901,8 @@ body {
                     case 'map':
                         value = {};
                         $this.find('.tb-map-input-table tbody tr').each(function () {
-                            const key = escape($(this).find('input[name=key]').val()).trim(),
-                                  val = escape($(this).find('input[name=value]').val()).trim();
+                            const key = escape($(this).find('input[name=key]').val()).trim();
+                            const val = escape($(this).find('input[name=value]').val()).trim();
 
                             if (key !== '' || val !== '') {
                                 value[key] = val;

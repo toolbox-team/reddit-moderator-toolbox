@@ -348,8 +348,8 @@ export default new Module({
         // ready some variables.
 
         // Let's mess around with the link to modmail.
-        const $newModmailLinkElement = $('#new_modmail'),
-              newModmailBaseUrl = 'https://mod.reddit.com/mail/';
+        const $newModmailLinkElement = $('#new_modmail');
+        const newModmailBaseUrl = 'https://mod.reddit.com/mail/';
 
         // Open modmail in a new tab if the option is selected
         if (openMailTab) {

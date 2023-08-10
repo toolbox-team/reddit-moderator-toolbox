@@ -223,8 +223,8 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
 
     // hide old comments
     if (await self.get('showHideOld')) {
-        const NO_HIGHLIGHTING = 'no highlighting',
-              $commentvisits = $('#comment-visits');
+        const NO_HIGHLIGHTING = 'no highlighting';
+        const $commentvisits = $('#comment-visits');
 
         $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
 

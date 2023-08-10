@@ -200,8 +200,8 @@ self.queuetoolsOld = function ({
     }
 
     async function colorSubreddits () {
-        const $this = $(this),
-              subredditName = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
+        const $this = $(this);
+        const subredditName = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
 
         $this.addClass('color-processed');
 
@@ -252,15 +252,15 @@ self.queuetoolsOld = function ({
 
     // Add modtools buttons to page.
     function addModtools () {
-        let listingOrder = reportsOrder,
-            allSelected = false,
-            sortAscending = reportsAscending;
+        let listingOrder = reportsOrder;
+        let allSelected = false;
+        let sortAscending = reportsAscending;
 
-        const numberRX = /-?\d+/,
-              viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
-              viewingreports = !!location.pathname.match(/\/about\/reports/),
-              EXPAND_TITLE = 'expand reports',
-              COLLAPSE_TITLE = 'collapse reports';
+        const numberRX = /-?\d+/;
+        const viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/);
+        const viewingreports = !!location.pathname.match(/\/about\/reports/);
+        const EXPAND_TITLE = 'expand reports';
+        const COLLAPSE_TITLE = 'collapse reports';
 
         if (viewingspam && listingOrder === 'reports') {
             listingOrder = 'removed';
@@ -273,8 +273,8 @@ self.queuetoolsOld = function ({
         function removeUnmoddable () {
             if (!TBCore.isModpage && !TBCore.isSubCommentsPage) {
                 $('.thing').each(async function () {
-                    const $thing = $(this),
-                          $sub = $thing.find('.subreddit');
+                    const $thing = $(this);
+                    const $sub = $thing.find('.subreddit');
 
                     // Remove if the sub isn't moderated
                     if ($sub.length > 0) {
@@ -430,12 +430,12 @@ self.queuetoolsOld = function ({
         // });
 
         // Fix the position of the modtools. We do it like this so we can support custom css
-        const $modtoolsMenu = $body.find('.menuarea.modtools'),
-              $modtoolsMenuDuplicate = $body.find('.modtools-duplicate'),
-              offset = $modtoolsMenu.offset(),
-              offsetTop = offset.top,
-              offsetSticky = offset.left,
-              rightPosition = $('.side').outerWidth() + 10;
+        const $modtoolsMenu = $body.find('.menuarea.modtools');
+        const $modtoolsMenuDuplicate = $body.find('.modtools-duplicate');
+        const offset = $modtoolsMenu.offset();
+        const offsetTop = offset.top;
+        const offsetSticky = offset.left;
+        const rightPosition = $('.side').outerWidth() + 10;
 
         $modtoolsMenu.css({
             'margin-right': `${rightPosition}px`,
@@ -496,9 +496,9 @@ self.queuetoolsOld = function ({
 
         // Change sort order
         $('.sortorder-options a').click(function () {
-            const $sortOrder = $('.sortorder'),
-                  order = $(this).text(),
-                  toggleAsc = order === $sortOrder.text();
+            const $sortOrder = $('.sortorder');
+            const order = $(this).text();
+            const toggleAsc = order === $sortOrder.text();
 
             if (toggleAsc) {
                 sortAscending = !sortAscending;
@@ -541,9 +541,9 @@ self.queuetoolsOld = function ({
                 const $this = $(this);
                 let shouldSelect = null;
                 $selectOptions.each((_, el) => {
-                    let selector = '',
-                        min,
-                        max;
+                    let selector = '';
+                    let min;
+                    let max;
                     switch (el.name) {
                     case 'banned':
                         selector = '.banned-user';
@@ -638,9 +638,9 @@ self.queuetoolsOld = function ({
 
         // Mass spam/remove/approve/ignore
         $('.pretty-button.action').click(function () {
-            const approve = this.type === 'positive',
-                  spam = !approve && this.type === 'negative',
-                  ignore = this.type === 'ignore';
+            const approve = this.type === 'positive';
+            const spam = !approve && this.type === 'negative';
+            const ignore = this.type === 'ignore';
 
             // Apply action
             const $actioned = $('.thing:visible > input:checked').parent().each(function () {
@@ -674,8 +674,8 @@ self.queuetoolsOld = function ({
 
         // Uncheck anything we've taken an action, if it's checked.
         $body.on('click', '.pretty-button', function () {
-            const $this = $(this),
-                  $thing = $this.closest('.thing');
+            const $this = $(this);
+            const $thing = $this.closest('.thing');
 
             $thing.find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
@@ -752,8 +752,8 @@ self.queuetoolsOld = function ({
 
                 $('.open-expandos').text('[-]');
                 $('.expando-button.collapsed').each(function (index) {
-                    const $button = $(this),
-                          $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+                    const $button = $(this);
+                    const $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                     setTimeout(() => {
                         $button.click();
@@ -766,8 +766,8 @@ self.queuetoolsOld = function ({
 
                 $('.open-expandos').text('[+]');
                 $('.expando-button.expanded').each(function () {
-                    const $button = $(this),
-                          $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+                    const $button = $(this);
+                    const $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                     $button.click();
                     $checkBox.prop('checked', false);
@@ -816,8 +816,8 @@ self.queuetoolsOld = function ({
         }
 
         $body.on('click', '.tb-sort-subs', () => {
-            let prefix = '',
-                page = '';
+            let prefix = '';
+            let page = '';
             if (TBCore.isUnmoderatedPage) {
                 self.log('sorting unmod');
                 prefix = 'umq-';
@@ -838,16 +838,16 @@ self.queuetoolsOld = function ({
             $sortButton.html('sorting...');
             $sortButton.css({'padding-left': '17px', 'padding-right': '16px'});
 
-            const now = TBHelpers.getTime(),
-                // delay = 0,
-                  modSubs = [];
+            const now = TBHelpers.getTime();
+            // delay = 0,
+            const modSubs = [];
 
             TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TBui.FEEDBACK_NEUTRAL);
 
             TBCore.forEachChunked(
                 $('.subscription-box a.title'), 20, 100, elem => {
-                    const $elem = $(elem),
-                          sr = $elem.text();
+                    const $elem = $(elem);
+                    const sr = $elem.text();
 
                     TBStorage.getCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, '[0,0]').then(cacheData => {
                         const data = JSON.parse(cacheData);
@@ -890,8 +890,8 @@ self.queuetoolsOld = function ({
         function sortThings (order, asc) {
             const $sitetable = $('#siteTable');
             const things = $('#siteTable .thing').sort((a, b) => {
-                let A,
-                    B;
+                let A;
+                let B;
                 if (asc) {
                     A = a;
                     B = b;
@@ -904,31 +904,31 @@ self.queuetoolsOld = function ({
                 const defaultTimestampSelector = '.tagline time:not(.edited-timestamp):first';
                 const editedTimestampSelector = 'time.edited-timestamp:first';
 
-                const $A = $(A),
-                      $B = $(B);
+                const $A = $(A);
+                const $B = $(B);
                 switch (order) {
                 case 'age':
                 default: // just in case
                 {
-                    const timeA = new Date($A.find(defaultTimestampSelector).attr('datetime')).getTime(),
-                          timeB = new Date($B.find(defaultTimestampSelector).attr('datetime')).getTime();
+                    const timeA = new Date($A.find(defaultTimestampSelector).attr('datetime')).getTime();
+                    const timeB = new Date($B.find(defaultTimestampSelector).attr('datetime')).getTime();
                     return timeA - timeB;
                 }
                 case 'edited':
                 {
-                    const $aEditElement = $A.find(editedTimestampSelector).length ? $A.find(editedTimestampSelector) : $A.find(defaultTimestampSelector),
-                          $bEditElement = $B.find(editedTimestampSelector).length ? $B.find(editedTimestampSelector) : $B.find(defaultTimestampSelector);
-                    const timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
-                          timeEditB = new Date($bEditElement.attr('datetime')).getTime();
+                    const $aEditElement = $A.find(editedTimestampSelector).length ? $A.find(editedTimestampSelector) : $A.find(defaultTimestampSelector);
+                    const $bEditElement = $B.find(editedTimestampSelector).length ? $B.find(editedTimestampSelector) : $B.find(defaultTimestampSelector);
+                    const timeEditA = new Date($aEditElement.attr('datetime')).getTime();
+                    const timeEditB = new Date($bEditElement.attr('datetime')).getTime();
                     return timeEditA - timeEditB;
                 }
                 case 'removed':
                 {
-                    const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find(defaultTimestampSelector),
-                          $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find(defaultTimestampSelector);
+                    const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find(defaultTimestampSelector);
+                    const $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find(defaultTimestampSelector);
 
-                    let timeRemoveA,
-                        timeRemoveB;
+                    let timeRemoveA;
+                    let timeRemoveB;
 
                     if ($aRemoveElement.is('time')) {
                         timeRemoveA = $aRemoveElement.attr('datetime');
@@ -944,22 +944,22 @@ self.queuetoolsOld = function ({
                         timeRemoveB = timeRemoveB.replace('removed at ', '');
                     }
 
-                    const timeStampRemoveA = new Date(timeRemoveA).getTime(),
-                          timeStampRemoveB = new Date(timeRemoveB).getTime();
+                    const timeStampRemoveA = new Date(timeRemoveA).getTime();
+                    const timeStampRemoveB = new Date(timeRemoveB).getTime();
 
                     return timeStampRemoveA - timeStampRemoveB;
                 }
                 case 'score':
                 {
-                    const scoreA = $A.find('.score:visible').attr('title'),
-                          scoreB = $B.find('.score:visible').attr('title');
+                    const scoreA = $A.find('.score:visible').attr('title');
+                    const scoreB = $B.find('.score:visible').attr('title');
                     // implicit conversion string to number
                     return scoreA - scoreB;
                 }
                 case 'reports':
                 {
-                    const reportsA = $A.find('.reported-stamp').text().match(numberRX),
-                          reportsB = $B.find('.reported-stamp').text().match(numberRX);
+                    const reportsA = $A.find('.reported-stamp').text().match(numberRX);
+                    const reportsB = $B.find('.reported-stamp').text().match(numberRX);
                     return reportsA - reportsB;
                 }
                 }
@@ -979,8 +979,8 @@ self.queuetoolsOld = function ({
         // thread. this function is a bit of a mess
         // TODO: fix that
         function groupThings () {
-            const threadGroups = {},
-                  threadIDs = []; // because who needs Object.keys() anyway
+            const threadGroups = {};
+            const threadIDs = []; // because who needs Object.keys() anyway
 
             // Sorting leaves behind the extra wrappers, so clean them up
             $('.sitetable .tb-comment-group').remove();
@@ -1048,8 +1048,8 @@ self.queuetoolsOld = function ({
         TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {
             TBStorage.purifyObject(json);
             json.data.children.forEach(value => {
-                const actionReasonText = value.data.details,
-                      targetFullName = value.data.target_fullname;
+                const actionReasonText = value.data.details;
+                const targetFullName = value.data.target_fullname;
 
                 $body.find(`.thing[data-fullname="${targetFullName}"]>.entry`).after(`<div class="action-reason">
 <b>Automod action:</b> ${actionReasonText}

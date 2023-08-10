@@ -194,16 +194,16 @@ export default new Module({
         return;
     }
 
-    const NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
-          unmoderatedOn = await TBStorage.getSettingAsync('Modbar', 'unmoderatedon', true), // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
-          checkIntervalMillis = TBHelpers.minutesToMilliseconds(checkInterval), // setting is in seconds, convert to milliseconds.
-          $body = $('body');
-    let modmailFilteredSubreddits = modmailSubreddits, // wat?
-        newLoad = true,
-        now = new Date().getTime(),
+    const NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3';
+    const unmoderatedOn = await TBStorage.getSettingAsync('Modbar', 'unmoderatedon', true); // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
+    const checkIntervalMillis = TBHelpers.minutesToMilliseconds(checkInterval); // setting is in seconds, convert to milliseconds.
+    const $body = $('body');
+    let modmailFilteredSubreddits = modmailSubreddits; // wat?
+    let newLoad = true;
+    let now = new Date().getTime();
 
-        messageunreadurl = '/message/inbox/',
-        activeNewMMcheck = false;
+    let messageunreadurl = '/message/inbox/';
+    let activeNewMMcheck = false;
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
@@ -255,11 +255,11 @@ export default new Module({
         }
     }
     function updateMessagesCount (count) {
-        const $mail = $('#mail'),
-              $mailCount = $('#mailCount'),
-              $mailcount = $('#mailcount'),
-              $tb_mail = $('#tb-mail'),
-              $tb_mailCount = $('#tb-mailCount');
+        const $mail = $('#mail');
+        const $mailCount = $('#mailCount');
+        const $mailcount = $('#mailcount');
+        const $tb_mail = $('#tb-mail');
+        const $tb_mailCount = $('#tb-mailCount');
         // TODO: only call TBCore.link once per string literal in this section
         if (count < 1) {
             $mailCount.empty();
@@ -311,10 +311,10 @@ export default new Module({
     // Here we update the count for new modmail. Is somewhat simpler than old modmail.
     function updateNewModMailCount (count, data) {
         // $modmail is native to reddit $tb_modmail in the modbar.
-        const $newmodmail = $('#new_modmail'),
-              $tbNewModmail = $('#tb-new_modmail'),
-              $tbNewModmailCount = $('#tb-new-modmailcount'),
-              $tbNewModmailTooltip = $('#tb-new-modmail-tooltip');
+        const $newmodmail = $('#new_modmail');
+        const $tbNewModmail = $('#tb-new_modmail');
+        const $tbNewModmailCount = $('#tb-new-modmailcount');
+        const $tbNewModmailTooltip = $('#tb-new-modmail-tooltip');
 
         if (count < 1) {
             // We are doing it like this to preserve other classes
@@ -488,12 +488,12 @@ export default new Module({
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 const pushedunread = await this.get('unreadPushed');
                 if (consolidatedMessages && json.data.children.length > 1) {
-                    let notificationbody,
-                        messagecount = 0;
+                    let notificationbody;
+                    let messagecount = 0;
                     json.data.children.forEach(value => {
-                        let subreddit,
-                            subject,
-                            author;
+                        let subreddit;
+                        let subject;
+                        let author;
                         if (!pushedunread.includes(value.data.name) && value.kind === 't1') {
                             subreddit = value.data.subreddit;
                             author = value.data.author;
@@ -529,14 +529,14 @@ export default new Module({
                     youveGotMail();
                 } else {
                     json.data.children.forEach(value => {
-                        let context,
-                            body_html,
-                            author,
-                            subreddit,
-                            commentid,
-                            contexturl,
-                            subject,
-                            id;
+                        let context;
+                        let body_html;
+                        let author;
+                        let subreddit;
+                        let commentid;
+                        let contexturl;
+                        let subject;
+                        let id;
 
                         if (!pushedunread.includes(value.data.name) && value.kind === 't1') {
                             context = value.data.context;
@@ -582,8 +582,8 @@ export default new Module({
             TBApi.getJSON(mqlinkid).then(jsondata => {
                 TBStorage.purifyObject(jsondata);
                 let infopermalink = jsondata.data.children[0].data.permalink;
-                const infotitle = jsondata.data.children[0].data.title,
-                      infosubreddit = jsondata.data.children[0].data.subreddit;
+                const infotitle = jsondata.data.children[0].data.title;
+                const infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink += mqidname.substring(3);
                 TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
             });
@@ -613,12 +613,12 @@ export default new Module({
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 const pusheditems = await this.get('modqueuePushed');
                 if (consolidatedMessages) {
-                    let notificationbody,
-                        queuecount = 0,
-                        xmoreModqueue = 0;
+                    let notificationbody;
+                    let queuecount = 0;
+                    let xmoreModqueue = 0;
                     json.data.children.forEach(value => {
-                        let subreddit,
-                            author;
+                        let subreddit;
+                        let author;
 
                         if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
                             subreddit = value.data.subreddit;
@@ -661,17 +661,17 @@ export default new Module({
                 } else {
                     json.data.children.forEach(value => {
                         if (!pusheditems.includes(value.data.name) && value.kind === 't3') {
-                            const mqpermalink = value.data.permalink,
-                                  mqtitle = value.data.title,
-                                  mqauthor = value.data.author,
-                                  mqsubreddit = value.data.subreddit;
+                            const mqpermalink = value.data.permalink;
+                            const mqtitle = value.data.title;
+                            const mqauthor = value.data.author;
+                            const mqsubreddit = value.data.subreddit;
 
                             TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                             pusheditems.push(value.data.name);
                         } else if (!pusheditems.includes(value.data.name)) {
-                            const reportauthor = value.data.author,
-                                  idname = value.data.name,
-                                  linkid = `/api/info.json?id=${value.data.link_id}`;
+                            const reportauthor = value.data.author;
+                            const idname = value.data.name;
+                            const linkid = `/api/info.json?id=${value.data.link_id}`;
 
                             // since we want to add some adition details to this we call the previous declared function
                             procesmqcomments(linkid, reportauthor, idname);
@@ -707,14 +707,14 @@ export default new Module({
                     const lastSeen = await this.set('lastSeenUnmoderated');
 
                     if (consolidatedMessages) {
-                        let notificationbody,
-                            queuecount = 0,
-                            xmoreUnmod = 0;
+                        let notificationbody;
+                        let queuecount = 0;
+                        let xmoreUnmod = 0;
 
                         json.data.children.forEach(value => {
                             if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
-                                const subreddit = value.data.subreddit,
-                                      author = value.data.author;
+                                const subreddit = value.data.subreddit;
+                                const author = value.data.author;
 
                                 if (!notificationbody) {
                                     notificationbody = `post from: ${author}, in: ${subreddit}\n`;
@@ -740,10 +740,10 @@ export default new Module({
                     } else {
                         json.data.children.forEach(value => {
                             if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
-                                const uqpermalink = value.data.permalink,
-                                      uqtitle = value.data.title,
-                                      uqauthor = value.data.author,
-                                      uqsubreddit = value.data.subreddit;
+                                const uqpermalink = value.data.permalink;
+                                const uqtitle = value.data.title;
+                                const uqauthor = value.data.author;
+                                const uqsubreddit = value.data.subreddit;
 
                                 TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
                             }

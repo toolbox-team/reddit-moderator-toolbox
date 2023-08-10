@@ -498,8 +498,8 @@ export function selectSingular (choices, selected) {
     const $selector = $(`
         <div class="select-single">
             <select class="selector tb-action-button"></select>
-        </div>`),
-          $selector_list = $selector.find('.selector');
+        </div>`);
+    const $selector_list = $selector.find('.selector');
 
     // Add values to select
     choices.forEach(keyValue => {
@@ -523,9 +523,9 @@ export function selectMultiple (available, selected) {
                       <select class="available-list left tb-action-button"></select>&nbsp;<button class="add-item right tb-action-button">add</button>&nbsp;
                       <div style="clear:both"></div>
                   </div>
-              `),
-          $selected_list = $select_multiple.find('.selected-list'),
-          $available_list = $select_multiple.find('.available-list');
+              `);
+    const $selected_list = $select_multiple.find('.selected-list');
+    const $available_list = $select_multiple.find('.available-list');
 
     $select_multiple.on('click', '.remove-item', e => {
         const $select_multiple = $(e.delegateTarget);
@@ -562,8 +562,8 @@ export function selectMultiple (available, selected) {
 }
 
 export function mapInput (labels, items) {
-    const keyLabel = labels[0],
-          valueLabel = labels[1];
+    const keyLabel = labels[0];
+    const valueLabel = labels[1];
 
     const $mapInput = $(`<div>
             <table class="tb-map-input-table">
@@ -636,8 +636,8 @@ export function textFeedback (feedbackText, feedbackKind, displayDuration, displ
 
         switch (displayLocation) {
         case DISPLAY_CENTER: {
-            const feedbackLeftMargin = $feedbackWindow.outerWidth() / 2,
-                  feedbackTopMargin = $feedbackWindow.outerHeight() / 2;
+            const feedbackLeftMargin = $feedbackWindow.outerWidth() / 2;
+            const feedbackTopMargin = $feedbackWindow.outerHeight() / 2;
 
             $feedbackWindow.css({
                 'margin-left': `-${feedbackLeftMargin}px`,
@@ -656,8 +656,8 @@ export function textFeedback (feedbackText, feedbackKind, displayDuration, displ
             break;
         case DISPLAY_CURSOR: {
             $(document).mousemove(e => {
-                const posX = e.pageX,
-                      posY = e.pageY;
+                const posX = e.pageX;
+                const posY = e.pageY;
 
                 $feedbackWindow.css({
                     left: posX - $feedbackWindow.width() + 155,
@@ -688,9 +688,9 @@ export function longLoadSpinner (createOrDestroy, feedbackText, feedbackKind, fe
             $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${browser.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${TBCore.RandomFeedback}</span></span></div>`);
             $body.append('<div id="tb-loading"></div>');
 
-            const $randomFeedbackWindow = $body.find('#tb-loading-stuff'),
-                  randomFeedbackLeftMargin = $randomFeedbackWindow.outerWidth() / 2,
-                  randomFeedbackTopMargin = $randomFeedbackWindow.outerHeight() / 2;
+            const $randomFeedbackWindow = $body.find('#tb-loading-stuff');
+            const randomFeedbackLeftMargin = $randomFeedbackWindow.outerWidth() / 2;
+            const randomFeedbackTopMargin = $randomFeedbackWindow.outerHeight() / 2;
 
             $randomFeedbackWindow.css({
                 'margin-left': `-${randomFeedbackLeftMargin}px`,
@@ -907,11 +907,11 @@ function handleTBThings (entries, observer) {
             const $jsApiPlaceholderAuthor = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
             const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
             $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
-            const commentAuthor = $element.attr('data-comment-author'),
-                  postID = $element.attr('data-comment-post-id'),
-                  commentID = $element.attr('data-comment-id'),
-                  subredditName = $element.attr('data-subreddit'),
-                  subredditType = $element.attr('data-subreddit-type');
+            const commentAuthor = $element.attr('data-comment-author');
+            const postID = $element.attr('data-comment-post-id');
+            const commentID = $element.attr('data-comment-id');
+            const subredditName = $element.attr('data-subreddit');
+            const subredditType = $element.attr('data-subreddit-type');
 
             // Comment
             if (!$jsApiPlaceholderComment.hasClass('tb-frontend-container')) {
@@ -964,10 +964,10 @@ function handleTBThings (entries, observer) {
             $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
             const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
-            const submissionAuthor = $element.attr('data-submission-author'),
-                  postID = $element.attr('data-post-id'),
-                  subredditName = $element.attr('data-subreddit'),
-                  subredditType = $element.attr('data-subreddit-type');
+            const submissionAuthor = $element.attr('data-submission-author');
+            const postID = $element.attr('data-post-id');
+            const subredditName = $element.attr('data-subreddit');
+            const subredditType = $element.attr('data-subreddit-type');
 
             if (!$jsApiPlaceholderSubmission.hasClass('tb-frontend-container')) {
                 const detailObject = {
@@ -1035,50 +1035,50 @@ export function tbRedditEvent ($elements) {
 export function makeSubmissionEntry (submission, submissionOptions) {
     TBStorage.purifyObject(submission);
     // Misc
-    const canModsubmission = submission.data.can_mod_post,
+    const canModsubmission = submission.data.can_mod_post;
 
-        // submission basis (author, body, time)
-          submissionAuthor = submission.data.author,
-          submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
-          submissionCreatedUTC = submission.data.created_utc, // unix epoch
-          submissionPermalink = TBCore.link(submission.data.permalink),
-          submissionSubreddit = submission.data.subreddit,
-          submissionSubredditType = submission.data.subreddit_type,
-          submissionName = submission.data.name,
-          submissionUrl = submission.data.is_self ? TBCore.link(submission.data.permalink) : submission.data.url,
-          submissionTitle = submission.data.title,
-          submissionThumbnail = submission.data.thumbnail,
-          submissionDomain = submission.data.domain,
+    // submission basis (author, body, time)
+    const submissionAuthor = submission.data.author;
+    const submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html); // html string
+    const submissionCreatedUTC = submission.data.created_utc; // unix epoch
+    const submissionPermalink = TBCore.link(submission.data.permalink);
+    const submissionSubreddit = submission.data.subreddit;
+    const submissionSubredditType = submission.data.subreddit_type;
+    const submissionName = submission.data.name;
+    const submissionUrl = submission.data.is_self ? TBCore.link(submission.data.permalink) : submission.data.url;
+    const submissionTitle = submission.data.title;
+    const submissionThumbnail = submission.data.thumbnail;
+    const submissionDomain = submission.data.domain;
 
-        // submission details
-          submissionScore = submission.data.score, // integer
-          submissionLikes = submission.data.likes, // boolean or null
-          submissionIsSelf = submission.data.is_self,
-          submissionEdited = submission.data.edited,
-          submissionGildings = submission.data.gildings,
-          submissionPinned = submission.data.pinned,
-          submissionLocked = submission.data.locked,
-          submissionOver18 = submission.data.over_18,
-          submissionNumComments = submission.data.num_comments,
-          submissionUserReports = submission.data.user_reports, // array with reports by users
+    // submission details
+    const submissionScore = submission.data.score; // integer
+    const submissionLikes = submission.data.likes; // boolean or null
+    const submissionIsSelf = submission.data.is_self;
+    const submissionEdited = submission.data.edited;
+    const submissionGildings = submission.data.gildings;
+    const submissionPinned = submission.data.pinned;
+    const submissionLocked = submission.data.locked;
+    const submissionOver18 = submission.data.over_18;
+    const submissionNumComments = submission.data.num_comments;
+    const submissionUserReports = submission.data.user_reports; // array with reports by users
 
-        // submission details - mod related
-          submissionDistinguished = submission.data.distinguished, // string containing "moderator" or "admin"
-          submissionModReports = submission.data.mod_reports, // array with reports by mods
+    // submission details - mod related
+    const submissionDistinguished = submission.data.distinguished; // string containing "moderator" or "admin"
+    const submissionModReports = submission.data.mod_reports; // array with reports by mods
 
-        // Author details
-          submissionIsSubmitter = submission.data.is_submitter, // boolean - is OP
+    // Author details
+    const submissionIsSubmitter = submission.data.is_submitter; // boolean - is OP
 
-        // submission status - mod action
-          submissionApproved = submission.data.approved, // boolean
-          submissionApprovedAtUTC = submission.data.approved_at_utc, // unix epoch
-          submissionApprovedBy = submission.data.approved_by, // unix epoch
-          submissionSpam = submission.data.spam, // boolean
-          submissionRemoved = submission.data.removed, // boolean
-          submissionBannedAtUTC = submission.data.banned_at_utc, // unix epoch
-          submissionBannedBy = submission.data.banned_by, // Mod that removed the submission
-          submissionIgnoreReports = submission.data.ignore_reports, // boolean
-          submissionBanNote = submission.data.ban_note;
+    // submission status - mod action
+    const submissionApproved = submission.data.approved; // boolean
+    const submissionApprovedAtUTC = submission.data.approved_at_utc; // unix epoch
+    const submissionApprovedBy = submission.data.approved_by; // unix epoch
+    const submissionSpam = submission.data.spam; // boolean
+    const submissionRemoved = submission.data.removed; // boolean
+    const submissionBannedAtUTC = submission.data.banned_at_utc; // unix epoch
+    const submissionBannedBy = submission.data.banned_by; // Mod that removed the submission
+    const submissionIgnoreReports = submission.data.ignore_reports; // boolean
+    const submissionBanNote = submission.data.ban_note;
 
     // Format the submission datetime nicely
     const createdAt = new Date(submissionCreatedUTC * 1000);
@@ -1091,11 +1091,11 @@ export function makeSubmissionEntry (submission, submissionOptions) {
         voteState = 'liked';
     }
     // Let's figure out what the current state is of the submission (approved, removed, spammed or neutral)
-    let submissionStatus,
-        submissionStatusUTC,
-        submissionStatusReadableUTC,
-        submissionStatusBy,
-        submissionActionByOn;
+    let submissionStatus;
+    let submissionStatusUTC;
+    let submissionStatusReadableUTC;
+    let submissionStatusBy;
+    let submissionActionByOn;
 
     if (submissionSpam) {
         submissionStatus = 'spammed';
@@ -1340,59 +1340,59 @@ export function makeSubmissionEntry (submission, submissionOptions) {
 export function makeSingleComment (comment, commentOptions = {}) {
     TBStorage.purifyObject(comment);
     // Misc
-    const canModComment = comment.data.can_mod_post,
+    const canModComment = comment.data.can_mod_post;
 
-        // Comment basis (author, body, time)
-          commentAuthor = comment.data.author,
-          commentBodyHTML = TBStorage.purify(comment.data.body_html), // html string
-        // commentMarkdownBody = comment.data.body, // markdown string
-        // commentCreated = comment.data.created, // unix epoch
-          commentCreatedUTC = comment.data.created_utc, // unix epoch
-          commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
-          commentLinkId = comment.data.link_id, // parent submission ID
-        // commentId = comment.data.id, // comment ID
-          commentName = comment.data.name, // fullname t1_<comment ID>
-          commentParentId = comment.data.parent_id,
-          commentPermalink = TBCore.link(comment.data.permalink),
-          commentSubreddit = comment.data.subreddit,
-        // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
-          commentSubredditType = comment.data.subreddit_type,
-        // commentReplies = comment.data.replies, // object with replies
+    // Comment basis (author, body, time)
+    const commentAuthor = comment.data.author;
+    const commentBodyHTML = TBStorage.purify(comment.data.body_html); // html string
+    // commentMarkdownBody = comment.data.body, // markdown string
+    // commentCreated = comment.data.created, // unix epoch
+    const commentCreatedUTC = comment.data.created_utc; // unix epoch
+    const commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth; // integer
+    const commentLinkId = comment.data.link_id; // parent submission ID
+    // commentId = comment.data.id, // comment ID
+    const commentName = comment.data.name; // fullname t1_<comment ID>
+    const commentParentId = comment.data.parent_id;
+    const commentPermalink = TBCore.link(comment.data.permalink);
+    const commentSubreddit = comment.data.subreddit;
+    // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
+    const commentSubredditType = comment.data.subreddit_type;
+    // commentReplies = comment.data.replies, // object with replies
 
-        // Comment details
-        // commentScoreHidden = comment.data.score_hidden, // boolean
-          commentScore = comment.data.score, // integer
-          commentControversiality = comment.data.controversiality, // integer
-          commentEdited = comment.data.edited,
-          commentGildings = comment.data.gildings,
-        // commentNumReports = comment.data.num_reports,
-          commentUserReports = comment.data.user_reports, // array with reports by users
+    // Comment details
+    // commentScoreHidden = comment.data.score_hidden, // boolean
+    const commentScore = comment.data.score; // integer
+    const commentControversiality = comment.data.controversiality; // integer
+    const commentEdited = comment.data.edited;
+    const commentGildings = comment.data.gildings;
+    // commentNumReports = comment.data.num_reports,
+    const commentUserReports = comment.data.user_reports; // array with reports by users
 
-        // Comment details - mod related
-          commentStickied = comment.data.stickied, // boolean
-          commentDistinguished = comment.data.distinguished, // string containing "moderator" or "admin"
-          commentModReports = comment.data.mod_reports, // array with reports by mods
+    // Comment details - mod related
+    const commentStickied = comment.data.stickied; // boolean
+    const commentDistinguished = comment.data.distinguished; // string containing "moderator" or "admin"
+    const commentModReports = comment.data.mod_reports; // array with reports by mods
 
-        // Author details
-          commentAuthorFlairCssClass = comment.data.author_flair_css_class,
-          commentAuthorFlairText = comment.data.author_flair_text,
-          commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
+    // Author details
+    const commentAuthorFlairCssClass = comment.data.author_flair_css_class;
+    const commentAuthorFlairText = comment.data.author_flair_text;
+    const commentIsSubmitter = comment.data.is_submitter; // boolean - is OP
 
-        // Comment status - mod action
-          commentApproved = comment.data.approved, // boolean
-          commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
-          commentApprovedBy = comment.data.approved_by, // unix epoch
-          commentSpam = comment.data.spam, // boolean
-          commentRemoved = comment.data.removed, // boolean
-          commentBannedAtUTC = comment.data.banned_at_utc, // unix epoch
-          commentBannedBy = comment.data.banned_by, // Mod that removed the comment
-          commentIgnoreReports = comment.data.ignore_reports, // boolean
+    // Comment status - mod action
+    const commentApproved = comment.data.approved; // boolean
+    const commentApprovedAtUTC = comment.data.approved_at_utc; // unix epoch
+    const commentApprovedBy = comment.data.approved_by; // unix epoch
+    const commentSpam = comment.data.spam; // boolean
+    const commentRemoved = comment.data.removed; // boolean
+    const commentBannedAtUTC = comment.data.banned_at_utc; // unix epoch
+    const commentBannedBy = comment.data.banned_by; // Mod that removed the comment
+    const commentIgnoreReports = comment.data.ignore_reports; // boolean
 
-        // Comment status - other
-        // commentArchived = comment.data.archived,
-        // commentCollapsed = comment.data.collapsed,
-        // commentCollapsedReason = comment.data.collapsed_reason,
-          commentBanNote = comment.data.ban_note;
+    // Comment status - other
+    // commentArchived = comment.data.archived,
+    // commentCollapsed = comment.data.collapsed,
+    // commentCollapsedReason = comment.data.collapsed_reason,
+    const commentBanNote = comment.data.ban_note;
 
     // Do we have overview data?
     let parentHtml;
@@ -1409,8 +1409,8 @@ export function makeSingleComment (comment, commentOptions = {}) {
             linkUrl = TBCore.link(linkUrl);
         }
 
-        const linkTitle = comment.data.link_title,
-              linkAuthor = comment.data.link_author;
+        const linkTitle = comment.data.link_title;
+        const linkAuthor = comment.data.link_author;
 
         parentHtml = `
             <div class="tb-parent">
@@ -1443,11 +1443,11 @@ export function makeSingleComment (comment, commentOptions = {}) {
     }
 
     // Let's figure out what the current state is of the comment (approved, removed, spammed or neutral)
-    let commentStatus,
-        commentStatusUTC,
-        commentStatusReadableUTC,
-        commentStatusBy,
-        commentActionByOn;
+    let commentStatus;
+    let commentStatusUTC;
+    let commentStatusReadableUTC;
+    let commentStatusBy;
+    let commentActionByOn;
 
     if (commentSpam) {
         commentStatus = 'spammed';

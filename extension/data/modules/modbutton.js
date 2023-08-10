@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 5000;
@@ -16,7 +16,6 @@ const self = new Module({
     id: 'ModButton',
     enabledByDefault: true,
     settings: [
-
         {
             id: 'savedSubs',
             type: 'sublist',
@@ -95,7 +94,9 @@ self.runRedesign = async function () {
                 parentID = 'unknown';
             }
             requestAnimationFrame(() => {
-                $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">M</a>`);
+                $target.append(
+                    `<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">M</a>`,
+                );
             });
         }
     });
@@ -107,13 +108,15 @@ self.runRedesign = async function () {
         const author = e.detail.data.user.username;
         const parentID = e.detail.data.contextId;
 
-        $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">Mod Button</a>`);
+        $target.append(
+            `<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">Mod Button</a>`,
+        );
     });
 };
 
 /**
-     *  updates the current savedsubs' listings in the mod button
-     */
+ *  updates the current savedsubs' listings in the mod button
+ */
 self.updateSavedSubs = async function () {
     const mySubs = await TBCore.getModSubs();
     //
@@ -141,8 +144,9 @@ self.updateSavedSubs = async function () {
             // and not the current sub
             const isMod = await TBCore.isModSub(subreddit);
             if (isMod && subreddit !== currentSub) {
-                $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${subreddit
-                }" id="action-${subreddit}"><label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit}</label></div>`);
+                $savedSubsList.append(
+                    `<div><input type="checkbox" class="action-sub" name="action-sub" value="${subreddit}" id="action-${subreddit}"><label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit}</label></div>`,
+                );
             }
         });
     });
@@ -203,13 +207,14 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     title: 'Role',
                     id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Add or remove user from subreddit ban, contributor, and moderator lists.',
-                    content: `${subreddit
-                        ? `
+                    content: `${
+                        subreddit
+                            ? `
                 <div class="current-sub">
                     <input type="checkbox" class="action-sub" name="action-sub" value="${subreddit}" id="action-${subreddit}" checked>
                     <label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit} (current)</label>
                 </div>`
-                        : ''
+                            : ''
                     }
                 <div class="saved-subs">
                 </div>
@@ -232,7 +237,9 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
                 <button class="save tb-action-button">${self.saveButton}</button>
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${globalButton ? '' : 'style="display:none!important;"'}>Global Action</button>`,
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${
+                        globalButton ? '' : 'style="display:none!important;"'
+                    }>Global Action</button>`,
                 },
                 {
                     title: 'User Flair',
@@ -270,7 +277,8 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                 },
             ],
             cssClass: 'mod-popup',
-            meta: `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
+            meta:
+                `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
         }).appendTo($appendTo)
             .css({
                 left: positions.leftPosition,
@@ -347,10 +355,15 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     const user_fullname = banInfo.id; // we need this to extract data from the modlog
                     const timestamp = new Date(banInfo.date * 1000); // seconds to milliseconds
 
-                    $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
+                    $popup.find('.current-sub').append(
+                        $('<div class="already-banned">banned by <a href="#"></a> </div>'),
+                    );
                     $popup.find('.current-sub .already-banned').append(TBui.relativeTime(timestamp));
 
-                    $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
+                    $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr(
+                        'selected',
+                        'selected',
+                    );
                     $popup.find('.ban-note').val(banInfo.note);
                     $popup.find('.tb-window-title').css('color', 'red');
 
@@ -363,7 +376,9 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     const logged = logData.data.children;
                     for (let i = 0; i < logged.length; i++) {
                         if (logged[i].data.target_fullname === user_fullname) {
-                            $popup.find('.current-sub .already-banned a').attr('href', `/u/${logged[i].data.mod}`).text(logged[i].data.mod);
+                            $popup.find('.current-sub .already-banned a').attr('href', `/u/${logged[i].data.mod}`).text(
+                                logged[i].data.mod,
+                            );
                             break;
                         }
                     }
@@ -377,7 +392,10 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
         // if we're on the mod page, it's likely we want to mod them to another sub.
         // unselect current, change action to 'mod'.
         if (location.pathname.match(/\/about\/(?:moderator)\/?/)) {
-            $popup.find('select.mod-action option[data-api=friend][data-action=moderator]').attr('selected', 'selected');
+            $popup.find('select.mod-action option[data-api=friend][data-action=moderator]').attr(
+                'selected',
+                'selected',
+            );
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
 
@@ -385,7 +403,10 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             $popup.find('.ban-duration').hide();
             $popup.find('.ban-span-include-time').hide();
         } else if (location.pathname.match(/\/about\/(?:contributors)\/?/)) {
-            $popup.find('select.mod-action option[data-api=friend][data-action=contributor]').attr('selected', 'selected');
+            $popup.find('select.mod-action option[data-api=friend][data-action=contributor]').attr(
+                'selected',
+                'selected',
+            );
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
 
@@ -502,10 +523,14 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
         if (action === 'banned') {
             if (banReason.length > MAX_BAN_REASON_LENGTH) {
-                return $status.text(`error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`);
+                return $status.text(
+                    `error, ban note is ${banReason.length - MAX_BAN_REASON_LENGTH} characters over limit`,
+                );
             }
             if (banMessage.length > MAX_BAN_MESSAGE_LENGTH) {
-                return $status.text(`error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`);
+                return $status.text(
+                    `error, ban message is ${banMessage.length - MAX_BAN_MESSAGE_LENGTH} characters over limit`,
+                );
             }
         }
 
@@ -541,9 +566,13 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             } else {
                 let confirmban;
                 if (actionName === 'unban') {
-                    confirmban = confirm(`This will ${actionName} /u/${user} from every subreddit you moderate.   \nAre you sure?`);
+                    confirmban = confirm(
+                        `This will ${actionName} /u/${user} from every subreddit you moderate.   \nAre you sure?`,
+                    );
                 } else {
-                    confirmban = confirm(`This will ${actionName} /u/${user} on every subreddit you moderate.   \nAre you sure?`);
+                    confirmban = confirm(
+                        `This will ${actionName} /u/${user} on every subreddit you moderate.   \nAre you sure?`,
+                    );
                 }
 
                 if (confirmban) {
@@ -677,7 +706,9 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             return;
         }
 
-        const userFlairInfo = await TBApi.apiOauthPOST(`/r/${subreddit}/api/flairselector`, {name: user}).then(r => r.json());
+        const userFlairInfo = await TBApi.apiOauthPOST(`/r/${subreddit}/api/flairselector`, {name: user}).then(r =>
+            r.json()
+        );
         userFlairTemplates = await TBApi.apiOauthGET(`/r/${subreddit}/api/user_flair_v2`).then(r => r.json());
         if (!userFlairInfo.current) {
             return;
@@ -697,15 +728,19 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             return;
         }
 
-        userFlairTemplates.forEach(flair => $flairDropdown.append(`
+        userFlairTemplates.forEach(flair =>
+            $flairDropdown.append(`
                 <option
                     value="${flair.id}"
                     ${userFlairInfo.current.flair_template_id === flair.id ? 'selected' : ''}
-                    style="background-color: ${flair.background_color ? flair.background_color : 'initial'}; color: ${flair.text_color === 'dark' ? '#000' : '#fff'};"
+                    style="background-color: ${flair.background_color ? flair.background_color : 'initial'}; color: ${
+                flair.text_color === 'dark' ? '#000' : '#fff'
+            };"
                 >
                     ${flair.text}
                 </option>
-            `));
+            `)
+        );
 
         $flairDropdown.change(e => {
             if (!e.target.value) {

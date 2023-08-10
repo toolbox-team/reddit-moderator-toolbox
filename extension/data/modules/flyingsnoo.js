@@ -1,8 +1,8 @@
-import browser from 'webextension-polyfill';
 import $ from 'jquery';
+import browser from 'webextension-polyfill';
 
-import {Module} from '../tbmodule.js';
 import * as TBCore from '../tbcore.js';
+import {Module} from '../tbmodule.js';
 
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety
@@ -20,7 +20,6 @@ export default new Module({
     $snooFooter.css({
         'background-image': `url(${browser.runtime.getURL('data/images/balloon.png')})`,
         'background-repeat': 'no-repeat',
-
     });
 
     $snooFooter.click(function () {

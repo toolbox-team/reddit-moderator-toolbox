@@ -4,9 +4,9 @@
 
 import browser from 'webextension-polyfill';
 
+import {createDeferredProcessQueue} from './tbhelpers.js';
 import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
-import {createDeferredProcessQueue} from './tbhelpers.js';
 
 const logger = TBLog('TBApi');
 
@@ -114,7 +114,7 @@ export const sendRequest = async ({
 export const getJSON = (
     endpoint: string,
     query?: QueryParams,
-    options: Partial<RequestOptions> = {}
+    options: Partial<RequestOptions> = {},
 ) => sendRequest({
     okOnly: true,
     method: 'GET',
@@ -131,13 +131,14 @@ export const getJSON = (
  * @param options Additional options to TBApi.sendRequest
  * @returns Resolves to response data or rejects an error
  */
-export const post = (endpoint: string, body?: RequestBody, options = {}) => sendRequest({
-    okOnly: true,
-    method: 'POST',
-    endpoint,
-    body,
-    ...options,
-}).then(response => response.json());
+export const post = (endpoint: string, body?: RequestBody, options = {}) =>
+    sendRequest({
+        okOnly: true,
+        method: 'POST',
+        endpoint,
+        body,
+        ...options,
+    }).then(response => response.json());
 
 /**
  * Sends an authenticated POST request against the OAuth API.
@@ -145,40 +146,43 @@ export const post = (endpoint: string, body?: RequestBody, options = {}) => send
  * @param body Body parameters as an object
  * @param options Additional options to TBApi.sendRequest
  */
-export const apiOauthPOST = (endpoint: string, body?: RequestBody, options = {}) => sendRequest({
-    method: 'POST',
-    oauth: true,
-    endpoint,
-    body,
-    okOnly: true,
-    ...options,
-});
+export const apiOauthPOST = (endpoint: string, body?: RequestBody, options = {}) =>
+    sendRequest({
+        method: 'POST',
+        oauth: true,
+        endpoint,
+        body,
+        okOnly: true,
+        ...options,
+    });
 
 /**
  * Sends an authenticated GET request against the OAuth API.
  * @param endpoint The endpoint to request
  * @param data Query parameters as an object
  */
-export const apiOauthGET = (endpoint: string, query: QueryParams) => sendRequest({
-    method: 'GET',
-    oauth: true,
-    endpoint,
-    query,
-    okOnly: true,
-});
+export const apiOauthGET = (endpoint: string, query: QueryParams) =>
+    sendRequest({
+        method: 'GET',
+        oauth: true,
+        endpoint,
+        query,
+        okOnly: true,
+    });
 
 /**
  * Sends an authenticated DELETE request against the OAuth API.
  * @param endpoint The endpoint to request
  * @param query Query parameters as an object
  */
-export const apiOauthDELETE = (endpoint: string, query: QueryParams) => sendRequest({
-    method: 'DELETE',
-    oauth: true,
-    endpoint,
-    query,
-    okOnly: true,
-});
+export const apiOauthDELETE = (endpoint: string, query: QueryParams) =>
+    sendRequest({
+        method: 'DELETE',
+        oauth: true,
+        endpoint,
+        query,
+        okOnly: true,
+    });
 
 /**
  * A promise that will fulfill with details about the current user from
@@ -233,21 +237,22 @@ export interface RatelimitDescriptor {
 
 /** Gets ratelimit information from the API. */
 // TODO: what the fuck are you
-export const getRatelimit = () => sendRequest({
-    method: 'HEAD',
-    endpoint: '/r/toolbox/wiki/ratelimit.json',
-}).then(response => {
-    // TODO: these headers may not exist and that isn't handled
-    const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!;
-    const ratelimitReset = response.headers.get('x-ratelimit-reset')!;
+export const getRatelimit = () =>
+    sendRequest({
+        method: 'HEAD',
+        endpoint: '/r/toolbox/wiki/ratelimit.json',
+    }).then(response => {
+        // TODO: these headers may not exist and that isn't handled
+        const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!;
+        const ratelimitReset = response.headers.get('x-ratelimit-reset')!;
 
-    logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
+        logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
 
-    return {
-        ratelimitRemaining,
-        ratelimitReset,
-    } as RatelimitDescriptor;
-});
+        return {
+            ratelimitRemaining,
+            ratelimitReset,
+        } as RatelimitDescriptor;
+    });
 
 /**
  * Updates the content of a wiki page. `data` is a string which is written to
@@ -259,7 +264,7 @@ export async function postToWiki (
     data: string,
     reason: string,
     isJSON: false,
-    updateAM: boolean
+    updateAM: boolean,
 ): Promise<void>;
 /**
  * Updates the content of a wiki page. `data` is passed through
@@ -271,7 +276,7 @@ export async function postToWiki (
     data: any,
     reason: string,
     isJSON: true,
-    updateAM: boolean
+    updateAM: boolean,
 ): Promise<void>;
 /**
  * Updates the content of a wiki page.
@@ -289,7 +294,7 @@ export async function postToWiki (
     data: string | any,
     reason: string,
     isJSON: boolean,
-    updateAM: boolean
+    updateAM: boolean,
 ): Promise<void> {
     if (reason) {
         reason = `"${reason}" via toolbox`;
@@ -340,8 +345,7 @@ export async function postToWiki (
                 uh: await getModhash(),
             },
         })
-
-        // Super extra double-secret secure, just to be safe.
+            // Super extra double-secret secure, just to be safe.
             .catch(() => {
                 alert('error setting wiki page to mod only access');
                 window.location.href = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
@@ -365,7 +369,7 @@ export async function postToWiki (
 export const readFromWiki = (
     subreddit: string,
     page: string,
-    isJSON: boolean = false
+    isJSON: boolean = false,
 ) => new Promise(resolve => {
     // We need to demangle the JSON ourselves, so we have to go about it this way :(
     getJSON(`/r/${subreddit}/wiki/${page}.json`).then(data => {
@@ -465,7 +469,7 @@ export const flairPost = async (
     subreddit: string,
     text: string,
     cssClass: string,
-    templateID: string
+    templateID: string,
 ) => post('/api/selectflair', {
     api_type: 'json',
     link: postLink,
@@ -489,7 +493,7 @@ export const flairUser = async (
     subreddit: string,
     text: string,
     cssClass: string,
-    templateID: string
+    templateID: string,
 ) => post('/api/selectflair', {
     api_type: 'json',
     name: user,
@@ -502,20 +506,20 @@ export const flairUser = async (
 
 /** Creates a relationship between a user and a subreddit. */
 export async function friendUser (options: {
-    user: string,
-    action: string,
-    subreddit: string,
-}): Promise<any>
+    user: string;
+    action: string;
+    subreddit: string;
+}): Promise<any>;
 /** Bans a user from a subreddit. */
 export async function friendUser (options: {
-    user: string,
-    action: 'banned',
-    subreddit: string,
-    banReason: string,
-    banMessage: string,
-    banDuration: number,
-    banContext: string,
-}): Promise<any>
+    user: string;
+    action: 'banned';
+    subreddit: string;
+    banReason: string;
+    banMessage: string;
+    banDuration: number;
+    banContext: string;
+}): Promise<any>;
 /**
  * Creates a relationship between a user and a subreddit. This is used for:
  * - Banning users
@@ -555,13 +559,13 @@ export async function friendUser ({
     banDuration,
     banContext,
 }: {
-    user: string,
-    action: string,
-    subreddit: string,
-    banReason?: string,
-    banMessage?: string,
-    banDuration?: number,
-    banContext?: string,
+    user: string;
+    action: string;
+    subreddit: string;
+    banReason?: string;
+    banMessage?: string;
+    banDuration?: number;
+    banContext?: string;
 }) {
     let trimmedBanMessage,
         trimmedBanReason;
@@ -586,7 +590,7 @@ export async function friendUser ({
         r: subreddit,
         note: trimmedBanReason,
         ban_message: trimmedBanMessage,
-        duration: ''+banDuration,
+        duration: '' + banDuration,
         ban_context: banContext,
     });
 }
@@ -603,13 +607,14 @@ export async function friendUser ({
  * @returns Resolves to the JSON response body or rejects
  * an error.
  */
-export const unfriendUser = async (user: string, action: string, subreddit: string) => post('/api/unfriend', {
-    api_type: 'json',
-    uh: await getModhash(),
-    type: action,
-    name: user,
-    r: subreddit,
-});
+export const unfriendUser = async (user: string, action: string, subreddit: string) =>
+    post('/api/unfriend', {
+        api_type: 'json',
+        uh: await getModhash(),
+        type: action,
+        name: user,
+        r: subreddit,
+    });
 
 /**
  * Mod-distinguishes a post or comment.
@@ -617,76 +622,84 @@ export const unfriendUser = async (user: string, action: string, subreddit: stri
  * @param sticky If distinguishing a top-level comment, whether to
  * also sticky the comment
  */
-export const distinguishThing = async (id: string, sticky: boolean) => post('/api/distinguish/yes', {
-    id,
-    sticky: ''+sticky,
-    uh: await getModhash(),
-});
+export const distinguishThing = async (id: string, sticky: boolean) =>
+    post('/api/distinguish/yes', {
+        id,
+        sticky: '' + sticky,
+        uh: await getModhash(),
+    });
 
 /**
  * Approves a post or comment.
  * @param id Fullname of the post or comment
  */
-export const approveThing = async (id: string) => post('/api/approve', {
-    id,
-    uh: await getModhash(),
-});
+export const approveThing = async (id: string) =>
+    post('/api/approve', {
+        id,
+        uh: await getModhash(),
+    });
 
 /**
  * Removes a post or comment.
  * @param id Fullname of the post or comment
  * @param spam If true, removes as spam
  */
-export const removeThing = async (id: string, spam = false) => post('/api/remove', {
-    uh: await getModhash(),
-    id,
-    spam: ''+spam,
-});
+export const removeThing = async (id: string, spam = false) =>
+    post('/api/remove', {
+        uh: await getModhash(),
+        id,
+        spam: '' + spam,
+    });
 
 /**
  * Ignores reports on a post or comment
  * @param id Fullname of the post or comment
  */
-export const ignoreReports = async (id: string) => post('/api/ignore_reports', {
-    id,
-    uh: await getModhash(),
-});
+export const ignoreReports = async (id: string) =>
+    post('/api/ignore_reports', {
+        id,
+        uh: await getModhash(),
+    });
 
 /**
  * Marks a post as NSFW.
  * @param id Fullname of the post
  */
-export const markOver18 = async (id: string) => post('/api/marknsfw', {
-    id,
-    uh: await getModhash(),
-});
+export const markOver18 = async (id: string) =>
+    post('/api/marknsfw', {
+        id,
+        uh: await getModhash(),
+    });
 
 /**
  * Un-marks a post NSFW.
  * @param id Fullname of the post
  */
-export const unMarkOver18 = async (id: string) => post('/api/unmarknsfw', {
-    uh: await getModhash(),
-    id,
-});
+export const unMarkOver18 = async (id: string) =>
+    post('/api/unmarknsfw', {
+        uh: await getModhash(),
+        id,
+    });
 
 /**
  * Locks a post or comment.
  * @param id The fullname of the submission or comment
  */
-export const lock = async (id: string) => apiOauthPOST('/api/lock', {
-    id,
-    uh: await getModhash(),
-});
+export const lock = async (id: string) =>
+    apiOauthPOST('/api/lock', {
+        id,
+        uh: await getModhash(),
+    });
 
 /**
  * Unlocks a post or comment.
  * @param id The fullname of the submission or comment
  */
-export const unlock = async (id: string) => post('/api/unlock', {
-    uh: await getModhash(),
-    id,
-});
+export const unlock = async (id: string) =>
+    post('/api/unlock', {
+        uh: await getModhash(),
+        id,
+    });
 
 /**
  * Stickies a submission in a subreddit.
@@ -695,12 +708,13 @@ export const unlock = async (id: string) => post('/api/unlock', {
  * @param state Set to false to unsticky the thread (for
  * internal use only; use {@link unstickyThread} instead)
  */
-export const stickyThread = async (id: string, num: number | undefined, state = true) => post('/api/set_subreddit_sticky', {
-    id,
-    num: num ? ''+num : undefined,
-    state: ''+state,
-    uh: await getModhash(),
-});
+export const stickyThread = async (id: string, num: number | undefined, state = true) =>
+    post('/api/set_subreddit_sticky', {
+        id,
+        num: num ? '' + num : undefined,
+        state: '' + state,
+        uh: await getModhash(),
+    });
 
 /**
  * Unstickies a submission.
@@ -806,49 +820,53 @@ export const sendMessage = async (user: string, subject: string, message: string
  * Marks a message as read.
  * @param id The fullname of the thing to mark as read
  */
-export const markMessageRead = async (id: string) => post('/api/read_message', {
-    api_type: 'json',
-    id,
-    uh: await getModhash(),
-});
+export const markMessageRead = async (id: string) =>
+    post('/api/read_message', {
+        api_type: 'json',
+        id,
+        uh: await getModhash(),
+    });
 
 /**
  * Gets information about a user.
  * @param user The name of the user
  * @returns Resolves to JSON user info or rejects with error text
  */
-export const aboutUser = async (user: string) => getJSON(`/user/${user}/about.json`, {
-    uh: await getModhash(),
-}).then(response => {
-    TBStorage.purifyObject(response);
-    return response;
-});
+export const aboutUser = async (user: string) =>
+    getJSON(`/user/${user}/about.json`, {
+        uh: await getModhash(),
+    }).then(response => {
+        TBStorage.purifyObject(response);
+        return response;
+    });
 
 /**
  * Gets the timestamp of the last public activity on the user's profile.
  * @param user The user to look for
  * @returns Resolves to a number or rejects an error string
  */
-export const getLastActive = async (user: string) => getJSON(`/user/${user}.json?limit=1&sort=new`, {
-    uh: await getModhash(),
-}).then(response => {
-    TBStorage.purifyObject(response);
-    return response.data.children[0].data.created_utc;
-}).catch(error => {
-    throw error.responseText;
-});
+export const getLastActive = async (user: string) =>
+    getJSON(`/user/${user}.json?limit=1&sort=new`, {
+        uh: await getModhash(),
+    }).then(response => {
+        TBStorage.purifyObject(response);
+        return response.data.children[0].data.created_utc;
+    }).catch(error => {
+        throw error.responseText;
+    });
 
 /**
  * Gets the rules for a subreddit
  * @param subreddit The name of the subreddit
  * @returns Resolves to the rules as JSON or rejects with an error string
  */
-export const getRules = async (sub: string) => getJSON(`/r/${sub}/about/rules.json`, {
-    uh: await getModhash(),
-}).then(response => {
-    TBStorage.purifyObject(response);
-    return response;
-});
+export const getRules = async (sub: string) =>
+    getJSON(`/r/${sub}/about/rules.json`, {
+        uh: await getModhash(),
+    }).then(response => {
+        TBStorage.purifyObject(response);
+        return response;
+    });
 
 /**
  * Fetches a page of mod notes for the given user in the given subreddit.
@@ -860,25 +878,26 @@ export const getRules = async (sub: string) => getJSON(`/r/${sub}/about/rules.js
  * @returns Resolves to an array of note objects or rejects an error
  */
 export const getModNotes = ({subreddit, user, filter, before}: {
-    subreddit: string,
-    user: string,
-    filter?: string,
-    before?: string,
-}) => apiOauthGET('/api/mod/notes', {
-    subreddit,
-    user,
-    filter,
-    before,
-    limit: '100',
-}).then(response => response.json()).then(response => {
-    TBStorage.purifyObject(response);
-    return {
-        notes: response.mod_notes,
-        startCursor: response.start_cursor,
-        endCursor: response.end_cursor,
-        hasNextPage: response.has_next_page,
-    };
-});
+    subreddit: string;
+    user: string;
+    filter?: string;
+    before?: string;
+}) =>
+    apiOauthGET('/api/mod/notes', {
+        subreddit,
+        user,
+        filter,
+        before,
+        limit: '100',
+    }).then(response => response.json()).then(response => {
+        TBStorage.purifyObject(response);
+        return {
+            notes: response.mod_notes,
+            startCursor: response.start_cursor,
+            endCursor: response.end_cursor,
+            hasNextPage: response.has_next_page,
+        };
+    });
 
 /**
  * For each given (user, subreddit) pair, fetches the most recent mod note for
@@ -889,13 +908,14 @@ export const getModNotes = ({subreddit, user, filter, before}: {
  * user and subreddit at the same index; if a given user has no notes in the
  * given subreddit, the corresponding item will be `null`
  */
-export const getRecentModNotes = (subreddits: string[], users: string[]) => apiOauthGET('/api/mod/notes/recent', {
-    subreddits: subreddits.join(','),
-    users: users.join(','),
-}).then(response => response.json()).then(response => {
-    TBStorage.purifyObject(response);
-    return response.mod_notes;
-});
+export const getRecentModNotes = (subreddits: string[], users: string[]) =>
+    apiOauthGET('/api/mod/notes/recent', {
+        subreddits: subreddits.join(','),
+        users: users.join(','),
+    }).then(response => response.json()).then(response => {
+        TBStorage.purifyObject(response);
+        return response.mod_notes;
+    });
 
 /**
  * Creates a mod note on the given user in the given subreddit.
@@ -918,13 +938,14 @@ export const createModNote = ({
     note: string;
     label?: string;
     redditID?: string;
-}) => apiOauthPOST('/api/mod/notes', {
-    subreddit,
-    user,
-    note,
-    label,
-    reddit_id: redditID,
-});
+}) =>
+    apiOauthPOST('/api/mod/notes', {
+        subreddit,
+        user,
+        note,
+        label,
+        reddit_id: redditID,
+    });
 
 /**
  * Deletes a mod note on the given user in the given subreddit.
@@ -937,21 +958,23 @@ export const deleteModNote = ({subreddit, user, id}: {
     subreddit: string;
     user: string;
     id: string;
-}) => apiOauthDELETE('/api/mod/notes', {
-    subreddit,
-    user,
-    note_id: id,
-});
+}) =>
+    apiOauthDELETE('/api/mod/notes', {
+        subreddit,
+        user,
+        note_id: id,
+    });
 
 /**
  * Fetches information in bulk about API items.
  * @param fullnames Fullnames of items to fetch info for
  * @returns API items (`$.data.children` from the raw `/api/info` response)
  */
-export const getInfoBulk = (fullnames: string[]) => getJSON('/api/info.json', {
-    raw_json: '1',
-    id: fullnames.join(','),
-}).then(result => result.data.children as any);
+export const getInfoBulk = (fullnames: string[]) =>
+    getJSON('/api/info.json', {
+        raw_json: '1',
+        id: fullnames.join(','),
+    }).then(result => result.data.children as any);
 
 /**
  * Fetches information about an API item. This uses the bulk API and is

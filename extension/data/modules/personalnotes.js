@@ -1,10 +1,10 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.ts';
-import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import {Module} from '../tbmodule.js';
+import * as TBui from '../tbui.js';
 
 import {modbarExists} from './modbar.js';
 
@@ -130,7 +130,9 @@ export default new Module({
 
     // add the button to the modbar once the modbar is available
     modbarExists.then(() => {
-        $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
+        $body.find('#tb-toolbarshortcuts').before(
+            ' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>',
+        );
     });
 
     // Since we have a button we can click on it!
@@ -151,7 +153,8 @@ export default new Module({
 
             // Empty subreddit.
             if (notewiki === '') {
-                notesPopupContent = '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
+                notesPopupContent =
+                    '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
                 createPersonalNotesPopup(notesPopupContent);
 
                 // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
@@ -180,7 +183,9 @@ export default new Module({
                                 <span>Welcome to your personal notes!</span>
                                 <span class="tb-personal-notes-landing-subtitle">Click or create a note on the left to get started.</span>
                             </div>
-                            <textarea class="tb-input" id="tb-personal-notes-editarea" ${monospace ? 'style="font-family: monospace;"' : ''}></textarea>
+                            <textarea class="tb-input" id="tb-personal-notes-editarea" ${
+                    monospace ? 'style="font-family: monospace;"' : ''
+                }></textarea>
                         </td>
                     </tr></table>
                 `;

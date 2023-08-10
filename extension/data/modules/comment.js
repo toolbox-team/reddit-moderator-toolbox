@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 const self = new Module({
     name: 'Comments',
@@ -103,12 +103,18 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
             if (removedCounter === 1) {
                 $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]`);
             } else if (removedCounter > 1) {
-                $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]`);
+                $tbToggle.html(
+                    `<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]`,
+                );
             }
         } else if (removedCounter === 1) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]</a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').prepend(
+                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]</a>`,
+            );
         } else if (removedCounter > 1) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]</a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').prepend(
+                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]</a>`,
+            );
         }
 
         if (self.hideRemoved) {
@@ -198,7 +204,9 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
                 self.log('found mod actions');
 
                 if ($('.tb-hide-mod-comments').length < 1) {
-                    $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" name="hideModComments" class="tb-hide-mod-comments tb-general-button">hide mod actions</a>');
+                    $('.menuarea').append(
+                        '&nbsp;&nbsp;<a href="javascript:;" name="hideModComments" class="tb-hide-mod-comments tb-general-button">hide mod actions</a>',
+                    );
 
                     $body.on('click', '.tb-hide-mod-comments', function () {
                         self.log('hiding mod actions');
@@ -226,7 +234,9 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         const NO_HIGHLIGHTING = 'no highlighting';
         const $commentvisits = $('#comment-visits');
 
-        $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
+        $('.comment-visits-box').css('max-width', 650).find('.title').append(
+            '&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>',
+        );
 
         $body.on('click', '.tb-hide-old', () => {
             self.log('hiding old comments');
@@ -317,7 +327,9 @@ function init ({
                 const subreddit = event.detail.subreddit;
                 const isMod = await TBCore.isModSub(subreddit);
                 if (isMod) {
-                    $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
+                    $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(
+                        highlighted,
+                    );
                 }
             }
         });
@@ -345,24 +357,28 @@ function init ({
 
         function parseComments (object) {
             switch (object.kind) {
-            case 'Listing':
-                for (let i = 0; i < object.data.children.length; i++) {
-                    parseComments(object.data.children[i]);
-                }
+                case 'Listing':
+                    for (let i = 0; i < object.data.children.length; i++) {
+                        parseComments(object.data.children[i]);
+                    }
 
-                break;
+                    break;
 
-            case 't1':
-                flatListing[object.data.id] = JSON.parse(JSON.stringify(object)); // deep copy, we don't want references
-                idListing.push(object.data.id);
+                case 't1':
+                    flatListing[object.data.id] = JSON.parse(JSON.stringify(object)); // deep copy, we don't want references
+                    idListing.push(object.data.id);
 
-                if (Object.prototype.hasOwnProperty.call(flatListing[object.data.id].data, 'replies') && flatListing[object.data.id].data.replies && typeof flatListing[object.data.id].data.replies === 'object') {
-                    parseComments(object.data.replies); // we need to go deeper.
-                }
-                break;
+                    if (
+                        Object.prototype.hasOwnProperty.call(flatListing[object.data.id].data, 'replies')
+                        && flatListing[object.data.id].data.replies
+                        && typeof flatListing[object.data.id].data.replies === 'object'
+                    ) {
+                        parseComments(object.data.replies); // we need to go deeper.
+                    }
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
             }
         }
 
@@ -413,7 +429,10 @@ function init ({
                 const flatUserName = $this.find('.tb-tagline a.tb-comment-author').text();
                 const flatContent = $this.find('.tb-comment-body .md').text();
 
-                if (flatUserName.toUpperCase().indexOf(FlatViewSearchName.toUpperCase()) < 0 || flatContent.toUpperCase().indexOf(FlatViewSearchContent.toUpperCase()) < 0) {
+                if (
+                    flatUserName.toUpperCase().indexOf(FlatViewSearchName.toUpperCase()) < 0
+                    || flatContent.toUpperCase().indexOf(FlatViewSearchContent.toUpperCase()) < 0
+                ) {
                     $this.hide();
                 } else {
                     $this.show();
@@ -475,7 +494,8 @@ function init ({
                             <a class="tb-comment-button tb-comment-context-popup" href="javascript:;" data-comment-id="${commentName}" data-context-json-url="${commentPermalink}.json?context=3">context-popup</a>
                         </li>`);
 
-                $target.closest('.entry').find('.flat-list.buttons a.bylink[data-event-action="context"]').closest('li').after($contextLink);
+                $target.closest('.entry').find('.flat-list.buttons a.bylink[data-event-action="context"]').closest('li')
+                    .after($contextLink);
             });
         }
 
@@ -547,7 +567,10 @@ function init ({
                         display: 'block',
                     });
                 TBui.tbRedditEvent($comments);
-                $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
+                $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css(
+                    'background-color',
+                    '#fff8d5',
+                );
             });
         });
     }

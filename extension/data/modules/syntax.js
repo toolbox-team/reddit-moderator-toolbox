@@ -1,8 +1,8 @@
-import $ from 'jquery';
 import CodeMirror from 'codemirror';
+import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
 import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.js';
+import {Module} from '../tbmodule.js';
 import * as TBui from '../tbui.js';
 
 export default new Module({
@@ -19,7 +19,8 @@ export default new Module({
         },
         {
             id: 'wikiPages',
-            description: 'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
+            description:
+                'In addition to the CSS, the following wiki pages get the specified code formatting. Language is one of css, json, markdown, or yaml',
             type: 'map',
             default: {
                 'config/automoderator': 'yaml',
@@ -44,8 +45,13 @@ export default new Module({
         if (cm.somethingSelected()) {
             cm.indentSelection('add');
         } else {
-            cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
-                Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
+            cm.replaceSelection(
+                cm.getOption('indentWithTabs')
+                    ? '\t'
+                    : Array(cm.getOption('indentUnit') + 1).join(' '),
+                'end',
+                '+input',
+            );
         }
     }
 
@@ -65,7 +71,7 @@ export default new Module({
                                                     <li><i>Ctrl-Space / Cmd-Space:</i> autocomplete</li>
                                                 </ul>
                                               </div>`;
-        //  Editor for css.
+    //  Editor for css.
     if (location.pathname.match(/\/about\/stylesheet\/?/)) {
         let stylesheetEditor;
 
@@ -110,7 +116,9 @@ export default new Module({
 
         // In order to make save buttons work we need to hijack  and replace them.
         const tbSyntaxButtons = `<div id="tb-syntax-buttons">
-                ${TBui.actionButton('save', 'tb-syntax-button-save')} - ${TBui.actionButton('preview', 'tb-syntax-button-preview')}
+                ${TBui.actionButton('save', 'tb-syntax-button-save')} - ${
+            TBui.actionButton('preview', 'tb-syntax-button-preview')
+        }
             </div>`;
 
         $body.find('.sheets .buttons').before(tbSyntaxButtons);
@@ -150,21 +158,21 @@ export default new Module({
             // let's get the type and convert it to the correct mimetype for codemirror
             let mimetype;
             switch (wikiPages[wikiPage].toLowerCase()) {
-            case 'css':
-                mimetype = 'text/css';
-                break;
-            case 'json':
-                mimetype = 'application/json';
-                break;
-            case 'markdown':
-            case 'md':
-                mimetype = 'text/markdown';
-                break;
-            case 'yaml':
-                mimetype = 'text/x-yaml';
-                break;
-            default:
-                mimetype = 'text/markdown';
+                case 'css':
+                    mimetype = 'text/css';
+                    break;
+                case 'json':
+                    mimetype = 'application/json';
+                    break;
+                case 'markdown':
+                case 'md':
+                    mimetype = 'text/markdown';
+                    break;
+                case 'yaml':
+                    mimetype = 'text/x-yaml';
+                    break;
+                default:
+                    mimetype = 'text/markdown';
             }
 
             // Class added to apply some specific css.

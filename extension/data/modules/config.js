@@ -1,12 +1,12 @@
-import $ from 'jquery';
 import CodeMirror from 'codemirror';
+import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBui from '../tbui.js';
 import * as TBApi from '../tbapi.ts';
-import * as TBStorage from '../tbstorage.js';
 import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import {Module} from '../tbmodule.js';
+import * as TBStorage from '../tbstorage.js';
+import * as TBui from '../tbui.js';
 
 const self = new Module({
     name: 'toolbox Config',
@@ -40,8 +40,12 @@ const self = new Module({
                 Through this window you can edit the settings for /r/${subredditConfig}. </br>
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
                 </br>
-                </br><a href="${TBCore.link(`/r/${subredditConfig}/w/pages/`)}" class="tb-general-button">All Wiki Pages</a>
-                </br><a ${unManager ? 'style="display:none;"' : ''} href="${TBCore.link(`/r/${subredditConfig}/about/usernotes/`)}" class="tb-general-button">Manage Usernotes</a>
+                </br><a href="${
+                        TBCore.link(`/r/${subredditConfig}/w/pages/`)
+                    }" class="tb-general-button">All Wiki Pages</a>
+                </br><a ${unManager ? 'style="display:none;"' : ''} href="${
+                        TBCore.link(`/r/${subredditConfig}/about/usernotes/`)
+                    }" class="tb-general-button">Manage Usernotes</a>
 
                 </span>
                 `,
@@ -55,7 +59,8 @@ const self = new Module({
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
                 <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
-                    footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">',
+                    footer:
+                        '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">',
                 },
                 {
                     title: 'edit user notes',
@@ -66,7 +71,8 @@ const self = new Module({
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
                 <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
-                    footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">',
+                    footer:
+                        '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">',
                 },
                 {
                     title: 'edit user note types',
@@ -82,20 +88,25 @@ const self = new Module({
                             <tbody id="tb-config-usernote-type-list"></tbody>
                         </table><a class="tb-general-button" href="javascript:;" id="add-usernote-type">Add user note type</a><a class="tb-general-button" data-module="usernotes" href="javascript:;" id="tb-config-help">help</a>
                     </div>`,
-                    footer: $('<input>').prop('type', 'button').attr('id', 'save-usernote-types').addClass('tb-action-button').prop('value', 'Save user note types'),
+                    footer: $('<input>').prop('type', 'button').attr('id', 'save-usernote-types').addClass(
+                        'tb-action-button',
+                    ).prop('value', 'Save user note types'),
                 },
                 {
                     title: 'edit automoderator config',
                     tooltip: 'Edit the automoderator config.',
                     content: `
                 <p class="tb-settings-p">
-                    <a href="${TBCore.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
+                    <a href="${
+                        TBCore.link('/wiki/automoderator/full-documentation')
+                    }" target="_blank">Full automoderator documentation</a>
                 </p>
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
                 <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
-                    footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">',
+                    footer:
+                        '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">',
                 },
                 {
                     title: 'removal reasons settings',
@@ -103,91 +114,145 @@ const self = new Module({
                     content: `
                 <div id="tb-removal-reason-settings">
                     <h3>Removal reason header text</h3>
-                    <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea>
+                    <textarea placeholder="Header" class="tb-input edit-header" style="display:block;">${
+                        TBHelpers.htmlEncode(
+                            unescape(configData.removalReasons.header ? configData.removalReasons.header : ''),
+                        )
+                    }</textarea>
                     <h3>Removal reason footer text</h3>
-                    <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${TBHelpers.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea>
+                    <textarea placeholder="Footer" class="tb-input edit-footer" style="display:block;">${
+                        TBHelpers.htmlEncode(
+                            unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''),
+                        )
+                    }</textarea>
                     <h3>Removal reason actions</h3>
                     <select name="removal-option" id="removal-option">
-                        <option value="suggest" ${!configData.removalReasons.removalOption || configData.removalReasons.removalOption === 'suggest' ? 'selected' : ''}>Suggest to moderators</option>
-                        <option value="force" ${configData.removalReasons.removalOption === 'force' ? 'selected' : ''}>Force for moderators</option>
-                        <option value="leave" ${configData.removalReasons.removalOption === 'leave' ? 'selected' : ''}>Leave up to moderator settings</option>
+                        <option value="suggest" ${
+                        !configData.removalReasons.removalOption
+                            || configData.removalReasons.removalOption === 'suggest'
+                            ? 'selected'
+                            : ''
+                    }>Suggest to moderators</option>
+                        <option value="force" ${
+                        configData.removalReasons.removalOption === 'force' ? 'selected' : ''
+                    }>Force for moderators</option>
+                        <option value="leave" ${
+                        configData.removalReasons.removalOption === 'leave' ? 'selected' : ''
+                    }>Leave up to moderator settings</option>
                     </select>
                     <div id="buttons">
                         <ul>
                             <li>
-                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${!configData.removalReasons.typeReply || configData.removalReasons.typeReply === 'reply' ? 'checked' : ''}/>
+                                <input name="type-reply" class="reason-type" type="radio" value="reply" id="type-reply-comment" ${
+                        !configData.removalReasons.typeReply || configData.removalReasons.typeReply === 'reply'
+                            ? 'checked'
+                            : ''
+                    }/>
                                 <label for="type-reply-comment">Reply with a comment to the item that is removed.</label>
                                 <ul>
                                     <li>
-                                        <input class="reason-sticky" type="checkbox" id="type-stickied" ${configData.removalReasons.typeStickied ? 'checked' : ''}/>
+                                        <input class="reason-sticky" type="checkbox" id="type-stickied" ${
+                        configData.removalReasons.typeStickied ? 'checked' : ''
+                    }/>
                                         <label for="type-stickied">Sticky the removal comment.</label>
                                     </li>
                                     <li>
-                                        <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment" ${configData.removalReasons.typeLockComment ? 'checked' : ''}/>
+                                        <input class="action-lock-comment" type="checkbox" id="type-action-lock-comment" ${
+                        configData.removalReasons.typeLockComment ? 'checked' : ''
+                    }/>
                                         <label for="type-action-lock-comment">Lock the removal comment.</label>
                                     </li>
                                     <li>
-                                        <input class="reason-comment-as-subreddit" type="checkbox" id="type-comment-as-subreddit" ${configData.removalReasons.typeCommentAsSubreddit ? 'checked' : ''}/>
+                                        <input class="reason-comment-as-subreddit" type="checkbox" id="type-comment-as-subreddit" ${
+                        configData.removalReasons.typeCommentAsSubreddit ? 'checked' : ''
+                    }/>
                                         <label for="type-comment-as-subreddit">Send as /u/${subredditConfig}-ModTeam.</label>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <input name="type-reply" class="reason-type" type="radio" value="pm" id="type-reply-pm" ${configData.removalReasons.typeReply === 'pm' ? 'checked' : ''}/>
+                                <input name="type-reply" class="reason-type" type="radio" value="pm" id="type-reply-pm" ${
+                        configData.removalReasons.typeReply === 'pm' ? 'checked' : ''
+                    }/>
                                 <label for="type-reply-pm">Send as PM (personal message)</label>
                                 <ul>
                                     <li>
-                                        <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${configData.removalReasons.typeAsSub ? 'checked' : ''}/>
+                                        <input class="reason-as-sub" type="checkbox" id="type-as-sub" ${
+                        configData.removalReasons.typeAsSub ? 'checked' : ''
+                    }/>
                                         <label for="type-as-sub">Send pm via modmail as subreddit <b>Note:</b> This will clutter up modmail.</label>
                                     </li>
                                     <li>
-                                        <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${configData.removalReasons.autoArchive ? 'checked' : ''}/>
+                                        <input class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${
+                        configData.removalReasons.autoArchive ? 'checked' : ''
+                    }/>
                                         <label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <input name="type-reply" class="reason-type" type="radio" value="both" id="type-reply-both" ${configData.removalReasons.typeReply === 'both' ? 'checked' : ''}/>
+                                <input name="type-reply" class="reason-type" type="radio" value="both" id="type-reply-both" ${
+                        configData.removalReasons.typeReply === 'both' ? 'checked' : ''
+                    }/>
                                 <label for="type-reply-both">Send as both PM and reply.</label>
                             </li>
                             <li class="rr-advanced">
-                                <input name="type-reply" class="reason-type" type="radio" value="none" id="type-reply-none" ${configData.removalReasons.typeReply === 'none' ? 'checked' : ''}/>
+                                <input name="type-reply" class="reason-type" type="radio" value="none" id="type-reply-none" ${
+                        configData.removalReasons.typeReply === 'none' ? 'checked' : ''
+                    }/>
                                 <label for="type-reply-none">Send nothing and log the removal.</label>
                             </li>
                             <li>
-                                <input class="action-lock-thread" type="checkbox" id="type-action-lock-thread" ${configData.removalReasons.typeLockThread ? 'checked' : ''}/>
+                                <input class="action-lock-thread" type="checkbox" id="type-action-lock-thread" ${
+                        configData.removalReasons.typeLockThread ? 'checked' : ''
+                    }/>
                                 <label for="type-action-lock-thread">Lock the removed thread.</label>
                             </li>
                         </ul>
                     </div>
-                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${TBStorage.getSetting('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'}>show advanced settings</a>
+                    <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${
+                        TBStorage.getSetting('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'
+                    }>show advanced settings</a>
                     <h3 class="rr-advanced">Advanced settings</h3>
                     <div class="rr-advanced">
                         get reason from /r/:
-                        <input class="getfrom tb-input" type="text" value="${configData.removalReasons.getfrom ? configData.removalReasons.getfrom : ''}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
+                        <input class="getfrom tb-input" type="text" value="${
+                        configData.removalReasons.getfrom ? configData.removalReasons.getfrom : ''
+                    }"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
                     </div>
                     <div class="rr-advanced">
                         logsub /r/:
-                        <input class="logsub tb-input" type="text" value="${configData.removalReasons.logsub ? configData.removalReasons.logsub : ''}"/>
+                        <input class="logsub tb-input" type="text" value="${
+                        configData.removalReasons.logsub ? configData.removalReasons.logsub : ''
+                    }"/>
                     </div>
                     <div class="rr-advanced">
                         pmsubject:
-                        <input class="pmsubject tb-input" type="text" value="${configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : ''}"/>
+                        <input class="pmsubject tb-input" type="text" value="${
+                        configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : ''
+                    }"/>
                     </div>
                     <div class="rr-advanced">
                         logtitle:
-                        <input class="logtitle tb-input" type="text" value="${configData.removalReasons.logtitle ? configData.removalReasons.logtitle : ''}"/>
+                        <input class="logtitle tb-input" type="text" value="${
+                        configData.removalReasons.logtitle ? configData.removalReasons.logtitle : ''
+                    }"/>
                     </div>
                     <div class="rr-advanced">
                         bantitle:
-                        <input class="bantitle tb-input" type="text" value="${configData.removalReasons.bantitle ? configData.removalReasons.bantitle : ''}"/>
+                        <input class="bantitle tb-input" type="text" value="${
+                        configData.removalReasons.bantitle ? configData.removalReasons.bantitle : ''
+                    }"/>
                     </div>
                     <div class="rr-advanced">
                         logreason:
-                        <input class="logreason tb-input" type="text" value="${configData.removalReasons.logreason ? configData.removalReasons.logreason : ''}"/>
+                        <input class="logreason tb-input" type="text" value="${
+                        configData.removalReasons.logreason ? configData.removalReasons.logreason : ''
+                    }"/>
                     </div>
                 </div>`,
-                    footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">',
+                    footer:
+                        '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">',
                 },
                 {
                     title: 'edit removal reasons',
@@ -233,7 +298,8 @@ const self = new Module({
                 <table id="tb-removal-sort-list">
                 </table>
                 `,
-                    footer: '<input class="save-removal-sorting tb-action-button" type="button" value="Save removal reasons order">',
+                    footer:
+                        '<input class="save-removal-sorting tb-action-button" type="button" value="Save removal reasons order">',
                 },
                 {
                     title: 'edit mod macros',
@@ -292,7 +358,8 @@ const self = new Module({
                 {
                     title: 'domain tags',
                     tooltip: 'basic domain tags stuff.',
-                    content: '<p>import tags from /r/:&nbsp;<input class="importfrom tb-input" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
+                    content:
+                        '<p>import tags from /r/:&nbsp;<input class="importfrom tb-input" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
                     footer: '<input class="import tb-action-button" type="button" value="import" />',
                 },
                 {
@@ -303,14 +370,18 @@ const self = new Module({
                     <td>
                         Ban note:
                     </td><td>
-                        <input class="banNote tb-input" type="text" value="${configData.banMacros && configData.banMacros.banNote ? configData.banMacros.banNote : ''}"/>
+                        <input class="banNote tb-input" type="text" value="${
+                        configData.banMacros && configData.banMacros.banNote ? configData.banMacros.banNote : ''
+                    }"/>
                     </td>
                     </tr>
                     <tr>
                     <td>
                        Ban message:
                     </td><td>
-                       <textarea class="tb-input banMessage">${configData.banMacros && configData.banMacros.banMessage ? configData.banMacros.banMessage : ''}</textarea>
+                       <textarea class="tb-input banMessage">${
+                        configData.banMacros && configData.banMacros.banMessage ? configData.banMacros.banMessage : ''
+                    }</textarea>
                     </td>
                     </tr>
                 </table>`,
@@ -333,7 +404,11 @@ const self = new Module({
     // Help click event.
     $body.on('click', '#tb-config-help', function () {
         const module = $(this).attr('data-module');
-        window.open(`https://old.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
+        window.open(
+            `https://old.reddit.com/r/toolbox/wiki/livedocs/${module}`,
+            '',
+            'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100',
+        );
     });
 
     window.addEventListener('TBNewPage', async event => {
@@ -375,7 +450,10 @@ const self = new Module({
                 if (TBCore.isConfigValidVersion(subreddit, config)) {
                     showConfig(subreddit, config);
                 } else {
-                    TBui.textFeedback(`This version of toolbox is not compatible with the /r/${subreddit} configuration.`, TBui.FEEDBACK_NEGATIVE);
+                    TBui.textFeedback(
+                        `This version of toolbox is not compatible with the /r/${subreddit} configuration.`,
+                        TBui.FEEDBACK_NEGATIVE,
+                    );
                 }
             }
         });
@@ -432,18 +510,18 @@ const self = new Module({
         let page;
         let actualPage;
         switch (tabname) {
-        case 'edit_toolbox_config':
-            page = 'toolbox';
-            actualPage = 'toolbox';
-            break;
-        case 'edit_user_notes':
-            page = 'usernotes';
-            actualPage = 'usernotes';
-            break;
-        case 'edit_automoderator_config':
-            page = 'automoderator';
-            actualPage = 'config/automoderator';
-            break;
+            case 'edit_toolbox_config':
+                page = 'toolbox';
+                actualPage = 'toolbox';
+                break;
+            case 'edit_user_notes':
+                page = 'usernotes';
+                actualPage = 'usernotes';
+                break;
+            case 'edit_automoderator_config':
+                page = 'automoderator';
+                actualPage = 'config/automoderator';
+                break;
         }
 
         const $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`);
@@ -487,8 +565,13 @@ const self = new Module({
                     if (cm.somethingSelected()) {
                         cm.indentSelection('add');
                     } else {
-                        cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
-                            Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
+                        cm.replaceSelection(
+                            cm.getOption('indentWithTabs')
+                                ? '\t'
+                                : Array(cm.getOption('indentUnit') + 1).join(' '),
+                            'end',
+                            '+input',
+                        );
                     }
                 }
 
@@ -656,7 +739,9 @@ const self = new Module({
         const defaultOption = reasonNum ? config.removalReasons.reasons[reasonNum].flairTemplateID : '';
 
         postFlairTemplates.forEach(flair => {
-            $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`);
+            $dropdown.append(
+                `<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`,
+            );
         });
     }
 
@@ -677,7 +762,9 @@ const self = new Module({
         const defaultOption = macroNum ? config.modMacros[macroNum].userflair : '';
 
         userFlairTemplates.forEach(flair => {
-            $dropdown.append(`<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`);
+            $dropdown.append(
+                `<option value="${flair.id}" ${flair.id === defaultOption ? 'selected' : ''}>${flair.text}</option>`,
+            );
         });
     }
 
@@ -698,7 +785,9 @@ const self = new Module({
 
                 const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '';
                 const removalReasonTitle = config.removalReasons.reasons[i].title || '';
-                const removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts !== false ? 'checked' : '';
+                const removalReasonRemovePosts = config.removalReasons.reasons[i].removePosts !== false
+                    ? 'checked'
+                    : '';
                 const removalReasonRemoveComments = config.removalReasons.reasons[i].removeComments ? 'checked' : '';
                 const removalReasonFlairText = config.removalReasons.reasons[i].flairText || '';
                 const removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
@@ -880,8 +969,14 @@ const self = new Module({
                 $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
 
                 $(`.${i}-context-post`).prop('checked', macro.contextpost === undefined ? true : macro.contextpost);
-                $(`.${i}-context-comment`).prop('checked', macro.contextcomment === undefined ? true : macro.contextcomment);
-                $(`.${i}-context-modmail`).prop('checked', macro.contextmodmail === undefined ? true : macro.contextmodmail);
+                $(`.${i}-context-comment`).prop(
+                    'checked',
+                    macro.contextcomment === undefined ? true : macro.contextcomment,
+                );
+                $(`.${i}-context-modmail`).prop(
+                    'checked',
+                    macro.contextmodmail === undefined ? true : macro.contextmodmail,
+                );
             });
         }
     }
@@ -923,24 +1018,25 @@ const self = new Module({
         let actualPage;
 
         switch (tabname) {
-        case 'edit_toolbox_config':
-            page = 'toolbox';
-            actualPage = 'toolbox';
-            $body.addClass('toolbox-wiki-edited');
-            break;
-        case 'edit_user_notes':
-            page = 'usernotes';
-            actualPage = 'usernotes';
-            break;
-        case 'edit_automoderator_config':
-            page = 'automoderator';
-            actualPage = 'config/automoderator';
-            break;
+            case 'edit_toolbox_config':
+                page = 'toolbox';
+                actualPage = 'toolbox';
+                $body.addClass('toolbox-wiki-edited');
+                break;
+            case 'edit_user_notes':
+                page = 'usernotes';
+                actualPage = 'usernotes';
+                break;
+            case 'edit_automoderator_config':
+                page = 'automoderator';
+                actualPage = 'config/automoderator';
+                break;
         }
 
         const $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`);
         const textArea = $wikiContentArea.find('.edit-wikidata');
-        const editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val() || `updated ${page} configuration`;
+        const editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val()
+            || `updated ${page} configuration`;
         const updateAM = page === 'automoderator';
 
         let text = $(textArea).val();
@@ -1187,10 +1283,17 @@ const self = new Module({
         const $removalContent = $this.closest('td.removal-reasons-content');
         const reasonsNum = $removalContent.attr('data-reason');
 
-        $removalContent.find('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
+        $removalContent.find('.edit-area').val(
+            unescape(config.removalReasons.reasons[reasonsNum].text)
+                || '<span style="color: #cecece">(no macro)</span>',
+        );
         $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[reasonsNum].title || '');
-        $removalContent.find('input[name=remove-posts]').val(config.removalReasons.reasons[reasonsNum].removePosts || undefined);
-        $removalContent.find('input[name=remove-comments]').val(config.removalReasons.reasons[reasonsNum].removeComments || undefined);
+        $removalContent.find('input[name=remove-posts]').val(
+            config.removalReasons.reasons[reasonsNum].removePosts || undefined,
+        );
+        $removalContent.find('input[name=remove-comments]').val(
+            config.removalReasons.reasons[reasonsNum].removeComments || undefined,
+        );
         $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
         $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
         $removalContent.find('input[name=edit-note]').val('');
@@ -1240,7 +1343,11 @@ const self = new Module({
         }
 
         const $removalReasonLabel = $removalContent.find('.removal-reason-label');
-        $removalReasonLabel.html(TBStorage.purify(`<span><h3 class="removal-title">${TBHelpers.htmlEncode(reasonTitle)}</h3>${label}</span>`));
+        $removalReasonLabel.html(
+            TBStorage.purify(
+                `<span><h3 class="removal-title">${TBHelpers.htmlEncode(reasonTitle)}</h3>${label}</span>`,
+            ),
+        );
 
         $removalReasonLabel.show();
         $removalContent.find('.removal-reason-edit').hide();
@@ -1338,7 +1445,9 @@ const self = new Module({
         const reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val();
         const reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val();
         const reasonRemovePosts = $body.find('#tb-add-removal-reason-form input[name=remove-posts]').is(':checked');
-        const reasonRemoveComments = $body.find('#tb-add-removal-reason-form input[name=remove-comments]').is(':checked');
+        const reasonRemoveComments = $body.find('#tb-add-removal-reason-form input[name=remove-comments]').is(
+            ':checked',
+        );
         const reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val();
         const reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val();
         const reasonFlairTemplateID = $body.find('#tb-add-removal-reason-form select#flair-id-select').val();

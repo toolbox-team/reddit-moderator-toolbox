@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import {escapeHTML} from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import {escapeHTML} from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 export default new Module({
     name: 'Developer Tools',
@@ -41,7 +41,11 @@ export default new Module({
             </span>
             `);
         $target.on('click', '.tb-show-api-info', event => {
-            const $pasteContent = $(`<pre class="tb-api-info"><code>${escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
+            const $pasteContent = $(
+                `<pre class="tb-api-info"><code>${
+                    escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))
+                }</code></pre>`,
+            );
             // Prepare for the popup.
             let leftPosition;
             if (document.documentElement.clientWidth - event.pageX < 400) {

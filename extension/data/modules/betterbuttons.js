@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
+import {Module} from '../tbmodule.js';
 import {getSettingAsync} from '../tbstorage.js';
 
 const self = new Module({
@@ -155,7 +155,9 @@ function initModSave () {
     if ($tbUsertextButtons.length) {
         $tbUsertextButtons.prepend($modSaveButton, $stickySaveButton);
     } else {
-        $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($modSaveButton, $stickySaveButton));
+        $saveButton.parent().find('.status').before(
+            $('<div>').addClass('tb-usertext-buttons').append($modSaveButton, $stickySaveButton),
+        );
     }
 
     // Add actions to the mod save buttons
@@ -184,19 +186,22 @@ function initModSave () {
 
 function initDistinguishToggle () {
     // Check for top level comments so we can add & sticky to the mix
-    const stickyHtml = '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
+    const stickyHtml =
+        '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
 
     function addSticky () {
-        $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function () {
-            const $this = $(this);
-            const $parentPost = $this.closest('.thing');
-            const distinguished = getDistinguishState($parentPost);
+        $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(
+            function () {
+                const $this = $(this);
+                const $parentPost = $this.closest('.thing');
+                const distinguished = getDistinguishState($parentPost);
 
-            if (!$this.closest('.comment').hasClass('tb-sticky-processed') && !distinguished) {
-                $this.after(stickyHtml);
-                $this.closest('.comment').addClass('tb-sticky-processed');
-            }
-        });
+                if (!$this.closest('.comment').hasClass('tb-sticky-processed') && !distinguished) {
+                    $this.after(stickyHtml);
+                    $this.closest('.comment').addClass('tb-sticky-processed');
+                }
+            },
+        );
     }
 
     // Add back the sticky button after distinguishing and other DOM events.
@@ -329,7 +334,8 @@ function initRemoveConfirmation () {
         const yes = $button.find('.yes')[0];
 
         // Don't remove if removal reasons are enabled and the button isn't for spam
-        if (!$body.hasClass('tb-removal-reasons')
+        if (
+            !$body.hasClass('tb-removal-reasons')
             || $body.hasClass('tb-removal-reasons') && !await getSettingAsync('RReasons', 'commentReasons')
             || $button.children().first().attr('value') === 'spammed'
         ) {
@@ -419,15 +425,21 @@ function initStickyButtons () {
         // Make sure this is a post in a sub we mod by checking for the remove button.
         $buttons.append(`
                 <li class="sticky-button">
-                    <a class="tb-sticky-choice tb-bracket-button" href="javascript:;" ${unsticky ? 'data-tb-stickied' : ''}>${unsticky ? 'unsticky' : 'sticky'}</a>
-                    ${!unsticky ? `
+                    <a class="tb-sticky-choice tb-bracket-button" href="javascript:;" ${
+            unsticky ? 'data-tb-stickied' : ''
+        }>${unsticky ? 'unsticky' : 'sticky'}</a>
+                    ${
+            !unsticky
+                ? `
                     <span class="tb-sticky-position" style="display: none;">
                         <span class="error close" style="">sticky?</span>
                         <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="1" href="javascript:;">top</a>
                         <span class="error" style="">/</span>
                         <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="2" href="javascript:;">bottom</a>
                     </span>
-                    ` : ''}
+                    `
+                : ''
+        }
                     <span class="success" style="display: none;">${unsticky ? 'unstickied' : 'stickied'}</span>
                     <span class="error" style="display: none;">failed to ${unsticky ? 'unsticky' : 'sticky'}</span>
                 </li>
@@ -492,7 +504,9 @@ function initCommentLock () {
             }
 
             $comment.find('> .entry ul.buttons a[data-event-action="remove"]').closest('li')
-                .after(`<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`);
+                .after(
+                    `<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`,
+                );
         }
     }
 
@@ -510,7 +524,8 @@ function initCommentLock () {
             let newAction;
             if (action === 'lock') {
                 newAction = 'unlock';
-                const lockedTaglineHTML = '<span class="locked-tagline" title="locked by this subreddit\'s moderators">locked comment</span>';
+                const lockedTaglineHTML =
+                    '<span class="locked-tagline" title="locked by this subreddit\'s moderators">locked comment</span>';
                 $lockButton.closest('.entry').find('.tagline').append(lockedTaglineHTML);
             } else {
                 newAction = 'lock';

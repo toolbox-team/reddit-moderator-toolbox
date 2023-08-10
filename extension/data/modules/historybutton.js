@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 const self = new Module({
     name: 'History Button',
@@ -51,7 +51,7 @@ const self = new Module({
 
 // This should be a setting, methinks.
 self.SPAM_REPORT_SUB = 'spam';
-self.fetched = {};// fetched histories
+self.fetched = {}; // fetched histories
 
 /**
  * Attach an [H] button to all users
@@ -59,7 +59,11 @@ self.fetched = {};// fetched histories
 
 self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H') {
     requestAnimationFrame(() => {
-        $target.append(`<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" ${subreddit && `data-subreddit="${subreddit}"`} title="view & analyze user's submission and comment history">${buttonText}</a>`);
+        $target.append(
+            `<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" ${
+                subreddit && `data-subreddit="${subreddit}"`
+            } title="view & analyze user's submission and comment history">${buttonText}</a>`,
+        );
     });
 };
 
@@ -514,10 +518,16 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
                 cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
             }
 
-            let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
+            let url = TBCore.link(
+                `/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`,
+            );
             // If the domain is a self post, change the URL
             if (match) {
-                url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
+                url = TBCore.link(
+                    `/r/${
+                        match[1]
+                    }/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`,
+                );
             }
 
             // Append domain to the table
@@ -561,7 +571,9 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
         user.subredditList.forEach((subreddit, index) => {
             const subredditCount = user.subreddits.submissions[subreddit].count;
             const subredditKarma = user.subreddits.submissions[subreddit].karma;
-            const url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
+            const url = TBCore.link(
+                `/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`,
+            );
             const percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
             let cssClass = '';
@@ -793,7 +805,9 @@ self.reportAuthorToSpam = function (author, options) {
             $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
             // $rtsLink.hide();
             if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
+                rtsNativeLink.href = TBCore.link(
+                    `/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`,
+                );
             }
             return;
         }
@@ -809,7 +823,9 @@ self.reportAuthorToSpam = function (author, options) {
         TBApi.postComment(submission.json.data.name, commentBody).then(comment => {
             // $rtsLink.hide();
             if (comment.json.errors.length) {
-                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
+                $rtsLink.after(
+                    `<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`,
+                );
                 // $rtsLink.hide();
                 return;
             }
@@ -817,10 +833,16 @@ self.reportAuthorToSpam = function (author, options) {
             rtsNativeLink.href = submission.json.data.url;
             rtsNativeLink.className = 'tb-general-button';
         }).catch(error => {
-            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${error[0][1]}</span>`);
+            $rtsLink.after(
+                `<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${
+                    error[0][1]
+                }</span>`,
+            );
         });
     }).catch(error => {
-        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${error[0][1]}</span>`);
+        $rtsLink.after(
+            `<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${error[0][1]}</span>`,
+        );
     });
 };
 

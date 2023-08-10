@@ -1,11 +1,11 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 export default new Module({
     name: 'New Mod Mail Pro',
@@ -15,7 +15,16 @@ export default new Module({
         {
             id: 'modmaillink',
             type: 'selector',
-            values: ['All modmail', 'Inbox', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
+            values: [
+                'All modmail',
+                'Inbox',
+                'New',
+                'In Progress',
+                'Archived',
+                'Highlighted',
+                'Mod Discussions',
+                'Notifications',
+            ],
             default: 'all_modmail',
             description: 'Change the modmail link to open a different modmail view by default.',
         },
@@ -29,7 +38,8 @@ export default new Module({
             id: 'lastreplytypecheck',
             type: 'boolean',
             default: true,
-            description: 'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. ',
+            description:
+                'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. ',
         },
         {
             id: 'modmailnightmode',
@@ -42,7 +52,8 @@ export default new Module({
             type: 'boolean',
             default: false,
             advanced: true,
-            description: 'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
+            description:
+                'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
         },
         {
             id: 'showModmailPreview',
@@ -106,7 +117,9 @@ export default new Module({
     function extraClickable () {
         // Make ban reason links clickable.
         if (clickableReason) {
-            const $reasons = $body.find('.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen), .KarmaAndTrophies__BanStatus:not(.tb-reason-seen), .NewInfoBar__muteText:not(.tb-reason-seen)');
+            const $reasons = $body.find(
+                '.InfoBar__banText:not(.tb-reason-seen), .InfoBar__muteText:not(.tb-reason-seen), .KarmaAndTrophies__BanStatus:not(.tb-reason-seen), .NewInfoBar__muteText:not(.tb-reason-seen)',
+            );
             if ($reasons.length) {
                 $reasons.each(function () {
                     const $reason = $(this);
@@ -114,9 +127,18 @@ export default new Module({
 
                     let reasonText = $reason.text();
                     // Three regex passes to avoid silly logic about whole urls, urls starting with a slash and those without it.
-                    reasonText = reasonText.replace(/(\s|'|^)(https:\/\/.+?)(\s|'|$)/gi, '$1<a href="$2" target="_blank">$2</a>$3');
-                    reasonText = reasonText.replace(/(\s|'|^)(\/u\/.+?|\/user\/.+?|\/r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com$2" target="_blank">$2</a>$3');
-                    reasonText = reasonText.replace(/(\s|'|^)(u\/.+?|user\/.+?|r\/.+?)(\s|'|$)/gi, '$1<a href="https://www.reddit.com/$2" target="_blank">$2</a>$3');
+                    reasonText = reasonText.replace(
+                        /(\s|'|^)(https:\/\/.+?)(\s|'|$)/gi,
+                        '$1<a href="$2" target="_blank">$2</a>$3',
+                    );
+                    reasonText = reasonText.replace(
+                        /(\s|'|^)(\/u\/.+?|\/user\/.+?|\/r\/.+?)(\s|'|$)/gi,
+                        '$1<a href="https://www.reddit.com$2" target="_blank">$2</a>$3',
+                    );
+                    reasonText = reasonText.replace(
+                        /(\s|'|^)(u\/.+?|user\/.+?|r\/.+?)(\s|'|$)/gi,
+                        '$1<a href="https://www.reddit.com/$2" target="_blank">$2</a>$3',
+                    );
 
                     $reason.html(reasonText);
                 });
@@ -195,7 +217,11 @@ export default new Module({
 
                 // if it finds this the last mod that replied did so with "as subreddit".
                 if ($lastModReply.find('.icon-profile-slash').length && replyTypeMyself) {
-                    if (confirm('The last mod that replied did so as the subreddit, are you sure you want to reply as yourself?')) {
+                    if (
+                        confirm(
+                            'The last mod that replied did so as the subreddit, are you sure you want to reply as yourself?',
+                        )
+                    ) {
                         // Ok, do nothing and let the message be posted.
                     } else {
                         // Not ok, do nothing.
@@ -205,7 +231,11 @@ export default new Module({
 
                 // If it finds this class it means the last reply was a private mod note.
                 if ($lastModReply.find('.Thread__messageIsMod').length && replyTypeMyself) {
-                    if (confirm('The last mod that replied did so with a private mod note, are you sure you want to reply as yourself?')) {
+                    if (
+                        confirm(
+                            'The last mod that replied did so with a private mod note, are you sure you want to reply as yourself?',
+                        )
+                    ) {
                         // Ok, do nothing and let the message be posted.
                     } else {
                         // Not ok, do nothing.
@@ -229,34 +259,38 @@ export default new Module({
         }
 
         if (showModmailPreview) {
-            $body.on('input', '.ThreadViewerReplyForm__replyText, .NewThread__message', TBHelpers.debounce(e => {
-                let $previewArea;
-                if ($('#tb-modmail-preview').length) {
-                    // Use existing preview.
-                    $previewArea = $('#tb-modmail-preview');
-                } else {
-                    // Create a new one.
-                    const $form = $('form.ThreadViewerReplyForm, form.NewThread__form');
-                    $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
-                    $form.after($previewArea);
-                    $form.one('submit', () => {
-                        $previewArea.remove();
-                    });
-                }
+            $body.on(
+                'input',
+                '.ThreadViewerReplyForm__replyText, .NewThread__message',
+                TBHelpers.debounce(e => {
+                    let $previewArea;
+                    if ($('#tb-modmail-preview').length) {
+                        // Use existing preview.
+                        $previewArea = $('#tb-modmail-preview');
+                    } else {
+                        // Create a new one.
+                        const $form = $('form.ThreadViewerReplyForm, form.NewThread__form');
+                        $previewArea = $('<div id="tb-modmail-preview" class="StyledHtml"></div>');
+                        $form.after($previewArea);
+                        $form.one('submit', () => {
+                            $previewArea.remove();
+                        });
+                    }
 
-                // Render markdown and to be extra sure put it through purify to prevent possible issues with
-                // people pasting malicious input on advice of shitty people.
-                let renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
-                // Fix relative urls as new modmail uses a different subdomain.
-                renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
+                    // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                    // people pasting malicious input on advice of shitty people.
+                    let renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
+                    // Fix relative urls as new modmail uses a different subdomain.
+                    renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
 
-                $previewArea.html(`
+                    $previewArea.html(`
                     <h3 class="tb-preview-heading">Preview</h3>
                     <div class="md">
                         ${renderedHTML}
                     </div>
                     `);
-            }, 100));
+                }, 100),
+            );
         }
 
         // If we have any settings that interfere with the message 'submission', register the listener.
@@ -297,7 +331,9 @@ export default new Module({
                 }
                 const $target = $(event.target);
 
-                $target.closest('.Message__header').append('<button class="tb-source-button tb-general-button">source</button>');
+                $target.closest('.Message__header').append(
+                    '<button class="tb-source-button tb-general-button">source</button>',
+                );
 
                 $('.tb-source-button').click(async e => {
                     // Something is causing the listener to be triggered multiple times.
@@ -324,7 +360,9 @@ export default new Module({
                             } else {
                                 // Fetch and store the conversation info in cache
                                 const currentID = event.detail.data.post.id;
-                                conversationInfo = await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(r => r.json());
+                                conversationInfo = await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(
+                                    r => r.json(),
+                                );
                                 TBStorage.setCache('NewModmailPro', 'current-conversation', conversationInfo);
                                 conversationCached = true;
                             }
@@ -358,36 +396,36 @@ export default new Module({
 
         // let's replace urls.
         switch (modmaillink) {
-        case 'all_modmail':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
+            case 'all_modmail':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
 
-            break;
-        case 'inbox':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inbox`);
+                break;
+            case 'inbox':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inbox`);
 
-            break;
-        case 'new':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}new`);
+                break;
+            case 'new':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}new`);
 
-            break;
-        case 'in_progress':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inprogress`);
+                break;
+            case 'in_progress':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inprogress`);
 
-            break;
-        case 'archived':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}archived`);
+                break;
+            case 'archived':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}archived`);
 
-            break;
-        case 'highlighted':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}highlighted`);
+                break;
+            case 'highlighted':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}highlighted`);
 
-            break;
-        case 'mod_discussions':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}mod`);
+                break;
+            case 'mod_discussions':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}mod`);
 
-            break;
-        case 'notifications':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
+                break;
+            case 'notifications':
+                $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
         }
     }
 });

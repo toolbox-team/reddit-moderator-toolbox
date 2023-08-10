@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
-import * as TBCore from '../tbcore.js';
 import {getCurrentUser} from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import {Module} from '../tbmodule.js';
 
 const self = new Module({
     name: 'Trouble Shooter',
@@ -50,7 +50,8 @@ const self = new Module({
             type: 'boolean',
             default: false,
             advanced: true,
-            description: 'Display the number of children a comment has in the upper left.  This may change the normal flow of the comments page slightly.',
+            description:
+                'Display the number of children a comment has in the upper left.  This may change the normal flow of the comments page slightly.',
         },
     ],
 }, init);
@@ -59,7 +60,17 @@ export default self;
 self.sorted = false;
 self.pending = [];
 
-function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highlightAuto, sortOnMoreChildren, displayNChildren, displayNChildrenTop}) {
+function init (
+    {
+        negHighlightThreshold,
+        highlightControversy,
+        expandOnLoad,
+        highlightAuto,
+        sortOnMoreChildren,
+        displayNChildren,
+        displayNChildrenTop,
+    },
+) {
     const $body = $('body');
     const $buttons = $('<div id="tb-trouble-buttons">');
     const $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start);
@@ -102,7 +113,11 @@ function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highl
         }
 
         $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))
-            .append($('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(collapseNonDrama));
+            .append(
+                $('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(
+                    collapseNonDrama,
+                ),
+            );
 
         if (sortOnMoreChildren) {
             $('.commentarea').on('click', '.morecomments', function () {

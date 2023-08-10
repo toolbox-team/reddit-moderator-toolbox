@@ -1,11 +1,11 @@
-import browser from 'webextension-polyfill';
 import $ from 'jquery';
+import browser from 'webextension-polyfill';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
 
 export default new Module({
     name: 'Notifier',
@@ -50,7 +50,7 @@ export default new Module({
             id: 'messageNotificationSound',
             type: 'boolean',
             default: false,
-            description: "You've got mail.",
+            description: 'You\'ve got mail.',
         },
         {
             id: 'sampleSound',
@@ -194,7 +194,8 @@ export default new Module({
         return;
     }
 
-    const NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3';
+    const NOTIFICATION_SOUND =
+        'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3';
     const unmoderatedOn = await TBStorage.getSettingAsync('Modbar', 'unmoderatedon', true); // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
     const checkIntervalMillis = TBHelpers.minutesToMilliseconds(checkInterval); // setting is in seconds, convert to milliseconds.
     const $body = $('body');
@@ -390,15 +391,19 @@ export default new Module({
         // So we do a check here.
         newModMailCheck();
 
-        $body.on('click', `
+        $body.on(
+            'click',
+            `
                 .ThreadPreviewViewer__thread:not(.m-read),
                 .ThreadPreviewViewerHeader__button,
                 .ThreadPreview__headerLeft .ThreadPreview__control,
                 .ThreadViewerHeader__right
-            `, () => {
-            this.log('Checking modmail count based on click on specific element.');
-            newModMailCheck();
-        });
+            `,
+            () => {
+                this.log('Checking modmail count based on click on specific element.');
+                newModMailCheck();
+            },
+        );
     }
 
     window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
@@ -452,16 +457,36 @@ export default new Module({
         // The reddit api is silly sometimes, we want the title or reported comments and there is no easy way to get it, so here it goes:
         // a silly function to get the title anyway. The getJSON is wrapped in a function to prevent if from running async outside the loop.
 
-        function getcommentitle (unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
+        function getcommentitle (
+            unreadsubreddit,
+            unreadcontexturl,
+            unreadcontext,
+            unreadauthor,
+            unreadbody_html,
+            unreadcommentid,
+        ) {
             TBApi.getJSON(unreadcontexturl).then(jsondata => {
                 TBStorage.purifyObject(jsondata);
                 const commenttitle = jsondata[0].data.children[0].data.title;
                 if (straightToInbox && messageUnreadLink) {
-                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
+                    TBCore.notification(
+                        `Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`,
+                        $(unreadbody_html).text(),
+                        '/message/unread/',
+                    );
                 } else if (straightToInbox) {
-                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
+                    TBCore.notification(
+                        `Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`,
+                        $(unreadbody_html).text(),
+                        '/message/inbox/',
+                    );
                 } else {
-                    TBCore.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
+                    TBCore.notification(
+                        `Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`,
+                        $(unreadbody_html).text(),
+                        unreadcontext,
+                        unreadcommentid,
+                    );
                 }
             });
         }
@@ -562,7 +587,11 @@ export default new Module({
                                 author = value.data.subreddit;
                             }
 
-                            TBCore.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
+                            TBCore.notification(
+                                `New message: ${subject}`,
+                                `${$(body_html).text()}\u2026 \n \n from: ${author}`,
+                                `/message/messages/${id}`,
+                            );
                             pushedunread.push(value.data.name);
                         }
                     });
@@ -585,7 +614,11 @@ export default new Module({
                 const infotitle = jsondata.data.children[0].data.title;
                 const infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink += mqidname.substring(3);
-                TBCore.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
+                TBCore.notification(
+                    `Modqueue - /r/${infosubreddit} - comment: `,
+                    `${mqreportauthor}'s comment in: ${infotitle}`,
+                    `${infopermalink}?context=3`,
+                );
             });
         }
 
@@ -656,7 +689,11 @@ export default new Module({
                     if (queuecount === 1) {
                         TBCore.notification('One new modqueue item!', notificationbody, modQueueURL);
                     } else if (queuecount > 1) {
-                        TBCore.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
+                        TBCore.notification(
+                            `${queuecount.toString()} new modqueue items!`,
+                            notificationbody,
+                            modQueueURL,
+                        );
                     }
                 } else {
                     json.data.children.forEach(value => {
@@ -666,7 +703,11 @@ export default new Module({
                             const mqauthor = value.data.author;
                             const mqsubreddit = value.data.subreddit;
 
-                            TBCore.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
+                            TBCore.notification(
+                                `Modqueue: /r/${mqsubreddit} - post`,
+                                `${mqtitle} By: ${mqauthor}`,
+                                mqpermalink,
+                            );
                             pusheditems.push(value.data.name);
                         } else if (!pusheditems.includes(value.data.name)) {
                             const reportauthor = value.data.author;
@@ -735,7 +776,11 @@ export default new Module({
                         if (queuecount === 1) {
                             TBCore.notification('One new unmoderated item!', notificationbody, unModeratedURL);
                         } else {
-                            TBCore.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
+                            TBCore.notification(
+                                `${queuecount.toString()} new unmoderated items!`,
+                                notificationbody,
+                                unModeratedURL,
+                            );
                         }
                     } else {
                         json.data.children.forEach(value => {
@@ -745,7 +790,11 @@ export default new Module({
                                 const uqauthor = value.data.author;
                                 const uqsubreddit = value.data.subreddit;
 
-                                TBCore.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
+                                TBCore.notification(
+                                    `Unmoderated: /r/${uqsubreddit} - post`,
+                                    `${uqtitle} By: ${uqauthor}`,
+                                    uqpermalink,
+                                );
                             }
                         });
                     }

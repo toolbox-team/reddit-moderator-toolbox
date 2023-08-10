@@ -1,9 +1,9 @@
 import $ from 'jquery';
 
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
 import * as TBui from '../tbui.js';
 
 const self = new Module({
@@ -107,7 +107,8 @@ const self = new Module({
             type: 'number',
             default: 0, // 0 = ueser's default.
             advanced: true,
-            description: 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings',
+            description:
+                'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings',
         },
         {
             id: 'filterBots',
@@ -120,7 +121,8 @@ const self = new Module({
             id: 'botsToFilter',
             type: 'list',
             default: ['AutoModerator'],
-            description: 'Bots to filter from priority view. Bot names should entered separated by a comma without spaces',
+            description:
+                'Bots to filter from priority view. Bot names should entered separated by a comma without spaces',
             hidden: async () => !await self.get('filterBots'),
         },
         {
@@ -230,18 +232,31 @@ self.modmailpro = function ({
     const separator = '<span class="tb-separator"></span>';
     const spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>';
     const $allLink = $(`<li><a class="alllink tb-general-button" href="javascript:;" data-view="${ALL}">all</a></li>`);
-    const $priorityLink = $(`<li><a class="prioritylink tb-general-button" href="javascript:;" data-view="${PRIORITY}">priority</a></li>`);
-    const $filteredLink = $(`<li><a class="filteredlink tb-general-button" href="javascript:;" data-view="${FILTERED}">filtered</a></li>`);
-    const $repliedLink = $(`<li><a class="repliedlink tb-general-button" href="javascript:;" data-view="${REPLIED}">replied</a></li>`);
-    const $unreadLink = $(`<li><a class="unreadlink tb-general-button" href="javascript:;" data-view="${UNREAD}">unread</a></li>`);
-    const $unansweredLink = $(`<li><a class="unansweredlink tb-general-button" href="javascript:;" data-view="${UNANSWERED}">unanswered</a></li>`);
-    const $botsLink = $(`<li><a class="botslink tb-general-button" href="javascript:;" data-view="${BOTS}">bots</a></li>`);
-    const $collapseLink = $('<li><a class="collapse-all-link tb-general-button" href="javascript:;">collapse all</a></li>');
+    const $priorityLink = $(
+        `<li><a class="prioritylink tb-general-button" href="javascript:;" data-view="${PRIORITY}">priority</a></li>`,
+    );
+    const $filteredLink = $(
+        `<li><a class="filteredlink tb-general-button" href="javascript:;" data-view="${FILTERED}">filtered</a></li>`,
+    );
+    const $repliedLink = $(
+        `<li><a class="repliedlink tb-general-button" href="javascript:;" data-view="${REPLIED}">replied</a></li>`,
+    );
+    const $unreadLink = $(
+        `<li><a class="unreadlink tb-general-button" href="javascript:;" data-view="${UNREAD}">unread</a></li>`,
+    );
+    const $unansweredLink = $(
+        `<li><a class="unansweredlink tb-general-button" href="javascript:;" data-view="${UNANSWERED}">unanswered</a></li>`,
+    );
+    const $botsLink = $(
+        `<li><a class="botslink tb-general-button" href="javascript:;" data-view="${BOTS}">bots</a></li>`,
+    );
+    const $collapseLink = $(
+        '<li><a class="collapse-all-link tb-general-button" href="javascript:;">collapse all</a></li>',
+    );
     const $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>');
     const $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
 
-    const infoArea =
-        `<span class="info-area correspondent">
+    const infoArea = `<span class="info-area correspondent">
             <span class="tb-message-count" title="Number of replies to the message."></span>
             <span class="tb-replied-tag"></span>
         </span>`;
@@ -327,7 +342,9 @@ self.modmailpro = function ({
 
         function processThreads (threads, chunkSize, processRate, completeAction, profileKey) {
             TBCore.forEachChunked(
-                threads, chunkSize, processRate,
+                threads,
+                chunkSize,
+                processRate,
                 (thread, count, array) => {
                     self.log(`Running thread batch: ${count + 1} of ${array.length}`);
                     processThread(thread);
@@ -369,7 +386,9 @@ self.modmailpro = function ({
 
                 setView(ALL);
                 $menuList.html(`<a href="${TBCore.link('/message/moderator/')}">go to full mod mail</a>`);
-                $('.unread-count').html(TBStorage.purify(`<b>${newCount}</b> - new mod mail thread${newCount === 1 ? '' : 's'}`));
+                $('.unread-count').html(
+                    TBStorage.purify(`<b>${newCount}</b> - new mod mail thread${newCount === 1 ? '' : 's'}`),
+                );
                 $entries.click();
             } else {
                 // Otherwise setup the view
@@ -505,7 +524,9 @@ self.modmailpro = function ({
         // Don't parse all entries if we don't need to.
         if (fadeRecipient) {
             TBCore.forEachChunked(
-                $entries, 5, entryProcessRate,
+                $entries,
+                5,
+                entryProcessRate,
                 entry => {
                     self.startProfile('fade-recipient-internal');
 
@@ -743,34 +764,34 @@ self.modmailpro = function ({
 
     async function updateView () {
         switch (inbox.toLowerCase()) {
-        case PRIORITY:
-            $priorityLink.closest('li').addClass('selected');
-            hideThreads(filteredSubs);
-            break;
-        case FILTERED:
-            $filteredLink.closest('li').addClass('selected');
-            showThreads(filteredSubs);
-            break;
-        case REPLIED:
-            $repliedLink.closest('li').addClass('selected');
-            showThreads(await getRepliedThreads(), true);
-            break;
-        case UNREAD:
-            $unreadLink.closest('li').addClass('selected');
-            showThreads(unreadThreads, true);
-            break;
-        case UNANSWERED:
-            $unansweredLink.closest('li').addClass('selected');
-            showThreads(unansweredThreads, true);
-            break;
-        case BOTS:
-            $botsLink.closest('li').addClass('selected');
-            showThreads(getBotThreads(), true);
-            break;
-        default: // ALL
-            $allLink.closest('li').addClass('selected');
-            showAllThreads();
-            return;
+            case PRIORITY:
+                $priorityLink.closest('li').addClass('selected');
+                hideThreads(filteredSubs);
+                break;
+            case FILTERED:
+                $filteredLink.closest('li').addClass('selected');
+                showThreads(filteredSubs);
+                break;
+            case REPLIED:
+                $repliedLink.closest('li').addClass('selected');
+                showThreads(await getRepliedThreads(), true);
+                break;
+            case UNREAD:
+                $unreadLink.closest('li').addClass('selected');
+                showThreads(unreadThreads, true);
+                break;
+            case UNANSWERED:
+                $unansweredLink.closest('li').addClass('selected');
+                showThreads(unansweredThreads, true);
+                break;
+            case BOTS:
+                $botsLink.closest('li').addClass('selected');
+                showThreads(getBotThreads(), true);
+                break;
+            default: // ALL
+                $allLink.closest('li').addClass('selected');
+                showAllThreads();
+                return;
         }
 
         // Hide invite spam.
@@ -927,13 +948,17 @@ self.modmailpro = function ({
         setReplied();
     });
 
-    $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink, .botslink', e => {
-        // Just unselect all, then select the caller.
-        $($menuList).find('li').removeClass('selected');
+    $body.on(
+        'click',
+        '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink, .botslink',
+        e => {
+            // Just unselect all, then select the caller.
+            $($menuList).find('li').removeClass('selected');
 
-        const newView = $(e.target).data('view');
-        setView(newView);
-    });
+            const newView = $(e.target).data('view');
+            setView(newView);
+        },
+    );
 
     $body.on('click', '.collapse-all-link', () => {
         if (collapsed) {
@@ -967,7 +992,10 @@ self.modmailpro = function ({
 
 self.autoLoad = function ({autoLoad}) {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
-    if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) {
+    if (
+        location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/)
+        || location.pathname.match(/\/r\/?/)
+    ) {
         return;
     }
 
@@ -978,7 +1006,9 @@ self.autoLoad = function ({autoLoad}) {
 
     const delay = 5000; // Default 5 sec delay between checking for new modmail.
     const refreshLimit = 15; // Default five items per request.
-    const refreshLink = $('<li><a class="refresh-link tb-general-button" href="javascript:;" title="NOTE: this will only show new threads, not replies.">refresh</a></li>');
+    const refreshLink = $(
+        '<li><a class="refresh-link tb-general-button" href="javascript:;" title="NOTE: this will only show new threads, not replies.">refresh</a></li>',
+    );
     const updateURL = '/message/moderator?limit=';
     const menulist = $('.menuarea ul.flat-list:first');
 
@@ -1031,8 +1061,12 @@ self.mailDropDowns = function () {
     const COMPOSE = 'compose-message';
     const SWITCH = 'switch-modmail';
     const composeURL = '/message/compose?to=%2Fr%2F';
-    const $composeSelect = $(`<li><select class="compose-mail tb-action-button inline-button"><option value="${COMPOSE}">compose mod mail</option></select></li>`);
-    const $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`);
+    const $composeSelect = $(
+        `<li><select class="compose-mail tb-action-button inline-button"><option value="${COMPOSE}">compose mod mail</option></select></li>`,
+    );
+    const $switchSelect = $(
+        `<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`,
+    );
     const $mmpMenu = $('.mmp-menu');
 
     populateDropDowns();
@@ -1043,13 +1077,17 @@ self.mailDropDowns = function () {
 
         const mySubs = await TBCore.getModSubs(false);
         $(mySubs).each(function () {
-            $('.compose-mail').append($('<option>', {
-                value: this,
-            }).text(this));
+            $('.compose-mail').append(
+                $('<option>', {
+                    value: this,
+                }).text(this),
+            );
 
-            $('.switch-mail').append($('<option>', {
-                value: this,
-            }).text(this));
+            $('.switch-mail').append(
+                $('<option>', {
+                    value: this,
+                }).text(this),
+            );
         });
 
         $('.compose-mail').change(function () {

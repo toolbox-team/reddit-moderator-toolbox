@@ -18,7 +18,9 @@
     "setAccessor.spaceBeforeParentheses": true,
     "method.spaceBeforeParentheses": true
   },
-  "json": {},
+  "json": {
+    "indentWidth": 4
+  },
   "markdown": {},
   "excludes": [
     "**/node_modules",

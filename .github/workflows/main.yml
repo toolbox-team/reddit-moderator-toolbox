@@ -5,18 +5,12 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  test:
-    # The type of runner that the job will run on
+  ci:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v3
-    - name: Run eslint
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-    - run: npm install
-    - run: npm run eslint
-      env:
-        CI: true
+    - uses: actions/setup-node@v3
+    - run: npm ci
+    - run: npm run fmt
+    - run: npm run lint
+    - run: npm run build

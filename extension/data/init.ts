@@ -107,8 +107,8 @@ async function checkReset () {
  * @returns {Promise<void>}
  */
 async function checkLoadConditions (tries = 3) {
-    let loggedinRedesign = false,
-        loggedinOld = false;
+    let loggedinRedesign = false;
+    let loggedinOld = false;
 
     const $body = $('body');
 
@@ -191,8 +191,8 @@ async function doSettingsUpdates () {
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', lastVersion);
     }
 
-    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15),
-        longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
+    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15);
+    let longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
 
     if (typeof shortLength !== 'number') {
         shortLength = parseInt(shortLength);

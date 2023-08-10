@@ -238,8 +238,8 @@ export const getRatelimit = () => sendRequest({
     endpoint: '/r/toolbox/wiki/ratelimit.json',
 }).then(response => {
     // TODO: these headers may not exist and that isn't handled
-    const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!,
-          ratelimitReset = response.headers.get('x-ratelimit-reset')!;
+    const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!;
+    const ratelimitReset = response.headers.get('x-ratelimit-reset')!;
 
     logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
 

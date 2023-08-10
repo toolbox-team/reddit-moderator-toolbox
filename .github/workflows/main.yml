@@ -1,9 +1,5 @@
 name: tests
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 jobs:
   ci:
     runs-on: ubuntu-latest

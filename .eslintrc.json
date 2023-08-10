@@ -15,6 +15,7 @@
         "plugin:import/recommended"
     ],
     "rules": {
+        "one-var-declaration-per-line": ["error", "always"],
         "array-callback-return": "error",
         "comma-spacing": "error",
         "eol-last": "error",

@@ -1,0 +1,32 @@
+{
+  "typescript": {
+    "lineWidth": 120,
+    "indentWidth": 4,
+    "useTabs": false,
+    "quoteStyle": "alwaysSingle",
+    "quoteProps": "consistent",
+    "useBraces": "always",
+    "arrowFunction.useParentheses": "preferNone",
+    "enumDeclaration.memberSpacing": "newLine",
+    "spaceSurroundingProperties": false,
+    "exportDeclaration.spaceSurroundingNamedExports": false,
+    "importDeclaration.spaceSurroundingNamedImports": false,
+    "constructor.spaceBeforeParentheses": true,
+    "functionDeclaration.spaceBeforeParentheses": true,
+    "functionExpression.spaceBeforeParentheses": true,
+    "getAccessor.spaceBeforeParentheses": true,
+    "setAccessor.spaceBeforeParentheses": true,
+    "method.spaceBeforeParentheses": true
+  },
+  "json": {},
+  "markdown": {},
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.86.1.wasm",
+    "https://plugins.dprint.dev/json-0.17.4.wasm",
+    "https://plugins.dprint.dev/markdown-0.15.3.wasm"
+  ]
+}

@@ -541,7 +541,9 @@ self.queuetoolsOld = function ({
                 const $this = $(this);
                 let shouldSelect = null;
                 $selectOptions.each((_, el) => {
-                    let selector = '', min, max;
+                    let selector = '',
+                        min,
+                        max;
                     switch (el.name) {
                     case 'banned':
                         selector = '.banned-user';
@@ -814,7 +816,8 @@ self.queuetoolsOld = function ({
         }
 
         $body.on('click', '.tb-sort-subs', () => {
-            let prefix = '', page = '';
+            let prefix = '',
+                page = '';
             if (TBCore.isUnmoderatedPage) {
                 self.log('sorting unmod');
                 prefix = 'umq-';
@@ -887,7 +890,8 @@ self.queuetoolsOld = function ({
         function sortThings (order, asc) {
             const $sitetable = $('#siteTable');
             const things = $('#siteTable .thing').sort((a, b) => {
-                let A, B;
+                let A,
+                    B;
                 if (asc) {
                     A = a;
                     B = b;

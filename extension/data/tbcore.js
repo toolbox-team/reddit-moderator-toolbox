@@ -258,7 +258,11 @@ export function catchEvent (tbuEvent, callback) {
 
 // Platform and debugging information
 
-const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
+const CHROME = 'chrome',
+      FIREFOX = 'firefox',
+      OPERA = 'opera',
+      EDGE = 'edge',
+      UNKNOWN_BROWSER = 'unknown';
 /** The name of the current browser. */
 export const browserName =
     typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style
@@ -1595,7 +1599,8 @@ if ($('#header').length) {
     // create an observer instance
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+            const $target = $(mutation.target),
+                  $parentNode = $(mutation.target.parentNode);
 
             if ($target.hasClass('expando')) {
                 const expandoEvent = new CustomEvent('tbNewExpando');

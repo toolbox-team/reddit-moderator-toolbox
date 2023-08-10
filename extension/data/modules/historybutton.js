@@ -464,7 +464,8 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
                 });
             } else {
                 let spec = domainSpecs[data.domain],
-                    details, domain;
+                    details,
+                    domain;
 
                 if (!spec) {
                     // "sub.dom.ain.domain.com" -> "domain.com" (NOTE: does not support "domain.co.uk")
@@ -665,7 +666,9 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
 
         const match = url.match(spec.rx),
               author = match && match[1];
-        let scheme, author_url, provider_url;
+        let scheme,
+            author_url,
+            provider_url;
 
         if (author) {
             scheme = `${url.split('://')[0]}://`;

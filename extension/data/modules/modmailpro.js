@@ -203,7 +203,13 @@ self.modmailpro = function ({
 }) {
     const $body = $('body');
 
-    const ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered', BOTS = 'bots';
+    const ALL = 'all',
+          PRIORITY = 'priority',
+          FILTERED = 'filtered',
+          REPLIED = 'replied',
+          UNREAD = 'unread',
+          UNANSWERED = 'unanswered',
+          BOTS = 'bots';
 
     self.startProfile('settings-access');
     const INVITE = 'moderator invited',

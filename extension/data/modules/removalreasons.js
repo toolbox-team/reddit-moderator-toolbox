@@ -706,7 +706,9 @@ export default new Module({
         // Get custom reason input
         const markdownReasons = [];
         const customInput = [];
-        let flairText = '', flairCSS = '', flairTemplateID = '';
+        let flairText = '',
+            flairCSS = '',
+            flairTemplateID = '';
 
         checked.closest('.selectable-reason').each(function () {
             const $this = $(this);

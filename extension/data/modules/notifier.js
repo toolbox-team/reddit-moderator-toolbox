@@ -613,7 +613,9 @@ export default new Module({
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 const pusheditems = await this.get('modqueuePushed');
                 if (consolidatedMessages) {
-                    let notificationbody, queuecount = 0, xmoreModqueue = 0;
+                    let notificationbody,
+                        queuecount = 0,
+                        xmoreModqueue = 0;
                     json.data.children.forEach(value => {
                         let subreddit,
                             author;
@@ -705,7 +707,9 @@ export default new Module({
                     const lastSeen = await this.set('lastSeenUnmoderated');
 
                     if (consolidatedMessages) {
-                        let notificationbody, queuecount = 0, xmoreUnmod = 0;
+                        let notificationbody,
+                            queuecount = 0,
+                            xmoreUnmod = 0;
 
                         json.data.children.forEach(value => {
                             if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {

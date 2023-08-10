@@ -7,7 +7,10 @@
         "build": "del-cli build && rollup -c rollup.config.js",
         "build:watch": "rollup -c rollup.config.js --watch",
         "build:release": "npm ci && del-cli build && node release.mjs && cross-env NODE_ENV=production rollup -c rollup.config.js",
-        "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
+        "lint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
+        "lint:fix": "eslint . --config .eslintrc.json --ignore-path .eslintignore --fix",
+        "fmt": "dprint check",
+        "fmt:fix": "dprint fmt",
         "docs": "jsdoc -c jsdoc.json"
     },
     "homepage": "http://www.reddit.com/r/toolbox",

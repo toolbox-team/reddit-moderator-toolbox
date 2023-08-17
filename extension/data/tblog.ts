@@ -51,7 +51,7 @@ function log (caller: string | {id: string} | undefined, type: LogType, ...args:
     const text = ('text' in config) ? config.text : type;
     func(
         // First part of the message line
-        `tb: %c[${callerName}] %c${text || type}`,
+        `tb: %c[${callerName}] %c${text}`,
         // Caller style
         'font-weight: bold',
         // Styles for the type name
@@ -77,7 +77,7 @@ function TBLog (caller?: string | {id: string}) {
     const obj: Partial<Logger> = {};
     // The object gets a function for every log type
     for (const type of Object.keys(logTypes) as LogType[]) {
-        // `this` arg is the caller, first arg is the log type
+        // `this` arg is not provided
         obj[type] = log.bind(undefined, caller, type);
     }
     // This isn't a type, but we map it to debug for backwards compatibility

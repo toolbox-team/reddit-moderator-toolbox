@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
-import {template} from '../tbhelpers.js';
 import {debugInformation} from '../tbcore.js';
+import {template} from '../tbhelpers.js';
+import {Module} from '../tbmodule.js';
 
 export default new Module({
     name: 'Support Module',
@@ -66,7 +66,9 @@ Info| &nbsp;
         if ($tbUsertextButtons.length) {
             $tbUsertextButtons.before($debugInsertButton);
         } else {
-            $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($debugInsertButton));
+            $saveButton.parent().find('.status').before(
+                $('<div>').addClass('tb-usertext-buttons').append($debugInsertButton),
+            );
         }
 
         $('body').on('click', 'div.tb-insert-debug', function () {

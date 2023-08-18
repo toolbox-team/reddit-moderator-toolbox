@@ -1,8 +1,8 @@
-import browser from 'webextension-polyfill';
 import $ from 'jquery';
+import browser from 'webextension-polyfill';
 
-import {Module} from '../tbmodule.js';
 import * as TBCore from '../tbcore.js';
+import {Module} from '../tbmodule.js';
 
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety
@@ -20,12 +20,11 @@ export default new Module({
     $snooFooter.css({
         'background-image': `url(${browser.runtime.getURL('data/images/balloon.png')})`,
         'background-repeat': 'no-repeat',
-
     });
 
     $snooFooter.click(function () {
-        const width = 87,
-              height = 145;
+        const width = 87;
+        const height = 145;
 
         // unlock achievement
         TBCore.sendEvent(TBCore.events.TB_FLY_SNOO);
@@ -40,12 +39,12 @@ export default new Module({
             zIndex: 999,
         }).appendTo('body');
 
-        const documentHeight = $(document).height(),
-              documentWidth = $(document).width();
-        let iterations = 0,
-            wind = 0,
-            oldTop = floater.position().top,
-            oldLeft = floater.position().left;
+        const documentHeight = $(document).height();
+        const documentWidth = $(document).width();
+        let iterations = 0;
+        let wind = 0;
+        let oldTop = floater.position().top;
+        let oldLeft = floater.position().left;
 
         let keepFlying = false;
 
@@ -98,8 +97,8 @@ export default new Module({
             floater.data('offsetY', e.offsetY);
 
             function dragEvent (e) {
-                const offsetX = floater.data('offsetX') || 0,
-                      offsetY = floater.data('offsetY') || 0;
+                const offsetX = floater.data('offsetX') || 0;
+                const offsetY = floater.data('offsetY') || 0;
                 oldLeft = e.pageX - offsetX;
                 oldTop = e.pageY - offsetY;
                 floater.css({

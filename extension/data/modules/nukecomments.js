@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 export default new Module({
     name: 'Comment Nuke',
@@ -87,7 +87,8 @@ export default new Module({
                     title: 'Nuke tab',
                     tooltip: '',
                     content: $popupContents,
-                    footer: '<button class="tb-execute-nuke tb-action-button">Execute</button> <button class="tb-retry-nuke tb-action-button">Retry</button>',
+                    footer:
+                        '<button class="tb-execute-nuke tb-action-button">Execute</button> <button class="tb-retry-nuke tb-action-button">Retry</button>',
                 },
             ],
             cssClass: 'nuke-button-popup',
@@ -111,12 +112,20 @@ export default new Module({
                 // Distinguished chain
                 const distinguishedCommentsLength = distinguishedComments.length;
                 $popup.find('.tb-nuke-details').html(TBStorage.purify(`
-                    <p>${removalChainLength + distinguishedCommentsLength} comments found (Already removed comments not included).</p>
+                    <p>${
+                    removalChainLength + distinguishedCommentsLength
+                } comments found (Already removed comments not included).</p>
                     <p>${distinguishedCommentsLength} distinguished comments found.</p>
-                    <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ' checked="checked"' : ''}>Ignore distinguished comments from mods and admins</label></p>
+                    <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${
+                    ignoreDistinguished ? ' checked="checked"' : ''
+                }>Ignore distinguished comments from mods and admins</label></p>
                     <p>
-                        <label><input type="radio" value="remove" name="tb-execution-type-radio" class="tb-execution-type-radio" ${executionType === 'remove' ? ' checked="checked"' : ''}>Remove comments</label>
-                        <label><input type="radio" value="lock" name="tb-execution-type-radio" class="tb-execution-type-radio" ${executionType === 'lock' ? ' checked="checked"' : ''}>Lock comments</label>
+                        <label><input type="radio" value="remove" name="tb-execution-type-radio" class="tb-execution-type-radio" ${
+                    executionType === 'remove' ? ' checked="checked"' : ''
+                }>Remove comments</label>
+                        <label><input type="radio" value="lock" name="tb-execution-type-radio" class="tb-execution-type-radio" ${
+                    executionType === 'lock' ? ' checked="checked"' : ''
+                }>Lock comments</label>
                     </p>
                     `));
                 $popup.find('.tb-execute-nuke').show();
@@ -155,7 +164,14 @@ export default new Module({
             let removalCount = 0;
             Promise.all(commentArray.map(async comment => {
                 removalCount++;
-                TBui.textFeedback(`${executionType === 'remove' ? 'Removing' : 'Locking'} comment ${removalCount}/${removalArrayLength}`, TBui.FEEDBACK_NEUTRAL);
+                TBui.textFeedback(
+                    `${
+                        executionType === 'remove'
+                            ? 'Removing'
+                            : 'Locking'
+                    } comment ${removalCount}/${removalArrayLength}`,
+                    TBui.FEEDBACK_NEUTRAL,
+                );
                 if (executionType === 'remove') {
                     await TBApi.removeThing(`t1_${comment}`, false, false).catch(() => {
                         missedComments.push(comment);
@@ -172,7 +188,11 @@ export default new Module({
                 const missedLength = missedComments.length;
                 if (missedLength) {
                     retryExecutionType = executionType;
-                    $nukeDetails.text(`${missedLength}: not ${executionType === 'remove' ? 'removed' : 'locked'} because of API errors. Hit retry to attempt removing them again.`);
+                    $nukeDetails.text(
+                        `${missedLength}: not ${
+                            executionType === 'remove' ? 'removed' : 'locked'
+                        } because of API errors. Hit retry to attempt removing them again.`,
+                    );
                     $popup.find('.tb-retry-nuke').show();
                 } else {
                     setTimeout(() => {
@@ -205,50 +225,57 @@ export default new Module({
 
     async function parseComments (object, postID, subreddit) {
         switch (object.kind) {
-        case 'Listing': {
-            for (let i = 0; i < object.data.children.length; i++) {
-                await parseComments(object.data.children[i], postID, subreddit);
-            }
-            break;
-        }
-
-        case 't1': {
-            const distinguishedType = object.data.distinguished;
-            if ((distinguishedType === 'admin' || distinguishedType === 'moderator') && !distinguishedComments.includes(object.data.id)) {
-                distinguishedComments.push(object.data.id);
-                // Ignore already removed stuff to lower the amount of calls we need to make.
-            } else if (!removalChain.includes(object.data.id) && !object.data.removed && !object.data.spam) {
-                removalChain.push(object.data.id);
+            case 'Listing': {
+                for (let i = 0; i < object.data.children.length; i++) {
+                    await parseComments(object.data.children[i], postID, subreddit);
+                }
+                break;
             }
 
-            if (Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies && typeof object.data.replies === 'object') {
-                await parseComments(object.data.replies, postID, subreddit); // we need to go deeper.
-            }
-            break;
-        }
+            case 't1': {
+                const distinguishedType = object.data.distinguished;
+                if (
+                    (distinguishedType === 'admin' || distinguishedType === 'moderator')
+                    && !distinguishedComments.includes(object.data.id)
+                ) {
+                    distinguishedComments.push(object.data.id);
+                    // Ignore already removed stuff to lower the amount of calls we need to make.
+                } else if (!removalChain.includes(object.data.id) && !object.data.removed && !object.data.spam) {
+                    removalChain.push(object.data.id);
+                }
 
-        case 'more': {
-            self.log('"load more" encountered, going even deeper');
-            let commentIDs = object.data.children;
-            if (!commentIDs.length) {
-                // "continue this thread" links generated when a thread gets
-                // too deep return empty `children` lists, thanks Reddit
-                commentIDs = [object.data.parent_id.substring(3)];
+                if (
+                    Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies
+                    && typeof object.data.replies === 'object'
+                ) {
+                    await parseComments(object.data.replies, postID, subreddit); // we need to go deeper.
+                }
+                break;
             }
 
-            for (const id of commentIDs) {
-                const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
-                // Lets get the comments.
-                const data = await TBApi.getJSON(fetchUrl, {raw_json: 1});
-                TBStorage.purifyObject(data);
-                await parseComments(data[1].data.children[0], postID, subreddit);
+            case 'more':
+                {
+                    self.log('"load more" encountered, going even deeper');
+                    let commentIDs = object.data.children;
+                    if (!commentIDs.length) {
+                        // "continue this thread" links generated when a thread gets
+                        // too deep return empty `children` lists, thanks Reddit
+                        commentIDs = [object.data.parent_id.substring(3)];
+                    }
+
+                    for (const id of commentIDs) {
+                        const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
+                        // Lets get the comments.
+                        const data = await TBApi.getJSON(fetchUrl, {raw_json: 1});
+                        TBStorage.purifyObject(data);
+                        await parseComments(data[1].data.children[0], postID, subreddit);
+                    }
+                }
+                break;
+            default: {
+                self.log('default, this should not happen...');
+                // This shouldn't actually happen...
             }
-        }
-            break;
-        default: {
-            self.log('default, this should not happen...');
-            // This shouldn't actually happen...
-        }
         }
     }
 
@@ -266,13 +293,21 @@ export default new Module({
             return;
         }
         // We also have to be on a comments page or looking at a context popup
-        if (pageType !== 'subredditCommentsPage' && pageType !== 'subredditCommentPermalink' && !$target.closest('.context-button-popup').length) {
+        if (
+            pageType !== 'subredditCommentsPage' && pageType !== 'subredditCommentPermalink'
+            && !$target.closest('.context-button-popup').length
+        ) {
             return;
         }
 
-        const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
+        const NukeButtonHTML =
+            `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${
+                e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'
+            }</span>`;
         if (showNextToUser && TBCore.isOldReddit) {
-            const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container .tb-frontend-container');
+            const $userContainter = $target.closest('.entry, .tb-comment-entry').find(
+                '.tb-jsapi-author-container .tb-frontend-container',
+            );
             $userContainter.append(NukeButtonHTML);
         } else {
             $target.append(NukeButtonHTML);

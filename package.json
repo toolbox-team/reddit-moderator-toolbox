@@ -7,7 +7,10 @@
         "build": "del-cli build && rollup -c rollup.config.js",
         "build:watch": "rollup -c rollup.config.js --watch",
         "build:release": "npm ci && del-cli build && node release.mjs && cross-env NODE_ENV=production rollup -c rollup.config.js",
-        "eslint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
+        "lint": "eslint . --config .eslintrc.json --ignore-path .eslintignore",
+        "lint:fix": "eslint . --config .eslintrc.json --ignore-path .eslintignore --fix",
+        "fmt": "dprint check",
+        "fmt:fix": "dprint fmt",
         "docs": "jsdoc -c jsdoc.json"
     },
     "homepage": "http://www.reddit.com/r/toolbox",
@@ -28,8 +31,8 @@
         "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
-        "@rollup/plugin-commonjs": "^25.0.3",
-        "@rollup/plugin-node-resolve": "^15.1.0",
+        "@rollup/plugin-commonjs": "^25.0.4",
+        "@rollup/plugin-node-resolve": "^15.2.0",
         "@rollup/plugin-typescript": "^11.1.2",
         "@tsconfig/recommended": "^1.0.2",
         "@types/jquery": "^3.5.16",
@@ -37,7 +40,8 @@
         "cross-env": "^7.0.3",
         "del-cli": "^5.0.0",
         "docdash": "^2.0.1",
-        "eslint": "^8.46.0",
+        "dprint": "^0.40.2",
+        "eslint": "^8.47.0",
         "eslint-plugin-import": "^2.28.0",
         "inquirer": "^9.2.10",
         "jsdoc": "^4.0.2",

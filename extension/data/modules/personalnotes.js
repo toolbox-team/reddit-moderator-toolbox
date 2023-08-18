@@ -1,10 +1,10 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.ts';
-import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import {Module} from '../tbmodule.js';
+import * as TBui from '../tbui.js';
 
 import {modbarExists} from './modbar.js';
 
@@ -38,8 +38,8 @@ export default new Module({
         return;
     }
     const $body = $('body');
-    let notesArray = [],
-        notesPopupContent;
+    let notesArray = [];
+    let notesPopupContent;
 
     // Template HTML for each item in the note list
     const noteListTemplate = `
@@ -130,7 +130,9 @@ export default new Module({
 
     // add the button to the modbar once the modbar is available
     modbarExists.then(() => {
-        $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
+        $body.find('#tb-toolbarshortcuts').before(
+            ' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>',
+        );
     });
 
     // Since we have a button we can click on it!
@@ -151,7 +153,8 @@ export default new Module({
 
             // Empty subreddit.
             if (notewiki === '') {
-                notesPopupContent = '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
+                notesPopupContent =
+                    '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
                 createPersonalNotesPopup(notesPopupContent);
 
                 // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
@@ -180,7 +183,9 @@ export default new Module({
                                 <span>Welcome to your personal notes!</span>
                                 <span class="tb-personal-notes-landing-subtitle">Click or create a note on the left to get started.</span>
                             </div>
-                            <textarea class="tb-input" id="tb-personal-notes-editarea" ${monospace ? 'style="font-family: monospace;"' : ''}></textarea>
+                            <textarea class="tb-input" id="tb-personal-notes-editarea" ${
+                    monospace ? 'style="font-family: monospace;"' : ''
+                }></textarea>
                         </td>
                     </tr></table>
                 `;
@@ -195,8 +200,8 @@ export default new Module({
                         if (count === 0) {
                             notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
                         } else {
-                            let notecount = 0,
-                                noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
+                            let notecount = 0;
+                            let noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
 
                             json.data.forEach(value => {
                                 if (/notes\//.test(value)) {
@@ -232,8 +237,8 @@ export default new Module({
 
     // When clicking a wiki page.
     $body.on('click', '.personal-notes-popup .tb-personal-note-link', function () {
-        const $this = $(this),
-              wikiPage = $this.data('wiki');
+        const $this = $(this);
+        const wikiPage = $this.data('wiki');
         // $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
         $body.find('#tb-personal-notes-ul').find('li').removeClass('tb-personal-notes-active');
         // $this.addClass('tb-personal-notes-active');
@@ -285,9 +290,9 @@ export default new Module({
 
     $body.on('click', '.personal-notes-popup #save-personal-note', function () {
         const $this = $(this);
-        const page = $this.attr('data-note'),
-              data = $body.find('#tb-personal-notes-editarea').val(),
-              reason = 'Saving personal toolbox note';
+        const page = $this.attr('data-note');
+        const data = $body.find('#tb-personal-notes-editarea').val();
+        const reason = 'Saving personal toolbox note';
         saveNoteWiki(page, notewiki, data, reason, false);
     });
 

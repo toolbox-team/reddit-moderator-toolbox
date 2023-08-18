@@ -1,11 +1,11 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
 import TBModule, {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import * as TBApi from '../tbapi.ts';
 
 // Hold onto the modbarExists resolver so we can call it when the time is right
 let resolveModbarExists = null;
@@ -137,58 +137,58 @@ export default new Module({
     // preload some generic variables
     //
 
-    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false),
+    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
 
-          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod'),
-          unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0),
-          modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0),
-          unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0),
-          modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0),
-          newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0),
-          notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true),
-          modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0),
+    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0);
+    const modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0);
+    const unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0);
+    const modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0);
+    const newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0);
+    const notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true);
+    const modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0);
 
-          modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
-          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Ready some details for new modmail linking
-    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail'),
-          openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail,
-          newModmailBaseUrl = 'https://mod.reddit.com/mail/';
+    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail');
+    const openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail;
+    const newModmailBaseUrl = 'https://mod.reddit.com/mail/';
     let newModmailUrl;
 
     switch (modmailLink) {
-    case 'all_modmail':
-        newModmailUrl = `${newModmailBaseUrl}all`;
+        case 'all_modmail':
+            newModmailUrl = `${newModmailBaseUrl}all`;
 
-        break;
-    case 'inbox':
-        newModmailUrl = `${newModmailBaseUrl}inbox`;
+            break;
+        case 'inbox':
+            newModmailUrl = `${newModmailBaseUrl}inbox`;
 
-        break;
-    case 'new':
-        newModmailUrl = `${newModmailBaseUrl}new`;
+            break;
+        case 'new':
+            newModmailUrl = `${newModmailBaseUrl}new`;
 
-        break;
-    case 'in_progress':
-        newModmailUrl = `${newModmailBaseUrl}inprogress`;
+            break;
+        case 'in_progress':
+            newModmailUrl = `${newModmailBaseUrl}inprogress`;
 
-        break;
-    case 'archived':
-        newModmailUrl = `${newModmailBaseUrl}archived`;
+            break;
+        case 'archived':
+            newModmailUrl = `${newModmailBaseUrl}archived`;
 
-        break;
-    case 'highlighted':
-        newModmailUrl = `${newModmailBaseUrl}highlighted`;
+            break;
+        case 'highlighted':
+            newModmailUrl = `${newModmailBaseUrl}highlighted`;
 
-        break;
-    case 'mod_discussions':
-        newModmailUrl = `${newModmailBaseUrl}mod`;
+            break;
+        case 'mod_discussions':
+            newModmailUrl = `${newModmailBaseUrl}mod`;
 
-        break;
-    case 'notifications':
-        newModmailUrl = `${newModmailBaseUrl}notifications`;
+            break;
+        case 'notifications':
+            newModmailUrl = `${newModmailBaseUrl}notifications`;
     }
 
     // Custom CSS for debug mode/testing
@@ -212,7 +212,9 @@ export default new Module({
         $('#tb-modmailcount').attr('href', modMailUrl);
     }
 
-    const modQueueUrl = TBCore.link(modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
+    const modQueueUrl = TBCore.link(
+        modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`,
+    );
     const $modBar = $(`
 <div id="tb-bottombar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">${TBui.icons.arrowLeft}</a>
@@ -223,11 +225,15 @@ export default new Module({
     </span>
     <span id="tb-bottombar-contentright">
         <span id="tb-toolbarcounters">
-            <a title="no mail" href="${TBCore.link('/message/inbox/')}" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
+            <a title="no mail" href="${
+        TBCore.link('/message/inbox/')
+    }" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
             <a href="${TBCore.link('/message/inbox/')}" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">${TBui.icons.oldModmail}</a>
             <a href="${modMailUrl}" id="tb-modmailcount"></a>
-            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? 'target="_blank"' : ''}>${TBui.icons.newModmail}</a>
+            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>${TBui.icons.newModmail}</a>
             <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}></a>
             <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">${TBui.icons.modqueue}</a>
             <a href="${modQueueUrl}" id="tb-queueCount"></a>
@@ -236,31 +242,45 @@ export default new Module({
     <div id="tb-new-modmail-tooltip">
         <table>
             <tr id="tb-new-modmail-new">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>New</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>New</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-inprogress">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>In Progress</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>In Progress</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-banappeals">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/appeals" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Ban Appeals</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/appeals" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>Ban Appeals</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-joinrequests">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/join_requests" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Join Requests</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/join_requests" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>Join Requests</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-highlighted">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Highlighted</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>Highlighted</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-mod">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Mod Discussions</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>Mod Discussions</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-notifications">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Notifications</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" id="tb-new-modmailcount" ${
+        openMailTab ? 'target="_blank"' : ''
+    }>Notifications</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
     </div>
@@ -279,7 +299,11 @@ export default new Module({
     // Add unmoderated icon if it is enabled.
 
     if (unmoderatedOn) {
-        const unModQueueUrl = TBCore.link(unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
+        const unModQueueUrl = TBCore.link(
+            unmoderatedSubredditsFMod
+                ? '/me/f/mod/about/unmoderated/'
+                : `/r/${unmoderatedSubreddits}/about/unmoderated`,
+        );
         $modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">${TBui.icons.unmoderated}</a>
 <a href="${unModQueueUrl}" id="tb-unmoderatedCount"></a>
@@ -288,7 +312,9 @@ export default new Module({
 
     const $modbarhid = $(`
 <div id="tb-bottombar-hidden" class="${compactHide ? 'tb-bottombar-compact' : ''}">
-    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? TBui.icons.dotMenu : TBui.icons.arrowRight}</a>
+    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${
+        compactHide ? TBui.icons.dotMenu : TBui.icons.arrowRight
+    }</a>
 </div>
 `);
 
@@ -328,12 +354,14 @@ export default new Module({
             if (!mySubsData.length) {
                 return;
             }
-            $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
+            $body.find('#tb-bottombar-contentleft').prepend(
+                '<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ',
+            );
 
             let subList = '';
 
-            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false),
-                  usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
+            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false);
+            const usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
             this.log('got mod subs');
             this.log(mySubsData.length);
 
@@ -341,15 +369,35 @@ export default new Module({
                 const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
                 subList += `
                     <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
-                        <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${TBCore.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
+                        <td class="tb-my-subreddits-name"><a title="/r/${this.subreddit}" href="${
+                    TBCore.link(`/r/${this.subreddit}`)
+                }" target="_blank">/r/${this.subreddit}</a></td>
                         <td class="tb-my-subreddits-subreddit">
-                            <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/message/moderator`)}" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
-                            <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/modqueue`)}" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
-                            <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/unmoderated`)}" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
-                            <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/log`)}" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
-                            <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBCore.link(`/r/${this.subreddit}/about/traffic`)}" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
-                            ${usernotesEnabled ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>` : ''}
-                            ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
+                            <a title="/r/${this.subreddit} modmail!" target="_blank" href="${
+                    TBCore.link(`/r/${this.subreddit}/message/moderator`)
+                }" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
+                            <a title="/r/${this.subreddit} modqueue" target="_blank" href="${
+                    TBCore.link(`/r/${this.subreddit}/about/modqueue`)
+                }" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
+                            <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${
+                    TBCore.link(`/r/${this.subreddit}/about/unmoderated`)
+                }" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
+                            <a title="/r/${this.subreddit} moderation log" target="_blank" href="${
+                    TBCore.link(`/r/${this.subreddit}/about/log`)
+                }" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
+                            <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${
+                    TBCore.link(`/r/${this.subreddit}/about/traffic`)
+                }" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
+                            ${
+                    usernotesEnabled
+                        ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>`
+                        : ''
+                }
+                            ${
+                    configEnabled
+                        ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>`
+                        : ''
+                }
                         </td>
                     </tr>
                 `;
@@ -393,8 +441,8 @@ export default new Module({
                 $body.find('#tb-livefilter-input').keyup(function () {
                     const LiveSearchValue = $(this).val();
                     $body.find('#tb-my-subreddits table tr').each(function () {
-                        const $this = $(this),
-                              subredditName = $this.attr('data-subreddit');
+                        const $this = $(this);
+                        const subredditName = $this.attr('data-subreddit');
 
                         if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
                             $this.hide();
@@ -428,7 +476,9 @@ export default new Module({
 
     if (debugMode) {
         // Reload button
-        $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">${TBui.icons.tbReload}</a>`);
+        $('#tb-bottombar').find('#tb-toolbarcounters').before(
+            `<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">${TBui.icons.tbReload}</a>`,
+        );
 
         $body.on('click', '#tb-reload-link', () => {
             this.log('reloading chrome');
@@ -439,7 +489,11 @@ export default new Module({
     // Append shortcuts
     Object.entries(shortcuts).forEach(([index, value]) => {
         // TODO: Separators here should probably use CSS rather than having nested elements and stuff
-        const $shortcut = $(`<a class="tb-no-gustavobc" href="${TBHelpers.htmlEncode(unescape(value))}">${TBHelpers.htmlEncode(unescape(index))}</a>`);
+        const $shortcut = $(
+            `<a class="tb-no-gustavobc" href="${TBHelpers.htmlEncode(unescape(value))}">${
+                TBHelpers.htmlEncode(unescape(index))
+            }</a>`,
+        );
         $shortcut.appendTo('#tb-toolbarshortcuts');
     });
 
@@ -499,8 +553,8 @@ export default new Module({
 
     // check for passed settings.
     function switchTab (module) {
-        const $this = $body.find(`[data-module="${module}"]`),
-              $tb_help_mains = $('.tb-help-main');
+        const $this = $body.find(`[data-module="${module}"]`);
+        const $tb_help_mains = $('.tb-help-main');
 
         // achievement support
         if (module === 'about') {
@@ -532,10 +586,12 @@ export default new Module({
             if (setting) {
                 setting = setting.toLowerCase();
                 const id = `#tb-${module}-${setting}`;
-                let highlightedCSS = `${id} p {background-color: ${TBui.standardColors.softyellow}; display: block !important;}`;
+                let highlightedCSS =
+                    `${id} p {background-color: ${TBui.standardColors.softyellow}; display: block !important;}`;
 
                 // this next line is to deal with legacy settings
-                highlightedCSS += `${id}{background-color: ${TBui.standardColors.softyellow}; display: block !important;}`;
+                highlightedCSS +=
+                    `${id}{background-color: ${TBui.standardColors.softyellow}; display: block !important;}`;
                 highlightedCSS += `.tb-setting-link-${setting} {display: inline !important;}`;
 
                 $('head').append(`<style type="text/css">${highlightedCSS}</style>`);
@@ -559,8 +615,8 @@ export default new Module({
 });
 
 function getDirectingTo () {
-    let url = window.location.href.replace(/^http:/, 'https:'),
-        directingTo;
+    let url = window.location.href.replace(/^http:/, 'https:');
+    let directingTo;
     if (url.startsWith('https://old.')) {
         url = url.replace('old.', 'www.');
         directingTo = 'new Reddit';

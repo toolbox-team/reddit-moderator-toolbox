@@ -18,14 +18,14 @@
         "search": true,
         "menu": {
             "Github": {
-                "href":"https://github.com/toolbox-team/reddit-moderator-toolbox",
-                "target":"_blank",
-                "class":"menu-item"
+                "href": "https://github.com/toolbox-team/reddit-moderator-toolbox",
+                "target": "_blank",
+                "class": "menu-item"
             },
             "Subreddit": {
-                "href":"https://www.reddit.com/r/toolbox",
-                "target":"_blank",
-                "class":"menu-item"
+                "href": "https://www.reddit.com/r/toolbox",
+                "target": "_blank",
+                "class": "menu-item"
             }
         }
     }

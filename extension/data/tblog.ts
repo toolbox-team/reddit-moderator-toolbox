@@ -63,9 +63,8 @@ function log (caller: string | {id: string} | undefined, type: LogType, ...args:
 
 /** A logger associated with an aribitrary caller. */
 type Logger = {
-    [type in LogType | 'log']:
-        (...args: any[]) => void;
-}
+    [type in LogType | 'log']: (...args: any[]) => void;
+};
 
 /**
  * Creates a logger object with a given caller.

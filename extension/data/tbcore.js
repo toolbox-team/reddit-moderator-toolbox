@@ -3,9 +3,9 @@ import browser from 'webextension-polyfill';
 
 import * as TBApi from './tbapi.ts';
 import {getModhash} from './tbapi.ts';
-import {icons} from './tbconstants.js';
+import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
-import TBLog from './tblog.js';
+import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
 
 const logger = TBLog('TBCore');

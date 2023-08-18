@@ -1,11 +1,11 @@
 import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
-import * as TBConstants from './tbconstants.js';
+import * as TBConstants from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.js';
+import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';
 

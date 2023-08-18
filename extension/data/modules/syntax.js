@@ -1,7 +1,7 @@
 import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
-import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.js';
+import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.ts';
 import {Module} from '../tbmodule.js';
 import * as TBui from '../tbui.js';
 

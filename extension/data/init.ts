@@ -24,11 +24,14 @@ import 'codemirror/mode/yaml/yaml.js';
 
 import './tbplugins.js';
 
+//
+// master
 import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
 import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.js';
+// HEAD
+import TBLog from './tblog';
 import TBModule from './tbmodule.js';
 import * as TBStorage from './tbstorage.js';
 
@@ -270,7 +273,6 @@ async function doSettingsUpdates () {
     try {
         await checkLoadConditions();
     } catch (error) {
-        // @ts-expect-error logger types are still broken
         logger.error('Load condition not met:', (error as Error).message);
         return;
     }
@@ -357,7 +359,6 @@ async function doSettingsUpdates () {
             OldReddit,
         ]
     ) {
-        // @ts-expect-error TODO logger types are still broken
         logger.debug('Registering module', m);
         TBModule.register_module(m);
     }

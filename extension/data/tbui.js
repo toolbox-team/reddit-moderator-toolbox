@@ -5,10 +5,10 @@ import browser from 'webextension-polyfill';
 import * as TBApi from './tbapi.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
-import TBLog from './tblog.js';
+import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
 
-import {icons} from './tbconstants';
+import {icons} from './tbconstants.ts';
 export {icons};
 
 const logger = TBLog('TBui');

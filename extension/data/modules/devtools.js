@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import {escapeHTML} from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import {escapeHTML} from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 export default new Module({
     name: 'Developer Tools',
@@ -41,7 +41,11 @@ export default new Module({
             </span>
             `);
         $target.on('click', '.tb-show-api-info', event => {
-            const $pasteContent = $(`<pre class="tb-api-info"><code>${escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
+            const $pasteContent = $(
+                `<pre class="tb-api-info"><code>${
+                    escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))
+                }</code></pre>`,
+            );
             // Prepare for the popup.
             let leftPosition;
             if (document.documentElement.clientWidth - event.pageX < 400) {
@@ -126,17 +130,17 @@ export default new Module({
         });
 
         $body.on('click', '.tb-test-notification-button', () => {
-            const title = $body.find('#tb-test-notification-title').val(),
-                  body = $body.find('#tb-test-notification-body').val(),
-                  path = $body.find('#tb-test-notification-path').val(),
-                  markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
+            const title = $body.find('#tb-test-notification-title').val();
+            const body = $body.find('#tb-test-notification-body').val();
+            const path = $body.find('#tb-test-notification-path').val();
+            const markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
 
             TBCore.notification(title, body, path, markreadid);
         });
 
         $body.on('click', '.tb-testCommentUI-button', async function () {
-            const $this = $(this),
-                  $siteTable = $body.find('#tb-comment-sitetable');
+            const $this = $(this);
+            const $siteTable = $body.find('#tb-comment-sitetable');
             $siteTable.empty();
             // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
             const inputURL = $body.find('#tb-testCommentUI-input-url').val();

@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 // FIXME: It no longer makes sense to bake logger functions into modules
 //        themselves, since functions the module defines may not have the module
@@ -58,8 +58,8 @@ const self = new Module({
 export default self;
 
 function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
-    const subs = [],
-          $body = $('body');
+    const subs = [];
+    const $body = $('body');
     const self = this;
     let firstRun = true;
 
@@ -213,14 +213,17 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             $(`.add-usernote-${subreddit}`).remove();
 
             // Alert the user
-            const message = notes.ver > TBCore.notesMaxSchema ?
-                `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.` :
-                `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
+            const message = notes.ver > TBCore.notesMaxSchema
+                ? `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.`
+                : `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
 
             TBCore.alert({message}).then(clicked => {
                 if (clicked) {
-                    window.open(notes.ver > TBCore.notesMaxSchema ? '/r/toolbox/wiki/get' :
-                        `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`);
+                    window.open(
+                        notes.ver > TBCore.notesMaxSchema
+                            ? '/r/toolbox/wiki/get'
+                            : `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`,
+                    );
                 }
             });
         }
@@ -255,9 +258,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 
         TBCore.forEachChunked(things, 20, 100, thing => {
             // Get all tags related to the current subreddit
-            const $thing = $(thing),
-                  user = $thing.attr('data-author'),
-                  u = getUser(notes.users, user);
+            const $thing = $(thing);
+            const user = $thing.attr('data-author');
+            const u = getUser(notes.users, user);
 
             let $usertag;
             if (TBCore.isEditUserPage) {
@@ -267,8 +270,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             }
 
             // Only happens if you delete the last note.
-            const defaultButtonText = $usertag.attr('data-default-text'),
-                  currentText = $usertag.text();
+            const defaultButtonText = $usertag.attr('data-default-text');
+            const currentText = $usertag.text();
             if ((u === undefined || u.notes.length < 1) && currentText !== defaultButtonText) {
                 $usertag.css('color', '');
                 $usertag.empty();
@@ -278,8 +281,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                 return;
             }
 
-            const noteData = u.notes[0],
-                  date = new Date(noteData.time);
+            const noteData = u.notes[0];
+            const date = new Date(noteData.time);
             let note = noteData.note;
 
             // Add title before note concat.
@@ -290,15 +293,19 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             }
 
             if (showDate) {
-                note = `${note} (${date.toLocaleDateString({
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                })})`;
+                note = `${note} (${
+                    date.toLocaleDateString({
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                    })
+                })`;
             }
 
             $usertag.empty();
-            $usertag.append($('<b>').text(note)).append($('<span>').text(u.notes.length > 1 ? `  (+${u.notes.length - 1})` : ''));
+            $usertag.append($('<b>').text(note)).append(
+                $('<span>').text(u.notes.length > 1 ? `  (+${u.notes.length - 1})` : ''),
+            );
 
             let type = u.notes[0].type;
             if (!type) {
@@ -324,7 +331,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         }
         const $popup = TBui.popup({
             title: `<div class="utagger-title">
-                    <span>User Notes - <a href="${TBCore.link(`/user/${user}`)}" id="utagger-user-link">/u/${user}</a></span>
+                    <span>User Notes - <a href="${
+                TBCore.link(`/user/${user}`)
+            }" id="utagger-user-link">/u/${user}</a></span>
                 </div>`,
             tabs: [{
                 content: `
@@ -343,7 +352,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                             <div class="utagger-input-wrapper">
                                 <input type="text" class="utagger-user-note tb-input" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
                                 <label class="utagger-include-link">
-                                    <input type="checkbox" ${!disableLink ? 'checked' : ''}${disableLink ? 'disabled' : ''}>
+                                    <input type="checkbox" ${!disableLink ? 'checked' : ''}${
+                    disableLink ? 'disabled' : ''
+                }>
                                     <span>Include link</span>
                                 </label>
                             </div>
@@ -361,8 +372,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         });
 
         // defined so we can easily add things to these specific areas after loading the notes.
-        const $noteList = $popup.find('.utagger-content .utagger-notes tbody'),
-              $typeList = $popup.find('.utagger-types .utagger-type-list');
+        const $noteList = $popup.find('.utagger-content .utagger-notes tbody');
+        const $typeList = $popup.find('.utagger-types .utagger-type-list');
 
         // We want to make sure windows fit on the screen.
         const positions = TBui.drawPosition(e);
@@ -441,9 +452,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                     // to be saved — and therefore still retain millisecond accuracy — may not be considered
                     // equal to saved versions if compared. This caused problems when deleting new notes,
                     // which searches a saved version based on ID.
-                    const noteId = Math.trunc(note.time / 1000) * 1000,
-                          noteString = TBHelpers.htmlEncode(note.note),
-                          date = new Date(note.time);
+                    const noteId = Math.trunc(note.time / 1000) * 1000;
+                    const noteString = TBHelpers.htmlEncode(note.note);
+                    const date = new Date(note.time);
 
                     // Construct some elements separately
                     let $noteTime = TBui.relativeTime(date);
@@ -460,7 +471,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 
                     let typeSpan = '';
                     if (info && info.text) {
-                        typeSpan = `<span class="note-type" style="color: ${info.color}">[${TBHelpers.htmlEncode(info.text)}]</span>`;
+                        typeSpan = `<span class="note-type" style="color: ${info.color}">[${
+                            TBHelpers.htmlEncode(info.text)
+                        }]</span>`;
                     }
 
                     // Add note to list
@@ -493,9 +506,9 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         const $thing = $target.closest('.ut-thing');
         const $button = $thing.find('#add-user-tag');
 
-        const subreddit = $button.attr('data-subreddit'),
-              user = $button.attr('data-author'),
-              disableLink = false; // FIXME: change to thing type
+        const subreddit = $button.attr('data-subreddit');
+        const user = $button.attr('data-author');
+        const disableLink = false; // FIXME: change to thing type
         let link;
 
         if (TBCore.isNewModmail) {
@@ -531,14 +544,14 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
     // Save or delete button clicked
     $body.on('click', '.utagger-save-user, .utagger-remove-note', async function (e) {
         self.log('Save or delete pressed');
-        const $popup = $(this).closest('.utagger-popup'),
-              $unote = $popup.find('.utagger-user-note'),
-              subreddit = $unote.attr('data-subreddit'),
-              user = $unote.attr('data-user'),
-              noteId = $(e.target).attr('data-note-id'),
-              noteText = $unote.val(),
-              deleteNote = $(e.target).hasClass('utagger-remove-note'),
-              type = $popup.find('.utagger-type input:checked').val();
+        const $popup = $(this).closest('.utagger-popup');
+        const $unote = $popup.find('.utagger-user-note');
+        const subreddit = $unote.attr('data-subreddit');
+        const user = $unote.attr('data-user');
+        const noteId = $(e.target).attr('data-note-id');
+        const noteText = $unote.val();
+        const deleteNote = $(e.target).hasClass('utagger-remove-note');
+        const type = $popup.find('.utagger-type input:checked').val();
         let link = '';
 
         if ($popup.find('.utagger-include-link input').is(':checked')) {
@@ -610,7 +623,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
         if (notes) {
             if (notes.corrupted) {
                 TBCore.alert({
-                    message: 'toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.',
+                    message:
+                        'toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.',
                 });
             }
 
@@ -690,8 +704,8 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 }
 
 function startUsernotesManager ({unManagerLink}) {
-    const $body = $('body'),
-          showLink = unManagerLink;
+    const $body = $('body');
+    const showLink = unManagerLink;
     const self = this;
     let subUsenotes;
 
@@ -851,46 +865,52 @@ function startUsernotesManager ({unManagerLink}) {
                     // Check each individual user
                     // `await Promise.all()` allows requests to be sent in parallel
                     TBui.longLoadSpinner(true, 'Checking user activity, this could take a bit', TBui.FEEDBACK_NEUTRAL);
-                    await Promise.all(Object.entries(users).map(async ([username, user]) => {
-                        let accountDeleted = false;
-                        let accountSuspended = false;
-                        let accountInactive = false;
+                    await Promise.all(
+                        Object.entries(users).map(async ([username, user]) => {
+                            let accountDeleted = false;
+                            let accountSuspended = false;
+                            let accountInactive = false;
 
-                        // Fetch the user's profile and see if they meet any of the criteria
-                        await TBApi.getJSON(`/user/${username}.json`, {sort: 'new'}).then(({data}) => {
-                            // The user exists and isn't suspended, and is considered inactive only if they have no
-                            // public post or comment history more recent than the threshold
-                            accountInactive = !data.children.some(thing => thing.data.created_utc * 1000 > dateThreshold);
-                        }).catch(error => {
-                            if (!error.response) {
-                                // There was a network error - never act based on this
-                                self.error(`Network error while trying to prune check /u/${username}:`, error);
-                                return;
-                            }
-                            if (error.response.status === 404) {
-                                // 404 tells us the user is deleted
-                                accountDeleted = true;
-                            } else if (error.response.status === 403) {
-                                // 403 tells us the user is permanently suspended
-                                accountSuspended = true;
-                            }
-                        });
+                            // Fetch the user's profile and see if they meet any of the criteria
+                            await TBApi.getJSON(`/user/${username}.json`, {sort: 'new'}).then(({data}) => {
+                                // The user exists and isn't suspended, and is considered inactive only if they have no
+                                // public post or comment history more recent than the threshold
+                                accountInactive = !data.children.some(thing =>
+                                    thing.data.created_utc * 1000 > dateThreshold
+                                );
+                            }).catch(error => {
+                                if (!error.response) {
+                                    // There was a network error - never act based on this
+                                    self.error(`Network error while trying to prune check /u/${username}:`, error);
+                                    return;
+                                }
+                                if (error.response.status === 404) {
+                                    // 404 tells us the user is deleted
+                                    accountDeleted = true;
+                                } else if (error.response.status === 403) {
+                                    // 403 tells us the user is permanently suspended
+                                    accountSuspended = true;
+                                }
+                            });
 
-                        // If any of the specified criteria are true, delete all the user's notes
-                        if (
-                            checkUserDeleted && accountDeleted ||
-                                checkUserSuspended && accountSuspended ||
-                                checkUserActivity && accountInactive
-                        ) {
-                            prunedNotes += user.notes.length;
-                            prunedUsers += 1;
-                            delete users[username];
-                        }
-                    }));
+                            // If any of the specified criteria are true, delete all the user's notes
+                            if (
+                                checkUserDeleted && accountDeleted
+                                || checkUserSuspended && accountSuspended
+                                || checkUserActivity && accountInactive
+                            ) {
+                                prunedNotes += user.notes.length;
+                                prunedUsers += 1;
+                                delete users[username];
+                            }
+                        }),
+                    );
                     TBui.longLoadSpinner(false);
                 }
 
-                const confirmation = confirm(`${prunedNotes} of ${totalNotes} notes will be pruned. ${prunedUsers} of ${totalUsers} users will no longer have any notes. Proceed?`);
+                const confirmation = confirm(
+                    `${prunedNotes} of ${totalNotes} notes will be pruned. ${prunedUsers} of ${totalUsers} users will no longer have any notes. Proceed?`,
+                );
                 if (!confirmation) {
                     return;
                 }
@@ -910,25 +930,28 @@ function startUsernotesManager ({unManagerLink}) {
 
         // Update user status.
         $body.on('click', '.tb-un-refresh', async function () {
-            const $this = $(this),
-                  user = $this.attr('data-user'),
-                  $userSpan = $this.parent().find('.user');
+            const $this = $(this);
+            const user = $this.attr('data-user');
+            const $userSpan = $this.parent().find('.user');
             if (!$this.hasClass('tb-un-refreshed')) {
                 $this.addClass('tb-un-refreshed');
                 self.log(`refreshing user: ${user}`);
 
-                const $status = TBHelpers.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
-                    status: await TBApi.aboutUser(user).then(() => 'active').catch(() => 'deleted'),
-                });
+                const $status = TBHelpers.template(
+                    '&nbsp;<span class="mod">[this user account is: {{status}}]</span>',
+                    {
+                        status: await TBApi.aboutUser(user).then(() => 'active').catch(() => 'deleted'),
+                    },
+                );
                 $userSpan.after($status);
             }
         });
 
         // Delete all notes for user.
         $body.on('click', '.tb-un-delete', async function () {
-            const $this = $(this),
-                  user = $this.attr('data-user'),
-                  $userSpan = $this.parent();
+            const $this = $(this);
+            const user = $this.attr('data-user');
+            const $userSpan = $this.parent();
 
             const r = confirm(`This will delete all notes for /u/${user}.  Would you like to proceed?`);
             if (r === true) {
@@ -949,10 +972,10 @@ function startUsernotesManager ({unManagerLink}) {
 
         // Delete individual notes for user.
         $body.on('click', '.tb-un-notedelete', async function () {
-            const $this = $(this),
-                  user = $this.attr('data-user'),
-                  note = $this.attr('data-note'),
-                  $noteSpan = $this.parent();
+            const $this = $(this);
+            const user = $this.attr('data-user');
+            const note = $this.attr('data-note');
+            const $noteSpan = $this.parent();
 
             self.log(`deleting note for ${user}`);
             subUsenotes.users[user].notes.splice(note, 1);
@@ -1006,15 +1029,15 @@ function startUsernotesManager ({unManagerLink}) {
         // Grab the note types
         const colors = await getSubredditColors(sub);
         /**
-             * Renders all of a single user's notes
-             * @param {object} user The user's data object
-             */
+         * Renders all of a single user's notes
+         * @param {object} user The user's data object
+         */
         function renderUsernotesUser (user) {
             const $userContent = $userContentTemplate.clone();
             $userContent.attr('data-user', user.name);
             $userContent.find('.tb-un-refresh, .tb-un-delete').attr('data-user', user.name);
             $userContent.find('.user a').attr('href', `/u/${user.name}`).text(`/u/${user.name}`);
-            const $userNotes = $('<div>').addClass('tb-usernotes');// $userContent.find(".tb-usernotes");
+            const $userNotes = $('<div>').addClass('tb-usernotes'); // $userContent.find(".tb-usernotes");
             $userContent.append($userNotes);
 
             // NOTE: I really hope that nobody has an insane amount of notes on a single user, otherwise all this perf work will be useless
@@ -1025,7 +1048,9 @@ function startUsernotesManager ({unManagerLink}) {
                         <div class="tb-un-note-details">
                             <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
                             <span class="note">
-                                <span class="note-type" ${color.key !== 'none' ? `style="color:${TBHelpers.htmlEncode(color.color)}"` : ''}>[${color.text}]</span>
+                                <span class="note-type" ${
+                    color.key !== 'none' ? `style="color:${TBHelpers.htmlEncode(color.color)}"` : ''
+                }>[${color.text}]</span>
                                 <a class="note-content" href="${val.link}">${val.note}</a>
                             </span>
                             <span>-</span>
@@ -1062,7 +1087,10 @@ function startUsernotesManager ({unManagerLink}) {
                         <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
                         <select name="tb-un-filter" id="tb-un-filter" class="selector tb-action-button">
                             <option value="all" default>All</option>
-                            ${colors.map(op => `<option value=${TBHelpers.htmlEncode(op.key)}>${TBHelpers.htmlEncode(op.text)}</option>`).join('')}
+                            ${
+            colors.map(op => `<option value=${TBHelpers.htmlEncode(op.key)}>${TBHelpers.htmlEncode(op.text)}</option>`)
+                .join('')
+        }
                         </select>
                         <br><br>
                         <button id="tb-un-prune-sb" class="tb-general-button">Prune deleted/suspended profiles</button>
@@ -1249,7 +1277,8 @@ async function getUserNotes (subreddit, forceSkipCache) {
                 self.log(`Found deprecated notes in ${subreddit}: S${notes.ver}`);
 
                 TBCore.alert({
-                    message: `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBCore.notesSchema}.`,
+                    message:
+                        `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBCore.notesSchema}.`,
                 }).then(async clicked => {
                     if (clicked) {
                         // Upgrade notes
@@ -1461,12 +1490,12 @@ function _squashPermalink (permalink) {
     }
 
     // Compatibility with Sweden
-    const COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/,
-          MODMAIL_LINK_RE = /\/messages\/(\w+)/;
+    const COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/;
+    const MODMAIL_LINK_RE = /\/messages\/(\w+)/;
 
-    const linkMatches = permalink.match(COMMENTS_LINK_RE),
-          modMailMatches = permalink.match(MODMAIL_LINK_RE),
-          newModMailMatches = permalink.startsWith('https://mod.reddit.com');
+    const linkMatches = permalink.match(COMMENTS_LINK_RE);
+    const modMailMatches = permalink.match(MODMAIL_LINK_RE);
+    const newModMailMatches = permalink.startsWith('https://mod.reddit.com');
 
     if (linkMatches) {
         let squashed = `l,${linkMatches[1]}`;

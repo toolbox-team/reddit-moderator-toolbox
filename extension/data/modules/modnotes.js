@@ -1,11 +1,13 @@
 import $ from 'jquery';
 
-import {pipeAsync, map, page} from 'iter-ops';
+import {map, page, pipeAsync} from 'iter-ops';
 
-import {Module} from '../tbmodule.js';
-import {link, isModSub, isNewModmail} from '../tbcore.js';
-import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import * as TBApi from '../tbapi.ts';
+import {isModSub, isNewModmail, link} from '../tbcore.js';
+import {escapeHTML, htmlEncode} from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
+import {Module} from '../tbmodule.js';
+import {setSettingAsync} from '../tbstorage.js';
 import {
     drawPosition,
     FEEDBACK_NEGATIVE,
@@ -16,8 +18,6 @@ import {
     relativeTime,
     textFeedback,
 } from '../tbui.js';
-import TBListener from '../tblistener.js';
-import {setSettingAsync} from '../tbstorage.js';
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -159,7 +159,7 @@ function getLatestModNote (subreddit, user) {
  * @param {string} filter Criteria for filtering notes
  * @returns {AsyncGenerator<any, void>}
  */
-async function * getAllModNotes (subreddit, user, filter) {
+async function* getAllModNotes (subreddit, user, filter) {
     // Starts with the latest page of notes
     let before = undefined;
     while (true) {
@@ -351,14 +351,16 @@ function createModNotesPopup ({
                     >
                         (no label)
                     </option>
-                    ${Object.entries(labelNames).reverse().map(([value, name]) => `
+                    ${
+            Object.entries(labelNames).reverse().map(([value, name]) => `
                         <option
                             value="${htmlEncode(value)}"
                             ${defaultNoteLabel === name.toLowerCase().replace(/\s/g, '_') ? 'selected' : ''}
                         >
                             ${htmlEncode(name)}
                         </option>
-                    `).join('')}
+                    `).join('')
+        }
                 </select>
                 <input
                     type="text"
@@ -396,23 +398,25 @@ function createModNotesPopup ({
             filter = 'MOD_ACTION';
         }
 
-        const $notesPager = progressivePager({
-            controlPosition: 'bottom',
-            emptyContent: `
+        const $notesPager = progressivePager(
+            {
+                controlPosition: 'bottom',
+                emptyContent: `
                 <p>
                     No notes
                 </p>
             `,
-        }, pipeAsync(
-            // fetch mod notes that match this tab
-            getAllModNotes(subreddit, user, filter),
-            // build table rows for each note
-            map(note => buildNoteTableRow(note)),
-            // group into pages of 20 items each
-            page(20),
-            // construct the table and insert the generated rows for each page
-            map(pageItems => {
-                const $wrapper = $(`
+            },
+            pipeAsync(
+                // fetch mod notes that match this tab
+                getAllModNotes(subreddit, user, filter),
+                // build table rows for each note
+                map(note => buildNoteTableRow(note)),
+                // group into pages of 20 items each
+                page(20),
+                // construct the table and insert the generated rows for each page
+                map(pageItems => {
+                    const $wrapper = $(`
                     <table class="tb-modnote-table">
                         <thead>
                             <tr>
@@ -425,10 +429,11 @@ function createModNotesPopup ({
                         <tbody></tbody>
                     </table>
                 `);
-                $wrapper.find('tbody').append(...pageItems);
-                return $wrapper;
-            }),
-        ));
+                    $wrapper.find('tbody').append(...pageItems);
+                    return $wrapper;
+                }),
+            ),
+        );
         $content.append($notesPager);
     });
 
@@ -468,7 +473,9 @@ function buildNoteTableRow (note) {
     if (note.mod_action_data?.action) {
         $noteDetails.append(`
             <span class="tb-modnote-action-summary">
-                Took action "${escapeHTML(note.mod_action_data.action)}"${note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''}${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
+                Took action "${escapeHTML(note.mod_action_data.action)}"${
+            note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''
+        }${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
             </span>
         `);
     }
@@ -476,11 +483,15 @@ function buildNoteTableRow (note) {
     if (note.user_note_data?.note) {
         $noteDetails.append(`
             <blockquote>
-                ${note.user_note_data.label ? `
+                ${
+            note.user_note_data.label
+                ? `
                     <span style="color:${labelColors[note.user_note_data.label]}">
                         [${labelNames[note.user_note_data.label] || escapeHTML(note.user_note_data.label)}]
                     </span>
-                ` : ''}
+                `
+                : ''
+        }
                 ${escapeHTML(note.user_note_data.note)}
             </blockquote>
         `);

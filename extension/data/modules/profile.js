@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 export default new Module({
     name: 'Profile Pro',
@@ -23,7 +23,8 @@ export default new Module({
             id: 'profileButtonEnabled',
             type: 'boolean',
             default: true,
-            description: 'Show profile button next to usernames in subs you mod. Allows you to quickly open the toolbox profile on that page.',
+            description:
+                'Show profile button next to usernames in subs you mod. Allows you to quickly open the toolbox profile on that page.',
         },
         {
             id: 'directProfileToLegacy',
@@ -218,7 +219,11 @@ export default new Module({
                             <br>
                             <span class="tb-trophy-name">${trophy.data.name}</span>
                             <br>
-                            ${trophy.data.description ? `<span class="tb-trophy-description">${trophy.data.description}</span>` : ''}
+                            ${
+                        trophy.data.description
+                            ? `<span class="tb-trophy-description">${trophy.data.description}</span>`
+                            : ''
+                    }
                             <br>`;
 
                     if (trophy.data.url) {
@@ -256,19 +261,27 @@ export default new Module({
                     </div>`).appendTo($sidebar);
 
                 const $moderatedSubListVisible = $('<ul class="tb-user-modsubs-ul"></ul>').appendTo($userModSubs);
-                const $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
+                const $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo(
+                    $userModSubs,
+                );
                 let subCount = 0;
 
                 TBCore.forEachChunkedDynamic(data.data, subreddit => {
                     subCount++;
-                    const subredditName = subreddit.sr,
-                          iconImage = subreddit.icon_img,
-                          over18 = subreddit.over_18,
-                          subscribers = subreddit.subscribers;
+                    const subredditName = subreddit.sr;
+                    const iconImage = subreddit.icon_img;
+                    const over18 = subreddit.over_18;
+                    const subscribers = subreddit.subscribers;
 
                     const liElement = `<li>
-                            <a href="${TBCore.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
-                            ${over18 ? '<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>' : ''}
+                            <a href="${
+                        TBCore.link(`/r/${subredditName}`)
+                    }" title="${subscribers} subscribers">/r/${subredditName}</a>
+                            ${
+                        over18
+                            ? '<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>'
+                            : ''
+                    }
                             ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ''}
                         </li>`;
 
@@ -279,8 +292,16 @@ export default new Module({
                     }
                 }, {framerate: 40}).then(() => {
                     if (subCount > 10) {
-                        $moderatedSubListVisible.after(`<button class="tb-general-button tb-sidebar-loadmod tb-more" data-action="more">${subCount - 10} more ...</button>`);
-                        $moderatedSubListExpanded.after(`<button class="tb-general-button tb-sidebar-loadmod tb-less" data-action="less">show ${subCount - 10} less</button>`);
+                        $moderatedSubListVisible.after(
+                            `<button class="tb-general-button tb-sidebar-loadmod tb-more" data-action="more">${
+                                subCount - 10
+                            } more ...</button>`,
+                        );
+                        $moderatedSubListExpanded.after(
+                            `<button class="tb-general-button tb-sidebar-loadmod tb-less" data-action="less">show ${
+                                subCount - 10
+                            } less</button>`,
+                        );
 
                         $body.on('click', '.tb-sidebar-loadmod', function () {
                             const $this = $(this);
@@ -317,13 +338,13 @@ export default new Module({
         const inputURL = `/user/${user}/about.json`;
         TBApi.getJSON(inputURL).then(data => {
             TBStorage.purifyObject(data);
-            const userThumbnail = data.data.icon_img,
-                  userCreated = data.data.created_utc,
-                  verifiedMail = data.data.has_verified_email,
-                  linkKarma = data.data.link_karma,
-                  commentKarma = data.data.comment_karma,
-                  displayName = data.data.subreddit.title,
-                  publicDescription = data.data.subreddit.public_description;
+            const userThumbnail = data.data.icon_img;
+            const userCreated = data.data.created_utc;
+            const verifiedMail = data.data.has_verified_email;
+            const linkKarma = data.data.link_karma;
+            const commentKarma = data.data.comment_karma;
+            const displayName = data.data.subreddit.title;
+            const publicDescription = data.data.subreddit.public_description;
             const createdAt = new Date(userCreated * 1000);
 
             const $sidebar = $(`<div class="tb-profile-sidebar">
@@ -336,11 +357,15 @@ export default new Module({
                         <li class="tb-user-detail-join-date">Joined </li>
                         <li>${verifiedMail ? 'Verified mail' : 'No verified mail'}</li>
                     </ul>
-                    ${publicDescription ? `
+                    ${
+                publicDescription
+                    ? `
                     <div class="tb-user-description">
                         ${publicDescription}
                     </div>
-                    ` : ''}
+                    `
+                    : ''
+            }
                 </div>`);
             $sidebar.find('.tb-user-detail-join-date').append(TBui.relativeTime(createdAt));
             $tabWrapper.after($sidebar);
@@ -401,7 +426,10 @@ export default new Module({
                 TBui.textFeedback('Search canceled', TBui.FEEDBACK_NEUTRAL);
                 return callback(hits);
             }
-            TBui.textFeedback(`Searching profile page ${pageCount} with ${data.data.children.length} items`, TBui.FEEDBACK_NEUTRAL);
+            TBui.textFeedback(
+                `Searching profile page ${pageCount} with ${data.data.children.length} items`,
+                TBui.FEEDBACK_NEUTRAL,
+            );
             TBStorage.purifyObject(data);
             data.data.children.forEach(value => {
                 let hit = false;
@@ -414,13 +442,15 @@ export default new Module({
 
                 if (value.kind === 't3') {
                     subredditMatch = subredditPattern && subredditPattern.test(value.data.subreddit);
-                    patternMatch = searchPattern && (value.data.selftext && searchPattern.test(value.data.selftext) || searchPattern.test(value.data.title));
+                    patternMatch = searchPattern
+                        && (value.data.selftext && searchPattern.test(value.data.selftext)
+                            || searchPattern.test(value.data.title));
                 }
 
                 if (
-                    subredditMatch && !searchPattern ||
-                        patternMatch && !subredditPattern ||
-                        subredditMatch && patternMatch
+                    subredditMatch && !searchPattern
+                    || patternMatch && !subredditPattern
+                    || subredditMatch && patternMatch
                 ) {
                     hit = true;
                 }
@@ -442,10 +472,30 @@ export default new Module({
             } else {
                 if (results.length > 0) {
                     addToSiteTable(results, $siteTable, false, () => {
-                        searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, hits, pageCount, found => callback(found));
+                        searchProfile(
+                            user,
+                            type,
+                            sortMethod,
+                            $siteTable,
+                            options,
+                            data.data.after,
+                            hits,
+                            pageCount,
+                            found => callback(found),
+                        );
                     });
                 } else {
-                    searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, hits, pageCount, found => callback(found));
+                    searchProfile(
+                        user,
+                        type,
+                        sortMethod,
+                        $siteTable,
+                        options,
+                        data.data.after,
+                        hits,
+                        pageCount,
+                        found => callback(found),
+                    );
                 }
             }
         });
@@ -471,9 +521,9 @@ export default new Module({
         const typeListing = $siteTable.attr('data-listing');
 
         let subredditsearch = $this.find('.tb-subredditsearch').val();
-        const usersearch = $this.closest('.tb-page-overlay').attr('data-user'),
-              contentsearch = $this.find('.tb-contentsearch').val(),
-              useSort = $this.find('.tb-search-sort').is(':checked');
+        const usersearch = $this.closest('.tb-page-overlay').attr('data-user');
+        const contentsearch = $this.find('.tb-contentsearch').val();
+        const useSort = $this.find('.tb-search-sort').is(':checked');
 
         let sortMethod = 'new';
 
@@ -524,19 +574,23 @@ export default new Module({
     async function populateSearchSuggestion (subreddit) {
         const mySubs = await TBCore.getModSubs(false);
         if (subreddit && mySubs.includes(subreddit)) {
-            $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${subreddit}"><td>${subreddit}</td></td></tr>`);
+            $body.find('#tb-search-suggest table#tb-search-suggest-list').append(
+                `<tr data-subreddit="${subreddit}"><td>${subreddit}</td></td></tr>`,
+            );
         }
         $(mySubs).each(function () {
             if (this !== subreddit) {
-                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
+                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(
+                    `<tr data-subreddit="${this}"><td>${this}</td></td></tr>`,
+                );
             }
         });
     }
 
     function liveSearch (liveSearchValue) {
         $body.find('#tb-search-suggest table#tb-search-suggest-list tr').each(function () {
-            const $this = $(this),
-                  subredditName = $this.attr('data-subreddit');
+            const $this = $(this);
+            const subredditName = $this.attr('data-subreddit');
 
             if (subredditName.toUpperCase().indexOf(liveSearchValue.toUpperCase()) < 0) {
                 $this.hide();
@@ -548,7 +602,9 @@ export default new Module({
 
     function initSearchSuggestion (subreddit) {
         if (!$body.find('#tb-search-suggest').length) {
-            $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
+            $body.append(
+                '<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>',
+            );
             populateSearchSuggestion(subreddit);
         }
 
@@ -575,7 +631,10 @@ export default new Module({
         });
 
         $(document).on('click', event => {
-            if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('.tb-subredditsearch').length) {
+            if (
+                !$(event.target).closest('#tb-search-suggest').length
+                && !$(event.target).closest('.tb-subredditsearch').length
+            ) {
                 $body.find('#tb-search-suggest').hide();
             }
         });
@@ -678,8 +737,12 @@ export default new Module({
                         <option value="controversial">controversial</option>
                         <option value="hot">hot</option>
                     </select>
-                    <button class="tb-general-button tb-filter-moddable">${filterModThings ? 'Show unmoddable' : 'Hide unmoddable'}</button>
-                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : 'Hide mod actions'}</a>
+                    <button class="tb-general-button tb-filter-moddable">${
+                filterModThings ? 'Show unmoddable' : 'Hide unmoddable'
+            }</button>
+                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${
+                hideModActions ? 'Show mod actions' : 'Hide mod actions'
+            }</a>
                 </div>`).appendTo($options);
 
             $options.append(`<form class="tb-searchuser">
@@ -703,10 +766,10 @@ export default new Module({
         TBui.switchOverlayTab('tb-profile-overlay', type);
 
         if (search) {
-            const $subreddit = $options.find('.tb-searchuser .tb-subredditsearch'),
-                  $content = $options.find('.tb-searchuser .tb-contentsearch'),
-                  $searchSort = $options.find('.tb-searchuser .tb-search-sort'),
-                  $searchForm = $options.find('.tb-searchuser');
+            const $subreddit = $options.find('.tb-searchuser .tb-subredditsearch');
+            const $content = $options.find('.tb-searchuser .tb-contentsearch');
+            const $searchSort = $options.find('.tb-searchuser .tb-search-sort');
+            const $searchForm = $options.find('.tb-searchuser');
 
             $subreddit.val(subreddit);
             $content.val(content);
@@ -749,10 +812,10 @@ export default new Module({
     $body.on('click', '.tb-load-more', function () {
         const $this = $(this);
         const $siteTable = $this.closest('.tb-sitetable');
-        const after = $this.attr('data-after'),
-              user = $siteTable.attr('data-user'),
-              listing = $siteTable.attr('data-listing'),
-              sort = $siteTable.attr('data-sort');
+        const after = $this.attr('data-after');
+        const user = $siteTable.attr('data-user');
+        const listing = $siteTable.attr('data-listing');
+        const sort = $siteTable.attr('data-sort');
         makeProfile(user, listing, {sort, renew: false, after});
 
         $this.remove();
@@ -760,9 +823,9 @@ export default new Module({
 
     $body.on('change keydown', '.tb-sort-select', function () {
         const $this = $(this);
-        const newSort = $this.val(),
-              user = $this.closest('.tb-page-overlay').attr('data-user'),
-              listing = $this.attr('data-type');
+        const newSort = $this.val();
+        const user = $this.closest('.tb-page-overlay').attr('data-user');
+        const listing = $this.attr('data-type');
         makeProfile(user, listing, {sort: newSort, renew: true});
     });
 
@@ -798,15 +861,15 @@ export default new Module({
 
         // Start creating specific listing overlay tab
         const $this = $(this);
-        const listing = $this.attr('data-module'),
-              user = $this.closest('.tb-page-overlay').attr('data-user');
+        const listing = $this.attr('data-module');
+        const user = $this.closest('.tb-page-overlay').attr('data-user');
         makeProfile(user, listing, {sort: 'new'});
     });
 
     window.addEventListener('TBNewPage', event => {
         if (event.detail.pageType === 'userProfile' && listingTypes.includes(event.detail.pageDetails.listing)) {
-            const user = event.detail.pageDetails.user,
-                  listing = event.detail.pageDetails.listing;
+            const user = event.detail.pageDetails.user;
+            const listing = event.detail.pageDetails.listing;
             TBui.contextTrigger('tb-user-profile', {
                 addTrigger: true,
                 triggerText: 'toolbox profile',
@@ -832,7 +895,10 @@ export default new Module({
         TBListener.on('author', async e => {
             const $target = $(e.target);
 
-            if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)) {
+            if (
+                !$target.closest('.tb-profile-overlay').length
+                && (!onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail)
+            ) {
                 const author = e.detail.data.author;
                 const subreddit = e.detail.data.subreddit.name;
                 if (author === '[deleted]') {
@@ -841,7 +907,8 @@ export default new Module({
 
                 const isMod = await TBCore.isModSub(subreddit);
                 if (isMod) {
-                    const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
+                    const profileButton =
+                        `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
                     requestAnimationFrame(() => {
                         $target.append(profileButton);
                     });
@@ -856,7 +923,8 @@ export default new Module({
 
             const isMod = await TBCore.isModSub(subreddit);
             if (isMod) {
-                const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
+                const profileButton =
+                    `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
                 $target.append(profileButton);
             }
         });
@@ -864,9 +932,9 @@ export default new Module({
 
     $body.on('click', '#tb-user-profile, .tb-user-profile', function () {
         const $this = $(this);
-        const user = $this.attr('data-user'),
-              listing = $this.attr('data-listing'),
-              subreddit = $this.attr('data-subreddit');
+        const user = $this.attr('data-user');
+        const listing = $this.attr('data-listing');
+        const subreddit = $this.attr('data-subreddit');
 
         const options = {
             sort: 'new',

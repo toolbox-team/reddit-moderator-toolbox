@@ -1,11 +1,11 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
 import * as TBApi from '../tbapi.ts';
-import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
+import * as TBui from '../tbui.js';
 
 export default new Module({
     name: 'Mod Macros',
@@ -20,9 +20,9 @@ export default new Module({
         },
     ],
 }, function init ({showMacroPreview}) {
-    const $body = $('body'),
-          self = this,
-          MACROS = 'TB-MACROS';
+    const $body = $('body');
+    const self = this;
+    const MACROS = 'TB-MACROS';
 
     async function getConfig (sub, callback) {
         const config = await TBCore.getConfig(sub);
@@ -37,8 +37,8 @@ export default new Module({
 
     function populateSelect (selectClass, subreddit, config, type) {
         $(selectClass).each(function () {
-            const $select = $(this),
-                  sub = $select.attr('data-subreddit');
+            const $select = $(this);
+            const sub = $select.attr('data-subreddit');
 
             self.log($select);
             self.log(`${sub} ${subreddit}`);
@@ -50,25 +50,27 @@ export default new Module({
                 $select.addClass('tb-populated');
                 let context = 'contextpost';
                 switch (type) {
-                case 'post':
-                    context = 'contextpost';
-                    break;
-                case 'comment':
-                    context = 'contextcomment';
-                    break;
-                case 'modmail':
-                    context = 'contextmodmail';
-                    break;
+                    case 'post':
+                        context = 'contextpost';
+                        break;
+                    case 'comment':
+                        context = 'contextcomment';
+                        break;
+                    case 'modmail':
+                        context = 'contextmodmail';
+                        break;
                 }
                 $(config).each((idx, item) => {
                     if (item[context] !== undefined && !item[context]) {
                         return;
                     }
                     $($select)
-                        .append($('<option>', {
-                            value: idx,
-                        })
-                            .text(item.title));
+                        .append(
+                            $('<option>', {
+                                value: idx,
+                            })
+                                .text(item.title),
+                        );
                 });
             } else {
                 self.log('removing select');
@@ -85,13 +87,16 @@ export default new Module({
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
                         const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
-                        const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                              macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TBCore.post_site}"><option value=${MACROS}>macros</option></select>`;
+                        const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons');
+                        const macroButtonHtml =
+                            `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TBCore.post_site}"><option value=${MACROS}>macros</option></select>`;
 
                         if ($tbUsertextButtons.length) {
                             $tbUsertextButtons.append(macroButtonHtml);
                         } else {
-                            $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
+                            $usertextButtons.find('.status').before(
+                                `<div class="tb-usertext-buttons">${macroButtonHtml}</div>`,
+                            );
                         }
 
                         populateSelect('.tb-top-macro-select', TBCore.post_site, config, 'post');
@@ -104,8 +109,8 @@ export default new Module({
         $body.on('click', 'ul.buttons a', async function () {
             const $this = $(this);
             if ($this.text() === 'reply') {
-                const $thing = $this.closest('.thing'),
-                      info = await TBCore.getThingInfo($thing, true);
+                const $thing = $this.closest('.thing');
+                const info = await TBCore.getThingInfo($thing, true);
 
                 // This is because reddit clones the top-level reply box for all reply boxes.
                 // We need to remove it before adding the new one, because the new one works differently.
@@ -125,16 +130,24 @@ export default new Module({
                 getConfig(info.subreddit, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
-                        const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
-                              macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+                        const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons');
+                        const macroButtonHtml =
+                            `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
 
                         if ($tbUsertextButtons.length) {
                             $tbUsertextButtons.append(macroButtonHtml);
                         } else {
-                            $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
+                            $thing.find('.usertext-buttons .status').before(
+                                `<div class="tb-usertext-buttons">${macroButtonHtml}</div>`,
+                            );
                         }
                         // populates for comment and old modmail
-                        populateSelect('.tb-macro-select', info.subreddit, config, TBCore.isModmail ? 'modmail' : 'comment');
+                        populateSelect(
+                            '.tb-macro-select',
+                            info.subreddit,
+                            config,
+                            TBCore.isModmail ? 'modmail' : 'comment',
+                        );
                     }
                 });
             }
@@ -143,8 +156,8 @@ export default new Module({
 
     // Add macro button in new modmail
     async function addNewMMMacro () {
-        const $thing = $body.find('.InfoBar'),
-              info = await TBCore.getThingInfo($thing, true);
+        const $thing = $body.find('.InfoBar');
+        const info = await TBCore.getThingInfo($thing, true);
 
         // Don't add macro button twice.
         if ($body.find('.tb-usertext-buttons').length) {
@@ -161,8 +174,11 @@ export default new Module({
         getConfig(info.subreddit, (success, config) => {
             // if we're a mod, add macros to top level reply button.
             if (success && config.length > 0) {
-                const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
-                $body.find('.ThreadViewerReplyForm__replyFooter .selectWrapper').before(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
+                const macroButtonHtml =
+                    `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+                $body.find('.ThreadViewerReplyForm__replyFooter .selectWrapper').before(
+                    `<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`,
+                );
 
                 populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
             }
@@ -262,9 +278,9 @@ export default new Module({
         const distinguish = macro.sticky || macro.distinguish === undefined ? true : macro.distinguish;
         const kind = info.kind;
 
-        let $usertext = dropdown.closest('.usertext-edit'),
-            comment = unescape(macro.text),
-            actionList = 'The following actions will be performed:<br>- Your reply will be saved';
+        let $usertext = dropdown.closest('.usertext-edit');
+        let comment = unescape(macro.text);
+        let actionList = 'The following actions will be performed:<br>- Your reply will be saved';
 
         if (!$usertext.length) {
             $usertext = dropdown.closest('.Comment');
@@ -336,12 +352,12 @@ export default new Module({
         // replace token.
         comment = TBHelpers.replaceTokens(info, comment);
 
-        const offset = $usertext.offset(),
-              offsetLeft = offset.left,
-              offsetTop = offset.top,
-              minHeight = $usertext.outerHeight(),
-              editMinWidth = $usertext.outerWidth(),
-              editMinHeight = minHeight - 74;
+        const offset = $usertext.offset();
+        const offsetLeft = offset.left;
+        const offsetTop = offset.top;
+        const minHeight = $usertext.outerHeight();
+        const editMinWidth = $usertext.outerWidth();
+        const editMinHeight = minHeight - 74;
 
         const title = dropdown.find('option:selected').text();
         self.log(title);
@@ -352,7 +368,8 @@ export default new Module({
                     title: 'Mod Macro:',
                     id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: `Mod Macro:${title}`,
-                    content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea>
+                    content:
+                        `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea>
                                   <div class="tb-macro-action-list">${actionList}</div>`,
                     footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`,
                 },
@@ -360,7 +377,6 @@ export default new Module({
             cssClass: 'macro-popup',
         }).appendTo('body')
             .css({
-
                 'left': `${offsetLeft}px`,
                 'top': `${offsetTop}px`,
                 'min-height': `${minHeight}px`,
@@ -376,22 +392,25 @@ export default new Module({
         });
 
         if (showMacroPreview) {
-            $macroPopup.on('input', '.macro-edit-area', TBHelpers.debounce(e => {
-                let $previewArea;
-                if ($macroPopup.find('.tb-macro-preview').length) {
-                    // Use existing preview.
-                    $previewArea = $('.tb-macro-preview');
-                } else {
-                    // Create a new one.
-                    const $inputTextarea = $macroPopup.find('.macro-edit-area');
-                    $previewArea = $('<div class="tb-macro-preview tb-comment"></div>');
-                    $inputTextarea.after($previewArea);
-                }
+            $macroPopup.on(
+                'input',
+                '.macro-edit-area',
+                TBHelpers.debounce(e => {
+                    let $previewArea;
+                    if ($macroPopup.find('.tb-macro-preview').length) {
+                        // Use existing preview.
+                        $previewArea = $('.tb-macro-preview');
+                    } else {
+                        // Create a new one.
+                        const $inputTextarea = $macroPopup.find('.macro-edit-area');
+                        $previewArea = $('<div class="tb-macro-preview tb-comment"></div>');
+                        $inputTextarea.after($previewArea);
+                    }
 
-                // Render markdown and to be extra sure put it through purify to prevent possible issues with
-                // people pasting malicious input on advice of shitty people.
-                const renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
-                $previewArea.html(`
+                    // Render markdown and to be extra sure put it through purify to prevent possible issues with
+                    // people pasting malicious input on advice of shitty people.
+                    const renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
+                    $previewArea.html(`
                     <h3 class="tb-preview-heading">Preview</h3>
                     <div class="tb-comment-body">
                         <div class="md">
@@ -399,15 +418,16 @@ export default new Module({
                         </div>
                     </div>
                     `);
-            }, 100));
+                }, 100),
+            );
 
             $macroPopup.find('.macro-edit-area').trigger('input');
         }
 
         $macroPopup.on('click', `.macro-send-${info.id}`, function () {
-            const $currentMacroPopup = $(this).closest('.macro-popup'),
-                  $selectElement = $body.find(`#macro-dropdown-${info.id}`),
-                  editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
+            const $currentMacroPopup = $(this).closest('.macro-popup');
+            const $selectElement = $body.find(`#macro-dropdown-${info.id}`);
+            const editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
             if ($selectElement.val() !== MACROS) {
                 self.log('Replying with:');
@@ -460,7 +480,8 @@ export default new Module({
                     if (archivemodmail) {
                         // We wait a bit for the other actions to go through, then archive.
                         setTimeout(() => {
-                            $body.find('.ThreadViewer .ThreadViewerHeader__control:not(.m-selected) .icon-archived').click();
+                            $body.find('.ThreadViewer .ThreadViewerHeader__control:not(.m-selected) .icon-archived')
+                                .click();
                         }, 1000);
                     }
 
@@ -569,11 +590,11 @@ export default new Module({
     }
 
     $body.on('change', '.tb-top-macro-select, .tb-macro-select', async function () {
-        const $this = $(this),
-              sub = $this.closest('select').attr('data-subreddit'),
-              thingID = $this.closest('select').attr('data-thingID'),
-              index = $this.val(),
-              topLevel = $this.hasClass('tb-top-macro-select');
+        const $this = $(this);
+        const sub = $this.closest('select').attr('data-subreddit');
+        const thingID = $this.closest('select').attr('data-thingID');
+        const index = $this.val();
+        const topLevel = $this.hasClass('tb-top-macro-select');
         let info;
 
         self.log(`Macro selected: index=${index}`);

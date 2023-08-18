@@ -111,7 +111,7 @@
     margin: -5px;
 }
 /* Hide empty text segments to avoid de-centering buttons and stuff */
-.mod-toolbox-rd .tb-window-footer :not(:empty):empty {
+.mod-toolbox-rd .tb-window-footer :not(input):empty {
     display: none;
 }
 

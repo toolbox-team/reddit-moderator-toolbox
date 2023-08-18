@@ -24,11 +24,9 @@ All Toolbox subreddit settings and data are stored in subreddit wikis through ve
 [webstore]: https://chrome.google.com/webstore/detail/moderator-toolbox-for-red/jhjpjhhkcbkmgdkahnckfboefnkgghpo
 [amo]: https://addons.mozilla.org/en-US/firefox/addon/reddit-moderator-toolbox/
 [edge-store]: https://microsoftedge.microsoft.com/addons/detail/moderator-toolbox-for-red/nolhfmoadpbgfeonfnjlcfmhhkmdlfcl
-
 [discord]: https://discord.gg/8fGCykQ
 [post-on-reddit]: https://new.reddit.com/r/toolbox/submit?text=true
 [user-docs]: https://www.reddit.com/r/toolbox/w/docs
-
 [nodejs]: https://nodejs.org/
 [contributing]: /CONTRIBUTING.md
 [third-party-docs]: https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Subreddit-Wikis

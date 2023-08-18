@@ -1,5 +1,5 @@
-import browser from 'webextension-polyfill';
 import $ from 'jquery';
+import browser from 'webextension-polyfill';
 
 // We load all our CodeMirror addons and modes here and they'll be available
 // anywhere else we `import CodeMirror from 'codemirror';`
@@ -24,42 +24,42 @@ import 'codemirror/mode/yaml/yaml.js';
 
 import './tbplugins.js';
 
-import TBLog from './tblog.js';
-import * as TBStorage from './tbstorage.js';
-import {delay} from './tbhelpers.js';
-import TBModule from './tbmodule.js';
-import * as TBCore from './tbcore.js';
 import * as TBApi from './tbapi';
+import * as TBCore from './tbcore.js';
+import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
+import TBLog from './tblog.js';
+import TBModule from './tbmodule.js';
+import * as TBStorage from './tbstorage.js';
 
-import Devtools from './modules/devtools.js';
-import Support from './modules/support.js';
-import Modbar from './modules/modbar.js';
-import Config from './modules/config.js';
+import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';
+import Comment from './modules/comment.js';
+import Config from './modules/config.js';
+import Devtools from './modules/devtools.js';
 import DomainTagger from './modules/domaintagger.js';
+import FlyingSnoo from './modules/flyingsnoo.js';
+import General from './modules/general.js';
+import HistoryButton from './modules/historybutton.js';
+import Macros from './modules/macros.js';
+import Modbar from './modules/modbar.js';
+import ModButton from './modules/modbutton.js';
+import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
 import ModNotes from './modules/modnotes.js';
-import Syntax from './modules/syntax.js';
-import ModButton from './modules/modbutton.js';
-import General from './modules/general.js';
-import Notifier from './modules/notifier.js';
-import Usernotes from './modules/usernotes.js';
-import Comment from './modules/comment.js';
 import NewModmailPro from './modules/newmodmailpro.js';
-import ModmailPro from './modules/modmailpro.js';
-import Macros from './modules/macros.js';
-import PersonalNotes from './modules/personalnotes.js';
-import HistoryButton from './modules/historybutton.js';
-import RemovalReasons from './modules/removalreasons.js';
+import Notifier from './modules/notifier.js';
 import NukeComments from './modules/nukecomments.js';
-import Troubleshooter from './modules/trouble.js';
+import OldReddit from './modules/oldreddit.js';
+import PersonalNotes from './modules/personalnotes.js';
 import Profile from './modules/profile.js';
 import QueueOverlay from './modules/queue_overlay.js';
-import FlyingSnoo from './modules/flyingsnoo.js';
 import QueueTools from './modules/queuetools.js';
-import Achievements from './modules/achievements.js';
-import OldReddit from './modules/oldreddit.js';
+import RemovalReasons from './modules/removalreasons.js';
+import Support from './modules/support.js';
+import Syntax from './modules/syntax.js';
+import Troubleshooter from './modules/trouble.js';
+import Usernotes from './modules/usernotes.js';
 
 /**
  * Checks for reset conditions. Promises `true` if settings are being reset and
@@ -107,18 +107,24 @@ async function checkReset () {
  * @returns {Promise<void>}
  */
 async function checkLoadConditions (tries = 3) {
-    let loggedinRedesign = false,
-        loggedinOld = false;
+    let loggedinRedesign = false;
+    let loggedinOld = false;
 
     const $body = $('body');
 
     // Check for redesign
-    if ($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) {
+    if (
+        $body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text()
+        || $body.find('.Header__profile').length
+    ) {
         loggedinRedesign = true;
     }
 
     // Check for old reddit
-    if ($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) {
+    if (
+        $body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length
+        || $body.hasClass('loggedin')
+    ) {
         loggedinOld = true;
     }
 
@@ -144,8 +150,11 @@ async function checkLoadConditions (tries = 3) {
 
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
     // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
-    // @ts-expect-error InstallTrigger is not standard
-    if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && browser.extension.inIncognitoContext) {
+    if (
+        // @ts-expect-error InstallTrigger is not standard
+        (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style)
+        && browser.extension.inIncognitoContext
+    ) {
         throw new Error('Firefox is in Incognito mode, Toolbox will not work');
     }
 
@@ -191,8 +200,8 @@ async function doSettingsUpdates () {
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', lastVersion);
     }
 
-    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15),
-        longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
+    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15);
+    let longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
 
     if (typeof shortLength !== 'number') {
         shortLength = parseInt(shortLength);
@@ -210,7 +219,7 @@ async function doSettingsUpdates () {
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', TBCore.shortVersion); // set last version to this version.
         TBCore.getToolboxDevs(); // always repopulate tb devs for each version change
 
-        //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
+        // This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release.
 
         // Start: version changes.
         // reportsThreshold should be 0 by default
@@ -316,36 +325,38 @@ async function doSettingsUpdates () {
     await doSettingsUpdates();
 
     // Load feature modules and register them
-    for (const m of [
-        Devtools,
-        Support,
-        Modbar,
-        Config,
-        BetterButtons,
-        DomainTagger,
-        ModMatrix,
-        ModNotes,
-        Syntax,
-        ModButton,
-        General,
-        Notifier,
-        Usernotes,
-        Comment,
-        NewModmailPro,
-        ModmailPro,
-        Macros,
-        PersonalNotes,
-        HistoryButton,
-        RemovalReasons,
-        NukeComments,
-        Troubleshooter,
-        Profile,
-        QueueOverlay,
-        FlyingSnoo,
-        QueueTools,
-        Achievements,
-        OldReddit,
-    ]) {
+    for (
+        const m of [
+            Devtools,
+            Support,
+            Modbar,
+            Config,
+            BetterButtons,
+            DomainTagger,
+            ModMatrix,
+            ModNotes,
+            Syntax,
+            ModButton,
+            General,
+            Notifier,
+            Usernotes,
+            Comment,
+            NewModmailPro,
+            ModmailPro,
+            Macros,
+            PersonalNotes,
+            HistoryButton,
+            RemovalReasons,
+            NukeComments,
+            Troubleshooter,
+            Profile,
+            QueueOverlay,
+            FlyingSnoo,
+            QueueTools,
+            Achievements,
+            OldReddit,
+        ]
+    ) {
         // @ts-expect-error TODO logger types are still broken
         logger.debug('Registering module', m);
         TBModule.register_module(m);

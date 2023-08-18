@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
-import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import {Module} from '../tbmodule.js';
 import {getSettingAsync} from '../tbstorage.js';
 
 const self = new Module({
@@ -33,8 +33,8 @@ self.sort = {
 
 // Saves
 function Manager () {
-    let saves = [],
-        saveIndex = 0;
+    let saves = [];
+    let saveIndex = 0;
 
     const achievements = [];
 
@@ -62,8 +62,8 @@ function Manager () {
 
         const achievementsBlock = [];
         for (let i = 0; i < maxValues.length; i++) {
-            const title = titles[i],
-                  maxValue = maxValues[i];
+            const title = titles[i];
+            const maxValue = maxValues[i];
 
             self.log('Registering Achievement');
             if (debugMode) {
@@ -115,7 +115,11 @@ function Manager () {
                 }
 
                 self.log(`${title} Unlocked!`);
-                TBCore.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.id}`);
+                TBCore.notification(
+                    'Mod achievement unlocked!',
+                    title,
+                    `${window.location.pathname}#?tbsettings=${self.id}`,
+                );
             }
         }
 
@@ -205,39 +209,55 @@ function init ({lastSeen}) {
     self.log('Registering achievements');
 
     // Random awesome
-    self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", saveIndex => {
-        const awesome = 7,
-              chanceOfBeingAwesome = TBHelpers.getRandomNumber(10000);
+    self.manager.register(
+        '<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>',
+        'toolbox just feels like you\'re awesome today',
+        saveIndex => {
+            const awesome = 7;
+            const chanceOfBeingAwesome = TBHelpers.getRandomNumber(10000);
 
-        self.log(`You rolled a: ${chanceOfBeingAwesome}`);
-        if (awesome === chanceOfBeingAwesome) {
-            self.manager.unlock(saveIndex);
-        }
-    });
+            self.log(`You rolled a: ${chanceOfBeingAwesome}`);
+            if (awesome === chanceOfBeingAwesome) {
+                self.manager.unlock(saveIndex);
+            }
+        },
+    );
 
     // Still Alive (TODO: can we make links work?)
-    self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', saveIndex => {
-        // BUG: this one keeps firing on default no value for lastSeen.
-        // I tried defaulting to now but it's still wonky.
-        const now = TBHelpers.getTime(),
-              timeSince = now - lastSeen,
-              daysSince = TBHelpers.millisecondsToDays(timeSince);
-        self.log(`daysSince: ${daysSince}`);
+    self.manager.register(
+        '<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>',
+        'Spent a week away from reddit',
+        saveIndex => {
+            // BUG: this one keeps firing on default no value for lastSeen.
+            // I tried defaulting to now but it's still wonky.
+            const now = TBHelpers.getTime();
+            const timeSince = now - lastSeen;
+            const daysSince = TBHelpers.millisecondsToDays(timeSince);
+            self.log(`daysSince: ${daysSince}`);
 
-        if (daysSince >= 7) {
-            // self.log("you've got an award!");
-            self.manager.unlock(saveIndex);
-        }
+            if (daysSince >= 7) {
+                // self.log("you've got an award!");
+                self.manager.unlock(saveIndex);
+            }
 
-        self.set('lastSeen', now);
-    });
+            self.set('lastSeen', now);
+        },
+    );
 
     // toolbox Loves You: Look at the about page
-    self.manager.register(`<a href="${TBCore.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
-        TBCore.catchEvent(TBCore.events.TB_ABOUT_PAGE, () => {
-            self.manager.unlock(saveIndex);
-        });
-    });
+    self.manager.register(
+        `<a href="${
+            TBCore.link(
+                '/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F',
+            )
+        }" target="_blank">toolbox loves you</a>`,
+        'Looked at the about page. <3',
+        saveIndex => {
+            TBCore.catchEvent(TBCore.events.TB_ABOUT_PAGE, () => {
+                self.manager.unlock(saveIndex);
+            });
+        },
+    );
 
     // Beta testers
     self.manager.register('bug hunter', 'Beta testing toolbox', saveIndex => {
@@ -247,7 +267,7 @@ function init ({lastSeen}) {
     });
 
     // Judas
-    self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", saveIndex => {
+    self.manager.register('Judas', 'Why do you hate toolbox devs? :\'( ', saveIndex => {
         $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', async function () {
             const $this = $(this);
             const thingInfo = await TBCore.getThingInfo($this);
@@ -264,34 +284,59 @@ function init ({lastSeen}) {
     });
 
     // approving stuff
-    self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'], 'Approved {0} things', [50, 200, 1000, 10000, 20000], saveIndex => {
-        // If just the button is used.
-        $body.on('click', '.pretty-button, .approve-button', function () {
-            const $this = $(this);
-            if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
-                self.manager.unlock(saveIndex, 1);
-            }
-        });
+    self.manager.registerSeries(
+        ['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'],
+        'Approved {0} things',
+        [50, 200, 1000, 10000, 20000],
+        saveIndex => {
+            // If just the button is used.
+            $body.on('click', '.pretty-button, .approve-button', function () {
+                const $this = $(this);
+                if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
+                    self.manager.unlock(saveIndex, 1);
+                }
+            });
 
-        // If the API is used
-        TBCore.catchEvent(TBCore.events.TB_APPROVE_THING, () => {
-            self.manager.unlock(saveIndex, 1);
-        });
-    });
+            // If the API is used
+            TBCore.catchEvent(TBCore.events.TB_APPROVE_THING, () => {
+                self.manager.unlock(saveIndex, 1);
+            });
+        },
+    );
 
     // Mod mail
-    self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=425GpjTSlS4" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], saveIndex => {
-        if (TBCore.isModmail) {
-            self.manager.unlock(saveIndex, 1);
-        }
-    });
+    self.manager.registerSeries(
+        [
+            'hic sunt dracones',
+            'just checkin\' the mail',
+            '<a href="https://www.youtube.com/watch?v=425GpjTSlS4" target="_blank">Mr. Postman</a>',
+            'You\'ve got mail!',
+        ],
+        'Checked mod mail {0} times!',
+        [1, 100, 1000, 10000],
+        saveIndex => {
+            if (TBCore.isModmail) {
+                self.manager.unlock(saveIndex, 1);
+            }
+        },
+    );
 
     // Empty queue
-    self.manager.registerSeries(['kitteh get!', 'puppy power!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], saveIndex => {
-        if (TBCore.isModpage && $body.find('p#noresults').length > 0) {
-            self.manager.unlock(saveIndex, 1);
-        }
-    });
+    self.manager.registerSeries(
+        [
+            'kitteh get!',
+            'puppy power!',
+            '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>',
+            '/u/Kylde',
+        ],
+        'Cleared your queues {0} times!',
+        [10, 50, 100, 700],
+        saveIndex => {
+            if (TBCore.isModpage && $body.find('p#noresults').length > 0) {
+                self.manager.unlock(saveIndex, 1);
+            }
+        },
+    );
 
     // Found flying Snoo
     self.manager.register('Cadbury Bunny', 'Found flying Snoo.', saveIndex => {

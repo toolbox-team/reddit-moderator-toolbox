@@ -1,12 +1,12 @@
-import browser from 'webextension-polyfill';
 import $ from 'jquery';
+import browser from 'webextension-polyfill';
 
-import TBLog from './tblog.js';
-import * as TBStorage from './tbstorage.js';
 import * as TBApi from './tbapi.ts';
 import {getModhash} from './tbapi.ts';
 import {icons} from './tbconstants.js';
 import * as TBHelpers from './tbhelpers.js';
+import TBLog from './tblog.js';
+import * as TBStorage from './tbstorage.js';
 
 const logger = TBLog('TBCore');
 
@@ -50,7 +50,9 @@ const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
 const matchVersion = manifest.version_name.match(versionRegex);
 export const toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
 export const toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
-export const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
+export const shortVersion = JSON.parse(
+    `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`,
+);
 
 // Details about the current page
 const $body = $('body');
@@ -157,15 +159,18 @@ export async function getModSubs (data) {
     // mySubs should contain a list of subreddit names, sorted alphabetically
     const mySubs = TBHelpers.saneSort(subredditData.map(({data}) => data.display_name.trim()));
 
-    const mySubsData = TBHelpers.sortBy(subredditData.map(({data}) => ({
-        subreddit: data.display_name,
-        subscribers: data.subscribers,
-        over18: data.over18,
-        created_utc: data.created_utc,
-        subreddit_type: data.subreddit_type,
-        submission_type: data.submission_type,
-        is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
-    })), 'subscribers');
+    const mySubsData = TBHelpers.sortBy(
+        subredditData.map(({data}) => ({
+            subreddit: data.display_name,
+            subscribers: data.subscribers,
+            over18: data.over18,
+            created_utc: data.created_utc,
+            subreddit_type: data.subreddit_type,
+            submission_type: data.submission_type,
+            is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
+        })),
+        'subscribers',
+    );
 
     await TBStorage.setCache('Utils', 'moderatedSubs', mySubs);
     await TBStorage.setCache('Utils', 'moderatedSubsData', mySubsData);
@@ -222,7 +227,9 @@ export function getLastVersion () {
  * modmail we use www.reddit.com; wnywhere else we use whatever is the current
  * domain.
  */
-export const baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
+export const baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com'
+    ? 'https://www.reddit.com'
+    : `https://${window.location.hostname}`;
 
 /**
  * Takes an absolute path for a link and prepends the www.reddit.com
@@ -258,18 +265,21 @@ export function catchEvent (tbuEvent, callback) {
 
 // Platform and debugging information
 
-const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKNOWN_BROWSER = 'unknown';
+const CHROME = 'chrome';
+const FIREFOX = 'firefox';
+const OPERA = 'opera';
+const EDGE = 'edge';
+const UNKNOWN_BROWSER = 'unknown';
 /** The name of the current browser. */
-export const browserName =
-    typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style
-        ? FIREFOX
-        : typeof chrome !== 'undefined'
-            ? navigator.userAgent.includes(' OPR/')
-                ? OPERA
-                : navigator.userAgent.includes(' Edg/')
-                    ? EDGE
-                    : CHROME
-            : UNKNOWN_BROWSER;
+export const browserName = typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style
+    ? FIREFOX
+    : typeof chrome !== 'undefined'
+    ? navigator.userAgent.includes(' OPR/')
+        ? OPERA
+        : navigator.userAgent.includes(' Edg/')
+        ? EDGE
+        : CHROME
+    : UNKNOWN_BROWSER;
 
 /**
  * Puts important debug information in a object so we can easily include
@@ -293,80 +303,80 @@ export function debugInformation () {
     const browserUserAgent = navigator.userAgent;
     let browserMatchedInfo = [];
     switch (browserName) {
-    case CHROME: {
-        // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
-        // This way we can also cut some support requests short.
-        const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
-        const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
-        const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
-        if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
-            browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
-            debugObject.browser = 'Vivaldi';
+        case CHROME: {
+            // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
+            // This way we can also cut some support requests short.
+            const vivaldiRegex = /\((.*?)\).*Vivaldi\/([0-9.]*?)$/;
+            const yandexRegex = /\((.*?)\).*YaBrowser\/([0-9.]*).*$/;
+            const chromeRegex = /\((.*?)\).*Chrome\/([0-9.]*).*$/;
+            if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
+                browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
+                debugObject.browser = 'Vivaldi';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+            } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 && yandexRegex.test(browserUserAgent)) { // Yandex
+                browserMatchedInfo = browserUserAgent.match(yandexRegex);
+                debugObject.browser = 'Yandex';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+            } else if (chromeRegex.test(browserUserAgent)) {
+                browserMatchedInfo = browserUserAgent.match(chromeRegex);
+                debugObject.browser = 'Chrome';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+            } else {
+                debugObject.browser = 'Chrome derivative';
+                debugObject.browserVersion = 'Unknown';
+                debugObject.platformInformation = browserUserAgent;
+            }
+            break;
+        }
+        case FIREFOX: {
+            const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
+            const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
+            if (firefoxRegex.test(browserUserAgent)) {
+                browserMatchedInfo = browserUserAgent.match(firefoxRegex);
+                debugObject.browser = 'Firefox';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+            } else if (firefoxDerivativeRegex.test(browserUserAgent)) {
+                browserMatchedInfo = browserUserAgent.match(firefoxDerivativeRegex);
+                debugObject.browser = 'Firefox derivative';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+            } else {
+                debugObject.browser = 'Firefox derivative';
+                debugObject.browserVersion = 'Unknown';
+                debugObject.platformInformation = browserUserAgent;
+            }
+            break;
+        }
+        case OPERA: {
+            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
+            debugObject.browser = 'Opera';
             debugObject.browserVersion = browserMatchedInfo[2];
             debugObject.platformInformation = browserMatchedInfo[1];
-        } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 && yandexRegex.test(browserUserAgent)) { // Yandex
-            browserMatchedInfo = browserUserAgent.match(yandexRegex);
-            debugObject.browser = 'Yandex';
+            break;
+        }
+        case EDGE: {
+            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edg\/([0-9.]*).*$/);
+            debugObject.browser = 'Edge';
             debugObject.browserVersion = browserMatchedInfo[2];
             debugObject.platformInformation = browserMatchedInfo[1];
-        } else if (chromeRegex.test(browserUserAgent)) {
-            browserMatchedInfo = browserUserAgent.match(chromeRegex);
-            debugObject.browser = 'Chrome';
-            debugObject.browserVersion = browserMatchedInfo[2];
-            debugObject.platformInformation = browserMatchedInfo[1];
-        } else {
-            debugObject.browser = 'Chrome derivative';
+            break;
+        }
+        case UNKNOWN_BROWSER: {
+            debugObject.browser = 'Unknown';
+            debugObject.browserVersion = 'Unknown';
+            debugObject.platformInformation = browserUserAgent;
+            break;
+        }
+        default: {
+            // This should really never happen, but just in case I left it in.
+            debugObject.browser = 'Error in browser detection';
             debugObject.browserVersion = 'Unknown';
             debugObject.platformInformation = browserUserAgent;
         }
-        break;
-    }
-    case FIREFOX: {
-        const firefoxRegex = /\((.*?)\).*Firefox\/([0-9.]*?)$/;
-        const firefoxDerivativeRegex = /\((.*?)\).*(Firefox\/[0-9.].*?)$/;
-        if (firefoxRegex.test(browserUserAgent)) {
-            browserMatchedInfo = browserUserAgent.match(firefoxRegex);
-            debugObject.browser = 'Firefox';
-            debugObject.browserVersion = browserMatchedInfo[2];
-            debugObject.platformInformation = browserMatchedInfo[1];
-        } else if (firefoxDerivativeRegex.test(browserUserAgent)) {
-            browserMatchedInfo = browserUserAgent.match(firefoxDerivativeRegex);
-            debugObject.browser = 'Firefox derivative';
-            debugObject.browserVersion = browserMatchedInfo[2];
-            debugObject.platformInformation = browserMatchedInfo[1];
-        } else {
-            debugObject.browser = 'Firefox derivative';
-            debugObject.browserVersion = 'Unknown';
-            debugObject.platformInformation = browserUserAgent;
-        }
-        break;
-    }
-    case OPERA: {
-        browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
-        debugObject.browser = 'Opera';
-        debugObject.browserVersion = browserMatchedInfo[2];
-        debugObject.platformInformation = browserMatchedInfo[1];
-        break;
-    }
-    case EDGE: {
-        browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edg\/([0-9.]*).*$/);
-        debugObject.browser = 'Edge';
-        debugObject.browserVersion = browserMatchedInfo[2];
-        debugObject.platformInformation = browserMatchedInfo[1];
-        break;
-    }
-    case UNKNOWN_BROWSER: {
-        debugObject.browser = 'Unknown';
-        debugObject.browserVersion = 'Unknown';
-        debugObject.platformInformation = browserUserAgent;
-        break;
-    }
-    default: {
-        // This should really never happen, but just in case I left it in.
-        debugObject.browser = 'Error in browser detection';
-        debugObject.browserVersion = 'Unknown';
-        debugObject.platformInformation = browserUserAgent;
-    }
     }
     // info level is always displayed
     logger.info('Version/browser information:', debugObject);
@@ -387,32 +397,32 @@ export function debugInformation () {
 
 // Random quote generator
 const randomQuotes = [
-    "Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
-    "Simple solution, don't use nightmode....",
+    'Dude, in like 24 months, I see you Skyping someone to watch them search someone\'s comments on reddit.',
+    'Simple solution, don\'t use nightmode....',
     'Nightmode users are a buncha nerds.',
-    "Oh, so that's where that code went, I thought i had lost it somehow.",
+    'Oh, so that\'s where that code went, I thought i had lost it somehow.',
     'Are all close buttons pretty now?!?!?',
     'As a Business Analyst myself...',
-    "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
+    'TOOLBOX ISN\'T YOUR PERSONAL TOOL!',
     'You are now an approvened submitter',
-    "Translate creesch's Klingon settings to English.",
+    'Translate creesch\'s Klingon settings to English.',
     'Cuz Uncle Jessy was hot and knew the Beach Boys',
-    "Don't worry too much. There's always extra pieces.",
+    'Don\'t worry too much. There\'s always extra pieces.',
     'Make the check actually check.',
-    "I dunno what this 'Safari' thing is.",
+    'I dunno what this \'Safari\' thing is.',
     'eeeeew... why is there PHP code in this room?',
     'nah there is an actual difference between stuff',
     '...have you paid money *out of your own pocket* to anyone to vet this product?',
     'first I want to make sure my thing actually does work sort of',
-    "Don't let \"perfect\" get in the way of \"good.\"",
+    'Don\'t let "perfect" get in the way of "good."',
     'damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me',
-    "It's not even kinda bad... It's strangely awful.",
+    'It\'s not even kinda bad... It\'s strangely awful.',
     'Like a good neighbor, /u/andytuba is there',
     'toolbox is build on beer',
     'aww, i thought this was about real tools',
     'my poop never smelled worse than when i lived off pizza bagel bites',
     'Little dot, little dot ♪ You are not so little anymore ♫',
-    "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
+    'How great will it be that trouble\'s wiki page will also include pizza ordering instructions?',
     'Luu',
     'I go two and hope for the best.',
     'oh dammit, I forgot to include url shit',
@@ -426,7 +436,7 @@ const randomTextFeedbacks = [
     'Please hold, your call is important to us.',
     'Remember, toolbox loves you.',
     'toolbox will be back later, gone fishing.',
-    "toolbox is 'doing things', don't ask.",
+    'toolbox is \'doing things\', don\'t ask.',
     'Tuning probability drive parameters.',
     'Initiating data transfer: NSA_backdoor_package. ',
     'Please post puppy pictures, they are so fluffy!',
@@ -439,7 +449,7 @@ const randomTextFeedbacks = [
     'Releasing raptors',
     'Booting robot uprising',
     'I need to tell you something critically important! I am sure I will remember in a moment...',
-    "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK",
+    '/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE\'D BE RIGHT BACK',
     'One sec... catching some bugs',
     'Here listen to some music while you wait, https://youtu.be/dQw4w9WgXcQ',
     'Me? No. I\'m no docter but it looks like you have a broken toe.',
@@ -467,31 +477,35 @@ export const RandomFeedback = randomTextFeedbacks[Math.floor(Math.random() * ran
  * will be `true` if the alert was clicked, `false` if the close button
  * was clicked or if it was closed for another reason.
  */
-export const alert = ({message, noteID, showClose}) => new Promise(resolve => {
-    const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
-    if (showClose) {
-        $noteDiv.append(`<i class="note-close tb-icons" title="Close">${icons.close}</i>`);
-    }
-    $noteDiv.appendTo($body);
+export const alert = ({message, noteID, showClose}) =>
+    new Promise(resolve => {
+        const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
+        if (showClose) {
+            $noteDiv.append(`<i class="note-close tb-icons" title="Close">${icons.close}</i>`);
+        }
+        $noteDiv.appendTo($body);
 
-    window.addEventListener('tbSingleSettingUpdate', event => {
-        const settingDetail = event.detail;
-        if (settingDetail.module === 'Utils' && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
+        window.addEventListener('tbSingleSettingUpdate', event => {
+            const settingDetail = event.detail;
+            if (
+                settingDetail.module === 'Utils' && settingDetail.setting === 'seenNotes'
+                && settingDetail.value.includes(noteID)
+            ) {
+                $noteDiv.remove();
+                resolve(false);
+                return;
+            }
+        });
+
+        $noteDiv.click(e => {
             $noteDiv.remove();
-            resolve(false);
-            return;
-        }
+            if (e.target.className === 'note-close') {
+                resolve(false);
+                return;
+            }
+            resolve(true);
+        });
     });
-
-    $noteDiv.click(e => {
-        $noteDiv.remove();
-        if (e.target.className === 'note-close') {
-            resolve(false);
-            return;
-        }
-        resolve(true);
-    });
-});
 
 /**
  * Shows a notification, uses native browser notifications if the user
@@ -543,7 +557,8 @@ export async function showNote (note) {
     }
 
     // If this note is only for a specific platform we're not on, skip it
-    if (note.platform === 'firefox' && browserName !== FIREFOX
+    if (
+        note.platform === 'firefox' && browserName !== FIREFOX
         || note.platform === 'chrome' && browserName !== CHROME
         || note.platform === 'opera' && browserName !== OPERA
         || note.platform === 'edge' && browserName !== EDGE
@@ -642,9 +657,9 @@ export function forEachChunked (array, chunkSize, delay, call, complete, start) 
 
 // Chunking abused for ratelimiting
 export function forEachChunkedRateLimit (array, chunkSize, call, complete, start) {
-    let length,
-        limit,
-        counter;
+    let length;
+    let limit;
+    let counter;
     const delay = 100;
 
     if (array === null) {
@@ -693,10 +708,14 @@ export function forEachChunkedRateLimit (array, chunkSize, call, complete, start
         const minutes = Math.floor(count / 60);
         const seconds = count - minutes * 60;
 
-        $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
+        $body.find('#ratelimit-counter').html(
+            `<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
     <br><br>
-    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
-    `);
+    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${
+                parseInt(chunkSize)
+            } items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
+    `,
+        );
 
         return count;
     }
@@ -711,8 +730,8 @@ export function forEachChunkedRateLimit (array, chunkSize, call, complete, start
 
             if (chunkSize + limit > parseInt(ratelimitRemaining)) {
                 $body.find('#ratelimit-counter').show();
-                let count = parseInt(ratelimitReset),
-                    counter = 0;
+                let count = parseInt(ratelimitReset);
+                let counter = 0;
 
                 counter = setInterval(() => {
                     count = timer(count, $body, ratelimitRemaining);
@@ -737,28 +756,28 @@ export function forEachChunkedDynamic (array, process, options) {
         return;
     }
     const arr = Array.from(array);
-    let start,
-        stop,
-        fr,
-        started = false;
+    let start;
+    let stop;
+    let fr;
+    let started = false;
     const opt = Object.assign({
         size: 25, // starting size
         framerate: 30, // target framerate
         nerf: 0.9, // Be careful with this one
     }, options);
     let size = opt.size;
-    const nerf = opt.nerf,
-          framerate = opt.framerate,
+    const nerf = opt.nerf;
+    const framerate = opt.framerate;
 
-          now = () => window.performance.now(),
+    const now = () => window.performance.now();
 
-          again = typeof window.requestAnimationFrame === 'function' ?
-              function (callback) {
-                  window.requestAnimationFrame(callback);
-              } :
-              function (callback) {
-                  setTimeout(callback, 1000 / opt.framerate);
-              };
+    const again = typeof window.requestAnimationFrame === 'function'
+        ? function (callback) {
+            window.requestAnimationFrame(callback);
+        }
+        : function (callback) {
+            setTimeout(callback, 1000 / opt.framerate);
+        };
 
     function optimize () {
         stop = now();
@@ -827,8 +846,8 @@ export function exportSettings (subreddit, callback) {
             return;
         } // don't backup the setting registry.
 
-        const key = this.split('.'),
-              setting = TBStorage.getSetting(key[0], key[1], null);
+        const key = this.split('.');
+        const setting = TBStorage.getSetting(key[0], key[1], null);
 
         if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
             settingsObject[this] = setting;
@@ -906,23 +925,23 @@ export async function getThingInfo (sender, modCheck) {
 
     const currentUser = await TBApi.getCurrentUser();
 
-    let subreddit,
-        permalink,
-        permalink_newmodmail,
-        domain,
-        id,
-        postID,
-        body,
-        title,
-        kind,
-        postlink,
-        banned_by,
-        spam,
-        ham,
-        user,
-        approved_by,
-        $textBody,
-        subredditType;
+    let subreddit;
+    let permalink;
+    let permalink_newmodmail;
+    let domain;
+    let id;
+    let postID;
+    let body;
+    let title;
+    let kind;
+    let postlink;
+    let banned_by;
+    let spam;
+    let ham;
+    let user;
+    let approved_by;
+    let $textBody;
+    let subredditType;
 
     // If new modmail the method is slightly different.
     if (isNewModmail) {
@@ -938,7 +957,9 @@ export async function getThingInfo (sender, modCheck) {
         // `idMatch` can be null when quickly navigating away (in which case `id` is inconsequential)
         id = idMatch ? idMatch[1] : 'racey';
 
-        permalink_newmodmail = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${id}`;
+        permalink_newmodmail = $threadBase.find('.m-link').length
+            ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}`
+            : `https://mod.reddit.com/mail/perma/${id}`;
 
         permalink = $body.find('.ThreadTitle__messageLink');
         permalink = permalink.length ? permalink[0].href : permalink_newmodmail;
@@ -956,19 +977,25 @@ export async function getThingInfo (sender, modCheck) {
         kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
         spam = false;
         ham = false;
-        user = $threadBase.find('.Message__author').first().text() ||
-            $body.find('.InfoBar__username').first().text() ||
-            $body.find('.ModIdCard__UserNameContainer').first().text();
+        user = $threadBase.find('.Message__author').first().text()
+            || $body.find('.InfoBar__username').first().text()
+            || $body.find('.ModIdCard__UserNameContainer').first().text();
     } else {
         const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
         const $thing = $($sender.closest('.thing')[0] || $sender);
 
         subredditType = $thing.attr('data-subreddit-type');
-        user = $entry.find('.author:first').text() || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
-        subreddit = $thing.attr('data-subreddit') || post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
-        permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
-        domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
-        id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
+        user = $entry.find('.author:first').text()
+            || ($entry.has('> .tagline') ? '[deleted]' : $thing.find('.author:first').text());
+        subreddit = $thing.attr('data-subreddit') || post_site || $entry.find('.subreddit:first').text()
+            || $thing.find('.subreddit:first').text()
+            || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
+        permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href')
+            || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
+        domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '')
+            .replace(')', '');
+        id = $entry.attr('data-fullname') || $thing.attr('data-fullname')
+            || $sender.closest('.usertext').find('input[name=thing_id]').val();
         $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
         $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
         body = $textBody.text() || '';
@@ -982,21 +1009,26 @@ export async function getThingInfo (sender, modCheck) {
         postlink = $thing.find('a.title').attr('href');
 
         // removed? spam or ham?
-        const removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
+        const removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(
+            /removed by (.+) \(((?:remove not |confirm )?spam)/,
+        ) || [];
 
         banned_by = removal[1] || '';
         spam = removal[2] === 'spam' || removal[2] === 'confirm spam';
         ham = removal[2] === 'remove not spam';
 
         if (isEditUserPage && !user) {
-            user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
+            user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text()
+                || $thing.closest('.user').find('a:first').text();
         }
 
         // If we still don't have a sub, we're in mod mail, or PMs.
         if (isModmail || $sender.closest('.message-parent')[0] !== undefined) {
             // Change it to use the parent's title.
             title = $sender.find('.subject-text:first').text();
-            subreddit = subreddit ? subreddit : $entry.find('.head a:last').text() || $thing.find('.head a:last').text();
+            subreddit = subreddit
+                ? subreddit
+                : $entry.find('.head a:last').text() || $thing.find('.head a:last').text();
             // This is a weird palce to go about this, and the conditions are strange,
             // but if we're going to assume we're us, we better make damned well sure that is likely the case.
             // if ($entry.find('.remove-button').text() === '') {
@@ -1084,151 +1116,155 @@ export async function getThingInfo (sender, modCheck) {
 function findMessage (object, searchID) {
     let found;
     switch (object.kind) {
-    case 'Listing':
-        for (let i = 0; i < object.data.children.length; i++) {
-            const childFound = findMessage(object.data.children[i], searchID);
-            if (childFound) {
-                found = childFound;
+        case 'Listing':
+            for (let i = 0; i < object.data.children.length; i++) {
+                const childFound = findMessage(object.data.children[i], searchID);
+                if (childFound) {
+                    found = childFound;
+                }
             }
-        }
-        break;
-    case 't4':
-        logger.log('t4:', object.data.id);
-        if (object.data.id === searchID) {
-            found = object;
-        }
+            break;
+        case 't4':
+            logger.log('t4:', object.data.id);
+            if (object.data.id === searchID) {
+                found = object;
+            }
 
-        if (Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies && typeof object.data.replies === 'object') {
-            const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
-            if (childFound) {
-                found = childFound;
+            if (
+                Object.prototype.hasOwnProperty.call(object.data, 'replies') && object.data.replies
+                && typeof object.data.replies === 'object'
+            ) {
+                const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
+                if (childFound) {
+                    found = childFound;
+                }
             }
-        }
-        break;
-    default:
-        break;
+            break;
+        default:
+            break;
     }
     return found;
 }
 
-export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve => {
-    if (id.startsWith('t4_')) {
-        const shortID = id.substr(3);
-        TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {
-            TBStorage.purifyObject(response);
-            const message = findMessage(response, shortID);
-            const body = message.data.body,
-                  user = message.data.author,
-                  title = message.data.subject,
-                  permalink = `/message/messages/${shortID}`;
+export const getApiThingInfo = (id, subreddit, modCheck) =>
+    new Promise(resolve => {
+        if (id.startsWith('t4_')) {
+            const shortID = id.substr(3);
+            TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {
+                TBStorage.purifyObject(response);
+                const message = findMessage(response, shortID);
+                const body = message.data.body;
+                const user = message.data.author;
+                const title = message.data.subject;
+                const permalink = `/message/messages/${shortID}`;
 
-            let subreddit = message.data.subreddit || '';
+                let subreddit = message.data.subreddit || '';
 
-            const isMod = await isModSub(subreddit);
-            if (modCheck && !isMod) {
-                subreddit = '';
-            }
+                const isMod = await isModSub(subreddit);
+                if (modCheck && !isMod) {
+                    subreddit = '';
+                }
 
-            const info = {
-                subreddit,
-                user,
-                author: user,
-                permalink,
-                url: permalink,
-                domain: '',
-                id,
-                body: `> ${body.split('\n').join('\n> ')}`,
-                raw_body: body,
-                uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                approved_by: '',
-                title,
-                uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                kind: 'comment',
-                postlink: '',
-                link: '',
-                banned_by: '',
-                spam: '',
-                ham: '',
-                rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
-                sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
-                wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                mod: await TBApi.getCurrentUser(),
-            };
+                const info = {
+                    subreddit,
+                    user,
+                    author: user,
+                    permalink,
+                    url: permalink,
+                    domain: '',
+                    id,
+                    body: `> ${body.split('\n').join('\n> ')}`,
+                    raw_body: body,
+                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                    approved_by: '',
+                    title,
+                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                    kind: 'comment',
+                    postlink: '',
+                    link: '',
+                    banned_by: '',
+                    spam: '',
+                    ham: '',
+                    rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+                    sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+                    wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
+                    mod: await TBApi.getCurrentUser(),
+                };
 
-            resolve(info);
-        });
-    } else {
-        const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-        TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(async response => {
-            TBStorage.purifyObject(response);
-            const data = response.data;
+                resolve(info);
+            });
+        } else {
+            const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+            TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(async response => {
+                TBStorage.purifyObject(response);
+                const data = response.data;
 
-            let user = data.children[0].data.author;
-            const body = data.children[0].data.body || data.children[0].data.selftext || '';
-            let permalink = data.children[0].data.permalink;
-            const title = data.children[0].data.title || '';
-            const postlink = data.children[0].data.url || '';
-            // A recent reddit change makes subreddit names sometimes start with "/r/".
-            // Mod mail subreddit names additionally end with "/".
-            // reddit pls, need consistency
-            subreddit = TBHelpers.cleanSubredditName(subreddit);
+                let user = data.children[0].data.author;
+                const body = data.children[0].data.body || data.children[0].data.selftext || '';
+                let permalink = data.children[0].data.permalink;
+                const title = data.children[0].data.title || '';
+                const postlink = data.children[0].data.url || '';
+                // A recent reddit change makes subreddit names sometimes start with "/r/".
+                // Mod mail subreddit names additionally end with "/".
+                // reddit pls, need consistency
+                subreddit = TBHelpers.cleanSubredditName(subreddit);
 
-            // Not a mod, reset current sub.
-            const isMod = await isModSub(subreddit);
-            if (modCheck && !isMod) {
-                subreddit = '';
-            }
+                // Not a mod, reset current sub.
+                const isMod = await isModSub(subreddit);
+                if (modCheck && !isMod) {
+                    subreddit = '';
+                }
 
-            if (user === '[deleted]') {
-                user = '';
-            }
+                if (user === '[deleted]') {
+                    user = '';
+                }
 
-            // If the permalink is relative, stick the current domain name in.
-            // Only do so if a permalink is found.
-            if (permalink && permalink.slice(0, 1) === '/') {
-                permalink = baseDomain + permalink;
-            }
+                // If the permalink is relative, stick the current domain name in.
+                // Only do so if a permalink is found.
+                if (permalink && permalink.slice(0, 1) === '/') {
+                    permalink = baseDomain + permalink;
+                }
 
-            if (permalink && permaCommentLinkRegex.test(permalink)) {
-                permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
-            }
+                if (permalink && permaCommentLinkRegex.test(permalink)) {
+                    permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+                }
 
-            if (modCheck && !isMod) {
-                subreddit = '';
-            }
+                if (modCheck && !isMod) {
+                    subreddit = '';
+                }
 
-            const info = {
-                subreddit,
-                user,
-                author: user,
-                permalink,
-                url: permalink,
-                domain: data.children[0].data.domain || '',
-                id,
-                body: `> ${body.split('\n').join('\n> ')}`,
-                raw_body: body,
-                uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                approved_by: data.children[0].data.approved_by,
-                title,
-                uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
-                postlink,
-                link: postlink,
-                banned_by: data.children[0].data.banned_by,
-                spam: data.children[0].data.spam,
-                ham: data.children[0].data.removed,
-                rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
-                sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
-                wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                mod: await TBApi.getCurrentUser(),
-                userReports: data.children[0].data.user_reports,
-                modReports: data.children[0].data.mod_reports,
-                reportsIgnored: data.children[0].data.ignore_reports,
-            };
-            resolve(info);
-        });
-    }
-});
+                const info = {
+                    subreddit,
+                    user,
+                    author: user,
+                    permalink,
+                    url: permalink,
+                    domain: data.children[0].data.domain || '',
+                    id,
+                    body: `> ${body.split('\n').join('\n> ')}`,
+                    raw_body: body,
+                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                    approved_by: data.children[0].data.approved_by,
+                    title,
+                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                    kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
+                    postlink,
+                    link: postlink,
+                    banned_by: data.children[0].data.banned_by,
+                    spam: data.children[0].data.spam,
+                    ham: data.children[0].data.removed,
+                    rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
+                    sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
+                    wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
+                    mod: await TBApi.getCurrentUser(),
+                    userReports: data.children[0].data.user_reports,
+                    modReports: data.children[0].data.mod_reports,
+                    reportsIgnored: data.children[0].data.ignore_reports,
+                };
+                resolve(info);
+            });
+        }
+    });
 
 // Global object shenanigans
 
@@ -1289,9 +1325,9 @@ export async function getToolboxDevs () {
                 const resp = await TBApi.getJSON('/r/toolbox/about/moderators.json');
                 TBStorage.purifyObject(resp);
                 devs = resp.data.children
-                // We only care about usernames
+                    // We only care about usernames
                     .map(child => child.name)
-                // ignore automod
+                    // ignore automod
                     .filter(dev => dev !== 'AutoModerator');
             } catch (_) {
                 // Something went wrong, use a hardcoded fallback list
@@ -1327,10 +1363,10 @@ export async function getToolboxDevs () {
 // Listen to background page communication and act based on that.
 browser.runtime.onMessage.addListener(message => {
     switch (message.action) {
-    default: {
-        const event = new CustomEvent(message.action, {detail: message.payload});
-        window.dispatchEvent(event);
-    }
+        default: {
+            const event = new CustomEvent(message.action, {detail: message.payload});
+            window.dispatchEvent(event);
+        }
     }
 });
 
@@ -1378,7 +1414,8 @@ const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/
 const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
 const subredditWikiPageReg = /^\/r\/([^/]*?)\/wiki\/?(edit|revisions|settings|discussions)?\/(.+)\/?$/;
 const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
-const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
+const userProfile =
+    /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
 const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
 
 // Once a change in the page hash is detected in toolbox format it will abstract the parms and send out an event.
@@ -1393,8 +1430,8 @@ function refreshHashContext () {
             const params = hash.split('&');
             params.forEach(param => {
                 const keyval = param.split('=');
-                const key = keyval[0].replace('?', ''),
-                      val = keyval[1];
+                const key = keyval[0].replace('?', '');
+                const val = keyval[1];
                 paramObject[key] = val;
             });
             setTimeout(() => {
@@ -1595,15 +1632,21 @@ if ($('#header').length) {
     // create an observer instance
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+            const $target = $(mutation.target);
+            const $parentNode = $(mutation.target.parentNode);
 
             if ($target.hasClass('expando')) {
                 const expandoEvent = new CustomEvent('tbNewExpando');
                 mutation.target.dispatchEvent(expandoEvent);
             }
 
-            if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
-                    $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) {
+            if (
+                !($target.hasClass('sitetable')
+                    && ($target.hasClass('nestedlisting') || $target.hasClass('listing')
+                        || $target.hasClass('linklisting')
+                        || $target.hasClass('modactionlisting')))
+                && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')
+            ) {
                 return;
             }
 

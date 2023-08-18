@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import SnuOwnd from 'snuownd';
 import pako from 'pako';
+import SnuOwnd from 'snuownd';
 
 /**
  * Returns a promise that resolves after the given time.
@@ -49,7 +49,7 @@ export function debounce (func, debounceTime = 100) {
  * flushed immediately without waiting for the `delayTime` to elapse
  * @returns {(item: Item) => Promise<Result>} New function which queues an item
  * and returns a promise for the corresponding result after processing
-*/
+ */
 export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQueueLength = Infinity) {
     /** @type {number} */
     let timeout;
@@ -76,22 +76,23 @@ export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQue
         results.forEach((result, i) => queueSnapshot[i].resolve(result));
     };
 
-    return item => new Promise((resolve, reject) => {
-        // Add this call to the queue
-        queue.push({item, resolve, reject});
+    return item =>
+        new Promise((resolve, reject) => {
+            // Add this call to the queue
+            queue.push({item, resolve, reject});
 
-        // Clear any existing timeout
-        clearTimeout(timeout);
+            // Clear any existing timeout
+            clearTimeout(timeout);
 
-        // If we've hit the maximum queue length, flush the queue immediately
-        if (queue.length >= maxQueueLength) {
-            flushQueue();
-            return;
-        }
+            // If we've hit the maximum queue length, flush the queue immediately
+            if (queue.length >= maxQueueLength) {
+                flushQueue();
+                return;
+            }
 
-        // Otherwise, flush the queue after the debounce delay
-        timeout = setTimeout(flushQueue, delayTime);
-    });
+            // Otherwise, flush the queue after the debounce delay
+            timeout = setTimeout(flushQueue, delayTime);
+        });
 }
 
 /**
@@ -135,7 +136,7 @@ export function escapeHTML (html) {
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
-        "'": '&#39;',
+        '\'': '&#39;',
         '/': '&#x2F;',
     };
 
@@ -154,7 +155,7 @@ export function unescapeHTML (html) {
         '&lt;': '<',
         '&gt;': '>',
         '&quot;': '"',
-        '&#39;': "'",
+        '&#39;': '\'',
         '&#x2F;': '/',
     };
 
@@ -795,3 +796,41 @@ export function zlibDeflate (objThing) {
  * Provides an initialized SnuOwnd parser.
  */
 export const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
+
+/**
+ * Wraps each of an iterable's values with an object that indicates which item
+ * is the last one in the sequence by always reading one item ahead in the
+ * iterator to check for `{done: true}` before yielding the current item.
+ * @template T
+ * @param {AsyncIterable<T>} iterable
+ * @returns {AsyncGenerator<{item: T, last: boolean}, void>}
+ */
+export async function* wrapWithLastValue (iterable) {
+    // get the underlying iterator
+    const iterator = iterable[Symbol.asyncIterator]?.() ?? iterable[Symbol.iterator]?.();
+    if (!iterator) {
+        throw new TypeError('argument is not an iterable');
+    }
+
+    // fetch the first item
+    let current = await iterator.next();
+
+    // yield nothing for empty sequences
+    if (current.done) {
+        return;
+    }
+
+    while (true) {
+        // fetch the next item and see if it yields anything
+        const next = await iterator.next();
+        if (next.done) {
+            // the iterator has returned; the previous result is the last, and
+            // this result is the return value
+            yield {item: current.value, last: true};
+            return next.value;
+        }
+        // the iterator isn't done yet; yield previous item and keep going
+        yield {item: current.value, last: false};
+        current = next;
+    }
+}

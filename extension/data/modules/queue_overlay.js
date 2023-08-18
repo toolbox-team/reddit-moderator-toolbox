@@ -1,9 +1,9 @@
 import $ from 'jquery';
 
+import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
-import * as TBCore from '../tbcore.js';
 
 export default new Module({
     name: 'Queue Overlay',
@@ -14,7 +14,8 @@ export default new Module({
             id: 'overlayFromBarRedesign',
             type: 'boolean',
             default: true,
-            description: 'In redesign when clicking queue and unmoderated icons open the old reddit variants in an overlay.',
+            description:
+                'In redesign when clicking queue and unmoderated icons open the old reddit variants in an overlay.',
         },
         {
             id: 'overlayFromBarOld',
@@ -27,10 +28,10 @@ export default new Module({
 }, async ({overlayFromBarRedesign, overlayFromBarOld}) => {
     const $body = $('body');
 
-    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false),
-          modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod'),
-          unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false),
-          unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
 
     // Array used to keep track of loading iframes so that when the overlay gets closed we can properly stop all long load animations.
     let activeLoading = [];
@@ -231,7 +232,8 @@ export default new Module({
             const $reloadListing = $tabContent.find('.tb-queue-reload');
             const listUrl = figureOutMulti($tbQueueUrl, type, subreddit);
 
-            const $iframe = $(`<iframe src="${TBCore.link(listUrl)}?embedded=true" class="tb-queue-iframe"></iframe>`).appendTo($tabContent);
+            const $iframe = $(`<iframe src="${TBCore.link(listUrl)}?embedded=true" class="tb-queue-iframe"></iframe>`)
+                .appendTo($tabContent);
 
             // Handle reloading from the reload button.
             $reloadListing.on('click', () => {
@@ -268,7 +270,10 @@ export default new Module({
     });
 
     // eslint-disable-next-line no-extra-parens
-    if ((TBCore.isOldReddit && overlayFromBarOld) || (!TBCore.isOldReddit && overlayFromBarRedesign && !TBCore.isNewModmail)) {
+    if (
+        (TBCore.isOldReddit && overlayFromBarOld)
+        || (!TBCore.isOldReddit && overlayFromBarRedesign && !TBCore.isNewModmail)
+    ) {
         $body.on('click', '#tb-modqueue, #tb-queueCount', event => {
             if (event.ctrlKey || event.metaKey) {
                 return;
@@ -289,16 +294,20 @@ export default new Module({
             });
         });
 
-        $body.on('click', '.tb-my-subreddits-subreddit a[data-type="unmoderated"], .tb-my-subreddits-subreddit a[data-type="modqueue"]', event => {
-            if (event.ctrlKey || event.metaKey) {
-                return;
-            }
-            event.preventDefault();
-            const $this = $(event.target);
-            makeQueueOverlay($this.attr('data-type'), {
-                subreddit: $this.attr('data-subreddit'),
-                overwrite: true,
-            });
-        });
+        $body.on(
+            'click',
+            '.tb-my-subreddits-subreddit a[data-type="unmoderated"], .tb-my-subreddits-subreddit a[data-type="modqueue"]',
+            event => {
+                if (event.ctrlKey || event.metaKey) {
+                    return;
+                }
+                event.preventDefault();
+                const $this = $(event.target);
+                makeQueueOverlay($this.attr('data-type'), {
+                    subreddit: $this.attr('data-subreddit'),
+                    overwrite: true,
+                });
+            },
+        );
     }
 });

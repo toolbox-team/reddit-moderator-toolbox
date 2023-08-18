@@ -1,10 +1,10 @@
 /* eslint-env node */
 
 // import nodeResolve from '@rollup/plugin-node-resolve';
-import copy from 'rollup-plugin-copy';
-import {nodeResolve} from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import {nodeResolve} from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import copy from 'rollup-plugin-copy';
 
 // TODO: Pull entry point info and copied files from manifest itself
 export default ['chrome', 'firefox'].flatMap(platform => [
@@ -22,7 +22,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
             // Copy files not processed by Rollup over to the build directory
             copy({
                 targets: [
-                // The manifest
+                    // The manifest
                     {
                         src: `extension/${platform}_manifest.json`,
                         dest: `build/${platform}`,

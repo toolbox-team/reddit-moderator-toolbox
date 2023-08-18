@@ -28,7 +28,9 @@ const shortCacheList = [
 
 async function clearCache (redditSessionUserId) {
     const storage = await browser.storage.local.get();
-    const cacheKeys = Object.keys(storage).filter(storageKey => storageKey.startsWith(`${TB_CACHE_PREFIX}.${redditSessionUserId}`));
+    const cacheKeys = Object.keys(storage).filter(storageKey =>
+        storageKey.startsWith(`${TB_CACHE_PREFIX}.${redditSessionUserId}`)
+    );
     await browser.storage.local.remove(cacheKeys);
 }
 
@@ -125,9 +127,13 @@ messageHandlers.set('tb-cache', async (request, sender) => {
                 const TBsettingsObject = await browser.storage.local.get('tbsettings');
                 let cacheTTL;
                 if (longCacheList.includes(storageKey)) {
-                    cacheTTL = TBsettingsObject.tbsettings[storageLongLengthKey] ? TBsettingsObject.tbsettings[storageLongLengthKey] : 45;
+                    cacheTTL = TBsettingsObject.tbsettings[storageLongLengthKey]
+                        ? TBsettingsObject.tbsettings[storageLongLengthKey]
+                        : 45;
                 } else {
-                    cacheTTL = TBsettingsObject.tbsettings[storageShortLengthKey] ? TBsettingsObject.tbsettings[storageShortLengthKey] : 15;
+                    cacheTTL = TBsettingsObject.tbsettings[storageShortLengthKey]
+                        ? TBsettingsObject.tbsettings[storageShortLengthKey]
+                        : 15;
                 }
 
                 // TODO: find out if this is actually still needed.

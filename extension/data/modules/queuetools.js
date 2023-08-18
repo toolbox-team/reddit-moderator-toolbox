@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 const self = new Module({
     name: 'Queue Tools',
@@ -17,7 +17,8 @@ const self = new Module({
             id: 'showActionReason',
             type: 'boolean',
             default: true,
-            description: 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog',
+            description:
+                'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog',
         },
         {
             id: 'expandActionReasonQueue',
@@ -103,7 +104,8 @@ const self = new Module({
             advanced: true,
             values: ['age', 'edited', 'removed', 'score', 'reports'],
             default: 'age',
-            description: 'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.',
+            description:
+                'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.',
             oldReddit: true,
         },
         {
@@ -129,7 +131,8 @@ const self = new Module({
             id: 'botCheckmark',
             type: 'list',
             default: ['AutoModerator'],
-            description: `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
+            description:
+                `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
             oldReddit: true,
         },
         {
@@ -137,7 +140,8 @@ const self = new Module({
             type: 'boolean',
             default: true,
             beta: false,
-            description: 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
+            description:
+                'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
             oldReddit: true,
         },
         {
@@ -200,8 +204,8 @@ self.queuetoolsOld = function ({
     }
 
     async function colorSubreddits () {
-        const $this = $(this),
-              subredditName = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
+        const $this = $(this);
+        const subredditName = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
 
         $this.addClass('color-processed');
 
@@ -252,15 +256,15 @@ self.queuetoolsOld = function ({
 
     // Add modtools buttons to page.
     function addModtools () {
-        let listingOrder = reportsOrder,
-            allSelected = false,
-            sortAscending = reportsAscending;
+        let listingOrder = reportsOrder;
+        let allSelected = false;
+        let sortAscending = reportsAscending;
 
-        const numberRX = /-?\d+/,
-              viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
-              viewingreports = !!location.pathname.match(/\/about\/reports/),
-              EXPAND_TITLE = 'expand reports',
-              COLLAPSE_TITLE = 'collapse reports';
+        const numberRX = /-?\d+/;
+        const viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/);
+        const viewingreports = !!location.pathname.match(/\/about\/reports/);
+        const EXPAND_TITLE = 'expand reports';
+        const COLLAPSE_TITLE = 'collapse reports';
 
         if (viewingspam && listingOrder === 'reports') {
             listingOrder = 'removed';
@@ -273,8 +277,8 @@ self.queuetoolsOld = function ({
         function removeUnmoddable () {
             if (!TBCore.isModpage && !TBCore.isSubCommentsPage) {
                 $('.thing').each(async function () {
-                    const $thing = $(this),
-                          $sub = $thing.find('.subreddit');
+                    const $thing = $(this);
+                    const $sub = $thing.find('.subreddit');
 
                     // Remove if the sub isn't moderated
                     if ($sub.length > 0) {
@@ -316,7 +320,11 @@ self.queuetoolsOld = function ({
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a>
             <a href="javascript:;" class="pretty-button action ignore" accesskey="G" type="ignore" tabindex="6">ignore&nbsp;reports&nbsp;on&nbsp;selected</a>
         </span>
-        ${viewingspam ? '' : `<span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" min="0" value="${reportsThreshold}" /></a></span>`}
+        ${
+            viewingspam
+                ? ''
+                : `<span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" min="0" value="${reportsThreshold}" /></a></span>`
+        }
         <span class="dropdown-title lightdrop" style="float:right"> sort:
             <div class="tb-dropdown lightdrop">
                 <span class="selected sortorder">${listingOrder}</span>
@@ -348,9 +356,17 @@ self.queuetoolsOld = function ({
             const popupSelectContent = `
                 <div class="lightdrop select-options">
                     <h2>Types</h2>
-                    ${viewingreports ? '' : `<p><label><input type="checkbox" class="choice inoffensive" name="banned" /> shadow-banned</label></p>
+                    ${
+                viewingreports
+                    ? ''
+                    : `<p><label><input type="checkbox" class="choice inoffensive" name="banned" /> shadow-banned</label></p>
                     <p><label><input type="checkbox" class="choice inoffensive" name="filtered"/> spam-filtered</label></p>
-                    ${viewingspam ? '' : '<p><label><input type="checkbox" class="choice inoffensive" name="reported"/> reported</label></p>'}`}
+                    ${
+                        viewingspam
+                            ? ''
+                            : '<p><label><input type="checkbox" class="choice inoffensive" name="reported"/> reported</label></p>'
+                    }`
+            }
                     <p><label><input type="checkbox" class="choice" name="comments" /> comments</label></p>
                     <p><label><input type="checkbox" class="choice" name="links" /> submissions</label></p>
                     <p><label><input type="checkbox" class="choice" name="self" /> text posts</label></p>
@@ -380,7 +396,8 @@ self.queuetoolsOld = function ({
                         title: 'Tab1',
                         tooltip: 'NA',
                         content: popupSelectContent,
-                        footer: '<input class="select-queue-tools tb-action-button" type="button" value="Select items" />',
+                        footer:
+                            '<input class="select-queue-tools tb-action-button" type="button" value="Select items" />',
                     },
                 ],
                 cssClass: 'queuetools-select-popup',
@@ -398,7 +415,10 @@ self.queuetoolsOld = function ({
             const $element = $(e.currentTarget);
             $element.addClass('active');
             $element.siblings('.tb-drop-choices').not('.inuse').css('top', `${e.offsetHeight}px`).each(function () {
-                $(this).css('left', `${$element.position().left}px`).css('top', `${$element.height() + $element.position().top}px`);
+                $(this).css('left', `${$element.position().left}px`).css(
+                    'top',
+                    `${$element.height() + $element.position().top}px`,
+                );
             }).addClass('inuse');
         });
 
@@ -407,7 +427,9 @@ self.queuetoolsOld = function ({
             $body.find('.tb-drop-choices.inuse').removeClass('inuse');
         });
         // Check if the tab menu exists and create it if it doesn't
-        $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
+        $('.thing.link, .thing.comment').prepend(
+            '<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />',
+        );
         $('.buttons .pretty-button').attr('tabindex', '2');
 
         // add class to processed threads.
@@ -430,12 +452,12 @@ self.queuetoolsOld = function ({
         // });
 
         // Fix the position of the modtools. We do it like this so we can support custom css
-        const $modtoolsMenu = $body.find('.menuarea.modtools'),
-              $modtoolsMenuDuplicate = $body.find('.modtools-duplicate'),
-              offset = $modtoolsMenu.offset(),
-              offsetTop = offset.top,
-              offsetSticky = offset.left,
-              rightPosition = $('.side').outerWidth() + 10;
+        const $modtoolsMenu = $body.find('.menuarea.modtools');
+        const $modtoolsMenuDuplicate = $body.find('.modtools-duplicate');
+        const offset = $modtoolsMenu.offset();
+        const offsetTop = offset.top;
+        const offsetSticky = offset.left;
+        const rightPosition = $('.side').outerWidth() + 10;
 
         $modtoolsMenu.css({
             'margin-right': `${rightPosition}px`,
@@ -496,9 +518,9 @@ self.queuetoolsOld = function ({
 
         // Change sort order
         $('.sortorder-options a').click(function () {
-            const $sortOrder = $('.sortorder'),
-                  order = $(this).text(),
-                  toggleAsc = order === $sortOrder.text();
+            const $sortOrder = $('.sortorder');
+            const order = $(this).text();
+            const toggleAsc = order === $sortOrder.text();
 
             if (toggleAsc) {
                 sortAscending = !sortAscending;
@@ -535,71 +557,79 @@ self.queuetoolsOld = function ({
         $body.on('click', '.select-queue-tools', () => {
             // reset
             const $things = $('.thing:visible');
-            const $selectOptions = $('.select-options input').filter((_, el) => el.type === 'checkbox' && el.checked || el.type === 'text' && el.value.length);
+            const $selectOptions = $('.select-options input').filter((_, el) =>
+                el.type === 'checkbox' && el.checked || el.type === 'text' && el.value.length
+            );
             $things.find('input[type=checkbox]').prop('checked', false);
             function selectThings () {
                 const $this = $(this);
                 let shouldSelect = null;
                 $selectOptions.each((_, el) => {
-                    let selector = '', min, max;
+                    let selector = '';
+                    let min;
+                    let max;
                     switch (el.name) {
-                    case 'banned':
-                        selector = '.banned-user';
-                        break;
-                    case 'filtered':
-                        selector = '.spam:not(.banned-user)';
-                        break;
-                    case 'reported':
-                        selector = ':has(.reported-stamp)';
-                        break;
-                    case 'spammed':
-                        selector = '.spammed,:has(.pretty-button.negative.pressed),:has(.remove-button:contains(spammed))';
-                        break;
-                    case 'removed':
-                        selector = '.removed,:has(.pretty-button.neutral.pressed),:has(.remove-button:contains(removed))';
-                        break;
-                    case 'approved':
-                        selector = '.approved,:has(.approval-checkmark,.pretty-button.positive.pressed),:has(.approve-button:contains(approved))';
-                        break;
-                    case 'ignored':
-                        selector = ':has(.pretty-button.pressed[data-event-action*="ignorereports"])'; // could be "ignorereports" or "unignorereports", hence the *=
-                        break;
-                    case 'actioned':
-                        selector = `.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),
+                        case 'banned':
+                            selector = '.banned-user';
+                            break;
+                        case 'filtered':
+                            selector = '.spam:not(.banned-user)';
+                            break;
+                        case 'reported':
+                            selector = ':has(.reported-stamp)';
+                            break;
+                        case 'spammed':
+                            selector =
+                                '.spammed,:has(.pretty-button.negative.pressed),:has(.remove-button:contains(spammed))';
+                            break;
+                        case 'removed':
+                            selector =
+                                '.removed,:has(.pretty-button.neutral.pressed),:has(.remove-button:contains(removed))';
+                            break;
+                        case 'approved':
+                            selector =
+                                '.approved,:has(.approval-checkmark,.pretty-button.positive.pressed),:has(.approve-button:contains(approved))';
+                            break;
+                        case 'ignored':
+                            selector = ':has(.pretty-button.pressed[data-event-action*="ignorereports"])'; // could be "ignorereports" or "unignorereports", hence the *=
+                            break;
+                        case 'actioned':
+                            selector =
+                                `.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),
                                     :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))`;
-                        break;
-                    case 'domain':
-                        selector = `:has(.domain:contains(${el.value.toLowerCase()}))`;
-                        break;
-                    case 'user':
-                        selector = `:has(.author:contains(${el.value}))`;
-                        break;
-                    case 'title':
-                        selector = `:has(a.title:contains(${el.value}))`;
-                        break;
-                    case 'subreddit':
-                        selector = `:has(a.subreddit:contains(${el.value}))`;
-                        break;
-                    case 'comments':
-                        selector = '.comment';
-                        break;
-                    case 'links':
-                        selector = '.link';
-                        break;
-                    case 'self':
-                        selector = '.self';
-                        break;
-                    case 'flair':
-                        selector = ':has(.linkflairlabel)';
-                        break;
-                    case 'pointsgt':
-                        min = parseInt(el.value);
-                        selector = (_, el) => $(el).find('.score.unvoted').attr('title') > min;
-                        break;
-                    case 'pointslt':
-                        max = parseInt(el.value);
-                        selector = (_, el) => $(el).find('.score.unvoted').attr('title') < max;
-                        break;
+                            break;
+                        case 'domain':
+                            selector = `:has(.domain:contains(${el.value.toLowerCase()}))`;
+                            break;
+                        case 'user':
+                            selector = `:has(.author:contains(${el.value}))`;
+                            break;
+                        case 'title':
+                            selector = `:has(a.title:contains(${el.value}))`;
+                            break;
+                        case 'subreddit':
+                            selector = `:has(a.subreddit:contains(${el.value}))`;
+                            break;
+                        case 'comments':
+                            selector = '.comment';
+                            break;
+                        case 'links':
+                            selector = '.link';
+                            break;
+                        case 'self':
+                            selector = '.self';
+                            break;
+                        case 'flair':
+                            selector = ':has(.linkflairlabel)';
+                            break;
+                        case 'pointsgt':
+                            min = parseInt(el.value);
+                            selector = (_, el) => $(el).find('.score.unvoted').attr('title') > min;
+                            break;
+                        case 'pointslt':
+                            max = parseInt(el.value);
+                            selector = (_, el) => $(el).find('.score.unvoted').attr('title') < max;
+                            break;
                     }
                     shouldSelect = $this.is(selector);
                     return shouldSelect !== false;
@@ -636,9 +666,9 @@ self.queuetoolsOld = function ({
 
         // Mass spam/remove/approve/ignore
         $('.pretty-button.action').click(function () {
-            const approve = this.type === 'positive',
-                  spam = !approve && this.type === 'negative',
-                  ignore = this.type === 'ignore';
+            const approve = this.type === 'positive';
+            const spam = !approve && this.type === 'negative';
+            const ignore = this.type === 'ignore';
 
             // Apply action
             const $actioned = $('.thing:visible > input:checked').parent().each(function () {
@@ -672,8 +702,8 @@ self.queuetoolsOld = function ({
 
         // Uncheck anything we've taken an action, if it's checked.
         $body.on('click', '.pretty-button', function () {
-            const $this = $(this),
-                  $thing = $this.closest('.thing');
+            const $this = $(this);
+            const $thing = $this.closest('.thing');
 
             $thing.find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
@@ -750,8 +780,8 @@ self.queuetoolsOld = function ({
 
                 $('.open-expandos').text('[-]');
                 $('.expando-button.collapsed').each(function (index) {
-                    const $button = $(this),
-                          $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+                    const $button = $(this);
+                    const $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                     setTimeout(() => {
                         $button.click();
@@ -764,8 +794,8 @@ self.queuetoolsOld = function ({
 
                 $('.open-expandos').text('[+]');
                 $('.expando-button.expanded').each(function () {
-                    const $button = $(this),
-                          $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+                    const $button = $(this);
+                    const $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                     $button.click();
                     $checkBox.prop('checked', false);
@@ -783,8 +813,16 @@ self.queuetoolsOld = function ({
             // add class to processed threads.
             $(things).addClass('mte-processed');
 
-            $(things).prepend(`<input type="checkbox" tabindex="2" style="margin:5px;float:left;"${allSelected ? ' checked' : ''} />`).find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
-                $(this).prepend(`<li><a class="context" href="${$(this).find('.first .bylink').attr('href')}?context=2">context</a></li>`);
+            $(things).prepend(
+                `<input type="checkbox" tabindex="2" style="margin:5px;float:left;"${allSelected ? ' checked' : ''} />`,
+            ).find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find(
+                '.userattrs',
+            ).filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
+                $(this).prepend(
+                    `<li><a class="context" href="${
+                        $(this).find('.first .bylink').attr('href')
+                    }?context=2">context</a></li>`,
+                );
             });
             if (expandosOpen) {
                 $(things).find('.expando-button.collapsed').click();
@@ -810,11 +848,14 @@ self.queuetoolsOld = function ({
 
         // sort sidebars
         if (TBCore.isModFakereddit) {
-            $('.sidecontentbox:has(.subscription-box) > .title').append('&nbsp;<a href="javascript:;" class="tb-sort-subs">sort by items</a>');
+            $('.sidecontentbox:has(.subscription-box) > .title').append(
+                '&nbsp;<a href="javascript:;" class="tb-sort-subs">sort by items</a>',
+            );
         }
 
         $body.on('click', '.tb-sort-subs', () => {
-            let prefix = '', page = '';
+            let prefix = '';
+            let page = '';
             if (TBCore.isUnmoderatedPage) {
                 self.log('sorting unmod');
                 prefix = 'umq-';
@@ -835,39 +876,59 @@ self.queuetoolsOld = function ({
             $sortButton.html('sorting...');
             $sortButton.css({'padding-left': '17px', 'padding-right': '16px'});
 
-            const now = TBHelpers.getTime(),
-                // delay = 0,
-                  modSubs = [];
+            const now = TBHelpers.getTime();
+            // delay = 0,
+            const modSubs = [];
 
             TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TBui.FEEDBACK_NEUTRAL);
 
             TBCore.forEachChunked(
-                $('.subscription-box a.title'), 20, 100, elem => {
-                    const $elem = $(elem),
-                          sr = $elem.text();
+                $('.subscription-box a.title'),
+                20,
+                100,
+                elem => {
+                    const $elem = $(elem);
+                    const sr = $elem.text();
 
-                    TBStorage.getCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, '[0,0]').then(cacheData => {
-                        const data = JSON.parse(cacheData);
+                    TBStorage.getCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, '[0,0]').then(
+                        cacheData => {
+                            const data = JSON.parse(cacheData);
 
-                        modSubs.push(sr);
-                        TBui.textFeedback(`Getting items for: ${sr}`, TBui.FEEDBACK_POSITIVE, null, TBui.DISPLAY_BOTTOM);
+                            modSubs.push(sr);
+                            TBui.textFeedback(
+                                `Getting items for: ${sr}`,
+                                TBui.FEEDBACK_POSITIVE,
+                                null,
+                                TBui.DISPLAY_BOTTOM,
+                            );
 
-                        // Update count and re-cache data if more than an hour old.
-                        $elem.parent().append(`<a href="${TBCore.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
-                        if (now > data[1]) {
-                            updateModqueueCount(sr);
-                        }
+                            // Update count and re-cache data if more than an hour old.
+                            $elem.parent().append(
+                                `<a href="${TBCore.link(`/r/${sr}/about/${page}`)}" count="${
+                                    data[0]
+                                }" class="tb-subreddit-item-count">${data[0]}</a>`,
+                            );
+                            if (now > data[1]) {
+                                updateModqueueCount(sr);
+                            }
 
-                        function updateModqueueCount (sr) {
-                            TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
-                                TBStorage.purifyObject(d);
-                                const items = d.data.children.length;
-                                self.log(`  subreddit: ${sr} items: ${items}`);
-                                TBStorage.setCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, `[${items},${new Date().valueOf()}]`);
-                                $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
-                            });
-                        }
-                    });
+                            function updateModqueueCount (sr) {
+                                TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
+                                    TBStorage.purifyObject(d);
+                                    const items = d.data.children.length;
+                                    self.log(`  subreddit: ${sr} items: ${items}`);
+                                    TBStorage.setCache(
+                                        'QueueTools',
+                                        `${prefix + TBApi.getCurrentUser()}-${sr}`,
+                                        `[${items},${new Date().valueOf()}]`,
+                                    );
+                                    $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(
+                                        d.data.children.length,
+                                    ).attr('count', d.data.children.length);
+                                });
+                            }
+                        },
+                    );
                 },
                 () => {
                     window.setTimeout(sortSubreddits, 2000); // wait for final callbacks
@@ -878,7 +939,12 @@ self.queuetoolsOld = function ({
             );
 
             function sortSubreddits () {
-                const subs = $('.subscription-box li').sort((a, b) => b.lastChild.textContent - a.lastChild.textContent || +(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase()) || -1);
+                const subs = $('.subscription-box li').sort((a, b) =>
+                    b.lastChild.textContent - a.lastChild.textContent
+                    || +(a.firstChild.nextSibling.textContent.toLowerCase()
+                        > b.firstChild.nextSibling.textContent.toLowerCase())
+                    || -1
+                );
                 $('.subscription-box').empty().append(subs);
             }
         });
@@ -887,7 +953,8 @@ self.queuetoolsOld = function ({
         function sortThings (order, asc) {
             const $sitetable = $('#siteTable');
             const things = $('#siteTable .thing').sort((a, b) => {
-                let A, B;
+                let A;
+                let B;
                 if (asc) {
                     A = a;
                     B = b;
@@ -900,64 +967,68 @@ self.queuetoolsOld = function ({
                 const defaultTimestampSelector = '.tagline time:not(.edited-timestamp):first';
                 const editedTimestampSelector = 'time.edited-timestamp:first';
 
-                const $A = $(A),
-                      $B = $(B);
+                const $A = $(A);
+                const $B = $(B);
                 switch (order) {
-                case 'age':
-                default: // just in case
-                {
-                    const timeA = new Date($A.find(defaultTimestampSelector).attr('datetime')).getTime(),
-                          timeB = new Date($B.find(defaultTimestampSelector).attr('datetime')).getTime();
-                    return timeA - timeB;
-                }
-                case 'edited':
-                {
-                    const $aEditElement = $A.find(editedTimestampSelector).length ? $A.find(editedTimestampSelector) : $A.find(defaultTimestampSelector),
-                          $bEditElement = $B.find(editedTimestampSelector).length ? $B.find(editedTimestampSelector) : $B.find(defaultTimestampSelector);
-                    const timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
-                          timeEditB = new Date($bEditElement.attr('datetime')).getTime();
-                    return timeEditA - timeEditB;
-                }
-                case 'removed':
-                {
-                    const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find(defaultTimestampSelector),
-                          $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find(defaultTimestampSelector);
-
-                    let timeRemoveA,
-                        timeRemoveB;
-
-                    if ($aRemoveElement.is('time')) {
-                        timeRemoveA = $aRemoveElement.attr('datetime');
-                    } else {
-                        timeRemoveA = $aRemoveElement.attr('title');
-                        timeRemoveA = timeRemoveA.replace('removed at ', '');
+                    case 'age':
+                    default: // just in case
+                    {
+                        const timeA = new Date($A.find(defaultTimestampSelector).attr('datetime')).getTime();
+                        const timeB = new Date($B.find(defaultTimestampSelector).attr('datetime')).getTime();
+                        return timeA - timeB;
                     }
-
-                    if ($bRemoveElement.is('time')) {
-                        timeRemoveB = $bRemoveElement.attr('datetime');
-                    } else {
-                        timeRemoveB = $bRemoveElement.attr('title');
-                        timeRemoveB = timeRemoveB.replace('removed at ', '');
+                    case 'edited': {
+                        const $aEditElement = $A.find(editedTimestampSelector).length
+                            ? $A.find(editedTimestampSelector)
+                            : $A.find(defaultTimestampSelector);
+                        const $bEditElement = $B.find(editedTimestampSelector).length
+                            ? $B.find(editedTimestampSelector)
+                            : $B.find(defaultTimestampSelector);
+                        const timeEditA = new Date($aEditElement.attr('datetime')).getTime();
+                        const timeEditB = new Date($bEditElement.attr('datetime')).getTime();
+                        return timeEditA - timeEditB;
                     }
+                    case 'removed': {
+                        const $aRemoveElement = $A.find('li[title^="removed at"]').length
+                            ? $A.find('li[title^="removed at"]')
+                            : $A.find(defaultTimestampSelector);
+                        const $bRemoveElement = $B.find('li[title^="removed at"]').length
+                            ? $B.find('li[title^="removed at"]')
+                            : $B.find(defaultTimestampSelector);
 
-                    const timeStampRemoveA = new Date(timeRemoveA).getTime(),
-                          timeStampRemoveB = new Date(timeRemoveB).getTime();
+                        let timeRemoveA;
+                        let timeRemoveB;
 
-                    return timeStampRemoveA - timeStampRemoveB;
-                }
-                case 'score':
-                {
-                    const scoreA = $A.find('.score:visible').attr('title'),
-                          scoreB = $B.find('.score:visible').attr('title');
-                    // implicit conversion string to number
-                    return scoreA - scoreB;
-                }
-                case 'reports':
-                {
-                    const reportsA = $A.find('.reported-stamp').text().match(numberRX),
-                          reportsB = $B.find('.reported-stamp').text().match(numberRX);
-                    return reportsA - reportsB;
-                }
+                        if ($aRemoveElement.is('time')) {
+                            timeRemoveA = $aRemoveElement.attr('datetime');
+                        } else {
+                            timeRemoveA = $aRemoveElement.attr('title');
+                            timeRemoveA = timeRemoveA.replace('removed at ', '');
+                        }
+
+                        if ($bRemoveElement.is('time')) {
+                            timeRemoveB = $bRemoveElement.attr('datetime');
+                        } else {
+                            timeRemoveB = $bRemoveElement.attr('title');
+                            timeRemoveB = timeRemoveB.replace('removed at ', '');
+                        }
+
+                        const timeStampRemoveA = new Date(timeRemoveA).getTime();
+                        const timeStampRemoveB = new Date(timeRemoveB).getTime();
+
+                        return timeStampRemoveA - timeStampRemoveB;
+                    }
+                    case 'score': {
+                        const scoreA = $A.find('.score:visible').attr('title');
+                        const scoreB = $B.find('.score:visible').attr('title');
+                        // implicit conversion string to number
+                        return scoreA - scoreB;
+                    }
+                    case 'reports': {
+                        const reportsA = $A.find('.reported-stamp').text().match(numberRX);
+                        const reportsB = $B.find('.reported-stamp').text().match(numberRX);
+                        return reportsA - reportsB;
+                    }
                 }
             });
             $sitetable.find('.thing').remove();
@@ -975,8 +1046,8 @@ self.queuetoolsOld = function ({
         // thread. this function is a bit of a mess
         // TODO: fix that
         function groupThings () {
-            const threadGroups = {},
-                  threadIDs = []; // because who needs Object.keys() anyway
+            const threadGroups = {};
+            const threadIDs = []; // because who needs Object.keys() anyway
 
             // Sorting leaves behind the extra wrappers, so clean them up
             $('.sitetable .tb-comment-group').remove();
@@ -987,7 +1058,8 @@ self.queuetoolsOld = function ({
                 let threadID;
                 if ($thing.hasClass('comment')) {
                     // Find ID of the parent submission from title URL
-                    threadID = $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
+                    threadID =
+                        $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
                 } else {
                     // I am the parent submission, so get my own ID
                     // TBCore.getThingInfo() is overkill here
@@ -1024,8 +1096,14 @@ self.queuetoolsOld = function ({
         }
     }
 
-    if ($body.hasClass('listing-page') || $body.hasClass('comments-page') || $body.hasClass('search-page') || TBCore.isModpage && (!TBCore.post_site || TBCore.isMod)) {
-        $('.tabmenu').first().append($('<li class="tb-queuetools-tab"><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
+    if (
+        $body.hasClass('listing-page') || $body.hasClass('comments-page') || $body.hasClass('search-page')
+        || TBCore.isModpage && (!TBCore.post_site || TBCore.isMod)
+    ) {
+        $('.tabmenu').first().append(
+            $('<li class="tb-queuetools-tab"><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>')
+                .click(addModtools),
+        );
     }
 
     // Add mod tools or mod tools toggle button if applicable
@@ -1044,8 +1122,8 @@ self.queuetoolsOld = function ({
         TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {
             TBStorage.purifyObject(json);
             json.data.children.forEach(value => {
-                const actionReasonText = value.data.details,
-                      targetFullName = value.data.target_fullname;
+                const actionReasonText = value.data.details;
+                const targetFullName = value.data.target_fullname;
 
                 $body.find(`.thing[data-fullname="${targetFullName}"]>.entry`).after(`<div class="action-reason">
 <b>Automod action:</b> ${actionReasonText}
@@ -1232,11 +1310,10 @@ function init (options) {
     });
 
     /**
-         * Callback for further handling the modlog.
-         *
-         * @callback getModlogCallback
-
-         */
+     * Callback for further handling the modlog.
+     *
+     * @callback getModlogCallback
+     */
 
     /**
          * Fetches the modlog for a subreddit and updates modlogCache.
@@ -1333,7 +1410,9 @@ function init (options) {
                     const show = $('body').hasClass('tb-show-actions');
                     const $actionTable = $(`
                         <div class="tb-action-details">
-                            <span class="tb-bracket-button tb-show-action-table">${show ? 'hide' : 'show'} recent actions</span>
+                            <span class="tb-bracket-button tb-show-action-table">${
+                        show ? 'hide' : 'show'
+                    } recent actions</span>
                             <table class="tb-action-table">
                                 <tr>
                                     <th>mod</th>
@@ -1435,7 +1514,9 @@ function init (options) {
 
             // Fetch reports; if reports aren't ignored, do nothing
             const {id, author} = redditEvent.detail.data;
-            const {reportsIgnored, userReports, modReports} = await new Promise(resolve => TBCore.getApiThingInfo(id, subreddit, false, resolve));
+            const {reportsIgnored, userReports, modReports} = await new Promise(resolve =>
+                TBCore.getApiThingInfo(id, subreddit, false, resolve)
+            );
             if (!reportsIgnored) {
                 return;
             }
@@ -1473,7 +1554,9 @@ function init (options) {
                 // Display reports in a popup
                 const {topPosition, leftPosition} = TBui.drawPosition(clickEvent);
                 const $popup = TBui.popup({
-                    title: `Old reports on ${author}'s ${redditEvent.detail.type.includes('comment') ? 'comment' : 'post'}`,
+                    title: `Old reports on ${author}'s ${
+                        redditEvent.detail.type.includes('comment') ? 'comment' : 'post'
+                    }`,
                     tabs: [{
                         content: reportList,
                     }],

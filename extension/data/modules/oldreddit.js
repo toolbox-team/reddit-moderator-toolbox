@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
-import {Module} from '../tbmodule.js';
 import * as TBCore from '../tbcore.js';
+import {Module} from '../tbmodule.js';
 
 const self = new Module({
     name: 'Old Reddit',
@@ -82,10 +82,14 @@ function handleThing (entries, observer) {
         const info = await TBCore.getThingInfo($thing);
 
         requestAnimationFrame(() => {
-            const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
+            const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo(
+                $thing.find('.entry:first'),
+            );
             $jsApiThingPlaceholder.append('<span data-name="toolbox">');
             const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
-            $thing.find('.entry:first .author:first, .entry:first .tagline:first > span:contains("[deleted]")').after('<span class="tb-jsapi-author-container"></span>');
+            $thing.find('.entry:first .author:first, .entry:first .tagline:first > span:contains("[deleted]")').after(
+                '<span class="tb-jsapi-author-container"></span>',
+            );
             const $jsApiPlaceholderAuthor = $thing.find('.tb-jsapi-author-container');
             $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
             const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
@@ -102,7 +106,9 @@ function handleThing (entries, observer) {
                             author: info.author || '[deleted]',
                             id: info.id,
                             isRemoved: info.ham || info.spam,
-                            permalink: `https://www.reddit.com/${info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')}`,
+                            permalink: `https://www.reddit.com/${
+                                info.postlink.replace(/https?:\/\/...?\.reddit\.com\/?/, '').replace(/^\//, '')
+                            }`,
                             subreddit: {
                                 name: info.subreddit,
                                 type: info.subredditType,
@@ -237,7 +243,9 @@ function newModmailSidebar () {
     setTimeout(() => {
         const $body = $('body');
         if ($body.find('.ThreadViewer').length) {
-            const $modmailSidebar = $body.find('.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen), .InfoBar__idCard:not(.tb-seen)');
+            const $modmailSidebar = $body.find(
+                '.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen), .InfoBar__idCard:not(.tb-seen)',
+            );
             const jsApiPlaceHolder = `
                 <div class="tb-jsapi-container tb-modmail-sidebar-container">
                     <div class="InfoBar__recentsTitle">Toolbox functions:</div>

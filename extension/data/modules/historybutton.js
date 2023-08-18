@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
+import * as TBApi from '../tbapi.ts';
+import * as TBCore from '../tbcore.js';
+import * as TBHelpers from '../tbhelpers.js';
+import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import * as TBStorage from '../tbstorage.js';
-import * as TBApi from '../tbapi.ts';
 import * as TBui from '../tbui.js';
-import * as TBHelpers from '../tbhelpers.js';
-import * as TBCore from '../tbcore.js';
-import TBListener from '../tblistener.js';
 
 const self = new Module({
     name: 'History Button',
@@ -51,7 +51,7 @@ const self = new Module({
 
 // This should be a setting, methinks.
 self.SPAM_REPORT_SUB = 'spam';
-self.fetched = {};// fetched histories
+self.fetched = {}; // fetched histories
 
 /**
  * Attach an [H] button to all users
@@ -59,7 +59,11 @@ self.fetched = {};// fetched histories
 
 self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H') {
     requestAnimationFrame(() => {
-        $target.append(`<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" ${subreddit && `data-subreddit="${subreddit}"`} title="view & analyze user's submission and comment history">${buttonText}</a>`);
+        $target.append(
+            `<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" ${
+                subreddit && `data-subreddit="${subreddit}"`
+            } title="view & analyze user's submission and comment history">${buttonText}</a>`,
+        );
     });
 };
 
@@ -75,8 +79,8 @@ self.runJsAPI = function ({onlyshowInhover}) {
         if (onlyshowInhover && !TBCore.isOldReddit && !$target.closest('.tb-thing').length) {
             return;
         }
-        const author = e.detail.data.author,
-              subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
+        const author = e.detail.data.author;
+        const subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
 
         if (author === '[deleted]') {
             return;
@@ -86,9 +90,9 @@ self.runJsAPI = function ({onlyshowInhover}) {
     });
 
     TBListener.on('userHovercard', e => {
-        const $target = $(e.target),
-              author = e.detail.data.user.username,
-              subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
+        const $target = $(e.target);
+        const author = e.detail.data.user.username;
+        const subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
         self.attachHistoryButton($target, author, subreddit, 'User History');
     });
 
@@ -133,18 +137,18 @@ async function init (options) {
 
         const positions = TBui.drawPosition(event);
 
-        const subreddits = {submissions: {}, comments: {}},
-              counters = {submissions: 0, comments: 0, commentsOP: 0},
-              accounts = {},
-              subredditList = [],
-              domainList = [],
-              commentSubredditList = [],
+        const subreddits = {submissions: {}, comments: {}};
+        const counters = {submissions: 0, comments: 0, commentsOP: 0};
+        const accounts = {};
+        const subredditList = [];
+        const domainList = [];
+        const commentSubredditList = [];
 
-              gettingUserData = true,
-              domains = [],
-              domainslist = [],
+        const gettingUserData = true;
+        const domains = [];
+        const domainslist = [];
 
-              popupContent = `
+        const popupContent = `
                     <div>
                         <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
                         <span class="karma"></span>
@@ -297,8 +301,8 @@ self.showAuthorInformation = async function (author) {
 
     const d = await TBApi.getJSON(`/user/${author}/about.json`);
     TBStorage.purifyObject(d);
-    const joinedDate = new Date(d.data.created_utc * 1000),
-          redditorTime = TBHelpers.niceDateDiff(joinedDate);
+    const joinedDate = new Date(d.data.created_utc * 1000);
+    const redditorTime = TBHelpers.niceDateDiff(joinedDate);
 
     requestAnimationFrame(() => {
         $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
@@ -310,9 +314,9 @@ self.showAuthorInformation = async function (author) {
  * Show the markdown report
  */
 self.showMarkdownReport = function (author) {
-    const $contentBox = self.fetched[author].popup,
-          markdownReport = $contentBox.find('.rts-report').attr('data-commentbody'),
-          $markdown = $contentBox.find('.submission-markdown-text');
+    const $contentBox = self.fetched[author].popup;
+    const markdownReport = $contentBox.find('.rts-report').attr('data-commentbody');
+    const $markdown = $contentBox.find('.submission-markdown-text');
 
     if ($markdown.length > 0) {
         $markdown.html(markdownReport).toggle();
@@ -331,56 +335,56 @@ self.showMarkdownReport = function (author) {
  * @param thisSubreddit The name of the subreddit to highlight in generated tables
  */
 self.populateSubmissionHistory = function (after, author, thisSubreddit, options) {
-    const user = self.fetched[author],
-          $contentBox = user.popup,
-          $rtsLink = $contentBox.find('.rts-report'),
-          $submissionCount = $contentBox.find('.submission-count'),
-          $domainTable = $contentBox.find('.domain-table tbody'),
-          $subredditTable = $contentBox.find('.subreddit-table tbody'),
-          $error = $contentBox.find('.subreddit-table .error, .domain-table .error, .account-table-table .error'),
-          $accountTable = $contentBox.find('.account-table tbody'),
-          TYPE = {
-              PATH: 1, // e.g. example.org/path/user
-              SUBDOMAIN: 2, // e.g. user.example.org
-          },
-          domainSpecs = {
-              // keys are the supported sites, and determine if we have a match
-              'flickr.com': {
-                  path: 'photos/',
-                  provider: 'flickr',
-                  type: TYPE.PATH,
-              },
-              'medium.com': {
-                  path: '@',
-                  provider: 'Medium',
-                  type: TYPE.PATH,
-              },
-              'speakerdeck.com': {
-                  provider: 'Speaker Deck',
-                  type: TYPE.PATH,
-              },
-              'blogspot.com': {
-                  provider: 'Blogspot',
-                  type: TYPE.SUBDOMAIN,
-              },
-              'tumblr.com': {
-                  provider: 'Tumblr',
-                  type: TYPE.SUBDOMAIN,
-              },
-              'deviantart.com': {
-                  provider: 'deviantart',
-                  type: TYPE.SUBDOMAIN,
-              },
-              'artstation.com': {
-                  path: 'artwork/',
-                  provider: 'artstation',
-                  type: TYPE.PATH,
-              },
-              'twitter.com': {
-                  provider: 'Twitter',
-                  type: TYPE.PATH,
-              },
-          };
+    const user = self.fetched[author];
+    const $contentBox = user.popup;
+    const $rtsLink = $contentBox.find('.rts-report');
+    const $submissionCount = $contentBox.find('.submission-count');
+    const $domainTable = $contentBox.find('.domain-table tbody');
+    const $subredditTable = $contentBox.find('.subreddit-table tbody');
+    const $error = $contentBox.find('.subreddit-table .error, .domain-table .error, .account-table-table .error');
+    const $accountTable = $contentBox.find('.account-table tbody');
+    const TYPE = {
+        PATH: 1, // e.g. example.org/path/user
+        SUBDOMAIN: 2, // e.g. user.example.org
+    };
+    const domainSpecs = {
+        // keys are the supported sites, and determine if we have a match
+        'flickr.com': {
+            path: 'photos/',
+            provider: 'flickr',
+            type: TYPE.PATH,
+        },
+        'medium.com': {
+            path: '@',
+            provider: 'Medium',
+            type: TYPE.PATH,
+        },
+        'speakerdeck.com': {
+            provider: 'Speaker Deck',
+            type: TYPE.PATH,
+        },
+        'blogspot.com': {
+            provider: 'Blogspot',
+            type: TYPE.SUBDOMAIN,
+        },
+        'tumblr.com': {
+            provider: 'Tumblr',
+            type: TYPE.SUBDOMAIN,
+        },
+        'deviantart.com': {
+            provider: 'deviantart',
+            type: TYPE.SUBDOMAIN,
+        },
+        'artstation.com': {
+            path: 'artwork/',
+            provider: 'artstation',
+            type: TYPE.PATH,
+        },
+        'twitter.com': {
+            provider: 'Twitter',
+            type: TYPE.PATH,
+        },
+    };
 
     TBui.longLoadNonPersistent(true);
 
@@ -463,8 +467,9 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
                     url: oembed.author_url,
                 });
             } else {
-                let spec = domainSpecs[data.domain],
-                    details, domain;
+                let spec = domainSpecs[data.domain];
+                let details;
+                let domain;
 
                 if (!spec) {
                     // "sub.dom.ain.domain.com" -> "domain.com" (NOTE: does not support "domain.co.uk")
@@ -504,19 +509,25 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
 
         // Append all domains to the table and to the report comment
         user.domainList.forEach((domain, index) => {
-            const domainCount = user.domains[domain].count,
-                  match = domain.match(/^self.(\w+)$/),
-                  percentage = Math.round(domainCount / totalDomainCount * 100);
+            const domainCount = user.domains[domain].count;
+            const match = domain.match(/^self.(\w+)$/);
+            const percentage = Math.round(domainCount / totalDomainCount * 100);
 
             let cssClass = '';
             if (percentage >= 10 && domainCount > 4) {
                 cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
             }
 
-            let url = TBCore.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`);
+            let url = TBCore.link(
+                `/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off${maybeNsfwParam}&sort=new&feature=legacy_search`,
+            );
             // If the domain is a self post, change the URL
             if (match) {
-                url = TBCore.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`);
+                url = TBCore.link(
+                    `/r/${
+                        match[1]
+                    }/search?q=author%3A${author}+is_self%3A1&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`,
+                );
             }
 
             // Append domain to the table
@@ -558,10 +569,12 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
 
         // Append a list of subreddits submitted to the subreddit table and to the comment body for reports
         user.subredditList.forEach((subreddit, index) => {
-            const subredditCount = user.subreddits.submissions[subreddit].count,
-                  subredditKarma = user.subreddits.submissions[subreddit].karma,
-                  url = TBCore.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`),
-                  percentage = Math.round(subredditCount / totalSubredditCount * 100);
+            const subredditCount = user.subreddits.submissions[subreddit].count;
+            const subredditKarma = user.subreddits.submissions[subreddit].karma;
+            const url = TBCore.link(
+                `/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on${maybeNsfwParam}&sort=new&feature=legacy_search`,
+            );
+            const percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
             let cssClass = '';
             if (percentage >= 10 && subredditCount > 4) {
@@ -663,9 +676,11 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
             }
         }
 
-        const match = url.match(spec.rx),
-              author = match && match[1];
-        let scheme, author_url, provider_url;
+        const match = url.match(spec.rx);
+        const author = match && match[1];
+        let scheme;
+        let author_url;
+        let provider_url;
 
         if (author) {
             scheme = `${url.split('://')[0]}://`;
@@ -690,11 +705,11 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
 self.populateCommentHistory = function (after, author, thisSubreddit, options) {
     TBui.longLoadNonPersistent(true);
 
-    const user = self.fetched[author],
-          $contentBox = user.popup,
-          $commentCount = $contentBox.find('.comment-count'),
-          $commentCountOp = $contentBox.find('.comment-count-OP'),
-          $commentTable = $contentBox.find('.comment-table tbody');
+    const user = self.fetched[author];
+    const $contentBox = user.popup;
+    const $commentCount = $contentBox.find('.comment-count');
+    const $commentCountOp = $contentBox.find('.comment-count-OP');
+    const $commentTable = $contentBox.find('.comment-table tbody');
 
     $commentTable.empty();
 
@@ -741,8 +756,8 @@ self.populateCommentHistory = function (after, author, thisSubreddit, options) {
         $commentTable.empty();
 
         user.commentSubredditList.forEach(subreddit => {
-            const count = user.subreddits.comments[subreddit].count,
-                  percentage = Math.round(count / user.counters.comments * 100);
+            const count = user.subreddits.comments[subreddit].count;
+            const percentage = Math.round(count / user.counters.comments * 100);
 
             let cssClass = '';
             if (subreddit === thisSubreddit) {
@@ -771,26 +786,28 @@ self.populateCommentHistory = function (after, author, thisSubreddit, options) {
  * Report the use to /r/spam
  */
 self.reportAuthorToSpam = function (author, options) {
-    const user = self.fetched[author],
-          $contentBox = user.popup,
-          rtsComment = options.rtsComment,
-          $rtsLink = $contentBox.find('.rts-report'),
-          rtsNativeLink = $rtsLink.get(0),
-          commentBody = rtsNativeLink.getAttribute('data-commentbody');
+    const user = self.fetched[author];
+    const $contentBox = user.popup;
+    const rtsComment = options.rtsComment;
+    const $rtsLink = $contentBox.find('.rts-report');
+    const rtsNativeLink = $rtsLink.get(0);
+    const commentBody = rtsNativeLink.getAttribute('data-commentbody');
 
     rtsNativeLink.textContent = 'Submitting...';
     rtsNativeLink.className = '.rts-report-clicked';
 
     // Submit to RTS
-    const link = `https://www.reddit.com/user/${author}`,
-          title = `Overview for ${author}`;
+    const link = `https://www.reddit.com/user/${author}`;
+    const title = `Overview for ${author}`;
 
     TBApi.postLink(link, title, self.SPAM_REPORT_SUB).then(submission => {
         if (submission.json.errors.length) {
             $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
             // $rtsLink.hide();
             if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                rtsNativeLink.href = TBCore.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
+                rtsNativeLink.href = TBCore.link(
+                    `/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`,
+                );
             }
             return;
         }
@@ -806,7 +823,9 @@ self.reportAuthorToSpam = function (author, options) {
         TBApi.postComment(submission.json.data.name, commentBody).then(comment => {
             // $rtsLink.hide();
             if (comment.json.errors.length) {
-                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
+                $rtsLink.after(
+                    `<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`,
+                );
                 // $rtsLink.hide();
                 return;
             }
@@ -814,10 +833,16 @@ self.reportAuthorToSpam = function (author, options) {
             rtsNativeLink.href = submission.json.data.url;
             rtsNativeLink.className = 'tb-general-button';
         }).catch(error => {
-            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${error[0][1]}</span>`);
+            $rtsLink.after(
+                `<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${
+                    error[0][1]
+                }</span>`,
+            );
         });
     }).catch(error => {
-        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${error[0][1]}</span>`);
+        $rtsLink.after(
+            `<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${error[0][1]}</span>`,
+        );
     });
 };
 

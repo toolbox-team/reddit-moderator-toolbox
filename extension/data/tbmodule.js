@@ -71,7 +71,7 @@ const TBModule = {
         const longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45);
 
         // last export stuff
-        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport');
+        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport') ?? 0;
         const showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder');
         const lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport));
         const lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;

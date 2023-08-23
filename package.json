@@ -36,7 +36,7 @@
         "@rollup/plugin-typescript": "^11.1.2",
         "@tsconfig/recommended": "^1.0.2",
         "@types/jquery": "^3.5.17",
-        "@types/webextension-polyfill": "^0.10.1",
+        "@types/webextension-polyfill": "^0.10.2",
         "cross-env": "^7.0.3",
         "del-cli": "^5.0.0",
         "docdash": "^2.0.1",

@@ -38,7 +38,7 @@
         "@types/jquery": "^3.5.17",
         "@types/webextension-polyfill": "^0.10.2",
         "cross-env": "^7.0.3",
-        "del-cli": "^5.0.0",
+        "del-cli": "^5.0.1",
         "docdash": "^2.0.1",
         "dprint": "^0.40.2",
         "eslint": "^8.47.0",

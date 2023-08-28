@@ -41,7 +41,7 @@
         "del-cli": "^5.0.1",
         "docdash": "^2.0.1",
         "dprint": "^0.40.2",
-        "eslint": "^8.47.0",
+        "eslint": "^8.48.0",
         "eslint-plugin-import": "^2.28.1",
         "inquirer": "^9.2.10",
         "jsdoc": "^4.0.2",

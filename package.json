@@ -20,7 +20,7 @@
     },
     "license": "Apache-2.0",
     "dependencies": {
-        "codemirror": "^5.65.14",
+        "codemirror": "^5.65.15",
         "dompurify": "^3.0.5",
         "iter-ops": "^3.1.1",
         "jquery": "^3.7.1",

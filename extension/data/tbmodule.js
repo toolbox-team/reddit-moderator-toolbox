@@ -3,7 +3,7 @@ import $ from 'jquery';
 
 import * as TBConstants from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
-import * as TBHelpers from './tbhelpers.js';
+import * as TBHelpers from './tbhelpers.ts';
 import TBListener from './tblistener.js';
 import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.ts';

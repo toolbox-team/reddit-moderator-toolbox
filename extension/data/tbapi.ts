@@ -4,7 +4,7 @@
 
 import browser from 'webextension-polyfill';
 
-import {createDeferredProcessQueue} from './tbhelpers.js';
+import {createDeferredProcessQueue} from './tbhelpers';
 import TBLog from './tblog';
 import * as TBStorage from './tbstorage';
 

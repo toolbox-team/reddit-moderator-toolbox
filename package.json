@@ -37,6 +37,8 @@
         "@tsconfig/recommended": "^1.0.2",
         "@types/dompurify": "^3.0.3",
         "@types/jquery": "^3.5.17",
+        "@types/pako": "^0.2.31",
+        "@types/snuownd": "^1.1.0",
         "@types/webextension-polyfill": "^0.10.2",
         "cross-env": "^7.0.3",
         "del-cli": "^5.1.0",

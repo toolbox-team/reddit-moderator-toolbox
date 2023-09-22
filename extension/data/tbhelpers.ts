@@ -2,22 +2,26 @@ import $ from 'jquery';
 import pako from 'pako';
 import SnuOwnd from 'snuownd';
 
+// use browser types for timeouts/intervals instead of NodeJS.Timer
+const {setTimeout, clearTimeout} = window;
+
 /**
  * Returns a promise that resolves after the given time.
- * @param {number} ms Number of milliseconds to delay
- * @returns {Promise<void>}
+ * @param ms Number of milliseconds to delay
  */
-export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * Debounces a given function based on a given timeout.
- * @function
- * @param {function} func input function
- * @param {number} debounceTime the amount of time used to wait in ms.
- * @returns {function} the executed function
+ * @param func input function
+ * @param debounceTime the amount of time used to wait in ms.
+ * @returns the debounced function
  */
-export function debounce (func, debounceTime = 100) {
-    let timeout;
+export function debounce<Args extends any[], ThisArg = never> (
+    func: (this: ThisArg, ...args: Args) => void,
+    debounceTime = 100,
+): (this: ThisArg, ...args: Args) => void {
+    let timeout: number;
 
     return function (...args) {
         const functionCall = () => func.apply(this, args);
@@ -50,11 +54,17 @@ export function debounce (func, debounceTime = 100) {
  * @returns {(item: Item) => Promise<Result>} New function which queues an item
  * and returns a promise for the corresponding result after processing
  */
-export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQueueLength = Infinity) {
-    /** @type {number} */
-    let timeout;
-    /** @type {{item: Item, resolve: (value: Item) => void, reject: (error: any) => void}[]} */
-    let queue = [];
+export function createDeferredProcessQueue<Item, Result> (
+    bulkProcess: (items: Item[]) => Promise<Result[]>,
+    delayTime = 100,
+    maxQueueLength = Infinity,
+) {
+    let timeout: number;
+    let queue: Array<{
+        item: Item;
+        resolve: (value: Result) => void;
+        reject: (error: any) => void;
+    }> = [];
 
     const flushQueue = async () => {
         // Grab the current queue and replace it with an empty array to collect
@@ -76,7 +86,7 @@ export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQue
         results.forEach((result, i) => queueSnapshot[i].resolve(result));
     };
 
-    return item =>
+    return (item: Item) =>
         new Promise((resolve, reject) => {
             // Add this call to the queue
             queue.push({item, resolve, reject});
@@ -96,15 +106,10 @@ export function createDeferredProcessQueue (bulkProcess, delayTime = 100, maxQue
 }
 
 /**
- * Moves an item in an array from one index to another
+ * Moves an item in an array from one index to another. The array is modified in place.
  * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
- * @function
- * @param {array} array input array
- * @param {integer} old_index
- * @param {integer} new_index
- * @returns {array} New array with moved items
  */
-export function moveArrayItem (array, old_index, new_index) {
+export function moveArrayItem<T> (array: T[], old_index: number, new_index: number): T[] {
     if (array.length === 0) {
         return array;
     }
@@ -117,7 +122,10 @@ export function moveArrayItem (array, old_index, new_index) {
     if (new_index >= array.length) {
         let k = new_index - array.length;
         while (k-- + 1) {
-            array.push(undefined);
+            // This should basically never happen because we're not moving items beyond the current end of the array
+            // TODO: Rather than asserting and inserting `undefined`s into an array where they might not be expected,
+            //       just throw in this case and fix whatever's broken by that
+            array.push(undefined as T);
         }
     }
     array.splice(new_index, 0, array.splice(old_index, 1)[0]);
@@ -126,11 +134,10 @@ export function moveArrayItem (array, old_index, new_index) {
 
 /**
  * Escape html entities
- * @function
- * @param {string} html input html
- * @returns {string} HTML string with escaped entities
+ * @param html input html
+ * @returns HTML string with escaped entities
  */
-export function escapeHTML (html) {
+export function escapeHTML (html: string) {
     const entityMap = {
         '&': '&amp;',
         '<': '&lt;',
@@ -140,7 +147,7 @@ export function escapeHTML (html) {
         '/': '&#x2F;',
     };
 
-    return String(html).replace(/[&<>"'/]/g, s => entityMap[s]);
+    return String(html).replace(/[&<>"'/]/g, s => s in entityMap ? entityMap[s as keyof typeof entityMap] : s);
 }
 
 /**
@@ -149,7 +156,8 @@ export function escapeHTML (html) {
  * @param {string} html input html
  * @returns {string} HTML string with unescaped entities
  */
-export function unescapeHTML (html) {
+// FIXME: this function is not only broken but also completely unused
+export function unescapeHTML (html: any) {
     const entityMap = {
         '&amp;': '&',
         '&lt;': '<',
@@ -159,35 +167,24 @@ export function unescapeHTML (html) {
         '&#x2F;': '/',
     };
 
-    return String(html).replace(/[&<>"'/]/g, s => entityMap[s]);
+    return String(html).replace(/[&<>"'/]/g, s => entityMap[s as keyof typeof entityMap]);
 }
 
 /**
  * Give the nummeric value in milliseconds of the current date and time.
- * @function
- * @returns {integer} time value in milliseconds
+ * @returns time value in milliseconds
  */
 export function getTime () {
     return new Date().getTime();
 }
 
-/**
- * Give a random number
- * @function
- * @param {integer} maxInt Max integer
- * @returns {integer} random number
- */
-export function getRandomNumber (maxInt) {
+/** Gives a random integer from 1 to `maxInt`, inclusive. */
+export function getRandomNumber (maxInt: number) {
     return Math.floor(Math.random() * maxInt + 1);
 }
 
-/**
- * Convert minutes to milliseconds
- * @function
- * @param {integer} mins Minutes
- * @returns {integer} Milliseconds
- */
-export function minutesToMilliseconds (mins) {
+/** Convert minutes to milliseconds. */
+export function minutesToMilliseconds (mins: number) {
     const oneMin = 60000;
     let milliseconds = mins * 60 * 1000;
 
@@ -199,34 +196,19 @@ export function minutesToMilliseconds (mins) {
     return milliseconds;
 }
 
-/**
- * Convert days to milliseconds
- * @function
- * @param {integer} days days
- * @returns {integer} Milliseconds
- */
-export function daysToMilliseconds (days) {
+/** Converts days to milliseconds. */
+// FIXME: unused
+export function daysToMilliseconds (days: number) {
     return days * 86400000;
 }
 
-/**
- * Convert milliseconds to days
- * @function
- * @param {integer} milliseconds milliseconds
- * @returns {integer} Days
- */
-export function millisecondsToDays (milliseconds) {
+/** Converts milliseconds to days. */
+export function millisecondsToDays (milliseconds: number) {
     return milliseconds / 86400000;
 }
 
-/**
- * Returns the difference between days in nice format like "1 year"
- * @function
- * @param {Date} origdate
- * @param {Date} newdate
- * @returns {string} Formatted date difference
- */
-export function niceDateDiff (origdate, newdate) {
+/** Returns the difference between days in nice format like "1 year". */
+export function niceDateDiff (origdate: Date, newdate: Date) {
     // Enter the month, day, and year below you want to use as
     // the starting point for the date calculation
     if (!newdate) {
@@ -340,13 +322,8 @@ export function niceDateDiff (origdate, newdate) {
     return returnString;
 }
 
-/**
- * convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
- * @function
- * @param {integer} UNIX_timestamp
- * @returns {string} Formatted date in dd-mm-yyyy hh:mm:ss UTC
- */
-export function timeConverterRead (UNIX_timestamp) {
+/** Converts unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC. */
+export function timeConverterRead (UNIX_timestamp: number) {
     const a = new Date(UNIX_timestamp * 1000);
     const year = a.getUTCFullYear();
     const month = `0${a.getUTCMonth() + 1}`.slice(-2);
@@ -358,13 +335,10 @@ export function timeConverterRead (UNIX_timestamp) {
 }
 
 /**
- * convert titles to a format usable in urls
- * from r2.lib.utils import title_to_url
- * @function
- * @param {string} title
- * @returns {string} Formatted title
+ * Convert titles to a format usable in urls. Based on Reddit's implementation:
+ * {@linkcode https://github.com/reddit-archive/reddit/blob/753b17407e9a9dca09558526805922de24133d53/r2/r2/lib/utils/utils.py#L1243-L1258 r2.lib.utils.title_to_url}
  */
-export function title_to_url (title) {
+export function title_to_url (title: string) {
     const max_length = 50;
 
     title = title.replace(/\s+/g, '_'); // remove whitespace
@@ -387,17 +361,12 @@ export function title_to_url (title) {
 //         'title':  title_to_url('this is a title we pulled from a post),
 //         'link_id': '2kwx2o'
 //     });
-export function template (tpl, variables) {
+export function template (tpl: string, variables: Record<string, string>) {
     return tpl.replace(/{{([^}]+)}}/g, (match, variable) => variables[variable]);
 }
 
-/**
- * Converts a given amount of days in a "humanized version" of weeks, months and years.
- * @function
- * @param {integer} days
- * @returns {string} x year x months x weeks x day
- */
-export function humaniseDays (days) {
+/** Converts a given amount of days in a "humanized version" of weeks, months and years. */
+export function humaniseDays (days: number) {
     let str = '';
     const values = {
         ' year': 365,
@@ -406,7 +375,7 @@ export function humaniseDays (days) {
         ' day': 1,
     };
 
-    for (const x of Object.keys(values)) {
+    for (const x of Object.keys(values) as (keyof typeof values)[]) {
         const amount = Math.floor(days / values[x]);
 
         if (amount >= 1) {
@@ -419,11 +388,10 @@ export function humaniseDays (days) {
 
 /**
  * Sorts an array of objects by property value of specific properties.
- * @function
- * @param {array} arr input array
- * @param {string} prop property name
+ * @param arr input array
+ * @param prop property name
  */
-export function sortBy (arr, prop) {
+export function sortBy<T extends object, Prop extends keyof T> (arr: T[], prop: Prop) {
     return arr.sort((a, b) => {
         if (a[prop] < b[prop]) {
             return 1;
@@ -435,12 +403,8 @@ export function sortBy (arr, prop) {
     });
 }
 
-/**
- * Because normal .sort() is case sensitive.
- * @function
- * @param {array} arr input array
- */
-export function saneSort (arr) {
+/** Sort strings by their `.toLowerCase()` form. */
+export function saneSort (arr: string[]) {
     return arr.sort((a, b) => {
         if (a.toLowerCase() < b.toLowerCase()) {
             return -1;
@@ -452,12 +416,8 @@ export function saneSort (arr) {
     });
 }
 
-/**
- * Because normal .sort() is case sensitive and we also want to sort ascending from time to time.
- * @function
- * @param {array} arr input array
- */
-export function saneSortAs (arr) {
+/** Sort strings by their `.toLowerCase()` form in reverse order. */
+export function saneSortAs (arr: string[]) {
     return arr.sort((a, b) => {
         if (a.toLowerCase() > b.toLowerCase()) {
             return -1;
@@ -471,185 +431,186 @@ export function saneSortAs (arr) {
 
 /**
  * Generates a regular expression that will match only a given string.
- * @param {string} text The text to match
- * @param {string} flags The flags passed to the RegExp constructor
- * @returns {RegExp}
+ * @param text The text to match
+ * @param flags The flags passed to the RegExp constructor
  */
-export const literalRegExp = (text, flags) => new RegExp(text.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1'), flags);
+export const literalRegExp = (text: string, flags: string) =>
+    new RegExp(text.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1'), flags);
 
 /**
  * Replace all instances of a certaing thing for another thing.
  * @function
- * @param {string} find what to find
- * @param {string} replace what to replace
- * @param {string} str where to do it all with
- * @returns {string} shiny new string with replaced stuff
+ * @param find what to find
+ * @param replace what to replace
+ * @param str where to do it all with
+ * @returns shiny new string with replaced stuff
  */
-export const replaceAll = (find, replace, str) => str.replace(literalRegExp(find, 'g'), replace);
+// TODO: `string.replaceAll` exists since ES2021; yeet this
+export const replaceAll = (find: string, replace: string, str: string) =>
+    str.replace(literalRegExp(find, 'g'), replace);
 
 /**
  * Will compare the input color to a list of known color names and return the HEX value
- * @function
- * @param {string} color input color
- * @returns {string} if a match is found the HEX color, otherwise the input string.
+ * @param color input color
+ * @returns if a match is found the HEX color, otherwise the input string.
  */
-export function colorNameToHex (color) {
+export function colorNameToHex (color: string) {
     const colorUPPERCASE = color.toUpperCase();
     let returnValue;
 
     const htmlColors = {
-        'ALICEBLUE': '#F0F8FF',
-        'ANTIQUEWHITE': '#FAEBD7',
-        'AQUA': '#00FFFF',
-        'AQUAMARINE': '#7FFFD4',
-        'AZURE': '#F0FFFF',
-        'BEIGE': '#F5F5DC',
-        'BISQUE': '#FFE4C4',
-        'BLACK': '#000000',
-        'BLANCHEDALMOND': '#FFEBCD',
-        'BLUE': '#0000FF',
-        'BLUEVIOLET': '#8A2BE2',
-        'BROWN': '#A52A2A',
-        'BURLYWOOD': '#DEB887',
-        'CADETBLUE': '#5F9EA0',
-        'CHARTREUSE': '#7FFF00',
-        'CHOCOLATE': '#D2691E',
-        'CORAL': '#FF7F50',
-        'CORNFLOWERBLUE': '#6495ED',
-        'CORNSILK': '#FFF8DC',
-        'CRIMSON': '#DC143C',
-        'CYAN': '#00FFFF',
-        'DARKBLUE': '#00008B',
-        'DARKCYAN': '#008B8B',
-        'DARKGOLDENROD': '#B8860B',
-        'DARKGRAY': '#A9A9A9',
-        'DARKGREY': '#A9A9A9',
-        'DARKGREEN': '#006400',
-        'DARKKHAKI': '#BDB76B',
-        'DARKMAGENTA': '#8B008B',
-        'DARKOLIVEGREEN': '#556B2F',
-        'DARKORANGE': '#FF8C00',
-        'DARKORCHID': '#9932CC',
-        'DARKRED': '#8B0000',
-        'DARKSALMON': '#E9967A',
-        'DARKSEAGREEN': '#8FBC8F',
-        'DARKSLATEBLUE': '#483D8B',
-        'DARKSLATEGRAY': '#2F4F4F',
-        'DARKSLATEGREY': '#2F4F4F',
-        'DARKTURQUOISE': '#00CED1',
-        'DARKVIOLET': '#9400D3',
-        'DEEPPINK': '#FF1493',
-        'DEEPSKYBLUE': '#00BFFF',
-        'DIMGRAY': '#696969',
-        'DIMGREY': '#696969',
-        'DODGERBLUE': '#1E90FF',
-        'FIREBRICK': '#B22222',
-        'FLORALWHITE': '#FFFAF0',
-        'FORESTGREEN': '#228B22',
-        'FUCHSIA': '#FF00FF',
-        'GAINSBORO': '#DCDCDC',
-        'GHOSTWHITE': '#F8F8FF',
-        'GOLD': '#FFD700',
-        'GOLDENROD': '#DAA520',
-        'GRAY': '#808080',
-        'GREY': '#808080',
-        'GREEN': '#008000',
-        'GREENYELLOW': '#ADFF2F',
-        'HONEYDEW': '#F0FFF0',
-        'HOTPINK': '#FF69B4',
-        'INDIANRED ': '#CD5C5C',
-        'INDIGO ': '#4B0082',
-        'IVORY': '#FFFFF0',
-        'KHAKI': '#F0E68C',
-        'LAVENDER': '#E6E6FA',
-        'LAVENDERBLUSH': '#FFF0F5',
-        'LAWNGREEN': '#7CFC00',
-        'LEMONCHIFFON': '#FFFACD',
-        'LIGHTBLUE': '#ADD8E6',
-        'LIGHTCORAL': '#F08080',
-        'LIGHTCYAN': '#E0FFFF',
-        'LIGHTGOLDENRODYELLOW': '#FAFAD2',
-        'LIGHTGRAY': '#D3D3D3',
-        'LIGHTGREY': '#D3D3D3',
-        'LIGHTGREEN': '#90EE90',
-        'LIGHTPINK': '#FFB6C1',
-        'LIGHTSALMON': '#FFA07A',
-        'LIGHTSEAGREEN': '#20B2AA',
-        'LIGHTSKYBLUE': '#87CEFA',
-        'LIGHTSLATEGRAY': '#778899',
-        'LIGHTSLATEGREY': '#778899',
-        'LIGHTSTEELBLUE': '#B0C4DE',
-        'LIGHTYELLOW': '#FFFFE0',
-        'LIME': '#00FF00',
-        'LIMEGREEN': '#32CD32',
-        'LINEN': '#FAF0E6',
-        'MAGENTA': '#FF00FF',
-        'MAROON': '#800000',
-        'MEDIUMAQUAMARINE': '#66CDAA',
-        'MEDIUMBLUE': '#0000CD',
-        'MEDIUMORCHID': '#BA55D3',
-        'MEDIUMPURPLE': '#9370DB',
-        'MEDIUMSEAGREEN': '#3CB371',
-        'MEDIUMSLATEBLUE': '#7B68EE',
-        'MEDIUMSPRINGGREEN': '#00FA9A',
-        'MEDIUMTURQUOISE': '#48D1CC',
-        'MEDIUMVIOLETRED': '#C71585',
-        'MIDNIGHTBLUE': '#191970',
-        'MINTCREAM': '#F5FFFA',
-        'MISTYROSE': '#FFE4E1',
-        'MOCCASIN': '#FFE4B5',
-        'NAVAJOWHITE': '#FFDEAD',
-        'NAVY': '#000080',
-        'OLDLACE': '#FDF5E6',
-        'OLIVE': '#808000',
-        'OLIVEDRAB': '#6B8E23',
-        'ORANGE': '#FFA500',
-        'ORANGERED': '#FF4500',
-        'ORCHID': '#DA70D6',
-        'PALEGOLDENROD': '#EEE8AA',
-        'PALEGREEN': '#98FB98',
-        'PALETURQUOISE': '#AFEEEE',
-        'PALEVIOLETRED': '#DB7093',
-        'PAPAYAWHIP': '#FFEFD5',
-        'PEACHPUFF': '#FFDAB9',
-        'PERU': '#CD853F',
-        'PINK': '#FFC0CB',
-        'PLUM': '#DDA0DD',
-        'POWDERBLUE': '#B0E0E6',
-        'PURPLE': '#800080',
-        'REBECCAPURPLE': '#663399',
-        'RED': '#FF0000',
-        'ROSYBROWN': '#BC8F8F',
-        'ROYALBLUE': '#4169E1',
-        'SADDLEBROWN': '#8B4513',
-        'SALMON': '#FA8072',
-        'SANDYBROWN': '#F4A460',
-        'SEAGREEN': '#2E8B57',
-        'SEASHELL': '#FFF5EE',
-        'SIENNA': '#A0522D',
-        'SILVER': '#C0C0C0',
-        'SKYBLUE': '#87CEEB',
-        'SLATEBLUE': '#6A5ACD',
-        'SLATEGRAY': '#708090',
-        'SLATEGREY': '#708090',
-        'SNOW': '#FFFAFA',
-        'SPRINGGREEN': '#00FF7F',
-        'STEELBLUE': '#4682B4',
-        'TAN': '#D2B48C',
-        'TEAL': '#008080',
-        'THISTLE': '#D8BFD8',
-        'TOMATO': '#FF6347',
-        'TURQUOISE': '#40E0D0',
-        'VIOLET': '#EE82EE',
-        'WHEAT': '#F5DEB3',
-        'WHITE': '#FFFFFF',
-        'WHITESMOKE': '#F5F5F5',
-        'YELLOW': '#FFFF00',
-        'YELLOWGREEN': '#9ACD32',
+        ALICEBLUE: '#F0F8FF',
+        ANTIQUEWHITE: '#FAEBD7',
+        AQUA: '#00FFFF',
+        AQUAMARINE: '#7FFFD4',
+        AZURE: '#F0FFFF',
+        BEIGE: '#F5F5DC',
+        BISQUE: '#FFE4C4',
+        BLACK: '#000000',
+        BLANCHEDALMOND: '#FFEBCD',
+        BLUE: '#0000FF',
+        BLUEVIOLET: '#8A2BE2',
+        BROWN: '#A52A2A',
+        BURLYWOOD: '#DEB887',
+        CADETBLUE: '#5F9EA0',
+        CHARTREUSE: '#7FFF00',
+        CHOCOLATE: '#D2691E',
+        CORAL: '#FF7F50',
+        CORNFLOWERBLUE: '#6495ED',
+        CORNSILK: '#FFF8DC',
+        CRIMSON: '#DC143C',
+        CYAN: '#00FFFF',
+        DARKBLUE: '#00008B',
+        DARKCYAN: '#008B8B',
+        DARKGOLDENROD: '#B8860B',
+        DARKGRAY: '#A9A9A9',
+        DARKGREY: '#A9A9A9',
+        DARKGREEN: '#006400',
+        DARKKHAKI: '#BDB76B',
+        DARKMAGENTA: '#8B008B',
+        DARKOLIVEGREEN: '#556B2F',
+        DARKORANGE: '#FF8C00',
+        DARKORCHID: '#9932CC',
+        DARKRED: '#8B0000',
+        DARKSALMON: '#E9967A',
+        DARKSEAGREEN: '#8FBC8F',
+        DARKSLATEBLUE: '#483D8B',
+        DARKSLATEGRAY: '#2F4F4F',
+        DARKSLATEGREY: '#2F4F4F',
+        DARKTURQUOISE: '#00CED1',
+        DARKVIOLET: '#9400D3',
+        DEEPPINK: '#FF1493',
+        DEEPSKYBLUE: '#00BFFF',
+        DIMGRAY: '#696969',
+        DIMGREY: '#696969',
+        DODGERBLUE: '#1E90FF',
+        FIREBRICK: '#B22222',
+        FLORALWHITE: '#FFFAF0',
+        FORESTGREEN: '#228B22',
+        FUCHSIA: '#FF00FF',
+        GAINSBORO: '#DCDCDC',
+        GHOSTWHITE: '#F8F8FF',
+        GOLD: '#FFD700',
+        GOLDENROD: '#DAA520',
+        GRAY: '#808080',
+        GREY: '#808080',
+        GREEN: '#008000',
+        GREENYELLOW: '#ADFF2F',
+        HONEYDEW: '#F0FFF0',
+        HOTPINK: '#FF69B4',
+        INDIANRED: '#CD5C5C',
+        INDIGO: '#4B0082',
+        IVORY: '#FFFFF0',
+        KHAKI: '#F0E68C',
+        LAVENDER: '#E6E6FA',
+        LAVENDERBLUSH: '#FFF0F5',
+        LAWNGREEN: '#7CFC00',
+        LEMONCHIFFON: '#FFFACD',
+        LIGHTBLUE: '#ADD8E6',
+        LIGHTCORAL: '#F08080',
+        LIGHTCYAN: '#E0FFFF',
+        LIGHTGOLDENRODYELLOW: '#FAFAD2',
+        LIGHTGRAY: '#D3D3D3',
+        LIGHTGREY: '#D3D3D3',
+        LIGHTGREEN: '#90EE90',
+        LIGHTPINK: '#FFB6C1',
+        LIGHTSALMON: '#FFA07A',
+        LIGHTSEAGREEN: '#20B2AA',
+        LIGHTSKYBLUE: '#87CEFA',
+        LIGHTSLATEGRAY: '#778899',
+        LIGHTSLATEGREY: '#778899',
+        LIGHTSTEELBLUE: '#B0C4DE',
+        LIGHTYELLOW: '#FFFFE0',
+        LIME: '#00FF00',
+        LIMEGREEN: '#32CD32',
+        LINEN: '#FAF0E6',
+        MAGENTA: '#FF00FF',
+        MAROON: '#800000',
+        MEDIUMAQUAMARINE: '#66CDAA',
+        MEDIUMBLUE: '#0000CD',
+        MEDIUMORCHID: '#BA55D3',
+        MEDIUMPURPLE: '#9370DB',
+        MEDIUMSEAGREEN: '#3CB371',
+        MEDIUMSLATEBLUE: '#7B68EE',
+        MEDIUMSPRINGGREEN: '#00FA9A',
+        MEDIUMTURQUOISE: '#48D1CC',
+        MEDIUMVIOLETRED: '#C71585',
+        MIDNIGHTBLUE: '#191970',
+        MINTCREAM: '#F5FFFA',
+        MISTYROSE: '#FFE4E1',
+        MOCCASIN: '#FFE4B5',
+        NAVAJOWHITE: '#FFDEAD',
+        NAVY: '#000080',
+        OLDLACE: '#FDF5E6',
+        OLIVE: '#808000',
+        OLIVEDRAB: '#6B8E23',
+        ORANGE: '#FFA500',
+        ORANGERED: '#FF4500',
+        ORCHID: '#DA70D6',
+        PALEGOLDENROD: '#EEE8AA',
+        PALEGREEN: '#98FB98',
+        PALETURQUOISE: '#AFEEEE',
+        PALEVIOLETRED: '#DB7093',
+        PAPAYAWHIP: '#FFEFD5',
+        PEACHPUFF: '#FFDAB9',
+        PERU: '#CD853F',
+        PINK: '#FFC0CB',
+        PLUM: '#DDA0DD',
+        POWDERBLUE: '#B0E0E6',
+        PURPLE: '#800080',
+        REBECCAPURPLE: '#663399',
+        RED: '#FF0000',
+        ROSYBROWN: '#BC8F8F',
+        ROYALBLUE: '#4169E1',
+        SADDLEBROWN: '#8B4513',
+        SALMON: '#FA8072',
+        SANDYBROWN: '#F4A460',
+        SEAGREEN: '#2E8B57',
+        SEASHELL: '#FFF5EE',
+        SIENNA: '#A0522D',
+        SILVER: '#C0C0C0',
+        SKYBLUE: '#87CEEB',
+        SLATEBLUE: '#6A5ACD',
+        SLATEGRAY: '#708090',
+        SLATEGREY: '#708090',
+        SNOW: '#FFFAFA',
+        SPRINGGREEN: '#00FF7F',
+        STEELBLUE: '#4682B4',
+        TAN: '#D2B48C',
+        TEAL: '#008080',
+        THISTLE: '#D8BFD8',
+        TOMATO: '#FF6347',
+        TURQUOISE: '#40E0D0',
+        VIOLET: '#EE82EE',
+        WHEAT: '#F5DEB3',
+        WHITE: '#FFFFFF',
+        WHITESMOKE: '#F5F5F5',
+        YELLOW: '#FFFF00',
+        YELLOWGREEN: '#9ACD32',
     };
 
     if (Object.prototype.hasOwnProperty.call(htmlColors, colorUPPERCASE)) {
-        returnValue = htmlColors[colorUPPERCASE];
+        returnValue = htmlColors[colorUPPERCASE as keyof typeof htmlColors];
     } else {
         returnValue = color;
     }
@@ -658,11 +619,10 @@ export function colorNameToHex (color) {
 
 /**
  * Strips the last directory part of an url. Example:  /this/is/url/with/part/ becomes /this/is/url/with/
- * @function
- * @param {string} url reddit API comment object.
- * @returns {string} url without the last directory part
+ * @param url reddit API comment object.
+ * @returns url without the last directory part
  */
-export function removeLastDirectoryPartOf (url) {
+export function removeLastDirectoryPartOf (url: string) {
     const urlNoSlash = url.replace(/\/$/, '');
     const array = urlNoSlash.split('/');
     array.pop();
@@ -670,24 +630,18 @@ export function removeLastDirectoryPartOf (url) {
     return returnValue;
 }
 
-/**
- * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
- * @function
- * @param {string} dirtySub dirty dirty sub.
- * @returns {string} shiny sub!
- */
-export function cleanSubredditName (dirtySub) {
+/** Removes any leading junk from a subreddit name (/r/, multireddit indicators, etc) and just returns the name. */
+export function cleanSubredditName (dirtySub: string) {
     return dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
 }
 
 /**
- * Replaces {tokens} for the respective value in given content
- * @function
- * @param {object} info object with token name keys and token content values.
- * @param {string} content dirty dirty sub.
- * @returns {string} token replaced text!
+ * Replaces {tokens} for the respective value in given content.
+ * @param info Object with token name keys and token content values
+ * @param content String with tokens to be replaced
+ * @returns token replaced text!
  */
-export function replaceTokens (info, content) {
+export function replaceTokens (info: Record<string, string>, content: string) {
     for (const i of Object.keys(info)) {
         const pattern = new RegExp(`{${i}}`, 'mig');
         content = content.replace(pattern, info[i]);
@@ -703,9 +657,9 @@ export function replaceTokens (info, content) {
  * @param {string} content dirty dirty sub.
  * @returns {string} token replaced text!
  */
-export function unescapeJSON (val) {
+export function unescapeJSON (val: string): string {
     if (typeof val === 'string') {
-        val = val.replace(/&quot;/g, '"')
+        return val.replace(/&quot;/g, '"')
             .replace(/&gt;/g, '>').replace(/&lt;/g, '<')
             .replace(/&amp;/g, '&');
     }
@@ -714,20 +668,15 @@ export function unescapeJSON (val) {
 
 // Utility methods
 
-/**
- * Removes ASCII single and double quotes from a string.
- * @param {string} string
- * @returns {string}
- */
-export const removeQuotes = string => string.replace(/['"]/g, '');
+/** Removes ASCII single and double quotes from a string. */
+export const removeQuotes = (string: string) => string.replace(/['"]/g, '');
 
 /**
- * Generates a color corresponding to a given string (used to assign colors
- * to subreddits for post borders in shared queues)
- * @param {string} str The string to generate a color for
+ * Generates a color corresponding to a given string (used to assign colors to
+ * subreddits for post borders in shared queues)
  */
 // TODO: cache results?
-export function stringToColor (str) {
+export function stringToColor (str: string) {
     // str to hash
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -743,33 +692,21 @@ export function stringToColor (str) {
     return color;
 }
 
-/**
- * Escapes text for HTML.
- * @param {string} value The text to escape
- * @returns {string}
- */
+/** Escapes text for HTML. */
 // TODO: How is this different than escapeHTML() above?
-export function htmlEncode (value) {
+export function htmlEncode (value: string) {
     // create a in-memory div, set it's inner text(which jQuery automatically encodes)
     // then grab the encoded contents back out.  The div never exists on the page.
     return $('<div/>').text(value).html();
 }
 
-/**
- * Gets the text content of an HTML string.
- * @param {string} value The HTML to read
- * @returns {string}
- */
-export function htmlDecode (value) {
+/** Gets the text content of an HTML string. */
+export function htmlDecode (value: string) {
     return $('<div/>').html(value).text();
 }
 
-/**
- * Inflates a base64-encoded zlib-compressed data string into data.
- * @param {string} string The compressed string
- * @returns {any}
- */
-export function zlibInflate (stringThing) {
+/** Inflates a base64-encoded zlib-compressed data string into data. */
+export function zlibInflate (stringThing: string) {
     // Expand base64
     stringThing = atob(stringThing);
     // zlib time!
@@ -780,34 +717,33 @@ export function zlibInflate (stringThing) {
 
 /**
  * Deflates some data into a base64-encoded zlib-compressed data string.
- * @param {any} object The data to compress
- * @returns {string}
+ * @param objThing The data to compress
  */
-export function zlibDeflate (objThing) {
+export function zlibDeflate (objThing: string) {
     // zlib time!
     const deflate = new pako.Deflate({to: 'string'});
     deflate.push(objThing, true);
+    // @ts-expect-error // TODO
     objThing = deflate.result;
+    console.log(objThing);
     // Collapse to base64
     return btoa(objThing);
 }
 
-/**
- * Provides an initialized SnuOwnd parser.
- */
+/** Provides an initialized SnuOwnd parser. */
 export const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
+
+/** An iterable which may or may not be asynchronous. */
+export type MaybeAsyncIterable<T> = AsyncIterable<T> | Iterable<T>;
 
 /**
  * Wraps each of an iterable's values with an object that indicates which item
  * is the last one in the sequence by always reading one item ahead in the
  * iterator to check for `{done: true}` before yielding the current item.
- * @template T
- * @param {AsyncIterable<T>} iterable
- * @returns {AsyncGenerator<{item: T, last: boolean}, void>}
  */
-export async function* wrapWithLastValue (iterable) {
+export async function* wrapWithLastValue<T> (iterable: MaybeAsyncIterable<T>) {
     // get the underlying iterator
-    const iterator = iterable[Symbol.asyncIterator]?.() ?? iterable[Symbol.iterator]?.();
+    const iterator = Symbol.asyncIterator in iterable ? iterable[Symbol.asyncIterator]() : iterable[Symbol.iterator]();
     if (!iterator) {
         throw new TypeError('argument is not an iterable');
     }

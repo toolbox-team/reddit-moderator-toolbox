@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import {debugInformation} from '../tbcore.js';
-import {template} from '../tbhelpers.js';
+import {template} from '../tbhelpers.ts';
 import {Module} from '../tbmodule.js';
 
 export default new Module({

@@ -28,7 +28,7 @@ import './tbplugins.js';
 // master
 import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
-import {delay} from './tbhelpers.js';
+import {delay} from './tbhelpers';
 import TBListener from './tblistener.js';
 // HEAD
 import TBLog from './tblog';

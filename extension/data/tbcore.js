@@ -4,7 +4,7 @@ import browser from 'webextension-polyfill';
 import * as TBApi from './tbapi.ts';
 import {getModhash} from './tbapi.ts';
 import {icons} from './tbconstants.ts';
-import * as TBHelpers from './tbhelpers.js';
+import * as TBHelpers from './tbhelpers.ts';
 import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.ts';
 

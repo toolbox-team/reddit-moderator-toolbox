@@ -4,7 +4,7 @@ import {map, page, pipeAsync} from 'iter-ops';
 
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
-import {escapeHTML, htmlEncode} from '../tbhelpers.js';
+import {escapeHTML, htmlEncode} from '../tbhelpers.ts';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import {setSettingAsync} from '../tbstorage.ts';

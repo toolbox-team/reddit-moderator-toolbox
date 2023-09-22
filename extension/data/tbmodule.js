@@ -6,7 +6,7 @@ import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
 import TBLog from './tblog.ts';
-import * as TBStorage from './tbstorage.js';
+import * as TBStorage from './tbstorage.ts';
 import * as TBui from './tbui.js';
 
 const logger = TBLog('TBModule');

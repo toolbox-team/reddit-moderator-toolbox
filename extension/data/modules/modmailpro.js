@@ -3,7 +3,7 @@ import $ from 'jquery';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.js';
-import * as TBStorage from '../tbstorage.js';
+import * as TBStorage from '../tbstorage.ts';
 import * as TBui from '../tbui.js';
 
 const self = new Module({

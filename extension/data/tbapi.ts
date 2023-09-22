@@ -6,7 +6,7 @@ import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
 import TBLog from './tblog';
-import * as TBStorage from './tbstorage.js';
+import * as TBStorage from './tbstorage';
 
 const logger = TBLog('TBApi');
 

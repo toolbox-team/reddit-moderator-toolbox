@@ -6,7 +6,7 @@ import {getModhash} from './tbapi.ts';
 import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
-import * as TBStorage from './tbstorage.js';
+import * as TBStorage from './tbstorage.ts';
 
 const logger = TBLog('TBCore');
 

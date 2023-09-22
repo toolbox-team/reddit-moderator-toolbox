@@ -2,28 +2,19 @@ import DOMPurify from 'dompurify';
 import $ from 'jquery';
 import browser from 'webextension-polyfill';
 
-import TBLog from './tblog.ts';
+import TBLog from './tblog.js';
 
 const logger = TBLog('TBStorage');
 
-/**
- * The current subdomain (NOT full domain).
- * @type {string}
- */
+/** The current subdomain (NOT full domain). */
 export const domain = window.location.hostname.split('.')[0];
 logger.debug(`Domain: ${domain}`);
 
-/**
- * A list of all currently loaded settings keys.
- * @type {string[]}
- */
-export const settings = [];
+/** A list of all currently loaded settings keys. */
+export const settings: string[] = [];
 
-/**
- * An object mapping setting keys to their currently loaded values.
- * @type {{[key: string]: any}}
- */
-let TBsettingsObject;
+/** An object mapping setting keys to their currently loaded values. */
+let TBsettingsObject: Record<string, any>;
 
 /**
  * A promise which will fulfill once the current settings are fetched from
@@ -141,11 +132,11 @@ export const getAnonymizedSettings = () =>
 
             resolve(sObject);
 
-            function undefindedOrLength (setting) {
+            function undefindedOrLength (setting: any[] | undefined) {
                 return setting === undefined ? 0 : setting.length;
             }
 
-            function undefindedOrTrue (setting) {
+            function undefindedOrTrue (setting: any[] | undefined) {
                 if (!setting) {
                     return false;
                 }
@@ -156,10 +147,7 @@ export const getAnonymizedSettings = () =>
         });
     });
 
-/**
- * Clears all cache keys.
- * @returns {Promise<void>}
- */
+/** Clears all cache keys. */
 export async function clearCache () {
     await browser.runtime.sendMessage({
         action: 'tb-cache',
@@ -180,9 +168,8 @@ $('body').on(
  * Saves current settings, then verifies that they've been saved accurately. If
  * the save was successful, tells the background page to update the settings
  * state of other tabs. Calls back with whether or not the save was successful.
- * @param {(success: boolean) => void} callback
  */
-export function verifiedSettingsSave (callback) {
+export function verifiedSettingsSave (callback: (success: boolean) => void) {
     settingsToObject(sObject => {
         const settingsObject = sObject;
 
@@ -210,17 +197,13 @@ export function verifiedSettingsSave (callback) {
     });
 }
 
-/**
- * Uses DOMPurify to sanitize untrusted HTML strings.
- * @param {string} input
- * @returns {string}
- */
-export function purify (input) {
-    return DOMPurify.sanitize(input, {SAFE_FOR_JQUERY: true});
+/** Uses DOMPurify to sanitize untrusted HTML strings. */
+export function purify (input: string) {
+    return DOMPurify.sanitize(input);
 }
 
 // TODO: to be honest I'm not sure what this one does
-function registerSetting (module, setting) {
+function registerSetting (module?: string, setting?: string) {
     // First parse out any of the ones we never want to save.
     if (module === undefined || module === 'cache') {
         return;
@@ -237,9 +220,8 @@ function registerSetting (module, setting) {
  * Recursively sanitize an object's string values as untrusted HTML. String
  * values that can be interpreted as JSON objects are parsed, sanitized, and
  * re-stringified.
- * @param {any} input
  */
-export function purifyObject (input) {
+export function purifyObject (input: any) {
     for (const key in input) {
         if (Object.prototype.hasOwnProperty.call(input, key)) {
             const itemType = typeof input[key];
@@ -287,7 +269,7 @@ export function purifyObject (input) {
 
 // TODO: this is another purify function used exclusively for settings, I'm not
 //       sure how it works either.
-function purifyThing (input) {
+function purifyThing (input: any) {
     let output;
     const itemType = typeof input;
     switch (itemType) {
@@ -328,12 +310,13 @@ function purifyThing (input) {
 /**
  * Calls back with a copy of the current settings object, containing all setting
  * keys and their values.
+ * @deprecated Use {@linkcode getSettings} instead.
  * @param {(settings: object) => void} callback
  */
-function settingsToObject (callback) {
+function settingsToObject (callback: (settings: Record<string, any>) => void) {
     initialLoadPromise.then(() => {
         // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
-        const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
+        const settingsObject: Record<string, any> = JSON.parse(JSON.stringify(TBsettingsObject));
 
         // We are paranoid, so we are going to purify the object first.s
         purifyObject(settingsObject);
@@ -350,10 +333,7 @@ function settingsToObject (callback) {
 // TODO: convert original function to promise
 export const getSettings = () => new Promise(resolve => settingsToObject(resolve));
 
-/**
- * Commits the current settings to extension storage.
- * @returns {Promise<void>}
- */
+/** Commits the current settings to extension storage. */
 async function saveSettingsToBrowser () {
     browser.storage.local.set({
         tbsettings: await getSettings(),
@@ -362,13 +342,12 @@ async function saveSettingsToBrowser () {
 
 /**
  * Returns the value of a setting.
- * @deprecated Use `getSettingAsync` instead
- * @param {string} module The ID of the module the setting belongs to
- * @param {string} setting The name of the setting
- * @param {any} defaultVal The value returned if the setting is not set
- * @returns {any}
+ * @deprecated Use {@linkcode getSettingAsync} instead
+ * @param module The ID of the module the setting belongs to
+ * @param setting The name of the setting
+ * @param defaultVal The value returned if the setting is not set
  */
-export function getSetting (module, setting, defaultVal) {
+export function getSetting (module: string, setting: string, defaultVal: any = null) {
     const storageKey = `Toolbox.${module}.${setting}`;
     registerSetting(module, setting);
 
@@ -397,27 +376,26 @@ export function getSetting (module, setting, defaultVal) {
 
 /**
  * Returns the value of a setting.
- * @param {string} module The ID of the module the setting belongs to
- * @param {string} setting The name of the setting
- * @param {any} defaultVal The value returned if the setting is not set
- * @returns {Promise<any>}
+ * @param module The ID of the module the setting belongs to
+ * @param setting The name of the setting
+ * @param defaultVal The value returned if the setting is not set
  */
-export async function getSettingAsync (module, setting, defaultVal) {
+export async function getSettingAsync (module: string, setting: string, defaultVal: any = null) {
     await initialLoadPromise;
     return getSetting(module, setting, defaultVal);
 }
 
 /**
  * Sets a setting to a new value.
- * @deprecated Use `setSettingAsync` instead
- * @param {string} module The ID of the module the setting belongs to
- * @param {string} setting The name of the setting
- * @param {any} value The new value of the setting
- * @param {boolean} [syncSettings=true] If false, settings will not be committed
- * to storage after performing this action
- * @returns {any} The new value of the setting
+ * @deprecated Use {@linkcode setSettingAsync} instead
+ * @param module The ID of the module the setting belongs to
+ * @param setting The name of the setting
+ * @param value The new value of the setting
+ * @param syncSettings If `false`, settings will not be committed to storage
+ * after performing this action
+ * @returns The new value of the setting
  */
-export function setSetting (module, setting, value, syncSettings = true) {
+export function setSetting (module: string, setting: string, value: any, syncSettings = true) {
     const storageKey = `Toolbox.${module}.${setting}`;
     registerSetting(module, setting);
 
@@ -446,26 +424,25 @@ export function setSetting (module, setting, value, syncSettings = true) {
 
 /**
  * Sets a setting to a new value.
- * @param {string} module The ID of the module the setting belongs to
- * @param {string} setting The name of the setting
- * @param {any} value The new value of the setting
- * @param {boolean} [syncSettings=true] If false, settings will not be committed
- * to storage after performing this action
- * @returns {Promise<any>} The new value of the setting
+ * @param module The ID of the module the setting belongs to
+ * @param setting The name of the setting
+ * @param value The new value of the setting
+ * @param syncSettings If `false`, settings will not be committed to storage
+ * after performing this action
+ * @returns The new value of the setting
  */
-export async function setSettingAsync (module, setting, value, syncSettings = true) {
+export async function setSettingAsync (module: string, setting: string, value: any, syncSettings = true) {
     await initialLoadPromise;
     return setSetting(module, setting, value, syncSettings);
 }
 
 /**
  * Gets a value in the cache.
- * @param {string} module The module that owns the cache key
- * @param {string} setting The name of the cache key
- * @param {any} [defaultVal] The value returned if there is no cached value
- * @returns {Promise<any>}
+ * @param module The module that owns the cache key
+ * @param setting The name of the cache key
+ * @param defaultVal The value returned if there is no cached value
  */
-export function getCache (module, setting, defaultVal) {
+export function getCache (module: string, setting: string, defaultVal: any = null) {
     return new Promise(resolve => {
         const storageKey = `${module}.${setting}`;
         const inputValue = defaultVal !== undefined ? defaultVal : null;
@@ -487,12 +464,12 @@ export function getCache (module, setting, defaultVal) {
 
 /**
  * Sets a value in the cache.
- * @param {string} module The ID of the module that owns the cache key
- * @param {string} setting The name of the cache key
- * @param {any} inputValue The new value of the cache key
- * @returns {Promise<any>} Promises the new value of the cache key
+ * @param module The ID of the module that owns the cache key
+ * @param setting The name of the cache key
+ * @param inputValue The new value of the cache key
+ * @returns Promises the new value of the cache key
  */
-export function setCache (module, setting, inputValue) {
+export function setCache (module: string, setting: string, inputValue: any) {
     const storageKey = `${module}.${setting}`;
     return new Promise(resolve => {
         browser.runtime.sendMessage({
@@ -510,13 +487,10 @@ export function setCache (module, setting, inputValue) {
 /**
  * Checks whether two objects are deeply equivalent by recursively comparing
  * their property values. Does not check reference equality.
- * @param {any} a
- * @param {any} b
- * @returns {boolean}
  */
 // based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html
 // added recursive object checks - al
-function isEquivalent (a, b) {
+function isEquivalent (a: object, b: object): boolean {
     // Create arrays of property names
     const aProps = Object.getOwnPropertyNames(a);
     const bProps = Object.getOwnPropertyNames(b);
@@ -529,7 +503,7 @@ function isEquivalent (a, b) {
     }
 
     for (let i = 0; i < aProps.length; i++) {
-        const propName = aProps[i];
+        const propName = aProps[i] as keyof typeof a & keyof typeof b;
         const propA = a[propName];
         const propB = b[propName];
 

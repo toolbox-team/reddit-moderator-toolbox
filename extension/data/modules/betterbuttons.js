@@ -3,7 +3,7 @@ import $ from 'jquery';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.js';
-import {getSettingAsync} from '../tbstorage.js';
+import {getSettingAsync} from '../tbstorage.ts';
 
 const self = new Module({
     name: 'Better Buttons',

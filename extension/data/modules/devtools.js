@@ -5,7 +5,7 @@ import * as TBCore from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
-import * as TBStorage from '../tbstorage.js';
+import * as TBStorage from '../tbstorage.ts';
 import * as TBui from '../tbui.js';
 
 export default new Module({

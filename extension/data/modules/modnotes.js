@@ -7,7 +7,7 @@ import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
-import {setSettingAsync} from '../tbstorage.js';
+import {setSettingAsync} from '../tbstorage.ts';
 import {
     drawPosition,
     FEEDBACK_NEGATIVE,

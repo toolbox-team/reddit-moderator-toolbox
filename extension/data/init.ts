@@ -33,7 +33,7 @@ import TBListener from './tblistener.js';
 // HEAD
 import TBLog from './tblog';
 import TBModule from './tbmodule.js';
-import * as TBStorage from './tbstorage.js';
+import * as TBStorage from './tbstorage';
 
 import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';

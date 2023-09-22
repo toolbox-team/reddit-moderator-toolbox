@@ -75,77 +75,76 @@ initialLoadPromise.then(() => {
  * settings omitted and other settings represented differently.
  * @returns {Promise<object>}
  */
-export const getAnonymizedSettings = () =>
-    new Promise(resolve => {
-        settingsToObject(sObject => {
-            // settings we delete
-            delete sObject['Toolbox.Achievements.lastSeen'];
-            delete sObject['Toolbox.Achievements.last_seen'];
-            delete sObject['Toolbox.Bagels.bagelType'];
-            delete sObject['Toolbox.Bagels.enabled'];
-            delete sObject['Toolbox.Modbar.customCSS'];
-            delete sObject['Toolbox.ModMail.lastVisited'];
-            delete sObject['Toolbox.ModMail.replied'];
-            delete sObject['Toolbox.ModMail.subredditColorSalt'];
-            delete sObject['Toolbox.Notifier.lastChecked'];
-            delete sObject['Toolbox.Notifier.lastSeenModmail'];
-            delete sObject['Toolbox.Notifier.lastSeenUnmoderated'];
-            delete sObject['Toolbox.Notifier.modmailCount'];
-            delete sObject['Toolbox.Notifier.modqueueCount'];
-            delete sObject['Toolbox.Notifier.modqueuePushed'];
-            delete sObject['Toolbox.Notifier.unmoderatedCount'];
-            delete sObject['Toolbox.Notifier.unreadMessageCount'];
-            delete sObject['Toolbox.Notifier.unreadPushed'];
-            delete sObject['Toolbox.QueueTools.kitteh'];
-            delete sObject['Toolbox.RReasons.customRemovalReason'];
-            delete sObject['Toolbox.Snoo.enabled'];
-            delete sObject['Toolbox.Storage.settings'];
-            delete sObject['Toolbox.Utils.echoTest'];
-            delete sObject['Toolbox.Utils.tbDevs'];
+export async function getAnonymizedSettings () {
+    const sObject = await getSettings();
 
-            // these settings we want the length of the val.
-            sObject['Toolbox.Comments.highlighted'] = undefindedOrLength(sObject['Toolbox.Comments.highlighted']);
-            sObject['Toolbox.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolbox.ModButton.savedSubs']);
-            sObject['Toolbox.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolbox.ModMail.botsToFilter']);
-            sObject['Toolbox.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolbox.ModMail.filteredSubs']);
-            sObject['Toolbox.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolbox.Modbar.shortcuts']);
-            sObject['Toolbox.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolbox.QueueTools.botCheckmark']);
-            sObject['Toolbox.Utils.seenNotes'] = undefindedOrLength(sObject['Toolbox.Utils.seenNotes']);
+    // settings we delete
+    delete sObject['Toolbox.Achievements.lastSeen'];
+    delete sObject['Toolbox.Achievements.last_seen'];
+    delete sObject['Toolbox.Bagels.bagelType'];
+    delete sObject['Toolbox.Bagels.enabled'];
+    delete sObject['Toolbox.Modbar.customCSS'];
+    delete sObject['Toolbox.ModMail.lastVisited'];
+    delete sObject['Toolbox.ModMail.replied'];
+    delete sObject['Toolbox.ModMail.subredditColorSalt'];
+    delete sObject['Toolbox.Notifier.lastChecked'];
+    delete sObject['Toolbox.Notifier.lastSeenModmail'];
+    delete sObject['Toolbox.Notifier.lastSeenUnmoderated'];
+    delete sObject['Toolbox.Notifier.modmailCount'];
+    delete sObject['Toolbox.Notifier.modqueueCount'];
+    delete sObject['Toolbox.Notifier.modqueuePushed'];
+    delete sObject['Toolbox.Notifier.unmoderatedCount'];
+    delete sObject['Toolbox.Notifier.unreadMessageCount'];
+    delete sObject['Toolbox.Notifier.unreadPushed'];
+    delete sObject['Toolbox.QueueTools.kitteh'];
+    delete sObject['Toolbox.RReasons.customRemovalReason'];
+    delete sObject['Toolbox.Snoo.enabled'];
+    delete sObject['Toolbox.Storage.settings'];
+    delete sObject['Toolbox.Utils.echoTest'];
+    delete sObject['Toolbox.Utils.tbDevs'];
 
-            // these settings we just want to know if they are populated at all
-            sObject['Toolbox.Achievements.save'] = undefindedOrTrue(sObject['Toolbox.Achievements.save']);
-            sObject['Toolbox.ModButton.lastAction'] = undefindedOrTrue(sObject['Toolbox.ModButton.lastAction']);
-            sObject['Toolbox.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolbox.Modbar.lastExport']);
-            sObject['Toolbox.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modSubreddits']);
-            sObject['Toolbox.Notifier.modmailSubreddits'] = undefindedOrTrue(
-                sObject['Toolbox.Notifier.modmailSubreddits'],
-            );
-            sObject['Toolbox.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(
-                sObject['Toolbox.Notifier.unmoderatedSubreddits'],
-            );
-            sObject['Toolbox.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolbox.PNotes.noteWiki']);
-            sObject['Toolbox.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolbox.QueueTools.queueCreature']);
-            sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(
-                sObject['Toolbox.QueueTools.subredditColorSalt'],
-            );
-            sObject['Toolbox.Utils.settingSub'] = undefindedOrTrue(sObject['Toolbox.Utils.settingSub']);
+    // these settings we want the length of the val.
+    sObject['Toolbox.Comments.highlighted'] = undefindedOrLength(sObject['Toolbox.Comments.highlighted']);
+    sObject['Toolbox.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolbox.ModButton.savedSubs']);
+    sObject['Toolbox.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolbox.ModMail.botsToFilter']);
+    sObject['Toolbox.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolbox.ModMail.filteredSubs']);
+    sObject['Toolbox.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolbox.Modbar.shortcuts']);
+    sObject['Toolbox.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolbox.QueueTools.botCheckmark']);
+    sObject['Toolbox.Utils.seenNotes'] = undefindedOrLength(sObject['Toolbox.Utils.seenNotes']);
 
-            resolve(sObject);
+    // these settings we just want to know if they are populated at all
+    sObject['Toolbox.Achievements.save'] = undefindedOrTrue(sObject['Toolbox.Achievements.save']);
+    sObject['Toolbox.ModButton.lastAction'] = undefindedOrTrue(sObject['Toolbox.ModButton.lastAction']);
+    sObject['Toolbox.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolbox.Modbar.lastExport']);
+    sObject['Toolbox.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modSubreddits']);
+    sObject['Toolbox.Notifier.modmailSubreddits'] = undefindedOrTrue(
+        sObject['Toolbox.Notifier.modmailSubreddits'],
+    );
+    sObject['Toolbox.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(
+        sObject['Toolbox.Notifier.unmoderatedSubreddits'],
+    );
+    sObject['Toolbox.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolbox.PNotes.noteWiki']);
+    sObject['Toolbox.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolbox.QueueTools.queueCreature']);
+    sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(
+        sObject['Toolbox.QueueTools.subredditColorSalt'],
+    );
+    sObject['Toolbox.Utils.settingSub'] = undefindedOrTrue(sObject['Toolbox.Utils.settingSub']);
 
-            function undefindedOrLength (setting: any[] | undefined) {
-                return setting === undefined ? 0 : setting.length;
-            }
+    return sObject;
 
-            function undefindedOrTrue (setting: any[] | undefined) {
-                if (!setting) {
-                    return false;
-                }
-                if (setting.length > 0) {
-                    return true;
-                }
-            }
-        });
-    });
+    function undefindedOrLength (setting: any[] | undefined) {
+        return setting === undefined ? 0 : setting.length;
+    }
+
+    function undefindedOrTrue (setting: any[] | undefined) {
+        if (!setting) {
+            return false;
+        }
+        if (setting.length > 0) {
+            return true;
+        }
+    }
+}
 
 /** Clears all cache keys. */
 export async function clearCache () {
@@ -170,7 +169,7 @@ $('body').on(
  * state of other tabs. Calls back with whether or not the save was successful.
  */
 export function verifiedSettingsSave (callback: (success: boolean) => void) {
-    settingsToObject(sObject => {
+    getSettings().then(sObject => {
         const settingsObject = sObject;
 
         // save settings
@@ -308,30 +307,21 @@ function purifyThing (input: any) {
 }
 
 /**
- * Calls back with a copy of the current settings object, containing all setting
- * keys and their values.
- * @deprecated Use {@linkcode getSettings} instead.
- * @param {(settings: object) => void} callback
- */
-function settingsToObject (callback: (settings: Record<string, any>) => void) {
-    initialLoadPromise.then(() => {
-        // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
-        const settingsObject: Record<string, any> = JSON.parse(JSON.stringify(TBsettingsObject));
-
-        // We are paranoid, so we are going to purify the object first.s
-        purifyObject(settingsObject);
-
-        callback(settingsObject);
-    });
-}
-
-/**
  * Promises a copy of the current settings object, containing all setting keys
  * and their values.
  * @returns {Promise<object>}
  */
-// TODO: convert original function to promise
-export const getSettings = () => new Promise(resolve => settingsToObject(resolve));
+export async function getSettings () {
+    await initialLoadPromise;
+
+    // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
+    const settingsObject: Record<string, any> = JSON.parse(JSON.stringify(TBsettingsObject));
+
+    // We are paranoid, so we are going to purify the object first.s
+    purifyObject(settingsObject);
+
+    return settingsObject;
+}
 
 /** Commits the current settings to extension storage. */
 async function saveSettingsToBrowser () {

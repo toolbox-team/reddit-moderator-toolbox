@@ -447,78 +447,134 @@ export default new Module({
                                 <div id="buttons">
                                     <ul>
                                         <li>
-                                            <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${
-                                    reasonType === 'reply' ? ' checked="1"' : ''
-                                } /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-reply-${data.subreddit}"
+                                                value="reply"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'reply' ? ' checked="1"' : ''}
+                                            />
+                                            <label for="type-reply-${data.subreddit}">
+                                                Reply with a comment to the item that is removed.
+                                            </label>
                                             <ul>
                                                 <li>
-                                                    <input ${
-                                    forced || data.kind !== 'submission' ? 'disabled' : ''
-                                } class="reason-sticky" type="checkbox" id="type-stickied"${
-                                    reasonSticky && data.kind === 'submission' ? 'checked' : ''
-                                }/><label for="type-stickied">Sticky the removal comment.</label>
+                                                    <input
+                                                        ${forced || data.kind !== 'submission' ? 'disabled' : ''}
+                                                        class="reason-sticky"
+                                                        type="checkbox"
+                                                        id="type-stickied"
+                                                        ${reasonSticky && data.kind === 'submission' ? 'checked' : ''}
+                                                    />
+                                                    <label for="type-stickied">Sticky the removal comment.</label>
                                                 </li>
                                                 <li>
-                                                    <input ${
-                                    forced ? 'disabled' : ''
-                                } class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${
-                                    actionLockComment ? 'checked' : ''
-                                }/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="action-lock-comment"
+                                                        id="type-action-lock-comment"
+                                                        type="checkbox"
+                                                        ${actionLockComment ? 'checked' : ''}
+                                                    />
+                                                    <label for="type-action-lock-comment">
+                                                        Lock the removal comment.
+                                                    </label>
                                                 </li>
                                                 <li>
-                                                    <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-comment-as-subreddit" id="type-reason-commnet-as-sub" type="checkbox"${
-                                    reasonCommentAsSubreddit ? 'checked' : ''
-                                }/><label for="type-reason-commnet-as-sub">Send as /u/${data.subreddit}-ModTeam.</label>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="reason-comment-as-subreddit"
+                                                        id="type-reason-commnet-as-sub"
+                                                        type="checkbox"
+                                                        ${reasonCommentAsSubreddit ? 'checked' : ''}
+                                                    />
+                                                    <label for="type-reason-commnet-as-sub">
+                                                        Send as /u/${data.subreddit}-ModTeam.
+                                                    </label>
                                                 </li>
                                             </ul>
                                         </li>
                                         <li>
-                                            <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${
-                                    reasonType === 'pm' ? ' checked="1"' : ''
-                                } /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-PM-${data.subreddit}"
+                                                value="pm"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'pm' ? ' checked="1"' : ''}
+                                            />
+                                            <label for="type-PM-${data.subreddit}">
+                                                Send as PM (personal message)
+                                            </label>
                                             <ul>
                                                 <li>
-                                                    <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-as-sub" type="checkbox" id="type-as-sub" ${
-                                    reasonAsSub ? 'checked ' : ''
-                                }/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="reason-as-sub"
+                                                        type="checkbox"
+                                                        id="type-as-sub"
+                                                        ${reasonAsSub ? 'checked ' : ''}
+                                                    />
+                                                    <label for="type-as-sub">
+                                                        Send pm via modmail as /r/${data.subreddit}
+                                                        <b>Note:</b> This will clutter up modmail.
+                                                    </label>
                                                 </li>
                                                 <li>
-                                                    <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${
-                                    reasonAutoArchive ? 'checked ' : ''
-                                }/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="reason-auto-archive"
+                                                        type="checkbox"
+                                                        id="type-auto-archive"
+                                                        ${reasonAutoArchive ? 'checked ' : ''}
+                                                    />
+                                                    <label for="type-auto-archive">
+                                                        Auto-archive sent modmail pm
+                                                        <b>Note:</b> Only works on new modmail.
+                                                    </label>
                                                 </li>
                                             </ul>
                                         </li>
                                         <li>
-                                            <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${
-                                    reasonType === 'both' ? ' checked="1"' : ''
-                                } /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-both-${data.subreddit}"
+                                                value="both"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'both' ? ' checked="1"' : ''}
+                                            />
+                                            <label for="type-both-${data.subreddit}">
+                                                Send as both PM and reply.
+                                            </label>
                                         </li>
                                         <li style="display:${selectNoneDisplay}"> /
-                                            <input ${
-                                    forced ? 'disabled' : ''
-                                } class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${
-                                    reasonType === 'none' ? ' checked="1"' : ''
-                                } /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-none-${data.subreddit}"
+                                                value="none"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'none' ? ' checked="1"' : ''}
+                                            />
+                                            <label for="type-none-${data.subreddit}">
+                                                none, will only log the removal.
+                                            </label>
                                         </li>
                                         <li>
-                                            <input ${
-                                    forced || data.kind !== 'submission' ? 'disabled' : ''
-                                } class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${
-                                    actionLockThread && data.kind === 'submission' ? 'checked' : ''
-                                }/><label for="type-action-lock-thread">Lock the removed thread.</label>
+                                            <input
+                                                ${forced || data.kind !== 'submission' ? 'disabled' : ''}
+                                                class="action-lock-thread"
+                                                id="type-action-lock-thread"
+                                                type="checkbox"
+                                                ${actionLockThread && data.kind === 'submission' ? 'checked' : ''}
+                                            />
+                                            <label for="type-action-lock-thread">Lock the removed thread.</label>
                                         </li>
                                     </ul>
                                 </div>

@@ -454,7 +454,7 @@ export default new Module({
                                                 id="type-reply-${data.subreddit}"
                                                 value="reply"
                                                 name="type-${data.subreddit}"
-                                                ${reasonType === 'reply' ? ' checked="1"' : ''}
+                                                ${reasonType === 'reply' ? ' checked' : ''}
                                             />
                                             <label for="type-reply-${data.subreddit}">
                                                 Reply with a comment to the item that is removed.
@@ -504,7 +504,7 @@ export default new Module({
                                                 id="type-PM-${data.subreddit}"
                                                 value="pm"
                                                 name="type-${data.subreddit}"
-                                                ${reasonType === 'pm' ? ' checked="1"' : ''}
+                                                ${reasonType === 'pm' ? ' checked' : ''}
                                             />
                                             <label for="type-PM-${data.subreddit}">
                                                 Send as PM (personal message)
@@ -546,7 +546,7 @@ export default new Module({
                                                 id="type-both-${data.subreddit}"
                                                 value="both"
                                                 name="type-${data.subreddit}"
-                                                ${reasonType === 'both' ? ' checked="1"' : ''}
+                                                ${reasonType === 'both' ? ' checked' : ''}
                                             />
                                             <label for="type-both-${data.subreddit}">
                                                 Send as both PM and reply.
@@ -560,7 +560,7 @@ export default new Module({
                                                 id="type-none-${data.subreddit}"
                                                 value="none"
                                                 name="type-${data.subreddit}"
-                                                ${reasonType === 'none' ? ' checked="1"' : ''}
+                                                ${reasonType === 'none' ? ' checked' : ''}
                                             />
                                             <label for="type-none-${data.subreddit}">
                                                 none, will only log the removal.

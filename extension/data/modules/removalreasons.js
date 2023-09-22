@@ -419,9 +419,12 @@ export default new Module({
                             title: 'toolbox reasons',
                             tooltip: 'Use a removal reason defined in your subreddit\'s Toolbox configuration',
                             content: `
-                                <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${
-                                    TBHelpers.htmlEncode(data.title)
-                                }</a></p>
+                                <p>
+                                    Removing:
+                                    <a class="mte-thread-link" href="${data.url}" target="_blank">
+                                        ${TBHelpers.htmlEncode(data.title)}
+                                    </a>
+                                </p>
                                 <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
                                     <p>
                                         <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
@@ -635,22 +638,28 @@ export default new Module({
 
                     const tr = $(`
                         <tr class="selectable-reason">
-                        <td class="removal-toggle">
-                        <input type="checkbox" class="reason-check" name="reason-${data.subreddit}" id="reason-${data.subreddit}-${index}" />
-                        <div class="reason-num">${index + 1}</div>
-                        </td>
-                        <td class="reason">
-                        <div class="removal-reason-title">${this.title ? this.title : ''}</div>
-                        <div class="styled-reason reason-content ${data.subreddit}-${index}">${reasonHtml}<br /></div>
-                        </td>
-                        <td class="flair-text"><span class="flair-text-span">${
-                            this.flairText ? this.flairText : ''
-                        }</span></td>
-                        <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ''}</span></td>
-                        <td class="removal-reasons-sort-buttons">
-                            <a href="javascript:;" class="tb-live-sort-up tb-icons">${TBui.icons.sortUp}</a>
-                            <a href="javascript:;" class="tb-live-sort-down tb-icons">${TBui.icons.sortDown}</a>
-                        </td>
+                            <td class="removal-toggle">
+                                <input type="checkbox" class="reason-check" name="reason-${data.subreddit}" id="reason-${data.subreddit}-${index}" />
+                                <div class="reason-num">${index + 1}</div>
+                            </td>
+                            <td class="reason">
+                                <div class="removal-reason-title">${this.title ? this.title : ''}</div>
+                                <div class="styled-reason reason-content ${data.subreddit}-${index}">${reasonHtml}<br /></div>
+                           </td>
+                            <td class="flair-text">
+                                <span class="flair-text-span">
+                                    ${this.flairText ? this.flairText : ''}
+                                </span>
+                            </td>
+                            <td class="flair-css">
+                                <span class="flair-css-span">
+                                    ${this.flairCSS ? this.flairCSS : ''}
+                                </span>
+                            </td>
+                            <td class="removal-reasons-sort-buttons">
+                                <a href="javascript:;" class="tb-live-sort-up tb-icons">${TBui.icons.sortUp}</a>
+                                <a href="javascript:;" class="tb-live-sort-down tb-icons">${TBui.icons.sortDown}</a>
+                            </td>
                         </tr>
                     `);
 

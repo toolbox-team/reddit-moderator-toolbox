@@ -639,21 +639,31 @@ export default new Module({
                     const tr = $(`
                         <tr class="selectable-reason">
                             <td class="removal-toggle">
-                                <input type="checkbox" class="reason-check" name="reason-${data.subreddit}" id="reason-${data.subreddit}-${index}" />
+                                <input
+                                    type="checkbox"
+                                    class="reason-check"
+                                    name="reason-${data.subreddit}"
+                                    id="reason-${data.subreddit}-${index}"
+                                />
                                 <div class="reason-num">${index + 1}</div>
                             </td>
                             <td class="reason">
-                                <div class="removal-reason-title">${this.title ? this.title : ''}</div>
-                                <div class="styled-reason reason-content ${data.subreddit}-${index}">${reasonHtml}<br /></div>
+                                <div class="removal-reason-title">
+                                    ${this.title || ''}
+                                </div>
+                                <div class="styled-reason reason-content ${data.subreddit}-${index}">
+                                    ${reasonHtml}
+                                    <br />
+                                </div>
                            </td>
                             <td class="flair-text">
                                 <span class="flair-text-span">
-                                    ${this.flairText ? this.flairText : ''}
+                                    ${this.flairText || ''}
                                 </span>
                             </td>
                             <td class="flair-css">
                                 <span class="flair-css-span">
-                                    ${this.flairCSS ? this.flairCSS : ''}
+                                    ${this.flairCSS || ''}
                                 </span>
                             </td>
                             <td class="removal-reasons-sort-buttons">

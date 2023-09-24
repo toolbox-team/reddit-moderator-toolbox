@@ -33,26 +33,25 @@ export function debounce<Args extends any[], ThisArg = never> (
 /**
  * Creates a processing queue that allows items to be added one at a time, and
  * defers processing of those items until a specified delay between item
- * additions happens, or a maximum length is reached. Returns an insert function
- * to add items to the queue. Additionally, each invocation of the insert
- * function returns a promise that can be awaited on to receive the processed
- * result of the specific item added.
+ * additions happens, or a maximum queue length is reached. Returns an insert
+ * function to add items to the queue. Each invocation of the insert function
+ * returns a promise that can be awaited on to receive the processed result of
+ * the specific item added.
  *
  * Creating the queue requires giving it a processing function, which must take
  * an input array of items, and return a promise that resolves to an array of
  * corresponding results.
  *
- * @template Item Item queued for processing
- * @template Result Result value from processing an item
- * @param {(items: Item[]) => Promise<Result[]>} bulkProcess Receives an array
- * of items from the queue and returns an array of results, where each result
- * corresponds to the input item of the same index
- * @param {number} [delayTime=100] This many milliseconds must pass without an
- * item being queued before the queue is flushed
- * @param {number} [queueLimit=Infinity] When the queue reaches this size, it is
- * flushed immediately without waiting for the `delayTime` to elapse
- * @returns {(item: Item) => Promise<Result>} New function which queues an item
- * and returns a promise for the corresponding result after processing
+ * @param bulkProcess Receives an array of items from the queue and returns an
+ * array of results, where each result corresponds to the input item of the same
+ * index
+ * @param delayTime=100 This many milliseconds must pass without an item being
+ * queued before the queue is flushed
+ * @param queueLimit When the queue reaches this size, it is flushed immediately
+ * without waiting for the `delayTime` to elapse
+ * @returns A new function which queues an item and returns a promise. After the
+ * queue is flushed and the bulk process runs, the promise will resolve to the
+ * corresponding result for the passed item.
  */
 export function createDeferredProcessQueue<Item, Result> (
     bulkProcess: (items: Item[]) => Promise<Result[]>,
@@ -132,11 +131,7 @@ export function moveArrayItem<T> (array: T[], old_index: number, new_index: numb
     return array;
 }
 
-/**
- * Escape html entities
- * @param html input html
- * @returns HTML string with escaped entities
- */
+/** Escapes special characters in a string for insertion into HTML. */
 export function escapeHTML (html: string) {
     const entityMap = {
         '&': '&amp;',
@@ -170,10 +165,7 @@ export function unescapeHTML (html: any) {
     return String(html).replace(/[&<>"'/]/g, s => entityMap[s as keyof typeof entityMap]);
 }
 
-/**
- * Give the nummeric value in milliseconds of the current date and time.
- * @returns time value in milliseconds
- */
+/** Give the nummeric value in milliseconds of the current date and time. */
 export function getTime () {
     return new Date().getTime();
 }
@@ -650,13 +642,7 @@ export function replaceTokens (info: Record<string, string>, content: string) {
     return content;
 }
 
-/**
- * reddit HTML encodes all of their JSON responses, we need to HTMLdecode them before parsing.
- * @function
- * @param {object} info object with token name keys and token content values.
- * @param {string} content dirty dirty sub.
- * @returns {string} token replaced text!
- */
+/** reddit HTML encodes all of their JSON responses, we need to HTMLdecode them before parsing. */
 export function unescapeJSON (val: string): string {
     if (typeof val === 'string') {
         return val.replace(/&quot;/g, '"')

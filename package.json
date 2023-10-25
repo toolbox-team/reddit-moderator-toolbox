@@ -34,7 +34,7 @@
         "@rollup/plugin-commonjs": "^25.0.4",
         "@rollup/plugin-node-resolve": "^15.2.1",
         "@rollup/plugin-typescript": "^11.1.5",
-        "@tsconfig/recommended": "^1.0.2",
+        "@tsconfig/recommended": "^1.0.3",
         "@types/jquery": "^3.5.25",
         "@types/webextension-polyfill": "^0.10.5",
         "cross-env": "^7.0.3",

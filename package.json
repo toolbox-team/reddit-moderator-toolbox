@@ -45,7 +45,7 @@
         "eslint-plugin-import": "^2.29.0",
         "inquirer": "^9.2.11",
         "jsdoc": "^4.0.2",
-        "rollup": "^3.2.3",
+        "rollup": "^4.1.4",
         "rollup-plugin-copy": "^3.5.0",
         "typescript": "^5.2.2"
     }

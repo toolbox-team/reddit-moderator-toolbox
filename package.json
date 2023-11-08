@@ -43,7 +43,7 @@
         "dprint": "^0.42.5",
         "eslint": "^8.52.0",
         "eslint-plugin-import": "^2.29.0",
-        "inquirer": "^9.2.11",
+        "inquirer": "^9.2.12",
         "jsdoc": "^4.0.2",
         "rollup": "^3.29.4",
         "rollup-plugin-copy": "^3.5.0",

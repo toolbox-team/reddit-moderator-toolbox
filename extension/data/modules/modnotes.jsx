@@ -291,6 +291,23 @@ function ModNotesBadge ({
 }
 
 /**
+ * React element which messily implements relative times.
+ * @param {Date} props.date Date and time to display
+ */
+export const RelativeTime = ({date}) => {
+    const elRef = useRef(null);
+    useEffect(() => {
+        $(elRef.current).timeago();
+    }, []);
+
+    return (
+        <time ref={elRef} dateTime={date.toISOString()}>
+            {date.toLocaleString()}
+        </time>
+    );
+};
+
+/**
  * Creates a mod note popup for the given information.
  * @param {object} data Data associated with the popup
  * @param {string} data.user Name of the relevant user

@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client';
 
 import {map, page, pipeAsync} from 'iter-ops';
 
-import {useEffect, useState} from 'react';
+import {useFetched, useSetting} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
@@ -521,12 +521,13 @@ function buildNoteTableRow (note) {
     return $noteRow;
 }
 
-const ModNotesUserRoot = ({user, subreddit, contextID, defaultTabName, defaultNoteLabel}) => {
+const ModNotesUserRoot = ({user, subreddit, contextID}) => {
+    // Get settings
+    const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
+    const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
+
     // Fetch the latest note for the user
-    const [note, setNote] = useState(null);
-    useEffect(() => {
-        getLatestModNote(subreddit, user).then(note => setNote(note));
-    }, [note]);
+    const note = useFetched(getLatestModNote(subreddit, user));
 
     // On click, show the popup for this user
     function handleClick (e) {
@@ -586,7 +587,7 @@ export default new Module({
             default: 'none',
         },
     ],
-}, function ({defaultTabName, defaultNoteLabel}) {
+}, function () {
     // Clean up old broken cache storage key
     // TODO: Remove this a couple versions from now when people have reasonably
     //       probably updated past this
@@ -628,8 +629,6 @@ export default new Module({
                 user={author}
                 subreddit={subreddit}
                 contextID={contextID}
-                defaultTabName={defaultTabName}
-                defaultNoteLabel={defaultNoteLabel}
             />,
         );
     });

@@ -1,6 +1,7 @@
 {
     "plugins": [
-        "import"
+        "import",
+        "react"
     ],
     "parserOptions": {
         "ecmaVersion": 11,
@@ -15,9 +16,13 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:import/recommended"
+        "plugin:import/recommended",
+        "plugin:react/recommended",
+        "plugin:react/jsx-runtime"
     ],
     "rules": {
+        // disabled until all our react usage is in TS files
+        "react/prop-types": "off",
         "one-var-declaration-per-line": ["error", "always"],
         "one-var": ["error", "never"],
         "array-callback-return": "error",

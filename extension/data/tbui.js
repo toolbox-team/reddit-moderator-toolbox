@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {createRoot} from 'react-dom/client';
 import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
 
@@ -1865,8 +1866,8 @@ export function makeCommentThread (jsonInput, commentOptions) {
  * controls, either 'top' or 'bottom'
  * @param {string | JQuery} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncIterable<string | JQuery>} contentIterable An iterable, possibly
- * asynchronous, whose items provide content for each page
+ * @param {AsyncIterable<string | JQuery | ReactNode>} contentIterable An
+ * iterable, possibly asynchronous, whose items provide content for each page
  * @returns {JQuery}
  */
 export function progressivePager ({
@@ -1978,7 +1979,16 @@ export function progressivePager ({
         }
 
         // Display content for the new page
-        $pagerContent.empty().append(pageContent);
+        if (typeof pageContent !== 'string' && !(pageContent instanceof $) && !(pageContent instanceof Element)) {
+            // if the page content is a react element, drop it in a root
+            const pageContentRoot = document.createElement('div');
+            $pagerContent.empty().append(pageContentRoot);
+            Promise.resolve().then(() => {
+                createRoot(pageContentRoot).render(pageContent);
+            });
+        } else {
+            $pagerContent.empty().append(pageContent);
+        }
 
         // Empty the existing buttons out, using .detach to maintain event listeners, then using .empty() to
         // remove the text left behind (thanks jQuery)

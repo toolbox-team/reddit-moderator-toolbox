@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {useEffect, useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 
 import {map, page, pipeAsync} from 'iter-ops';
@@ -17,7 +18,6 @@ import {
     icons,
     popup,
     progressivePager,
-    relativeTime,
     textFeedback,
 } from '../tbui.js';
 
@@ -415,14 +415,12 @@ function createModNotesPopup ({
             pipeAsync(
                 // fetch mod notes that match this tab
                 getAllModNotes(subreddit, user, filter),
-                // build table rows for each note
-                map(note => buildNoteTableRow(note)),
                 // group into pages of 20 items each
                 page(20),
-                // construct the table and insert the generated rows for each page
-                map(pageItems => {
-                    const $wrapper = $(`
-                    <table class="tb-modnote-table">
+                // construct the table and insert the generated rows for each
+                // page
+                map(pageItems => (
+                    <table className='tb-modnote-table'>
                         <thead>
                             <tr>
                                 <th>Author</th>
@@ -431,12 +429,11 @@ function createModNotesPopup ({
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            {pageItems.map(note => <NoteTableRow key={note.id} note={note} />)}
+                        </tbody>
                     </table>
-                `);
-                    $wrapper.find('tbody').append(...pageItems);
-                    return $wrapper;
-                }),
+                )),
             ),
         );
         $content.append($notesPager);
@@ -446,96 +443,69 @@ function createModNotesPopup ({
 }
 
 /**
- * Builds a row of the notes table for the given note.
- * @param {object} note A note object
- * @returns {jQuery} The generated table row
+ * A row of the notes table displaying details about the given note.
+ * @param {object} props.note A note object
  */
-function buildNoteTableRow (note) {
+function NoteTableRow ({note}) {
     const createdAt = new Date(note.created_at * 1000);
     const mod = note.operator; // TODO: can [deleted] show up here?
 
-    const $noteRow = $(`
+    const contextURL = useFetched(getContextURL(note));
+    console.log(createdAt);
+
+    return (
         <tr>
             <td>
-                <a href="${link(`/user/${encodeURIComponent(mod)}`)}">
-                    /u/${escapeHTML(mod)}
+                <a href={link(`/user/${encodeURIComponent(mod)}`)}>
+                    /u/{mod}
                 </a>
-                <br>
-                <small></small>
+                <br />
+                <small>
+                    {contextURL
+                        ? (
+                            <a href={contextURL}>
+                                <RelativeTime date={createdAt} />
+                            </a>
+                        )
+                        : <RelativeTime date={createdAt} />}
+                </small>
             </td>
             <td>
-                ${typeNames[note.type]}
+                {typeNames[note.type]}
+            </td>
+            <td>
+                {note.mod_action_data?.action && (
+                    <span className='tb-modnote-action-summary'>
+                        Took action {'"'}
+                        {note.mod_action_data.action}
+                        {'"'}
+                        {note.mod_action_data.details && ` (${note.mod_action_data.details})`}
+                        {note.mod_action_data.description && `: ${note.mod_action_data.description}`}
+                    </span>
+                )}
+                {note.user_note_data?.note && (
+                    <blockquote>
+                        {note.user_note_data.label && (
+                            <span style={{color: labelColors[note.user_note_data.label]}}>
+                                [{labelNames[note.user_note_data.label] || note.user_note_data.label}]
+                            </span>
+                        )} {note.user_note_data.note}
+                    </blockquote>
+                )}
+            </td>
+            <td>
+                {note.type === 'NOTE' && (
+                    <a
+                        className='tb-modnote-delete-button tb-icons tb-icons-negative'
+                        role='button'
+                        title='Delete note'
+                        data-note-id={escapeHTML(note.id)}
+                        dangerouslySetInnerHTML={{__html: icons.delete}}
+                    />
+                )}
             </td>
         </tr>
-    `);
-
-    // Add relative timestamp element
-    $noteRow.find('small').append(relativeTime(createdAt));
-
-    // Build the note details based on what sort of information is present
-    const $noteDetails = $('<td>');
-
-    if (note.mod_action_data?.action) {
-        $noteDetails.append(`
-            <span class="tb-modnote-action-summary">
-                Took action "${escapeHTML(note.mod_action_data.action)}"${
-            note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''
-        }${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
-            </span>
-        `);
-    }
-
-    if (note.user_note_data?.note) {
-        $noteDetails.append(`
-            <blockquote>
-                ${
-            note.user_note_data.label
-                ? `
-                    <span style="color:${labelColors[note.user_note_data.label]}">
-                        [${labelNames[note.user_note_data.label] || escapeHTML(note.user_note_data.label)}]
-                    </span>
-                `
-                : ''
-        }
-                ${escapeHTML(note.user_note_data.note)}
-            </blockquote>
-        `);
-    }
-
-    $noteRow.append($noteDetails);
-
-    // Only manually added notes can be deleted
-    if (note.type === 'NOTE') {
-        $noteRow.append(`
-            <td>
-                <a
-                    class="tb-modnote-delete-button tb-icons tb-icons-negative"
-                    role="button"
-                    title="Delete note"
-                    data-note-id="${escapeHTML(note.id)}"
-                >
-                    ${icons.delete}
-                </a>
-            </td>
-        `);
-    } else {
-        // append an empty td to avoid weird border stuff
-        $noteRow.append('<td>');
-    }
-
-    // Check for a context URL (which might need to be fetched) and add it to
-    // the timestamp if we get one
-    getContextURL(note).then(contextURL => {
-        if (!contextURL) {
-            return;
-        }
-
-        // the row may no longer be displayed at this point, but if it's gone
-        // then jQuery will just do nothing, so it's fine
-        $noteRow.find('time').wrap(`<a href="${escapeHTML(contextURL)}">`);
-    });
-
-    return $noteRow;
+    );
 }
 
 const ModNotesUserRoot = ({user, subreddit, contextID}) => {

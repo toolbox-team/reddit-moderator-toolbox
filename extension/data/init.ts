@@ -49,7 +49,7 @@ import Modbar from './modules/modbar.js';
 import ModButton from './modules/modbutton.js';
 import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
-import ModNotes from './modules/modnotes.js';
+import ModNotes from './modules/modnotes.jsx';
 import NewModmailPro from './modules/newmodmailpro.js';
 import Notifier from './modules/notifier.js';
 import NukeComments from './modules/nukecomments.js';

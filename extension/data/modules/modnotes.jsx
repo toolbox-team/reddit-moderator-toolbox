@@ -1,7 +1,9 @@
 import $ from 'jquery';
+import {createRoot} from 'react-dom/client';
 
 import {map, page, pipeAsync} from 'iter-ops';
 
+import {useEffect, useState} from 'react';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML, htmlEncode} from '../tbhelpers.js';
@@ -258,48 +260,34 @@ async function getContextURL (note) {
  * @param {object} [data.note] The most recent mod note left on the user
  * @returns {jQuery} The created badge
  */
-function createModNotesBadge ({
-    user,
-    subreddit,
+function ModNotesBadge ({
     label = 'NN',
     note,
+    onClick,
 }) {
-    const $badge = $(`
-        <a
-            class="tb-bracket-button tb-modnote-badge"
-            role="button"
-            tabindex="0"
-            title="Mod notes for /u/${user} in /r/${subreddit}"
-            data-user="${user}"
-            data-subreddit="${subreddit}"
-            data-label="${label}"
-        >
-    `);
-
-    updateModNotesBadge($badge, {
-        note,
-    });
-
-    return $badge;
-}
-
-/**
- * Updates mod note badges in place with the given information.
- * @param {jQuery} $badge The badge(s) to update
- * @param {object} note The most recent mod note left on the user, or null
- */
-function updateModNotesBadge ($badge, note) {
-    if (!note || !note.user_note_data) {
-        $badge.text($badge.attr('data-label'));
-        return;
+    let badgeContents = label;
+    if (note && note.user_note_data) {
+        const label = note.user_note_data.label;
+        const noteColor = label && labelColors[label];
+        badgeContents = (
+            <b style={{color: noteColor}}>
+                {note.user_note_data.note}
+            </b>
+        );
     }
-
-    $badge.empty();
-    $badge.append(`
-        <b style="${note.user_note_data.label ? `color: ${labelColors[note.user_note_data.label]}` : ''}">
-            ${htmlEncode(note.user_note_data.note)}
-        </b>
-    `);
+    return (
+        <a
+            className='tb-bracket-button tb-modnote-badge'
+            role='button'
+            tabIndex='0'
+            title='Mod notes for /u/${user} in /r/${subreddit}'
+            data-user='${user}'
+            data-subreddit='${subreddit}'
+            onClick={onClick}
+        >
+            {badgeContents}
+        </a>
+    );
 }
 
 /**
@@ -533,6 +521,43 @@ function buildNoteTableRow (note) {
     return $noteRow;
 }
 
+const ModNotesUserRoot = ({user, subreddit, contextID, defaultTabName, defaultNoteLabel}) => {
+    // Fetch the latest note for the user
+    const [note, setNote] = useState(null);
+    useEffect(() => {
+        getLatestModNote(subreddit, user).then(note => setNote(note));
+    }, [note]);
+
+    // On click, show the popup for this user
+    function handleClick (e) {
+        // Create, position, and display popup
+        const positions = drawPosition(e);
+        const $popup = createModNotesPopup({
+            user,
+            subreddit,
+            contextID,
+            defaultTabName,
+            defaultNoteLabel,
+        })
+            .css({
+                top: positions.topPosition,
+                left: positions.leftPosition,
+            })
+            .appendTo($('body'));
+
+        // Focus the note input
+        $popup.find('.tb-modnote-text-input').focus();
+    }
+
+    return (
+        <ModNotesBadge
+            label='NN'
+            note={note}
+            onClick={handleClick}
+        />
+    );
+};
+
 export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
@@ -592,43 +617,21 @@ export default new Module({
 
         // Display badge for notes if not already present
         const $target = $(e.target);
-        let $badge = $target.find('.tb-modnote-badge');
-        if (!$badge.length) {
-            $badge = createModNotesBadge({
-                user: e.detail.data.author,
-                subreddit: e.detail.data.subreddit.name,
-            });
-            // TODO: don't register this directly on the badge, use $body.on('click', selector, ...)
-            $badge.on('click', clickEvent => {
-                // Create, position, and display popup
-                const positions = drawPosition(clickEvent);
-                const $popup = createModNotesPopup({
-                    user: author,
-                    subreddit,
-                    contextID,
-                    defaultTabName,
-                    defaultNoteLabel,
-                })
-                    .css({
-                        top: positions.topPosition,
-                        left: positions.leftPosition,
-                    })
-                    .appendTo($('body'));
-
-                // Focus the note input
-                $popup.find('.tb-modnote-text-input').focus();
-            });
-            $badge.appendTo($target);
+        if ($target.find('.tb-modnote-badge-react-root').length) {
+            return;
         }
-
-        this.debug(`Fetching latest mod note for /u/${author} in /r/${subreddit}`);
-        try {
-            const note = await getLatestModNote(subreddit, author);
-            this.info(`Got note for /u/${author} in /r/${subreddit}:`, note);
-            updateModNotesBadge($badge, note);
-        } catch (error) {
-            this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);
-        }
+        const badgeRoot = document.createElement('div');
+        badgeRoot.classList.add('tb-modnote-badge-react-root');
+        $target.append(badgeRoot);
+        createRoot(badgeRoot).render(
+            <ModNotesUserRoot
+                user={author}
+                subreddit={subreddit}
+                contextID={contextID}
+                defaultTabName={defaultTabName}
+                defaultNoteLabel={defaultNoteLabel}
+            />,
+        );
     });
 
     const $body = $('body');

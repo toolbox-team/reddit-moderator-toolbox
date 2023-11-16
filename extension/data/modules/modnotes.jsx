@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import {useEffect, useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 
 import {map, page, pipeAsync} from 'iter-ops';
@@ -20,6 +19,8 @@ import {
     progressivePager,
     textFeedback,
 } from '../tbui.js';
+
+import {RelativeTime} from '../components/RelativeTime.tsx';
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -289,23 +290,6 @@ function ModNotesBadge ({
         </a>
     );
 }
-
-/**
- * React element which messily implements relative times.
- * @param {Date} props.date Date and time to display
- */
-export const RelativeTime = ({date}) => {
-    const elRef = useRef(null);
-    useEffect(() => {
-        $(elRef.current).timeago();
-    }, []);
-
-    return (
-        <time ref={elRef} dateTime={date.toISOString()}>
-            {date.toLocaleString()}
-        </time>
-    );
-};
 
 /**
  * Creates a mod note popup for the given information.

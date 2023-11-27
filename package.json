@@ -40,7 +40,7 @@
         "cross-env": "^7.0.3",
         "del-cli": "^5.1.0",
         "docdash": "^2.0.2",
-        "dprint": "^0.42.5",
+        "dprint": "^0.43.1",
         "eslint": "^8.52.0",
         "eslint-plugin-import": "^2.29.0",
         "inquirer": "^9.2.11",

@@ -404,8 +404,8 @@ function ModNotesPopup ({
             });
             textFeedback('Note saved', FEEDBACK_POSITIVE);
 
-            // Close the postringpup after a successful save
-            onClose;
+            // Close the popup after a successful save
+            onClose();
         } catch (error) {
             this.error('Failed to create mod note:', error);
             textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);

@@ -10,16 +10,9 @@ import {escapeHTML, htmlEncode} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import {setSettingAsync} from '../tbstorage.js';
-import {
-    drawPosition,
-    FEEDBACK_NEGATIVE,
-    FEEDBACK_POSITIVE,
-    icons,
-    popup,
-    progressivePager,
-    textFeedback,
-} from '../tbui.js';
+import {drawPosition, FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, popup, progressivePager, textFeedback} from '../tbui.js';
 
+import {Icon} from '../components/Icon.tsx';
 import {RelativeTime} from '../components/RelativeTime.tsx';
 
 /**
@@ -480,12 +473,13 @@ function NoteTableRow ({note}) {
             <td>
                 {note.type === 'NOTE' && (
                     <a
-                        className='tb-modnote-delete-button tb-icons tb-icons-negative'
+                        className='tb-modnote-delete-button'
                         role='button'
                         title='Delete note'
                         data-note-id={escapeHTML(note.id)}
-                        dangerouslySetInnerHTML={{__html: icons.delete}}
-                    />
+                    >
+                        <Icon negative icon='delete' />
+                    </a>
                 )}
             </td>
         </tr>

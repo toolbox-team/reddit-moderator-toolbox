@@ -412,9 +412,6 @@ function ModNotesPopup ({
         }
     }
 
-    /** @type {import('react').MutableRefObject<HTMLInputElement>} */
-    const noteInputRef = useRef(null);
-
     const popupFooter = (
         <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
             <select
@@ -430,7 +427,7 @@ function ModNotesPopup ({
             <input
                 type='text'
                 name='note'
-                ref={noteInputRef}
+                autoFocus
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
@@ -442,11 +439,6 @@ function ModNotesPopup ({
             </button>
         </form>
     );
-
-    // Focus the input when first rendered
-    useEffect(() => {
-        noteInputRef.current?.focus();
-    }, []);
 
     // Create the base popup
     return (

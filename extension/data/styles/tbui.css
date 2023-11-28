@@ -55,6 +55,9 @@
 }
 
 /* Tabs */
+.mod-toolbox-rd .tb-window-tabs-wrapper {
+    margin: -5px;
+}
 .mod-toolbox-rd .tb-window-tabs {
     background-color: #C7D6E6;
 }
@@ -85,7 +88,8 @@
 .mod-toolbox-rd .tb-window-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
 }
-.mod-toolbox-rd .tb-window-content:not(.tb-window-large) {
+.mod-toolbox-rd .tb-window-content,
+.mod-toolbox-rd .tb-window-tabs-content {
     overflow: auto;
     padding: 5px !important;
 }

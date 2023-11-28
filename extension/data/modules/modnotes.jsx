@@ -304,7 +304,21 @@ function ModNotesBadge ({
 }
 
 /** Returns a pager for mod notes on the user in the subreddit matching the filter. */
-function ModNotesPager ({user, subreddit, filter}) {
+function ModNotesPager ({user, subreddit, filter: noteFilter}) {
+    async function deleteNote (noteID) {
+        try {
+            await TBApi.deleteModNote({
+                user,
+                subreddit,
+                id: noteID,
+            });
+            // TODO: present note deletion visibly to user
+            textFeedback('Note removed!', FEEDBACK_POSITIVE);
+        } catch (error) {
+            this.error('Failed to delete note:', error);
+            textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
+        }
+    }
     const $notesPager = progressivePager(
         {
             controlPosition: 'bottom',
@@ -316,7 +330,7 @@ function ModNotesPager ({user, subreddit, filter}) {
         },
         pipeAsync(
             // fetch mod notes that match this tab
-            getAllModNotes(subreddit, user, filter),
+            getAllModNotes(subreddit, user, noteFilter),
             // group into pages of 20 items each
             page(20),
             // construct the table and insert the generated rows for each
@@ -332,7 +346,13 @@ function ModNotesPager ({user, subreddit, filter}) {
                         </tr>
                     </thead>
                     <tbody>
-                        {pageItems.map(note => <NoteTableRow key={note.id} note={note} />)}
+                        {pageItems.map(note => (
+                            <NoteTableRow
+                                key={note.id}
+                                note={note}
+                                onDelete={() => deleteNote(note.id)}
+                            />
+                        ))}
                     </tbody>
                 </table>
             )),
@@ -460,7 +480,7 @@ function ModNotesPopup ({
  * A row of the notes table displaying details about the given note.
  * @param {object} props.note A note object
  */
-function NoteTableRow ({note}) {
+function NoteTableRow ({note, onDelete}) {
     const createdAt = new Date(note.created_at * 1000);
     const mod = note.operator; // TODO: can [deleted] show up here?
 
@@ -514,6 +534,7 @@ function NoteTableRow ({note}) {
                         role='button'
                         title='Delete note'
                         data-note-id={escapeHTML(note.id)}
+                        onClick={() => onDelete()}
                     >
                         <Icon negative icon='delete' />
                     </a>
@@ -626,26 +647,5 @@ export default new Module({
                 contextID={contextID}
             />,
         );
-    });
-
-    const $body = $('body');
-
-    // Handle delete note button clicks
-    $body.on('click', '.tb-modnote-delete-button', async event => {
-        const $button = $(event.target);
-        const $popup = $button.closest('.tb-modnote-popup');
-
-        try {
-            await TBApi.deleteModNote({
-                user: $popup.attr('data-user'),
-                subreddit: $popup.attr('data-subreddit'),
-                id: $button.attr('data-note-id'),
-            });
-            $button.closest('tr').remove();
-            textFeedback('Note removed!', FEEDBACK_POSITIVE);
-        } catch (error) {
-            this.error('Failed to delete note:', error);
-            textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
-        }
     });
 });

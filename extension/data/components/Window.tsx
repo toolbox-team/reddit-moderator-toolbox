@@ -12,10 +12,10 @@ export const Window = ({
 }: {
     title: ReactNode;
     footer?: ReactNode;
-    className: string;
-    draggable: boolean;
-    closable: boolean;
-    children: ReactNode;
+    className?: string;
+    draggable?: boolean;
+    closable?: boolean;
+    children?: ReactNode;
     onClose: () => void;
 }) => {
     const windowRef = useRef<HTMLDivElement>(null);

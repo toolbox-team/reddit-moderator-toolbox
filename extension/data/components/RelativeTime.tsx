@@ -11,7 +11,7 @@ export const RelativeTime = ({date}: {
         if (elRef.current != null) {
             $(elRef.current).timeago();
         }
-    }, []);
+    }, [date]);
 
     return (
         <time ref={elRef} dateTime={date.toISOString()}>

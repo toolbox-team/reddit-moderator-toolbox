@@ -10,10 +10,11 @@ import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.js';
 import {setSettingAsync} from '../tbstorage.js';
-import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, progressivePager, textFeedback} from '../tbui.js';
+import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
 
-import {useEffect, useRef, useState} from 'react';
+import {useState} from 'react';
 import {Icon} from '../components/Icon.tsx';
+import {ProgressivePager} from '../components/ProgressivePager.tsx';
 import {RelativeTime} from '../components/RelativeTime.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
@@ -319,54 +320,42 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
             textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
         }
     }
-    const $notesPager = progressivePager(
-        {
-            controlPosition: 'bottom',
-            emptyContent: `
-            <p>
-                No notes
-            </p>
-        `,
-        },
-        pipeAsync(
-            // fetch mod notes that match this tab
-            getAllModNotes(subreddit, user, noteFilter),
-            // group into pages of 20 items each
-            page(20),
-            // construct the table and insert the generated rows for each
-            // page
-            map(pageItems => (
-                <table className='tb-modnote-table'>
-                    <thead>
-                        <tr>
-                            <th>Author</th>
-                            <th>Type</th>
-                            <th>Details</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {pageItems.map(note => (
-                            <NoteTableRow
-                                key={note.id}
-                                note={note}
-                                onDelete={() => deleteNote(note.id)}
-                            />
-                        ))}
-                    </tbody>
-                </table>
-            )),
-        ),
-    );
 
-    // wrap the jQuery pager element in JSX and return the wrapper
-    const contentWrapperRef = useRef();
-    useEffect(() => {
-        if (contentWrapperRef != null) {
-            $(contentWrapperRef.current).append($notesPager);
-        }
-    }, []);
-    return <div ref={contentWrapperRef}></div>;
+    return (
+        <ProgressivePager
+            controlPosition='bottom'
+            emptyContent={<p>No notes</p>}
+            pages={pipeAsync(
+                // fetch mod notes that match this tab
+                getAllModNotes(subreddit, user, noteFilter),
+                // group into pages of 20 items each
+                page(20),
+                // construct the table and insert the generated rows for each
+                // page
+                map(pageItems => (
+                    <table className='tb-modnote-table'>
+                        <thead>
+                            <tr>
+                                <th>Author</th>
+                                <th>Type</th>
+                                <th>Details</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pageItems.map(note => (
+                                <NoteTableRow
+                                    key={note.id}
+                                    note={note}
+                                    onDelete={() => deleteNote(note.id)}
+                                />
+                            ))}
+                        </tbody>
+                    </table>
+                )),
+            )}
+        />
+    );
 }
 
 /**

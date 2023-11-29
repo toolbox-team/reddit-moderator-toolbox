@@ -11,6 +11,7 @@ import * as TBStorage from './tbstorage.js';
 
 import {icons} from './tbconstants.ts';
 import {onDOMAttach} from './util/dom.ts';
+import {reactRenderer} from './util/ui_interop.tsx';
 export {icons};
 
 const logger = TBLog('TBui');

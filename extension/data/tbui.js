@@ -1865,17 +1865,17 @@ export function makeCommentThread (jsonInput, commentOptions) {
  * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
- * @param {string | JQuery} options.emptyContent Content to display if there are
+ * @param {string | JQuery | ReactNode} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncIterable<string | JQuery | ReactNode>} contentIterable An
- * iterable, possibly asynchronous, whose items provide content for each page
+ * @param {import('./util/iter.js').MaybeAsyncIterable<string | JQuery | ReactNode>} contentIterable
+ * An iterable, possibly asynchronous, whose items provide content for each page
  * @returns {JQuery}
  */
 export function progressivePager ({
     lazy = true,
     preloadNext = true,
     controlPosition = 'top',
-    emptyContent,
+    emptyContent = '<p>No content</p>',
 }, contentIterable) {
     // if we're not lazy, preloadNext is useless - don't do its extra work
     if (!lazy) {
@@ -1969,7 +1969,12 @@ export function progressivePager ({
             // If we have *no* pages, scrap everything and display a message
             if (!pages.length) {
                 $pagerControls.remove();
-                $pagerContent.empty().append(emptyContent || '<p>No content</p>');
+                $pagerContent.empty();
+                if (typeof pageContent === 'string' || pageContent instanceof $ || pageContent instanceof Element) {
+                    $pagerContent.append(emptyContent);
+                } else {
+                    $pagerContent.append(reactRenderer(emptyContent));
+                }
                 return;
             }
 

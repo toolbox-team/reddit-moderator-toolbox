@@ -16,7 +16,7 @@ export const useFetched = <T>(promise: Promise<T>) => {
         return () => {
             valid = false;
         };
-    });
+    }, []);
 
     return value;
 };

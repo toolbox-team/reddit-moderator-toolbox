@@ -1,3 +1,21 @@
+/**
+ * A promise that resolves when the document's ready state is at least
+ * `interactive` (i.e. the DOM is parsed, but not all subresources are loaded).
+ */
+export const documentInteractive = new Promise<void>(resolve => {
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+        resolve();
+    } else {
+        const listener = () => {
+            if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                document.removeEventListener('readystatechange', listener);
+                resolve();
+            }
+        };
+        document.addEventListener('readystatechange', listener);
+    }
+});
+
 // Keep a list of all the handlers we haven't run yet
 let pendingElementHandlers: [el: HTMLElement, handler: () => void][] = [];
 

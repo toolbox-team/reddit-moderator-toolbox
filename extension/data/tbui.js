@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {createElement} from 'react';
 import {createRoot} from 'react-dom/client';
 import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
@@ -6,15 +7,15 @@ import browser from 'webextension-polyfill';
 import * as TBApi from './tbapi.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
-import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
+import {documentInteractive, onDOMAttach} from './util/dom.ts';
+import {reactRenderer} from './util/ui_interop.tsx';
+
+import {PageNotificationManager} from './components/PageNotificationManager.tsx';
 
 import {icons} from './tbconstants.ts';
-import {onDOMAttach} from './util/dom.ts';
-import {reactRenderer} from './util/ui_interop.tsx';
 export {icons};
 
-const logger = TBLog('TBui');
 const $body = $('body');
 
 export const longLoadArray = [];
@@ -104,79 +105,8 @@ export const actionButton = (text, classes) => `
 `;
 
 // Notification stuff
-
-/**
- * Show an in-page notification on the current tab.
- * @function
- * @param {object} options The options for the notification
- * @param {string} options.id The notification's ID
- * @param {string} options.title The notification's title
- * @param {string} options.body The notification's body
- */
-export const showNotification = ({id, title, body}) => {
-    let $notificationDiv = $('#tb-notifications-wrapper');
-    if (!$notificationDiv.length) {
-        // Create the wrapper element if it's not already there
-        $notificationDiv = $(`
-                <div id="tb-notifications-wrapper"></div>
-            `).appendTo($body);
-    }
-
-    // Make lines of the message into paragraphs
-    body = body
-        .split('\n')
-        .filter(line => line) // Ignore empty lines
-        .map(line => `<p>${TBHelpers.escapeHTML(line)}</p>`)
-        .join('');
-
-    $notificationDiv.prepend(`
-            <div class="tb-window tb-notification" data-id="${id}">
-                <div class="tb-window-header">
-                    <div class="tb-window-title">${title}</div>
-                    <div class="buttons">
-                        <a class="close">
-                            <i class="tb-icons">${icons.close}</i>
-                        </a>
-                    </div>
-                </div>
-                <div class="tb-window-content">${body}</div>
-            </div>
-        `);
-};
-
-/**
- * Clears an in-page notification on the current tab.
- * @function
- * @param {string} id The ID of the notification to clear
- */
-export const clearNotification = id => {
-    $(`.tb-notification[data-id="${id}"]`).remove();
-};
-
-// Handle notification updates from the background page
-browser.runtime.onMessage.addListener(message => {
-    if (message.action === 'tb-show-page-notification') {
-        logger.log('Notifier message get:', message);
-        showNotification(message.details);
-    } else if (message.action === 'tb-clear-page-notification') {
-        logger.log('Notifier message clear:', message);
-        clearNotification(message.id);
-    }
-});
-
-// Notification click handlers
-$body.on('click', '.tb-notification .close', function (event) {
-    event.stopPropagation(); // don't open the linked page
-    browser.runtime.sendMessage({
-        action: 'tb-page-notification-clear',
-        id: $(this).closest('.tb-notification').attr('data-id'),
-    });
-});
-$body.on('click', '.tb-notification', function () {
-    browser.runtime.sendMessage({
-        action: 'tb-page-notification-click',
-        id: $(this).attr('data-id'),
-    });
+documentInteractive.then(() => {
+    document.body.append(reactRenderer(createElement(PageNotificationManager)));
 });
 
 /**

@@ -16,7 +16,7 @@ export const Window = ({
     draggable?: boolean;
     closable?: boolean;
     children?: ReactNode;
-    onClose: () => void;
+    onClose?: () => void;
 }) => {
     const windowRef = useRef<HTMLDivElement>(null);
     const windowHeaderRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,7 @@ export const Window = ({
                 <div className='buttons'>
                     {/* TODO: support arbitrary extra buttons (e.g. help) */}
                     {closable && (
-                        <a className='close' href='javascript:;' onClick={() => onClose()}>
+                        <a className='close' href='javascript:;' onClick={() => onClose?.()}>
                             <Icon icon='close' />
                         </a>
                     )}

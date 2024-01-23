@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 
 const self = new Module({
     name: 'Old Reddit',

@@ -32,7 +32,7 @@ import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
 // HEAD
 import TBLog from './tblog';
-import TBModule from './tbmodule.js';
+import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
 
 import Achievements from './modules/achievements.js';

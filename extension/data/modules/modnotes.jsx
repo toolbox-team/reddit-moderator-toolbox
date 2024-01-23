@@ -8,7 +8,7 @@ import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
 import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
 

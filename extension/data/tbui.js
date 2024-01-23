@@ -312,6 +312,16 @@ export function overlay ({
     buttons = typeof buttons !== 'undefined' ? buttons : '';
     footer = typeof footer !== 'undefined' ? footer : false;
 
+    // If we have React components as tab contents, wrap them in renderers
+    tabs.forEach(tab => {
+        if (typeof tab.content === 'string' || tab.content instanceof $ || tab.content instanceof Element) {
+            // This is a normal thing we can pass to jQuery append no problem
+            return;
+        }
+        // This is some special React stuff
+        tab.content = reactRenderer(tab.content);
+    });
+
     // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
     const $overlay = $(`
         <div class="tb-page-overlay">

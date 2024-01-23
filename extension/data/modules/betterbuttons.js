@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import {getSettingAsync} from '../tbstorage.js';
 
 const self = new Module({

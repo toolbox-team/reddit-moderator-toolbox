@@ -3,7 +3,7 @@ import $ from 'jquery';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 
 import {modbarExists} from './modbar.js';

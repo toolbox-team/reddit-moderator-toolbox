@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import {debugInformation} from '../tbcore.js';
 import {template} from '../tbhelpers.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 
 export default new Module({
     name: 'Support Module',

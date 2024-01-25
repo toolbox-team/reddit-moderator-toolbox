@@ -474,7 +474,6 @@ function NoteTableRow ({note, onDelete}) {
     const mod = note.operator; // TODO: can [deleted] show up here?
 
     const contextURL = useFetched(getContextURL(note));
-    console.log(createdAt);
 
     return (
         <tr>

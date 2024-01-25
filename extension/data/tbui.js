@@ -10,6 +10,9 @@ import * as TBStorage from './tbstorage.js';
 import {onDOMAttach} from './util/dom.ts';
 import {reactRenderer} from './util/ui_interop.tsx';
 
+import {showTextFeedback} from './store/textFeedbackSlice.ts';
+
+import store from './store/index.ts';
 import {icons} from './tbconstants.ts';
 export {icons};
 
@@ -562,53 +565,10 @@ export function mapInput (labels, items) {
 }
 
 export function textFeedback (feedbackText, feedbackKind, displayDuration, displayLocation) {
-    if (!displayLocation) {
-        displayLocation = DISPLAY_CENTER;
-    }
-
-    // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
-    if (feedbackText && feedbackKind) {
-        // If there is still a previous feedback element on the page we remove it.
-        $body.find('#tb-feedback-window').remove();
-
-        // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-        const feedbackElement = TBStorage.purify(
-            `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`,
-        );
-
-        // Add the element to the page.
-        $body.append(feedbackElement);
-
-        // center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
-        const $feedbackWindow = $body.find('#tb-feedback-window');
-
-        switch (displayLocation) {
-            case DISPLAY_CENTER:
-                {
-                    const feedbackLeftMargin = $feedbackWindow.outerWidth() / 2;
-                    const feedbackTopMargin = $feedbackWindow.outerHeight() / 2;
-
-                    $feedbackWindow.css({
-                        'margin-left': `-${feedbackLeftMargin}px`,
-                        'margin-top': `-${feedbackTopMargin}px`,
-                    });
-                }
-                break;
-            case DISPLAY_BOTTOM:
-                {
-                    $feedbackWindow.css({
-                        left: '5px',
-                        bottom: '40px',
-                        top: 'auto',
-                        position: 'fixed',
-                    });
-                }
-                break;
-        }
-
-        // And fade out nicely after 3 seconds.
-        $feedbackWindow.delay(displayDuration ? displayDuration : 3000).fadeOut();
-    }
+    store.dispatch(showTextFeedback(
+        {message: feedbackText, kind: feedbackKind, location: displayLocation || DISPLAY_CENTER},
+        displayDuration || 3000,
+    ));
 }
 
 // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.

@@ -82,7 +82,6 @@ export const FEEDBACK_NEGATIVE = 'negative';
 
 export const DISPLAY_CENTER = 'center';
 export const DISPLAY_BOTTOM = 'bottom';
-export const DISPLAY_CURSOR = 'cursor';
 
 /**
  * Generates HTML for a general button.
@@ -610,20 +609,6 @@ export function textFeedback (feedbackText, feedbackKind, displayDuration, displ
                         bottom: '40px',
                         top: 'auto',
                         position: 'fixed',
-                    });
-                }
-                break;
-            case DISPLAY_CURSOR:
-                {
-                    $(document).mousemove(e => {
-                        const posX = e.pageX;
-                        const posY = e.pageY;
-
-                        $feedbackWindow.css({
-                            left: posX - $feedbackWindow.width() + 155,
-                            top: posY - $feedbackWindow.height() - 15,
-                            position: 'fixed',
-                        });
                     });
                 }
                 break;

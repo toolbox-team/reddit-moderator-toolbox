@@ -14,7 +14,7 @@ interface Notification {
  * Component which displays and manages all notifications broadcasted from the
  * background page.
  */
-export function PageNotificationManager () {
+export function PageNotificationContainer () {
     // Notifications active on the page
     const [notifications, setNotifications] = useState([] as Notification[]);
 

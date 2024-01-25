@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import {createElement} from 'react';
 import {createRoot} from 'react-dom/client';
 import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
@@ -8,10 +7,8 @@ import * as TBApi from './tbapi.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import * as TBStorage from './tbstorage.js';
-import {documentInteractive, onDOMAttach} from './util/dom.ts';
+import {onDOMAttach} from './util/dom.ts';
 import {reactRenderer} from './util/ui_interop.tsx';
-
-import {PageNotificationManager} from './components/PageNotificationManager.tsx';
 
 import {icons} from './tbconstants.ts';
 export {icons};
@@ -102,11 +99,6 @@ export const button = (text, classes) => `
 export const actionButton = (text, classes) => `
     <a href="javascript:;" class="tb-action-button ${classes}">${text}</a>
 `;
-
-// Notification stuff
-documentInteractive.then(() => {
-    document.body.append(reactRenderer(createElement(PageNotificationManager)));
-});
 
 /**
  * Generate a popup.

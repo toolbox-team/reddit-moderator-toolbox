@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {createElement} from 'react';
 import browser from 'webextension-polyfill';
 
 // We load all our CodeMirror addons and modes here and they'll be available
@@ -24,16 +25,17 @@ import 'codemirror/mode/yaml/yaml.js';
 
 import './tbplugins.js';
 
-//
-// master
 import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
 import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
-// HEAD
 import TBLog from './tblog';
 import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
+
+import AppRoot from './AppRoot';
+import {documentInteractive} from './util/dom.js';
+import {reactRenderer} from './util/ui_interop.js';
 
 import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';
@@ -325,6 +327,11 @@ async function doSettingsUpdates () {
 
     // Do version-specific setting updates and cache the current logged-in user
     await doSettingsUpdates();
+
+    // Attach React root
+    documentInteractive.then(() => {
+        document.body.append(reactRenderer(createElement(AppRoot)));
+    });
 
     // Load feature modules and register them
     for (

@@ -29,12 +29,7 @@ interface TextFeedbackState {
 export const textFeedbackSlice = createSlice({
     name: 'textFeedback',
     initialState: {
-        // FIXME: temp debugging shit
-        current: {
-            kind: TextFeedbackKind.NEUTRAL,
-            location: TextFeedbackLocation.CENTER,
-            message: 'test test test',
-        },
+        current: null,
     } as TextFeedbackState,
     reducers: {
         set (state, action: PayloadAction<TextFeedback>) {

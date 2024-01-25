@@ -1,3 +1,4 @@
+import {AnimatePresence, motion} from 'framer-motion';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store';
 import {TextFeedbackLocation} from '../store/textFeedbackSlice';
@@ -20,12 +21,18 @@ export function TextFeedbackContainer () {
         } as const;
 
     return (
-        <>
+        <AnimatePresence>
             {currentMessage && (
-                <div id='tb-feedback-window' className={currentMessage.kind} style={style}>
+                <motion.div
+                    id='tb-feedback-window'
+                    className={currentMessage.kind}
+                    style={style}
+                    animate={{opacity: 1}}
+                    exit={{opacity: 0}}
+                >
                     <span className='tb-feedback-text'>{currentMessage.message}</span>
-                </div>
+                </motion.div>
             )}
-        </>
+        </AnimatePresence>
     );
 }

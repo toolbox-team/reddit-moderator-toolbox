@@ -774,10 +774,10 @@ body.mod-toolbox-rd .tb-bracket-button {
 }
 
 body.mod-toolbox-rd .tb-bracket-button {
-    padding: 1px 1px 0 1px;
+    padding: 1px;
     font-size: 10px;
     line-height: 10px;
-    height: 12px;
+    height: 10px;
 }
 
 body.mod-toolbox-rd .tb-general-button:hover,

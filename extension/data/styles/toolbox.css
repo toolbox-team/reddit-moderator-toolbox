@@ -1386,7 +1386,6 @@ body.mod-toolbox-rd .tb-action-button {
     box-shadow: none !important;
     box-sizing: content-box !important;
     color: #17324E !important;
-    transition: all 0.15s ease-in-out !important;
     outline: none !important;
 }
 

@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import {createRoot} from 'react-dom/client';
 
 import {map, page, pipeAsync} from 'iter-ops';
 
@@ -18,6 +17,7 @@ import {ProgressivePager} from '../components/ProgressivePager.tsx';
 import {RelativeTime} from '../components/RelativeTime.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
+import {reactRenderer} from '../util/ui_interop.tsx';
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -625,15 +625,14 @@ export default new Module({
         if ($target.find('.tb-modnote-badge-react-root').length) {
             return;
         }
-        const badgeRoot = document.createElement('div');
-        badgeRoot.classList.add('tb-modnote-badge-react-root');
-        $target.append(badgeRoot);
-        createRoot(badgeRoot).render(
+        const badgeRoot = reactRenderer(
             <ModNotesUserRoot
                 user={author}
                 subreddit={subreddit}
                 contextID={contextID}
             />,
         );
+        badgeRoot.classList.add('tb-modnote-badge-react-root');
+        $target.append(badgeRoot);
     });
 });

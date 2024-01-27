@@ -7,6 +7,7 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {modbarExists} from './modbar.js';
 
 const self = new Module({
     name: 'Comments',
@@ -84,10 +85,14 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
     self.spamRemoved = spamRemoved;
     self.hamSpammed = hamSpammed;
 
-    function run () {
+    async function run () {
         //
         //  Do stuff with removed comments
         //
+
+        // Wait for the modbar to be on the page before we attempt to add to it
+        await modbarExists;
+
         // Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
         let removedCounter = 0;
 

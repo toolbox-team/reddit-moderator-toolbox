@@ -10,7 +10,7 @@ import * as TBStorage from './tbstorage.js';
 import {onDOMAttach} from './util/dom.ts';
 import {reactRenderer} from './util/ui_interop.tsx';
 
-import {showTextFeedback} from './store/textFeedbackSlice.ts';
+import {showTextFeedback, TextFeedbackKind, TextFeedbackLocation} from './store/textFeedbackSlice.ts';
 
 import store from './store/index.ts';
 import {icons} from './tbconstants.ts';
@@ -76,12 +76,17 @@ export const standardColors = {
     black: '#000000',
 };
 
-export const FEEDBACK_NEUTRAL = 'neutral';
-export const FEEDBACK_POSITIVE = 'positive';
-export const FEEDBACK_NEGATIVE = 'negative';
+/** @deprecated Use {@linkcode TextFeedbackKind.NEUTRAL} */
+export const FEEDBACK_NEUTRAL = TextFeedbackKind.NEUTRAL;
+/** @deprecated Use {@linkcode TextFeedbackKind.POSITIVE} */
+export const FEEDBACK_POSITIVE = TextFeedbackKind.POSITIVE;
+/** @deprecated Use {@linkcode TextFeedbackKind.NEGATIVE} */
+export const FEEDBACK_NEGATIVE = TextFeedbackKind.NEGATIVE;
 
-export const DISPLAY_CENTER = 'center';
-export const DISPLAY_BOTTOM = 'bottom';
+/** @deprecated Use {@linkcode TextFeedbackLocation.CENTER} */
+export const DISPLAY_CENTER = TextFeedbackLocation.CENTER;
+/** @deprecated Use {@linkcode TextFeedbackLocation.BOTTOM} */
+export const DISPLAY_BOTTOM = TextFeedbackLocation.BOTTOM;
 
 /**
  * Generates HTML for a general button.
@@ -564,12 +569,38 @@ export function mapInput (labels, items) {
     return $mapInput;
 }
 
-export function textFeedback (feedbackText, feedbackKind, displayDuration, displayLocation) {
-    store.dispatch(showTextFeedback(
-        {message: feedbackText, kind: feedbackKind, location: displayLocation || DISPLAY_CENTER},
-        displayDuration || 3000,
-    ));
+/**
+ * Displays a feedback message on the screen which disappears after a time. Only
+ * one such message can be shown at a time, and calling this method will
+ * overwrite any message currently being shown.
+ * @param {string} feedbackText Message to display
+ * @param {TextFeedbackKind} feedbackKind Nature of the message (positive,
+ * neutral, negative) to affect the color of the message window
+ * @param {number} [displayDuration] How long the message should be displayed
+ * before being hidden, in milliseconds. Defaults to 3000. Pass `Infinity` to
+ * force the message to never disappear unless dismissed with a
+ * @param {TextFeedbackLocation} [displayLocation] The location on the screen
+ * where the message should be shown - center screen is the default, but
+ * long-lived messages can be moved to the bottom instead
+ */
+export function textFeedback (
+    feedbackText,
+    feedbackKind,
+    displayDuration = 3000,
+    displayLocation = TextFeedbackLocation.CENTER,
+) {
+    store.dispatch(showTextFeedback({
+        message: feedbackText,
+        kind: feedbackKind,
+        location: displayLocation,
+    }, displayDuration));
 }
+// re-export related enums so they can be used without importing twice
+// TODO: needing to do this kind of thing probably indicates we should structure
+// our source folders better - e.g. putting all the things related to text
+// feedback in a single `features/textFeedback` folder with an aggregated-export
+// `index.js` that's friendly for consumers
+export {TextFeedbackKind, TextFeedbackLocation};
 
 // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
 export function longLoadSpinner (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
@@ -2189,7 +2220,7 @@ $body.on('click', '.tb-self-expando-button', function () {
 
 /** Reloads the extension, then reloads the current window. */
 export function reloadToolbox () {
-    textFeedback('toolbox is reloading', FEEDBACK_POSITIVE, 10000, DISPLAY_BOTTOM);
+    textFeedback('toolbox is reloading', TextFeedbackKind.POSITIVE, 10000, TextFeedbackLocation.BOTTOM);
     browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
         window.location.reload();
     });

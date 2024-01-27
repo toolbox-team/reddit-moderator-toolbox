@@ -107,12 +107,12 @@
     align-items: center;
     background-color: #CEE3F8;
 }
-/* A form can be the only child of the footer - use it as the flex container */
-.mod-toolbox-rd .tb-window-footer > form {
-    display: inherit;
-    gap: inherit;
-    padding: inherit;
-    margin: -5px;
+/*
+ * Forms in footers are just used for submit action reasons and are transparent
+ * to how footer items are laid out
+ */
+.mod-toolbox-rd .tb-window-footer form {
+    display: contents;
 }
 /* Hide empty text segments to avoid de-centering buttons and stuff */
 .mod-toolbox-rd .tb-window-footer :not(input):empty {
@@ -212,9 +212,6 @@ body.mod-toolbox-rd.mod-toolbox-rd .tb-window-footer .tb-action-button:not(selec
 .mod-toolbox-rd .tb-window-large .tb-window-footer {
     padding: 7px;
     gap: 7px;
-}
-.mod-toolbox-rd .tb-window-large .tb-window-footer > form {
-    margin: -7px;
 }
 
 /* Pager for displaying paginated content */

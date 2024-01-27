@@ -41,7 +41,7 @@ export const textFeedbackSlice = createSlice({
     },
 });
 export default textFeedbackSlice.reducer;
-export const {set, clear} = textFeedbackSlice.actions;
+const {set, clear} = textFeedbackSlice.actions;
 
 let removeTextFeedbackTimeout: number | null = null;
 export const showTextFeedback = (message: TextFeedback, duration = 3000): AppThunk => dispatch => {

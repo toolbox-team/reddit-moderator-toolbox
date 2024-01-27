@@ -13,6 +13,13 @@ import {onDOMAttach} from './dom';
  */
 export function reactRenderer (content: ReactNode) {
     const contentRoot = document.createElement('div');
+    contentRoot.classList.add('tb-react-root');
+    // Don't give this div its own box in the box model - just use the box of
+    // whatever we're rendering inside. This avoids subtle layout issues when
+    // the rendered content's top-level element is `inline` or `inline-block`
+    // or something else exotic like `table-*`.
+    // see https://developer.mozilla.org/en-US/docs/Web/CSS/display#contents
+    contentRoot.style.display = 'contents';
     onDOMAttach(contentRoot, () => {
         createRoot(contentRoot).render(content);
     });

@@ -95,7 +95,7 @@ export const DISPLAY_BOTTOM = TextFeedbackLocation.BOTTOM;
  * @returns {string}
  */
 export const button = (text, classes) => `
-    <a href="javascript:;" class="tb-general-button ${classes}">${text}</a>
+    <button class="tb-general-button ${classes}">${text}</button>
 `;
 
 /**
@@ -105,7 +105,7 @@ export const button = (text, classes) => `
  * @returns {string}
  */
 export const actionButton = (text, classes) => `
-    <a href="javascript:;" class="tb-action-button ${classes}">${text}</a>
+    <button class="tb-action-button ${classes}">${text}</button>
 `;
 
 /**

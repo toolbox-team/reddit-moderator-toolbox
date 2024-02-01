@@ -1,4 +1,4 @@
-import {icons} from '../tbconstants';
+import {icons} from '../../tbconstants';
 
 // this is a mess, but still kinda better than `dangerouslySetInnerHTML`!
 // TODO: yeet this nonsense once we run out of things relying on the entity form

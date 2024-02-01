@@ -1,11 +1,11 @@
 import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
-import * as TBConstants from './tbconstants.js';
+import * as TBConstants from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.js';
+import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';
 
@@ -101,15 +101,15 @@ const TBModule = {
             {
                 settingName: 'settingssub',
                 content: `
-                        Backup/restore toolbox settings to a wiki page:<br>
-                        <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${
+                    Backup/restore toolbox settings to a wiki page:<br>
+                    <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${
                     TBHelpers.htmlEncode(unescape(settingSub))
                 }">
                     ${TBui.actionButton('backup', 'tb-settings-export')}
                     ${TBui.actionButton('restore', 'tb-settings-import')}
-                        <b> Important:</b> This will reload the page without saving!
-                        <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>
-                        `,
+                    <b> Important:</b> This will reload the page without saving!
+                    <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>
+                `,
                 display: '',
             },
             {

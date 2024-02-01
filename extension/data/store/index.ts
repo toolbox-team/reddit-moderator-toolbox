@@ -1,4 +1,4 @@
-import {combineReducers, configureStore, ThunkAction, UnknownAction} from '@reduxjs/toolkit';
+import {combineReducers, configureStore, type ThunkAction, type UnknownAction} from '@reduxjs/toolkit';
 import textFeedbackReducer from './textFeedbackSlice';
 
 const rootReducer = combineReducers({

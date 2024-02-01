@@ -12,9 +12,9 @@ import {setSettingAsync} from '../tbstorage.js';
 import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
 
 import {useState} from 'react';
-import {Icon} from '../components/Icon.tsx';
+import {Icon} from '../components/controls/Icon.tsx';
+import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
-import {RelativeTime} from '../components/RelativeTime.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
 import {reactRenderer} from '../util/ui_interop.tsx';
@@ -290,9 +290,8 @@ function ModNotesBadge ({
         );
     }
     return (
-        <a
+        <button
             className='tb-bracket-button tb-modnote-badge'
-            role='button'
             tabIndex='0'
             title='Mod notes for /u/${user} in /r/${subreddit}'
             data-user='${user}'
@@ -300,7 +299,7 @@ function ModNotesBadge ({
             onClick={onClick}
         >
             {badgeContents}
-        </a>
+        </button>
     );
 }
 

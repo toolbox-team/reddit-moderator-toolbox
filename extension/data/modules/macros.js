@@ -233,10 +233,10 @@ export default new Module({
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
                         $body.find('span:contains("Comment as")').closest('div').after(`
-                                    <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
-                                        <option value=${MACROS}>macros</option>
-                                    </select>
-                                    `);
+                            <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
+                                <option value=${MACROS}>macros</option>
+                            </select>
+                        `);
                         populateSelect('.tb-top-macro-select', subreddit, config, 'post');
                     }
                 });
@@ -368,10 +368,11 @@ export default new Module({
                     title: 'Mod Macro:',
                     id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: `Mod Macro:${title}`,
-                    content:
-                        `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea>
-                                  <div class="tb-macro-action-list">${actionList}</div>`,
-                    footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`,
+                    content: `
+                        <textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea>
+                        <div class="tb-macro-action-list">${actionList}</div>
+                    `,
+                    footer: TBui.actionButton('Post Macro', `macro-send-${info.id}`),
                 },
             ],
             cssClass: 'macro-popup',

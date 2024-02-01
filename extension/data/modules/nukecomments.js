@@ -87,8 +87,10 @@ export default new Module({
                     title: 'Nuke tab',
                     tooltip: '',
                     content: $popupContents,
-                    footer:
-                        '<button class="tb-execute-nuke tb-action-button">Execute</button> <button class="tb-retry-nuke tb-action-button">Retry</button>',
+                    footer: `
+                        ${TBui.actionButton('Execute', 'tb-execute-nuke')}
+                        ${TBui.actionButton('Retry', 'tb-retry-nuke')}
+                    `,
                 },
             ],
             cssClass: 'nuke-button-popup',

@@ -598,9 +598,9 @@ export default new Module({
                             // fixing it so here we are
                             footer: `
                                 <span class="tb-reason-popup-status error" style="display:none">This is an easter egg.</span>
-                                <button class="save tb-action-button">send</button>
-                                <button class="no-reason tb-action-button">no reason</button>
-                                <button class="cancel tb-action-button">cancel and approve</button>
+                                ${TBui.actionButton('send', 'save')}
+                                ${TBui.actionButton('no reason', 'no-reason')}
+                                ${TBui.actionButton('cancel and approve', 'cancel')}
                             `,
                         },
                     ],

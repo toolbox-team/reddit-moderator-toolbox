@@ -207,8 +207,6 @@ export default new Module({
             ).append($('<p>').text('This will tag the domain as shown.')).append(
                 $('<p>').text('Ex: i.imgur.com is not imgur.com'),
             );
-            const $popupSave = $('<div>').append($('<button>').addClass('save-domain tb-action-button').text('save'))
-                .append($('<button>').addClass('clear-domain tb-action-button').text('clear'));
 
             return TBui.popup({
                 title: `Domain Tagger - /r/${subreddit}`,
@@ -219,7 +217,10 @@ export default new Module({
                     help_text: '',
                     help_url: '',
                     content: $popupContent,
-                    footer: $popupSave,
+                    footer: `
+                        ${TBui.actionButton('save', 'save-domain')}
+                        ${TBui.actionButton('clear', 'clear-domain')}
+                    `,
                 }],
                 cssClass: 'dtagger-popup',
             });

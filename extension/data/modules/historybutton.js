@@ -149,91 +149,88 @@ async function init (options) {
         const domainslist = [];
 
         const popupContent = `
-                    <div>
-                        <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
-                        <span class="karma"></span>
-                        <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
-                        <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
-                        <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>
-                        <br/>
-                        <span class="redditorTime"></span>
-                        <br/>
-                        <p class="tb-history-disclaimer">
-                        <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
-
-                        </p>
-                        <b>Available history:</b> <br>
-                        <label class="submission-count"></label> submissions
-                        <br>
-                        <span class="tb-history-comment-stats" style="display:none">
-                        <label class="comment-count"></label> comments, of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
-                        </span>
-                        </div>
-                        <div class="history-table-wrapper">
-                        <div class="table domain-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="url-td">domain submitted from</th>
-                                        <th class="url-count">count</th><th class="url-percentage">%</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="6" class="error">loading...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="table subreddit-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="url-td">subreddit submitted to</th>
-                                        <th class="url-count">count</th>
-                                        <th class="url-percentage">%</th>
-                                        <th class="url-karma">karma</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="6" class="error">loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>
-                        <div class="history-table-wrapper">
-                        <div class="table comment-table" style="display: none">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="url-td">subreddit commented in</th>
-                                        <th class="url-count">count</th>
-                                        <th class="url-percentage">%</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="6" class="error">loading...</td></tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-                        <div class="table account-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="url-td">account submitted from</th>
-                                        <th class="url-count">count</th>
-                                        <th class="url-percentage">%</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td colspan="6" class="error">loading...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
-                `;
+            <div>
+                <a href="${TBCore.link(`/user/${author}`)}" target="_blank">${author}</a>
+                <span class="karma"></span>
+                ${TBui.button('comment history', 'comment-report')}
+                ${TBui.button('view report in markdown', 'markdown-report')}
+                <button class="rts-report tb-general-button" style="display: none" data-commentbody="">report spammer</button>
+                <br/>
+                <span class="redditorTime"></span>
+                <br/>
+                <p class="tb-history-disclaimer">
+                    <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
+                </p>
+                <b>Available history:</b> <br/>
+                <label class="submission-count"></label> submissions
+                <br/>
+                <span class="tb-history-comment-stats" style="display:none">
+                    <label class="comment-count"></label> comments, of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
+                </span>
+            </div>
+            <div class="history-table-wrapper">
+                <div class="table domain-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">domain submitted from</th>
+                                <th class="url-count">count</th><th class="url-percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="error">loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table subreddit-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">subreddit submitted to</th>
+                                <th class="url-count">count</th>
+                                <th class="url-percentage">%</th>
+                                <th class="url-karma">karma</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="error">loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="history-table-wrapper">
+                <div class="table comment-table" style="display: none">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">subreddit commented in</th>
+                                <th class="url-count">count</th>
+                                <th class="url-percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="error">loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table account-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">account submitted from</th>
+                                <th class="url-count">count</th>
+                                <th class="url-percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="error">loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
 
         const $overlay = $this.closest('.tb-page-overlay');
         let $appendTo;
@@ -321,9 +318,11 @@ self.showMarkdownReport = function (author) {
     if ($markdown.length > 0) {
         $markdown.html(markdownReport).toggle();
     } else {
-        $contentBox.find('.table.domain-table').before(`<div class="submission-markdown">
+        $contentBox.find('.table.domain-table').before(`
+            <div class="submission-markdown">
                 <textarea class="tb-input submission-markdown-text">${markdownReport}</textarea>
-            </div>`);
+            </div>
+        `);
     }
 };
 

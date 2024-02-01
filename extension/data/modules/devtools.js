@@ -96,26 +96,26 @@ export default new Module({
                     title: 'UI tester',
                     tooltip: 'UItester.',
                     content: `
-                            <div id="tb-comment-sitetable"></div>
-                            <div id="tb-testCommentUI-input tb-input">
-                                <input type="text" placeholder="gimme that json url" id="tb-testCommentUI-input-url" class="tb-input">
-                                <button class="tb-action-button tb-testCommentUI-button fetch-single">fetch single</button>
-                                <button class="tb-action-button tb-testCommentUI-button fetch-thread">fetch thread</button>
-                                <button class="tb-action-button tb-testSubmissionUI-button fetch-listing">fetch submission listing</button>
-                            </div>
-                            <div id="notification">
-                                <h1> Notification tester </h1>
-                                <code>
-                                    TBCore.notification = function (title, body, path, markreadid = false)
-                                </code>
-                                <hr>
-                                <input type="text" placeholder="title" id="tb-test-notification-title" class="tb-input"><br>
-                                <input type="text" placeholder="body" id="tb-test-notification-body" class="tb-input"><br>
-                                <input type="text" placeholder="path" id="tb-test-notification-path" class="tb-input"><br>
-                                <input type="text" placeholder="markreadid" id="tb-test-notification-markreadid" class="tb-input"><br>
-                                <button class="tb-action-button tb-test-notification-button">notification</button>
-                            </div>
-                        `,
+                        <div id="tb-comment-sitetable"></div>
+                        <div id="tb-testCommentUI-input tb-input">
+                            <input type="text" placeholder="gimme that json url" id="tb-testCommentUI-input-url" class="tb-input">
+                            ${TBui.actionButton('fetch single', 'tb-testCommentUI-button fetch-single')}
+                            ${TBui.actionButton('fetch thread', 'tb-testCommentUI-button fetch-thread')}
+                            ${TBui.actionButton('fetch submission listing', 'tb-testSubmissionUI-button fetch-listing')}
+                        </div>
+                        <div id="notification">
+                            <h1> Notification tester </h1>
+                            <code>
+                                TBCore.notification = function (title, body, path, markreadid = false)
+                            </code>
+                            <hr>
+                            <input type="text" placeholder="title" id="tb-test-notification-title" class="tb-input"><br>
+                            <input type="text" placeholder="body" id="tb-test-notification-body" class="tb-input"><br>
+                            <input type="text" placeholder="path" id="tb-test-notification-path" class="tb-input"><br>
+                            <input type="text" placeholder="markreadid" id="tb-test-notification-markreadid" class="tb-input"><br>
+                            ${TBui.actionButton('notification', 'tb-test-notification-button')}
+                        </div>
+                    `,
                     footer: '',
                 },
             ],

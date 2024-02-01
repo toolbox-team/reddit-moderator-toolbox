@@ -4,6 +4,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
 import {getSettingAsync} from '../tbstorage.js';
+import {actionButton} from '../tbui.js';
 
 const self = new Module({
     name: 'Better Buttons',
@@ -150,13 +151,13 @@ function initModSave () {
 
     const $saveButton = $usertextButtons.find('.save');
     const $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
-    const $modSaveButton = $('<button>').addClass('save-mod tb-action-button').text('mod save');
-    const $stickySaveButton = $('<button>').addClass('save-sticky tb-action-button').text('mod save + sticky');
+    const modSaveButton = actionButton('mod save', 'save-mod');
+    const stickySaveButton = actionButton('mod save + sticky', 'save-sticky');
     if ($tbUsertextButtons.length) {
-        $tbUsertextButtons.prepend($modSaveButton, $stickySaveButton);
+        $tbUsertextButtons.prepend(modSaveButton, stickySaveButton);
     } else {
         $saveButton.parent().find('.status').before(
-            $('<div>').addClass('tb-usertext-buttons').append($modSaveButton, $stickySaveButton),
+            $('<div>').addClass('tb-usertext-buttons').append(modSaveButton, stickySaveButton),
         );
     }
 

@@ -396,8 +396,7 @@ self.queuetoolsOld = function ({
                         title: 'Tab1',
                         tooltip: 'NA',
                         content: popupSelectContent,
-                        footer:
-                            '<input class="select-queue-tools tb-action-button" type="button" value="Select items" />',
+                        footer: TBui.actionButton('Select items', 'select-queue-tools'),
                     },
                 ],
                 cssClass: 'queuetools-select-popup',

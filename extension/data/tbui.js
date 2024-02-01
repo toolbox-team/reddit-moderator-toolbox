@@ -303,14 +303,11 @@ export function switchOverlayTab (overlayClass, tabName) {
 export function overlay ({
     title,
     tabs,
-    buttons,
+    buttons = '',
     footer,
     details,
     tabOrientation = 'vertical',
 }) {
-    buttons = typeof buttons !== 'undefined' ? buttons : '';
-    footer = typeof footer !== 'undefined' ? footer : false;
-
     // If we have React components as tab contents, wrap them in renderers
     tabs.forEach(tab => {
         if (typeof tab.content === 'string' || tab.content instanceof $ || tab.content instanceof Element) {

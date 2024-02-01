@@ -1678,16 +1678,6 @@ span.rate-limit-explain {
     height: 26px !important;
 }
 
-.mod-toolbox-rd .macro-popup .tb-window-content {
-    margin-bottom: 30px;
-}
-
-.mod-toolbox-rd .macro-popup .tb-window-footer {
-    position: absolute;
-    bottom: 0;
-}
-
-
 /*
 ------------
     Syntax highlighter

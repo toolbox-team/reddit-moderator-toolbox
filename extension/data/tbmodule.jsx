@@ -105,8 +105,8 @@ const TBModule = {
                         <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${
                     TBHelpers.htmlEncode(unescape(settingSub))
                 }">
-                        <input class="tb-settings-export tb-action-button" type="button" value="backup">
-                        <input class="tb-settings-import tb-action-button" type="button" value="restore">
+                    ${TBui.actionButton('backup', 'tb-settings-export')}
+                    ${TBui.actionButton('restore', 'tb-settings-import')}
                         <b> Important:</b> This will reload the page without saving!
                         <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>
                         `,
@@ -160,7 +160,7 @@ const TBModule = {
             },
             {
                 settingName: 'showsettings',
-                content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
+                content: $(TBui.actionButton('Show Settings')).attr('id', 'showRawSettings'),
                 display: '',
             },
         ];
@@ -389,12 +389,8 @@ const TBModule = {
             tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
             footer: `
-                <input class="tb-save tb-action-button" type="button" value="save">
-                ${
-                debugMode
-                    ? '<input class="tb-save-reload tb-action-button" type="button" value="save and reload">'
-                    : ''
-            }
+                ${TBui.actionButton('save', 'tb-save')}
+                ${debugMode ? TBui.actionButton('save and reload', 'tb-save-reload') : ''}
             `,
         })
             .addClass('tb-settings')
@@ -537,8 +533,7 @@ const TBModule = {
                         content: `
                                 <textarea class="tb-input tb-edit-settings" rows="20" cols="60" readonly></textarea>
                             `,
-                        footer:
-                            '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">',
+                        footer: TBui.actionButton('Anonymize Settings', 'anonymize-settings'),
                     },
                 ],
                 cssClass: 'tb-raw-settings',

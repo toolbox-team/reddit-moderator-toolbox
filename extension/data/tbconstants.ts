@@ -5,7 +5,6 @@
  * Material design icons mapped to toolbox names through their hexcode.
  *
  * Usage `<div class="tb-icon">${icons.NAME}</div>`
- * @constant {object}
  */
 export const icons = {
     add: '&#xe145;', // add
@@ -42,10 +41,7 @@ export const icons = {
     usernote: '&#xe06f;', // note
 };
 
-/**
- * HTML for the syntax highlighter's theme selector.
- * @constant {string}
- */
+/** HTML for the syntax highlighter's theme selector. */
 export const syntaxHighlighterThemeSelect = `
     <select id="theme_selector">
         <option value="3024-day">3024-day</option>

@@ -9,6 +9,8 @@
         // we just set it to somewhere out of the way
         "outDir": "build/tsc",
         // Prevent Rollup builds from succeeding in the presence of type errors
-        "noEmitOnError": true
-    }
+        "noEmitOnError": true,
+        "jsx": "react-jsx"
+    },
+    "include": ["extension/**/*"]
 }

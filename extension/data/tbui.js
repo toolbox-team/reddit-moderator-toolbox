@@ -1,17 +1,21 @@
 import $ from 'jquery';
+import {createRoot} from 'react-dom/client';
 import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
 
 import * as TBApi from './tbapi.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
-import TBLog from './tblog.js';
 import * as TBStorage from './tbstorage.js';
+import {onDOMAttach} from './util/dom.ts';
+import {reactRenderer} from './util/ui_interop.tsx';
 
-import {icons} from './tbconstants';
+import {showTextFeedback, TextFeedbackKind, TextFeedbackLocation} from './store/textFeedbackSlice.ts';
+
+import store from './store/index.ts';
+import {icons} from './tbconstants.ts';
 export {icons};
 
-const logger = TBLog('TBui');
 const $body = $('body');
 
 export const longLoadArray = [];
@@ -72,13 +76,17 @@ export const standardColors = {
     black: '#000000',
 };
 
-export const FEEDBACK_NEUTRAL = 'neutral';
-export const FEEDBACK_POSITIVE = 'positive';
-export const FEEDBACK_NEGATIVE = 'negative';
+/** @deprecated Use {@linkcode TextFeedbackKind.NEUTRAL} */
+export const FEEDBACK_NEUTRAL = TextFeedbackKind.NEUTRAL;
+/** @deprecated Use {@linkcode TextFeedbackKind.POSITIVE} */
+export const FEEDBACK_POSITIVE = TextFeedbackKind.POSITIVE;
+/** @deprecated Use {@linkcode TextFeedbackKind.NEGATIVE} */
+export const FEEDBACK_NEGATIVE = TextFeedbackKind.NEGATIVE;
 
-export const DISPLAY_CENTER = 'center';
-export const DISPLAY_BOTTOM = 'bottom';
-export const DISPLAY_CURSOR = 'cursor';
+/** @deprecated Use {@linkcode TextFeedbackLocation.CENTER} */
+export const DISPLAY_CENTER = TextFeedbackLocation.CENTER;
+/** @deprecated Use {@linkcode TextFeedbackLocation.BOTTOM} */
+export const DISPLAY_BOTTOM = TextFeedbackLocation.BOTTOM;
 
 /**
  * Generates HTML for a general button.
@@ -99,82 +107,6 @@ export const button = (text, classes) => `
 export const actionButton = (text, classes) => `
     <a href="javascript:;" class="tb-action-button ${classes}">${text}</a>
 `;
-
-// Notification stuff
-
-/**
- * Show an in-page notification on the current tab.
- * @function
- * @param {object} options The options for the notification
- * @param {string} options.id The notification's ID
- * @param {string} options.title The notification's title
- * @param {string} options.body The notification's body
- */
-export const showNotification = ({id, title, body}) => {
-    let $notificationDiv = $('#tb-notifications-wrapper');
-    if (!$notificationDiv.length) {
-        // Create the wrapper element if it's not already there
-        $notificationDiv = $(`
-                <div id="tb-notifications-wrapper"></div>
-            `).appendTo($body);
-    }
-
-    // Make lines of the message into paragraphs
-    body = body
-        .split('\n')
-        .filter(line => line) // Ignore empty lines
-        .map(line => `<p>${TBHelpers.escapeHTML(line)}</p>`)
-        .join('');
-
-    $notificationDiv.prepend(`
-            <div class="tb-window tb-notification" data-id="${id}">
-                <div class="tb-window-header">
-                    <div class="tb-window-title">${title}</div>
-                    <div class="buttons">
-                        <a class="close">
-                            <i class="tb-icons">${icons.close}</i>
-                        </a>
-                    </div>
-                </div>
-                <div class="tb-window-content">${body}</div>
-            </div>
-        `);
-};
-
-/**
- * Clears an in-page notification on the current tab.
- * @function
- * @param {string} id The ID of the notification to clear
- */
-export const clearNotification = id => {
-    $(`.tb-notification[data-id="${id}"]`).remove();
-};
-
-// Handle notification updates from the background page
-browser.runtime.onMessage.addListener(message => {
-    if (message.action === 'tb-show-page-notification') {
-        logger.log('Notifier message get:', message);
-        showNotification(message.details);
-    } else if (message.action === 'tb-clear-page-notification') {
-        logger.log('Notifier message clear:', message);
-        clearNotification(message.id);
-    }
-});
-
-// Notification click handlers
-$body.on('click', '.tb-notification .close', function (event) {
-    event.stopPropagation(); // don't open the linked page
-    browser.runtime.sendMessage({
-        action: 'tb-page-notification-clear',
-        id: $(this).closest('.tb-notification').attr('data-id'),
-    });
-});
-$body.on('click', '.tb-notification', function () {
-    browser.runtime.sendMessage({
-        action: 'tb-page-notification-click',
-        id: $(this).attr('data-id'),
-    });
-});
 
 /**
  * Generate a popup.
@@ -376,6 +308,16 @@ export function overlay ({
     details,
     tabOrientation = 'vertical',
 }) {
+    // If we have React components as tab contents, wrap them in renderers
+    tabs.forEach(tab => {
+        if (typeof tab.content === 'string' || tab.content instanceof $ || tab.content instanceof Element) {
+            // This is a normal thing we can pass to jQuery append no problem
+            return;
+        }
+        // This is some special React stuff
+        tab.content = reactRenderer(tab.content);
+    });
+
     // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
     const $overlay = $(`
         <div class="tb-page-overlay">
@@ -624,69 +566,38 @@ export function mapInput (labels, items) {
     return $mapInput;
 }
 
-export function textFeedback (feedbackText, feedbackKind, displayDuration, displayLocation) {
-    if (!displayLocation) {
-        displayLocation = DISPLAY_CENTER;
-    }
-
-    // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
-    if (feedbackText && feedbackKind) {
-        // If there is still a previous feedback element on the page we remove it.
-        $body.find('#tb-feedback-window').remove();
-
-        // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-        const feedbackElement = TBStorage.purify(
-            `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`,
-        );
-
-        // Add the element to the page.
-        $body.append(feedbackElement);
-
-        // center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
-        const $feedbackWindow = $body.find('#tb-feedback-window');
-
-        switch (displayLocation) {
-            case DISPLAY_CENTER:
-                {
-                    const feedbackLeftMargin = $feedbackWindow.outerWidth() / 2;
-                    const feedbackTopMargin = $feedbackWindow.outerHeight() / 2;
-
-                    $feedbackWindow.css({
-                        'margin-left': `-${feedbackLeftMargin}px`,
-                        'margin-top': `-${feedbackTopMargin}px`,
-                    });
-                }
-                break;
-            case DISPLAY_BOTTOM:
-                {
-                    $feedbackWindow.css({
-                        left: '5px',
-                        bottom: '40px',
-                        top: 'auto',
-                        position: 'fixed',
-                    });
-                }
-                break;
-            case DISPLAY_CURSOR:
-                {
-                    $(document).mousemove(e => {
-                        const posX = e.pageX;
-                        const posY = e.pageY;
-
-                        $feedbackWindow.css({
-                            left: posX - $feedbackWindow.width() + 155,
-                            top: posY - $feedbackWindow.height() - 15,
-                            position: 'fixed',
-                        });
-                    });
-                }
-                break;
-        }
-
-        // And fade out nicely after 3 seconds.
-        $feedbackWindow.delay(displayDuration ? displayDuration : 3000).fadeOut();
-    }
+/**
+ * Displays a feedback message on the screen which disappears after a time. Only
+ * one such message can be shown at a time, and calling this method will
+ * overwrite any message currently being shown.
+ * @param {string} feedbackText Message to display
+ * @param {TextFeedbackKind} feedbackKind Nature of the message (positive,
+ * neutral, negative) to affect the color of the message window
+ * @param {number} [displayDuration] How long the message should be displayed
+ * before being hidden, in milliseconds. Defaults to 3000. Pass `Infinity` to
+ * force the message to never disappear unless dismissed with a
+ * @param {TextFeedbackLocation} [displayLocation] The location on the screen
+ * where the message should be shown - center screen is the default, but
+ * long-lived messages can be moved to the bottom instead
+ */
+export function textFeedback (
+    feedbackText,
+    feedbackKind,
+    displayDuration = 3000,
+    displayLocation = TextFeedbackLocation.CENTER,
+) {
+    store.dispatch(showTextFeedback({
+        message: feedbackText,
+        kind: feedbackKind,
+        location: displayLocation,
+    }, displayDuration));
 }
+// re-export related enums so they can be used without importing twice
+// TODO: needing to do this kind of thing probably indicates we should structure
+// our source folders better - e.g. putting all the things related to text
+// feedback in a single `features/textFeedback` folder with an aggregated-export
+// `index.js` that's friendly for consumers
+export {TextFeedbackKind, TextFeedbackLocation};
 
 // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
 export function longLoadSpinner (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
@@ -1860,17 +1771,17 @@ export function makeCommentThread (jsonInput, commentOptions) {
  * last one without additional interaction
  * @param {string} options.controlPosition Where to display the pager's
  * controls, either 'top' or 'bottom'
- * @param {string | JQuery} options.emptyContent Content to display if there are
+ * @param {string | JQuery | ReactNode} options.emptyContent Content to display if there are
  * no pages to show
- * @param {AsyncIterable<string | JQuery>} contentIterable An iterable, possibly
- * asynchronous, whose items provide content for each page
+ * @param {import('./util/iter.js').MaybeAsyncIterable<string | JQuery | ReactNode>} contentIterable
+ * An iterable, possibly asynchronous, whose items provide content for each page
  * @returns {JQuery}
  */
 export function progressivePager ({
     lazy = true,
     preloadNext = true,
     controlPosition = 'top',
-    emptyContent,
+    emptyContent = '<p>No content</p>',
 }, contentIterable) {
     // if we're not lazy, preloadNext is useless - don't do its extra work
     if (!lazy) {
@@ -1964,7 +1875,12 @@ export function progressivePager ({
             // If we have *no* pages, scrap everything and display a message
             if (!pages.length) {
                 $pagerControls.remove();
-                $pagerContent.empty().append(emptyContent || '<p>No content</p>');
+                $pagerContent.empty();
+                if (typeof pageContent === 'string' || pageContent instanceof $ || pageContent instanceof Element) {
+                    $pagerContent.append(emptyContent);
+                } else {
+                    $pagerContent.append(reactRenderer(emptyContent));
+                }
                 return;
             }
 
@@ -1975,7 +1891,16 @@ export function progressivePager ({
         }
 
         // Display content for the new page
-        $pagerContent.empty().append(pageContent);
+        if (typeof pageContent !== 'string' && !(pageContent instanceof $) && !(pageContent instanceof Element)) {
+            // if the page content is a react element, drop it in a root
+            const pageContentRoot = document.createElement('div');
+            $pagerContent.empty().append(pageContentRoot);
+            Promise.resolve().then(() => {
+                createRoot(pageContentRoot).render(pageContent);
+            });
+        } else {
+            $pagerContent.empty().append(pageContent);
+        }
 
         // Empty the existing buttons out, using .detach to maintain event listeners, then using .empty() to
         // remove the text left behind (thanks jQuery)
@@ -2117,12 +2042,6 @@ export function pagerForItems ({
 }
 
 /**
- * Holds relative time elements not yet added to the page
- * @type {HTMLTimeElement[]}
- */
-let relativeTimeElements = [];
-
-/**
  * Creates a `<time>` element which displays the given date as a relative time
  * via `$.timeago()`.
  * @param {Date} date Date and time to display
@@ -2135,29 +2054,11 @@ export function relativeTime (date) {
     el.innerText = date.toLocaleString();
 
     // run timeago on the element when it's added to the DOM
-    relativeTimeElements.push(el);
+    onDOMAttach(el, () => $(el).timeago());
 
     // return jQuery wrapped
     return $(el);
 }
-
-// watch for elements created by `relativeTime` being added to the DOM
-new MutationObserver(() => {
-    // go through the array and see if each element is present yet
-    relativeTimeElements = relativeTimeElements.filter(timeEl => {
-        if (document.contains(timeEl)) {
-            // element is in the DOM, run timeago and remove from the array
-            $(timeEl).timeago();
-            return false;
-        }
-
-        // element is not on page yet, keep it in the array
-        return true;
-    });
-}).observe(document, {
-    childList: true,
-    subtree: true,
-});
 
 // handling of comment & submisstion actions.
 // TODO make this into command pattern
@@ -2316,7 +2217,7 @@ $body.on('click', '.tb-self-expando-button', function () {
 
 /** Reloads the extension, then reloads the current window. */
 export function reloadToolbox () {
-    textFeedback('toolbox is reloading', FEEDBACK_POSITIVE, 10000, DISPLAY_BOTTOM);
+    textFeedback('toolbox is reloading', TextFeedbackKind.POSITIVE, 10000, TextFeedbackLocation.BOTTOM);
     browser.runtime.sendMessage({action: 'tb-reload'}).then(() => {
         window.location.reload();
     });

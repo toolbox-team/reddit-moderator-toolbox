@@ -155,8 +155,9 @@ html body.mod-toolbox-rd .tb-icons-align-middle {
 body.mod-toolbox-rd.mod-toolbox-extra .tb-input {
     border: solid 1px #c7d6e7;
     font-size: 1em;
-    padding: 5px;
-    line-height: 1.4;
+    padding: 5px 6px;
+    height: 14px;
+    line-height: 14px;
     background-color: #fff;
     color: #000;
     color-scheme: none;
@@ -774,10 +775,10 @@ body.mod-toolbox-rd .tb-bracket-button {
 }
 
 body.mod-toolbox-rd .tb-bracket-button {
-    padding: 1px 1px 0 1px;
+    padding: 1px;
     font-size: 10px;
     line-height: 10px;
-    height: 12px;
+    height: 10px;
 }
 
 body.mod-toolbox-rd .tb-general-button:hover,
@@ -1361,12 +1362,12 @@ body.mod-toolbox-rd .tb-action-button.tb-button-hidden {
 
 body.mod-toolbox-rd .tb-action-button {
     display: inline-block;
-    height: 25px !important;
+    height: 14px !important;
     vertical-align: bottom !important;
-    padding: 2px 6px 3px 6px !important;
+    padding: 5px 6px 4px 5px !important;
     font-family: verdana,arial,helvetica,sans-serif !important;
     font-size: 12px !important;
-    line-height: 12px !important;
+    line-height: 14px !important;
     text-shadow: none !important;
     text-decoration: none !important;
     text-align: left !important;
@@ -1383,57 +1384,44 @@ body.mod-toolbox-rd .tb-action-button {
     border-color: #72869A !important;
     border-style: solid !important;
     box-shadow: none !important;
-    box-sizing: border-box !important;
+    box-sizing: content-box !important;
     color: #17324E !important;
-    transition: all 0.15s ease-in-out !important;
     outline: none !important;
 }
 
 body.mod-toolbox-rd .tb-action-button:active {
     border-width: 1px !important;
     border-color: #9FBAD6 !important;
-    padding: 2px 6px 3px 6px !important;
+    padding: 5px 6px !important;
     box-shadow: none !important;
     outline: none !important;
 }
 
 .mod-toolbox-rd select.tb-action-button {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFBAMAAACOSmBbAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAMFBMVEUAAAByhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhpoAAAAzyklRAAAADnRSTlMAg+bd3+d6pqKNlZOkqEeC9h4AAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAAAJklEQVQI12OQU3YxfcbA/u7duwYGhnnvXjEwMHC/OwAkGfYyMAAApLAJ3r+t9WUAAAAASUVORK5CYII=');    background-repeat: no-repeat;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 1" width="10" height="5"><polygon points="0,0 1,1 2,0" fill="%2372869A"/></svg>');
+    background-repeat: no-repeat;
     background-position: right 5px center;
-    -moz-appearance:none; /* Firefox */
-    -webkit-appearance:none; /* Safari and Chrome */
-    appearance:none;
-    padding: 1px 20px 2px 6px !important;
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    appearance: none;
 }
-
-
+.mod-toolbox-rd select.tb-action-button,
 .mod-toolbox-rd select.tb-action-button:active {
-    border-width: 1px 1px 2px 2px !important;
-    padding: 1px 20px 2px 6px !important;
+    padding-right: 20px !important;
 }
 
 /* inline action buttons */
 
 .mod-toolbox-rd .tb-action-button.inline-button {
-    font-size: 11px !important;
-    line-height: 11px !important;
-    height: 20px !important;
+    padding: 3px 3px 2px 2px !important;
 }
-.mod-toolbox-rd select.tb-action-button.inline-button {
-    padding: 1px 15px 1px 5px !important;
-    font-size: 11px !important;
-    line-height: 11px !important;
-    height: 20px !important;
-}
-
 .mod-toolbox-rd .tb-action-button.inline-button:active {
-    padding: 2px 6px 4px 7px !important;
+    padding: 3px !important;
 }
-
+.mod-toolbox-rd select.tb-action-button.inline-button,
 .mod-toolbox-rd select.tb-action-button.inline-button:active {
-    border-width: 1px 1px 2px 2px !important;
-    padding: 1px 15px 1px 5px !important;
-
+    padding-right: 15px !important;
+    background-position-x: right 3px;
 }
 
 .mod-toolbox-rd button.save-mod.tb-action-button,

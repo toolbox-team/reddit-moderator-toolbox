@@ -1,8 +1,8 @@
 import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
-import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.js';
-import {Module} from '../tbmodule.js';
+import {syntaxHighlighterThemeSelect as themeSelect} from '../tbconstants.ts';
+import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 
 export default new Module({

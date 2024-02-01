@@ -5,7 +5,7 @@
 import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
-import TBLog from './tblog.js';
+import TBLog from './tblog';
 import * as TBStorage from './tbstorage.js';
 
 const logger = TBLog('TBApi');
@@ -322,8 +322,6 @@ export async function postToWiki (
             uh: await getModhash(),
         });
     } catch (error) {
-        // TODO logger types are fucked
-        // @ts-expect-error
         logger.error(error);
         throw error;
     }
@@ -398,8 +396,6 @@ export const readFromWiki = (
         // We have valid data, but it's not JSON.
         resolve(wikiData);
     }).catch(async error => {
-        // TODO logger types are fucked
-        // @ts-expect-error
         logger.error(`Wiki error (${subreddit}/${page}):`, error);
         if (!error.response) {
             resolve(WIKI_PAGE_UNKNOWN);

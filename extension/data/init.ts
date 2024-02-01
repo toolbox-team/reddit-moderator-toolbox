@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import {createElement} from 'react';
 import browser from 'webextension-polyfill';
 
 // We load all our CodeMirror addons and modes here and they'll be available
@@ -28,9 +29,13 @@ import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
 import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.js';
-import TBModule from './tbmodule.js';
+import TBLog from './tblog';
+import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
+
+import AppRoot from './AppRoot';
+import {documentInteractive} from './util/dom.js';
+import {reactRenderer} from './util/ui_interop.js';
 
 import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';
@@ -46,7 +51,7 @@ import Modbar from './modules/modbar.js';
 import ModButton from './modules/modbutton.js';
 import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
-import ModNotes from './modules/modnotes.js';
+import ModNotes from './modules/modnotes.jsx';
 import NewModmailPro from './modules/newmodmailpro.js';
 import Notifier from './modules/notifier.js';
 import NukeComments from './modules/nukecomments.js';
@@ -270,7 +275,6 @@ async function doSettingsUpdates () {
     try {
         await checkLoadConditions();
     } catch (error) {
-        // @ts-expect-error logger types are still broken
         logger.error('Load condition not met:', (error as Error).message);
         return;
     }
@@ -324,6 +328,11 @@ async function doSettingsUpdates () {
     // Do version-specific setting updates and cache the current logged-in user
     await doSettingsUpdates();
 
+    // Attach React root
+    documentInteractive.then(() => {
+        document.body.append(reactRenderer(createElement(AppRoot)));
+    });
+
     // Load feature modules and register them
     for (
         const m of [
@@ -357,7 +366,6 @@ async function doSettingsUpdates () {
             OldReddit,
         ]
     ) {
-        // @ts-expect-error TODO logger types are still broken
         logger.debug('Registering module', m);
         TBModule.register_module(m);
     }

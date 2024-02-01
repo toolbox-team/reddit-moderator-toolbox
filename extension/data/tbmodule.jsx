@@ -71,7 +71,7 @@ const TBModule = {
         const longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45);
 
         // last export stuff
-        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport');
+        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport') ?? 0;
         const showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder');
         const lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport));
         const lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
@@ -215,73 +215,167 @@ const TBModule = {
                 tooltip: '',
                 help_page: 'about',
                 id: 'about',
-                content: `
-                <h1 id="tb-random-about-quote">"${TBCore.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="${
-                    TBCore.link('/r/toolbox')
-                }" target="_blank">/r/toolbox ${TBCore.toolboxVersionName}</a>
-                    <h3> Open source </h3>
-                    Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
-                    <h3> Privacy </h3>
-                    The toolbox development team highly values privacy. <br>
-                    The toolbox privacy policy can be <a href="https://www.reddit.com/r/toolbox/wiki/privacy" target="_blank">found on this wiki page</a>.
-                    <h3> made and maintained by: </h3>
-                    <table class="tb-about-credits">
-                        <tr>
-                            <td><a href="https://www.reddit.com/user/creesch/">/u/creesch</a></td>
-                            <td><a href="https://www.reddit.com/user/agentlame">/u/agentlame</a></td>
-                            <td><a href="https://www.reddit.com/user/LowSociety">/u/LowSociety</a></td>
-                        </tr><tr>
-                            <td><a href="https://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>
-                            <td><a href="https://www.reddit.com/user/dakta">/u/dakta</a></td>
-                            <td><a href="https://www.reddit.com/user/largenocream">/u/largenocream</a></td>
-                        </tr><tr>
-                            <td><a href="https://www.reddit.com/user/noeatnosleep">/u/noeatnosleep</a></td>
-                            <td><a href="https://www.reddit.com/user/psdtwk">/u/psdtwk</a></td>
-                            <td><a href="https://www.reddit.com/user/garethp">/u/garethp</a></td>
-                        </tr><tr>
-                            <td><a href="https://www.reddit.com/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>
-                            <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
-                            <td><a href="https://www.reddit.com/user/eritbh">/u/eritbh</a></td>
-                        </tr><tr>
-                            <td><a href="https://www.reddit.com/user/SpyTec13">/u/SpyTec13</a></td>
-                            <td><a href="https://www.reddit.com/user/kenman">/u/kenman</a></td>
-                            <td></td>
-                        </tr>
-                    </table>
-                    <h3>Documentation by:</h3>
-                    <table class="tb-about-credits">
-                        <tr>
-                            <td><a href="https://www.reddit.com/user/psdtwk">/u/psdtwk</a></td>
-                            <td><a href="https://www.reddit.com/user/gorillagnomes">/u/gorillagnomes</a></td>
-                            <td><a href="https://www.reddit.com/user/x_minus_one">/u/x_minus_one</a></td>
-                        </tr><tr>
-                            <td><a href="https://www.reddit.com/user/Gustavobc">/u/Gustavobc</a></td>
-                            <td><a href="https://www.reddit.com/user/hermithome">/u/hermithome</a></td>
-                            <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
-                        </tr>
-                    </table>
-                    <h3>Special thanks to:</h3>
-                    <a href="https://www.reddit.com/user/andytuba">/u/andytuba</a> & <a href="https://www.reddit.com/user/erikdesjardins">/u/erikdesjardins</a>
-                    <br>for all their amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>
-                    <h3>Credits:</h3>
-                    <a href="https://www.reddit.com/user/ShaneH7646">/u/ShaneH7646 for the snoo running gif</a><br>
-                    <a href="https://material.io/tools/icons/" target="_blank">Material icons</a><br>
-                    <a href="${TBCore.link('/user/DEADB33F')}" target="_blank">Modtools base code by DEADB33F</a><br>
-                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${
-                    TBCore.link('/u/djimbob')
-                }" target="_blank">/u/djimbob</a><br>
-                    <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
-                    <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
-                    <h3>License:</h3>
-                    <span>© 2013-2020 toolbox development team. </span>
-                    <p class="tb-settings-p">Licensed under the Apache License, Version 2.0 (the "License");
-                        <br> you may not use this file except in compliance with the License.
-                        <br> You may obtain a copy of the License at </p>
-                    <p class="tb-settings-p"><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
-                    <p class="tb-settings-p">Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                        <br> See the License for the specific language governing permissions and limitations under the License.</p>
-                    `,
+                content: (
+                    <>
+                        <h1 id='tb-random-about-quote'>{'"'}{TBCore.RandomQuote}{'"'}</h1>
+                        <h3>About:</h3>{' '}
+                        <a
+                            href={TBCore.link('/r/toolbox')}
+                            target='_blank'
+                            rel='noreferrer'
+                        >
+                            /r/toolbox {TBCore.toolboxVersionName}
+                        </a>
+                        <h3>Open source</h3>
+                        Toolbox is an open source software project. The source code and project can be found on{' '}
+                        <a href='https://github.com/toolbox-team' target='_blank' rel='noreferrer'>GitHub</a>.
+                        <h3>Privacy</h3>
+                        The toolbox development team highly values privacy. <br />
+                        The toolbox privacy policy can be{' '}
+                        <a href='https://www.reddit.com/r/toolbox/wiki/privacy' target='_blank' rel='noreferrer'>
+                            found on this wiki page
+                        </a>.
+                        <h3>made and maintained by:</h3>
+                        <table className='tb-about-credits'>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/creesch/'>/u/creesch</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/agentlame'>/u/agentlame</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/LowSociety'>/u/LowSociety</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/TheEnigmaBlade'>/u/TheEnigmaBlade</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/dakta'>/u/dakta</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/largenocream'>/u/largenocream</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/noeatnosleep'>/u/noeatnosleep</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/garethp'>/u/garethp</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/WorseThanHipster' title='Literally'>
+                                        /u/WorseThanHipster
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/eritbh'>/u/eritbh</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/SpyTec13'>/u/SpyTec13</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/kenman'>/u/kenman</a>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <h3>Documentation by:</h3>
+                        <table className='tb-about-credits'>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/gorillagnomes'>/u/gorillagnomes</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/x_minus_one'>/u/x_minus_one</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href='https://www.reddit.com/user/Gustavobc'>/u/Gustavobc</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/hermithome'>/u/hermithome</a>
+                                </td>
+                                <td>
+                                    <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
+                                </td>
+                            </tr>
+                        </table>
+                        <h3>Special thanks to:</h3>
+                        <a href='https://www.reddit.com/user/andytuba'>/u/andytuba</a> &{' '}
+                        <a href='https://www.reddit.com/user/erikdesjardins'>/u/erikdesjardins</a>
+                        <br />for all their amazing help and support of the TB team in resolving complex issues (and
+                        really simple ones)<br />
+                        <h3>Credits:</h3>
+                        <a href='https://www.reddit.com/user/ShaneH7646'>/u/ShaneH7646 for the snoo running gif</a>
+                        <br />
+                        <a href='https://material.io/tools/icons/' target='_blank' rel='noreferrer'>Material icons</a>
+                        <br />
+                        <a href={TBCore.link('/user/DEADB33F')} target='_blank' rel='noreferrer'>
+                            Modtools base code by DEADB33F
+                        </a>
+                        <br />
+                        <a
+                            href='https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en'
+                            target='_blank'
+                            rel='noreferrer'
+                        >
+                            Comment Thread Nuke Script
+                        </a>{' '}
+                        by{' '}
+                        <a
+                            href={TBCore.link('/u/djimbob')}
+                            target='_blank'
+                            rel='noreferrer'
+                        >
+                            /u/djimbob
+                        </a>
+                        <br />
+                        <a href='https://github.com/gamefreak/snuownd' target='_blank' rel='noreferrer'>
+                            snuownd.js by gamefreak
+                        </a>
+                        <br />
+                        <a href='https://codemirror.net/' target='_blank' rel='noreferrer'>CodeMirror code editor</a>
+                        <br />
+                        <h3>License:</h3>
+                        <span>© 2013-2020 toolbox development team.</span>
+                        <p className='tb-settings-p'>
+                            Licensed under the Apache License, Version 2.0 (the {'"'}License{'"'});
+                            <br /> you may not use this file except in compliance with the License.
+                            <br /> You may obtain a copy of the License at
+                        </p>
+                        <p className='tb-settings-p'>
+                            <a href='http://www.apache.org/licenses/LICENSE-2.0'>
+                                http://www.apache.org/licenses/LICENSE-2.0
+                            </a>
+                        </p>
+                        <p className='tb-settings-p'>
+                            Unless required by applicable law or agreed to in writing, software distributed under the
+                            License is distributed on an {'"'}AS IS{'"'}{' '}
+                            BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                            <br />
+                            See the License for the specific language governing permissions and limitations under the
+                            License.
+                        </p>
+                    </>
+                ),
             },
         ];
 
@@ -294,11 +388,14 @@ const TBModule = {
                 `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
             tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
-            footer: `<input class="tb-save tb-action-button" type="button" value="save">${
+            footer: `
+                <input class="tb-save tb-action-button" type="button" value="save">
+                ${
                 debugMode
-                    ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">'
+                    ? '<input class="tb-save-reload tb-action-button" type="button" value="save and reload">'
                     : ''
-            }`,
+            }
+            `,
         })
             .addClass('tb-settings')
             .addClass('tb-personal-settings');

@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import {getCurrentUser} from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 
 const self = new Module({
     name: 'Trouble Shooter',

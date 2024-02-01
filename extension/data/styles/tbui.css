@@ -55,6 +55,9 @@
 }
 
 /* Tabs */
+.mod-toolbox-rd .tb-window-tabs-wrapper {
+    margin: -5px;
+}
 .mod-toolbox-rd .tb-window-tabs {
     background-color: #C7D6E6;
 }
@@ -85,7 +88,8 @@
 .mod-toolbox-rd .tb-window-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
 }
-.mod-toolbox-rd .tb-window-content:not(.tb-window-large) {
+.mod-toolbox-rd .tb-window-content,
+.mod-toolbox-rd .tb-window-tabs-content {
     overflow: auto;
     padding: 5px !important;
 }
@@ -96,12 +100,28 @@
 
 /* Footer stuff */
 .mod-toolbox-rd .tb-window-footer {
-    width: 100%;
-    height: 36px;
     display: flex;
+    gap: 5px;
+    padding: 5px;
     justify-content: center;
     align-items: center;
     background-color: #CEE3F8;
+}
+/*
+ * Forms in footers are just used for submit action reasons and are transparent
+ * to how footer items are laid out
+ */
+.mod-toolbox-rd .tb-window-footer form {
+    display: contents;
+}
+/* Hide empty text segments to avoid de-centering buttons and stuff */
+.mod-toolbox-rd .tb-window-footer :not(input):empty {
+    display: none;
+}
+
+/* Adjust controls to work nicely together in footers */
+body.mod-toolbox-rd.mod-toolbox-rd .tb-window-footer .tb-input {
+    border-color: #72869A;
 }
 
 /* Vertical tabs modifier*/
@@ -179,7 +199,8 @@
     padding-left: 7px;
 }
 .mod-toolbox-rd .tb-window-large .tb-window-footer {
-    height: 40px;
+    padding: 7px;
+    gap: 7px;
 }
 
 /* Pager for displaying paginated content */

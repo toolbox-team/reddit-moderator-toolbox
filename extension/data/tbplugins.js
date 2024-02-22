@@ -73,8 +73,7 @@ let jQuery = window.jQuery = window.$ = $;
         }
         return this.length && pat && pat.length
             ? this.each(function () {
-                if (this.parentElement.classList.contains("usertext-edit")) { return
-                }
+                if (this.parentElement.classList.contains('usertext-edit')) { return; }
                 ignore = typeof ignore !== 'undefined' ? ignore : $.fn.highlight.defaults.ignore;
                 innerHighlight(this, pat, ignore);
             })

@@ -8,7 +8,7 @@ import * as TBui from '../tbui.js';
 export default new Module({
     name: 'Syntax Highlighter',
     id: 'Syntax',
-    enabledByDefault: false,
+    enabledByDefault: true,
     oldReddit: true,
     settings: [
         {

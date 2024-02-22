@@ -8,7 +8,7 @@ import {getSettingAsync} from '../tbstorage.js';
 const self = new Module({
     name: 'Achievements',
     id: 'Achievements',
-    enabledByDefault: false,
+    enabledByDefault: true,
     settings: [
         {
             id: 'save',

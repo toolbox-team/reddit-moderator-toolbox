@@ -11,7 +11,7 @@ import * as TBui from '../tbui.js';
 export default new Module({
     name: 'Comment Nuke',
     id: 'CommentNuke',
-    enabledByDefault: false,
+    enabledByDefault: true,
     settings: [
         {
             id: 'ignoreDistinguished',

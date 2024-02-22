@@ -10,7 +10,7 @@ import * as TBStorage from '../tbstorage.js';
 export default new Module({
     name: 'Notifier',
     id: 'Notifier',
-    enabledByDefault: true,
+    enabledByDefault: false,
     settings: [
         {
             id: 'modSubreddits',

@@ -17,7 +17,7 @@ import * as TBui from '../tbui.js';
 const self = new Module({
     name: 'User Notes',
     id: 'UserNotes',
-    enabledByDefault: true,
+    enabledByDefault: false,
     settings: [
         {
             id: 'unManagerLink',

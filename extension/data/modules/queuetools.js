@@ -123,7 +123,7 @@ const self = new Module({
             id: 'reportsAscending',
             type: 'boolean',
             advanced: true,
-            default: false,
+            default: true,
             description: 'Sort ascending.',
             oldReddit: true,
         },

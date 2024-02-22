@@ -536,7 +536,7 @@ function buildNoteTableRow (note) {
 export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
-    beta: true,
+    beta: false,
     enabledByDefault: true,
     settings: [
         {

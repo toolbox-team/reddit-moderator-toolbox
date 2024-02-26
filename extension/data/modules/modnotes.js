@@ -187,34 +187,34 @@ async function* getAllModNotes (subreddit, user, filter) {
 }
 
 /**
- * In-page cache of comment fullnames to the fullnames of their parent posts.
+ * In-page cache of comment fullnames to the fullnames of their submissions.
  * Values of this object are promises which resolve to fullnames, rather than
  * bare strings - we keep the promises around after they're resolved, and always
  * deal with this cache asynchronously.
  * @constant {Record<string, Promise<string>>}
  */
-const parentFullnamesCache = Object.create(null);
+const submissionFullnamesCache = Object.create(null);
 
 /**
- * Gets the parent fullname of a comment.
+ * Gets the fullname of a comment's corresponding submission.
  * @param {string} commentFullname Fullname of a comment
- * @returns {Promise<string>} Fullname of the comment's parent post
+ * @returns {Promise<string>} Fullname of the comment's submission
  */
-export function getParentFullname (commentFullname) {
+export function getSubmissionFullname (commentFullname) {
     // If it's in cache, return that
-    const cached = parentFullnamesCache[commentFullname];
+    const cached = submissionFullnamesCache[commentFullname];
     if (cached) {
         return cached;
     }
 
-    // Fetch the parent fullname fresh
+    // Fetch the submission fullname fresh
     // Note that we're not awaiting this - we want the full promise
-    const parentFullnamePromise = TBApi.getInfo(commentFullname)
-        .then(info => info.data.parent_id);
+    const submissionFullnamePromise = TBApi.getInfo(commentFullname)
+        .then(info => info.data.link_id);
 
     // Write to cache and return
-    parentFullnamesCache[commentFullname] = parentFullnamePromise;
-    return parentFullnamePromise;
+    submissionFullnamesCache[commentFullname] = submissionFullnamePromise;
+    return submissionFullnamePromise;
 }
 
 /**
@@ -239,10 +239,10 @@ async function getContextURL (note) {
         return link(`/comments/${itemID}`);
     }
 
-    // Comment links require the ID of their parent post, which we need to fetch
+    // Comment links require the link ID of their submission, which we need to fetch
     if (itemType === 't1') {
-        const parentFullname = await getParentFullname(itemFullname);
-        return link(`/comments/${parentFullname.replace('t3_', '')}/_/${itemID}`);
+        const submissionFullname = await getSubmissionFullname(itemFullname);
+        return link(`/comments/${submissionFullname.replace('t3_', '')}/_/${itemID}`);
     }
 
     // This ID is for some other item type which we can't process

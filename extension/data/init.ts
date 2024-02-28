@@ -110,10 +110,18 @@ async function checkReset () {
  * @returns {Promise<void>}
  */
 async function checkLoadConditions (tries = 3) {
+    let loggedInShreddit = false;
     let loggedinRedesign = false;
     let loggedinOld = false;
 
     const $body = $('body');
+
+    // Check for re-redesign (sh.reddit.com)
+    if (
+        $body.find("shreddit-app[user-logged-in=true]")
+    ) {
+        loggedInShreddit = true;
+    }
 
     // Check for redesign
     if (
@@ -131,7 +139,7 @@ async function checkLoadConditions (tries = 3) {
         loggedinOld = true;
     }
 
-    if (!loggedinOld && !loggedinRedesign) {
+    if (!loggedinOld && !loggedinRedesign && !loggedInShreddit) {
         if (tries < 1) {
             // We've tried a bunch of times and still don't have anything, so
             // assume there's no logged-in user

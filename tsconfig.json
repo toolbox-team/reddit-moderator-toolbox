@@ -10,5 +10,10 @@
         "outDir": "build/tsc",
         // Prevent Rollup builds from succeeding in the presence of type errors
         "noEmitOnError": true
-    }
+    },
+    "exclude": [
+        "node_modules",
+        "build",
+        "docs"
+    ]
 }

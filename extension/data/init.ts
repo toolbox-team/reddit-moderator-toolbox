@@ -118,7 +118,7 @@ async function checkLoadConditions (tries = 3) {
 
     // Check for re-redesign (sh.reddit.com)
     if (
-        $body.find("shreddit-app[user-logged-in=true]")
+        $body.find('shreddit-app[user-logged-in=true]')
     ) {
         loggedInShreddit = true;
     }

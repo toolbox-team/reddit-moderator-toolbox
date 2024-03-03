@@ -21,7 +21,7 @@
     "license": "Apache-2.0",
     "dependencies": {
         "@reduxjs/toolkit": "^2.1.0",
-        "codemirror": "^5.65.15",
+        "codemirror": "^5.65.16",
         "dompurify": "^3.0.9",
         "framer-motion": "^11.0.3",
         "iter-ops": "^3.1.1",

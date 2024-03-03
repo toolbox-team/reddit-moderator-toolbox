@@ -3,7 +3,7 @@ import SnuOwnd from 'snuownd';
 
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 

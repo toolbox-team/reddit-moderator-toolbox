@@ -39,7 +39,7 @@ You can find the documentation for all this on the following locations:
 - `/`: root directory containing scripting for building toolbox and configuration for development related things (linting, git configuration files).
 - `extension/`: root directory of the extension itself. Contains the manifests. From here the unpacked extension can be loaded for development.
 - `extension/data/`: Directory containing the functional code of toolbox. All files starting with `tb` are toolbox core scripts.
-- `extension/data/tbmodule.js`: Modules are loaded into toolbox through this.
+- `extension/data/tbmodule.jsx`: Modules are loaded into toolbox through this.
 - `extension/data/tbstorage.js`: Everything storage related.
 - `extension/data/tbui.js`: Handles creating UI elements.
 - `extension/data/tbhelpers.js`: Contains standalone utility functions. Public functions all are part of the `TBHelpers` object.

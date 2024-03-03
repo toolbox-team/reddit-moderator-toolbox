@@ -1,4 +1,4 @@
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 
 const self = new Module({
     name: 'General Settings',

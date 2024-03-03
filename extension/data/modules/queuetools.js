@@ -4,7 +4,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 
@@ -396,8 +396,7 @@ self.queuetoolsOld = function ({
                         title: 'Tab1',
                         tooltip: 'NA',
                         content: popupSelectContent,
-                        footer:
-                            '<input class="select-queue-tools tb-action-button" type="button" value="Select items" />',
+                        footer: TBui.actionButton('Select items', 'select-queue-tools'),
                     },
                 ],
                 cssClass: 'queuetools-select-popup',

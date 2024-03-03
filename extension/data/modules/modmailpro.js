@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 

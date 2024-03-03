@@ -3,6 +3,7 @@
 // import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
 
@@ -16,9 +17,19 @@ export default ['chrome', 'firefox'].flatMap(platform => [
             sourcemap: process.env.NODE_ENV === 'production' ? false : 'inline',
         },
         plugins: [
+            replace({
+                preventAssignment: true,
+                values: {
+                    // the jsx runtime wants this to be defined
+                    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+                },
+            }),
             nodeResolve(),
             commonjs(),
-            typescript(),
+            // HACK: see https://github.com/rollup/plugins/issues/1629
+            typescript({
+                include: 'extension/**/*.(ts|tsx|js|jsx)',
+            }),
             // Copy files not processed by Rollup over to the build directory
             copy({
                 targets: [

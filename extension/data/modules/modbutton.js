@@ -4,7 +4,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 
@@ -236,7 +236,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option>
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
-                <button class="save tb-action-button">${self.saveButton}</button>
+                ${TBui.actionButton(self.saveButton, 'save')}
                 <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${
                         globalButton ? '' : 'style="display:none!important;"'
                     }>Global Action</button>`,
@@ -260,8 +260,9 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                         <input id="flair-class" class="flair-class tb-input" type="text"></input>
                     </p>`,
                     footer: `
-                <span class="status error left"></span>
-                <button class="flair-save tb-action-button">Save Flair</button>`,
+                        <span class="status error left"></span>
+                        ${TBui.actionButton('Save Flair', 'flair-save')}
+                    `,
                 },
                 {
                     title: 'Send Modmail',
@@ -272,8 +273,9 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     <span id="subreddit-message-callback"></span>
                     `,
                     footer: `
-                <span class="status error left"></span>
-                <button class="message-send tb-action-button">Send as /r/${subreddit}</button>`,
+                        <span class="status error left"></span>
+                        ${TBui.actionButton(`Send as /r/${subreddit}`, 'message-send')}
+                    `,
                 },
             ],
             cssClass: 'mod-popup',

@@ -2,7 +2,7 @@ import $ from 'jquery';
 import browser from 'webextension-polyfill';
 
 import * as TBCore from '../tbcore.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety

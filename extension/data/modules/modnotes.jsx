@@ -2,22 +2,22 @@ import $ from 'jquery';
 
 import {map, page, pipeAsync} from 'iter-ops';
 
+import {useFetched, useSetting} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
-import {escapeHTML, htmlEncode} from '../tbhelpers.js';
+import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
-import {
-    drawPosition,
-    FEEDBACK_NEGATIVE,
-    FEEDBACK_POSITIVE,
-    icons,
-    popup,
-    progressivePager,
-    relativeTime,
-    textFeedback,
-} from '../tbui.js';
+import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
+
+import {useState} from 'react';
+import {Icon} from '../components/controls/Icon.tsx';
+import {RelativeTime} from '../components/controls/RelativeTime.tsx';
+import {ProgressivePager} from '../components/ProgressivePager.tsx';
+import {Window} from '../components/Window.tsx';
+import {WindowTabs} from '../components/WindowTabs.tsx';
+import {reactRenderer} from '../util/ui_interop.tsx';
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -68,6 +68,22 @@ const labelNames = {
     SPAM_WATCH: 'Spam Watch',
     SOLID_CONTRIBUTOR: 'Solid Contributor',
     HELPFUL_USER: 'Helpful User',
+};
+
+/**
+ * Mapping of possible values of the `defaultNoteLabelValue` setting to actual
+ * label type strings used by the API (or in the case of "none", `undefined`)
+ */
+const defaultNoteLabelValueToLabelType = {
+    none: undefined,
+    bot_ban: 'BOT_BAN',
+    permaban: 'PERMA_BAN',
+    ban: 'BAN',
+    abuse_warning: 'ABUSE_WARNING',
+    spam_warning: 'SPAM_WARNING',
+    spam_watch: 'SPAM_WATCH',
+    solid_contributor: 'SOLID_CONTRIBUTOR',
+    helpful_user: 'HELPFUL_USER',
 };
 
 // A queue of users and subreddits whose latest note will be fetched in the next
@@ -258,166 +274,65 @@ async function getContextURL (note) {
  * @param {object} [data.note] The most recent mod note left on the user
  * @returns {jQuery} The created badge
  */
-function createModNotesBadge ({
-    user,
-    subreddit,
+function ModNotesBadge ({
     label = 'NN',
     note,
+    onClick,
 }) {
-    const $badge = $(`
-        <a
-            class="tb-bracket-button tb-modnote-badge"
-            role="button"
-            tabindex="0"
-            title="Mod notes for /u/${user} in /r/${subreddit}"
-            data-user="${user}"
-            data-subreddit="${subreddit}"
-            data-label="${label}"
+    let badgeContents = label;
+    if (note && note.user_note_data) {
+        const label = note.user_note_data.label;
+        const noteColor = label && labelColors[label];
+        badgeContents = (
+            <b style={{color: noteColor}}>
+                {note.user_note_data.note}
+            </b>
+        );
+    }
+    return (
+        <button
+            className='tb-bracket-button tb-modnote-badge'
+            tabIndex='0'
+            title='Mod notes for /u/${user} in /r/${subreddit}'
+            data-user='${user}'
+            data-subreddit='${subreddit}'
+            onClick={onClick}
         >
-    `);
-
-    updateModNotesBadge($badge, {
-        note,
-    });
-
-    return $badge;
+            {badgeContents}
+        </button>
+    );
 }
 
-/**
- * Updates mod note badges in place with the given information.
- * @param {jQuery} $badge The badge(s) to update
- * @param {object} note The most recent mod note left on the user, or null
- */
-function updateModNotesBadge ($badge, note) {
-    if (!note || !note.user_note_data) {
-        $badge.text($badge.attr('data-label'));
-        return;
+/** Returns a pager for mod notes on the user in the subreddit matching the filter. */
+function ModNotesPager ({user, subreddit, filter: noteFilter}) {
+    async function deleteNote (noteID) {
+        try {
+            await TBApi.deleteModNote({
+                user,
+                subreddit,
+                id: noteID,
+            });
+            // TODO: present note deletion visibly to user
+            textFeedback('Note removed!', FEEDBACK_POSITIVE);
+        } catch (error) {
+            this.error('Failed to delete note:', error);
+            textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
+        }
     }
 
-    $badge.empty();
-    $badge.append(`
-        <b style="${note.user_note_data.label ? `color: ${labelColors[note.user_note_data.label]}` : ''}">
-            ${htmlEncode(note.user_note_data.note)}
-        </b>
-    `);
-}
-
-/**
- * Creates a mod note popup for the given information.
- * @param {object} data Data associated with the popup
- * @param {string} data.user Name of the relevant user
- * @param {string} data.subreddit Name of the relevant subreddit
- * @param {string} [data.contextID] Fullname of the item the popup was opened from, used to write note context
- * @param {object[]} [data.notes] Note objects for the user, or null/undefined
- * @returns {jQuery} The created popup
- */
-function createModNotesPopup ({
-    user,
-    subreddit,
-    contextID,
-    defaultTabName,
-    defaultNoteLabel,
-}) {
-    let defaultTabID = 'tb-modnote-tab-all';
-    if (defaultTabName === 'notes') {
-        defaultTabID = 'tb-modnote-tab-notes';
-    } else if (defaultTabName === 'actions') {
-        defaultTabID = 'tb-modnote-tab-actions';
-    }
-
-    // Create the base popup
-    const $popup = popup({
-        title: `Mod notes for /u/${user} in /r/${subreddit}`,
-        tabs: [
-            {
-                title: 'All Activity',
-                id: 'tb-modnote-tab-all',
-            },
-            {
-                title: 'Notes',
-                id: 'tb-modnote-tab-notes',
-            },
-            {
-                title: 'Mod Actions',
-                id: 'tb-modnote-tab-actions',
-            },
-        ],
-        footer: `
-            <form class="tb-modnote-create-form">
-                <select class="tb-action-button tb-modnote-label-select">
-                    <option
-                        value=""
-                        ${defaultNoteLabel === 'none' ? 'selected' : ''}
-                    >
-                        (no label)
-                    </option>
-                    ${
-            Object.entries(labelNames).reverse().map(([value, name]) => `
-                        <option
-                            value="${htmlEncode(value)}"
-                            ${defaultNoteLabel === name.toLowerCase().replace(/\s/g, '_') ? 'selected' : ''}
-                        >
-                            ${htmlEncode(name)}
-                        </option>
-                    `).join('')
-        }
-                </select>
-                <input
-                    type="text"
-                    class="tb-modnote-text-input tb-input"
-                    placeholder="Add a note..."
-                >
-                <button
-                    type="submit"
-                    class="tb-action-button"
-                >
-                    Create Note
-                </button>
-            </form>
-        `,
-        cssClass: 'tb-modnote-popup',
-        defaultTabID,
-    });
-    $popup.attr('data-user', user);
-    $popup.attr('data-subreddit', subreddit);
-    $popup.attr('data-context-id', contextID);
-
-    // Build a table for each tab containing the right subset of notes
-    $popup.find('.tb-window-tab').each(function () {
-        const $tabContainer = $(this);
-
-        const $content = $tabContainer.find('.tb-window-content');
-        $content.empty();
-
-        // Set the filter criteria based on what tab this is
-        let filter;
-        if ($tabContainer.hasClass('tb-modnote-tab-notes')) {
-            filter = 'NOTE';
-        }
-        if ($tabContainer.hasClass('tb-modnote-tab-actions')) {
-            filter = 'MOD_ACTION';
-        }
-
-        const $notesPager = progressivePager(
-            {
-                controlPosition: 'bottom',
-                emptyContent: `
-                <p>
-                    No notes
-                </p>
-            `,
-            },
-            pipeAsync(
+    return (
+        <ProgressivePager
+            controlPosition='bottom'
+            emptyContent={<p>No notes</p>}
+            pages={pipeAsync(
                 // fetch mod notes that match this tab
-                getAllModNotes(subreddit, user, filter),
-                // build table rows for each note
-                map(note => buildNoteTableRow(note)),
+                getAllModNotes(subreddit, user, noteFilter),
                 // group into pages of 20 items each
                 page(20),
-                // construct the table and insert the generated rows for each page
-                map(pageItems => {
-                    const $wrapper = $(`
-                    <table class="tb-modnote-table">
+                // construct the table and insert the generated rows for each
+                // page
+                map(pageItems => (
+                    <table className='tb-modnote-table'>
                         <thead>
                             <tr>
                                 <th>Author</th>
@@ -426,112 +341,226 @@ function createModNotesPopup ({
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                            {pageItems.map(note => (
+                                <NoteTableRow
+                                    key={note.id}
+                                    note={note}
+                                    onDelete={() => deleteNote(note.id)}
+                                />
+                            ))}
+                        </tbody>
                     </table>
-                `);
-                    $wrapper.find('tbody').append(...pageItems);
-                    return $wrapper;
-                }),
-            ),
-        );
-        $content.append($notesPager);
-    });
-
-    return $popup;
+                )),
+            )}
+        />
+    );
 }
 
 /**
- * Builds a row of the notes table for the given note.
- * @param {object} note A note object
- * @returns {jQuery} The generated table row
+ * Creates a mod note popup for the given information.
+ * @param {object} data Data associated with the popup
+ * @param {string} data.user Name of the relevant user
+ * @param {string} data.subreddit Name of the relevant subreddit
+ * @param {string} [data.contextID] Fullname of the item the popup was opened from, used to write note context
+ * @param {Function} data.onClose Close handler for the popup
+ * @returns {jQuery} The created popup
  */
-function buildNoteTableRow (note) {
+function ModNotesPopup ({
+    user,
+    subreddit,
+    contextID,
+    defaultTabName,
+    defaultNoteLabel,
+    onClose,
+}) {
+    const tabs = [
+        {
+            title: 'All Activity',
+            content: <ModNotesPager user={user} subreddit={subreddit} />,
+        },
+        {
+            title: 'Notes',
+            content: <ModNotesPager user={user} subreddit={subreddit} filter='NOTE' />,
+        },
+        {
+            title: 'Mod Actions',
+            content: <ModNotesPager user={user} subreddit={subreddit} filter='MOD_ACTION' />,
+        },
+    ];
+
+    let defaultTabIndex = 0;
+    if (defaultTabName === 'notes') {
+        defaultTabIndex = 1;
+    } else if (defaultTabName === 'actions') {
+        defaultTabIndex = 2;
+    }
+
+    // Handle note creation
+    async function handleNewNoteSubmit (event) {
+        // don't actually perform the HTML form action
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        try {
+            await TBApi.createModNote({
+                user,
+                subreddit,
+                redditID: contextID,
+                note: formData.get('note'),
+                label: formData.get('label'),
+            });
+            textFeedback('Note saved', FEEDBACK_POSITIVE);
+
+            // Close the popup after a successful save
+            onClose();
+        } catch (error) {
+            this.error('Failed to create mod note:', error);
+            textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);
+        }
+    }
+
+    const popupFooter = (
+        <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
+            <select
+                name='label'
+                className='tb-action-button tb-modnote-label-select'
+                defaultValue={defaultNoteLabelValueToLabelType[defaultNoteLabel]}
+            >
+                <option value={undefined}>(no label)</option>
+                {Object.entries(labelNames).reverse().map(([value, name]) => (
+                    <option key={value} value={value}>{name}</option>
+                ))}
+            </select>
+            <input
+                type='text'
+                name='note'
+                autoFocus
+                className='tb-modnote-text-input tb-input'
+                placeholder='Add a note...'
+            />
+            <button
+                type='submit'
+                className='tb-action-button'
+            >
+                Create Note
+            </button>
+        </form>
+    );
+
+    // Create the base popup
+    return (
+        <Window
+            title={`Mod notes for /u/${user} in /r/${subreddit}`}
+            footer={popupFooter}
+            draggable
+            onClose={onClose}
+        >
+            <WindowTabs
+                tabs={tabs}
+                defaultTabIndex={defaultTabIndex}
+            />
+        </Window>
+    );
+}
+
+/**
+ * A row of the notes table displaying details about the given note.
+ * @param {object} props.note A note object
+ */
+function NoteTableRow ({note, onDelete}) {
     const createdAt = new Date(note.created_at * 1000);
     const mod = note.operator; // TODO: can [deleted] show up here?
 
-    const $noteRow = $(`
+    const contextURL = useFetched(getContextURL(note));
+
+    return (
         <tr>
             <td>
-                <a href="${link(`/user/${encodeURIComponent(mod)}`)}">
-                    /u/${escapeHTML(mod)}
+                <a href={link(`/user/${encodeURIComponent(mod)}`)}>
+                    /u/{mod}
                 </a>
-                <br>
-                <small></small>
+                <br />
+                <small>
+                    {contextURL
+                        ? (
+                            <a href={contextURL}>
+                                <RelativeTime date={createdAt} />
+                            </a>
+                        )
+                        : <RelativeTime date={createdAt} />}
+                </small>
             </td>
             <td>
-                ${typeNames[note.type]}
+                {typeNames[note.type]}
+            </td>
+            <td>
+                {note.mod_action_data?.action && (
+                    <span className='tb-modnote-action-summary'>
+                        Took action {'"'}
+                        {note.mod_action_data.action}
+                        {'"'}
+                        {note.mod_action_data.details && ` (${note.mod_action_data.details})`}
+                        {note.mod_action_data.description && `: ${note.mod_action_data.description}`}
+                    </span>
+                )}
+                {note.user_note_data?.note && (
+                    <blockquote>
+                        {note.user_note_data.label && (
+                            <span style={{color: labelColors[note.user_note_data.label]}}>
+                                [{labelNames[note.user_note_data.label] || note.user_note_data.label}]
+                            </span>
+                        )} {note.user_note_data.note}
+                    </blockquote>
+                )}
+            </td>
+            <td>
+                {note.type === 'NOTE' && (
+                    <a
+                        className='tb-modnote-delete-button'
+                        role='button'
+                        title='Delete note'
+                        data-note-id={escapeHTML(note.id)}
+                        onClick={() => onDelete()}
+                    >
+                        <Icon negative icon='delete' />
+                    </a>
+                )}
             </td>
         </tr>
-    `);
-
-    // Add relative timestamp element
-    $noteRow.find('small').append(relativeTime(createdAt));
-
-    // Build the note details based on what sort of information is present
-    const $noteDetails = $('<td>');
-
-    if (note.mod_action_data?.action) {
-        $noteDetails.append(`
-            <span class="tb-modnote-action-summary">
-                Took action "${escapeHTML(note.mod_action_data.action)}"${
-            note.mod_action_data.details ? ` (${escapeHTML(note.mod_action_data.details)})` : ''
-        }${note.mod_action_data.description ? `: ${escapeHTML(note.mod_action_data.description)}` : ''}
-            </span>
-        `);
-    }
-
-    if (note.user_note_data?.note) {
-        $noteDetails.append(`
-            <blockquote>
-                ${
-            note.user_note_data.label
-                ? `
-                    <span style="color:${labelColors[note.user_note_data.label]}">
-                        [${labelNames[note.user_note_data.label] || escapeHTML(note.user_note_data.label)}]
-                    </span>
-                `
-                : ''
-        }
-                ${escapeHTML(note.user_note_data.note)}
-            </blockquote>
-        `);
-    }
-
-    $noteRow.append($noteDetails);
-
-    // Only manually added notes can be deleted
-    if (note.type === 'NOTE') {
-        $noteRow.append(`
-            <td>
-                <a
-                    class="tb-modnote-delete-button tb-icons tb-icons-negative"
-                    role="button"
-                    title="Delete note"
-                    data-note-id="${escapeHTML(note.id)}"
-                >
-                    ${icons.delete}
-                </a>
-            </td>
-        `);
-    } else {
-        // append an empty td to avoid weird border stuff
-        $noteRow.append('<td>');
-    }
-
-    // Check for a context URL (which might need to be fetched) and add it to
-    // the timestamp if we get one
-    getContextURL(note).then(contextURL => {
-        if (!contextURL) {
-            return;
-        }
-
-        // the row may no longer be displayed at this point, but if it's gone
-        // then jQuery will just do nothing, so it's fine
-        $noteRow.find('time').wrap(`<a href="${escapeHTML(contextURL)}">`);
-    });
-
-    return $noteRow;
+    );
 }
+
+const ModNotesUserRoot = ({user, subreddit, contextID}) => {
+    // Get settings
+    const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
+    const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
+
+    // Fetch the latest note for the user
+    const note = useFetched(getLatestModNote(subreddit, user));
+
+    const [popupShown, setPopupShown] = useState(false);
+
+    return (
+        <>
+            <ModNotesBadge
+                label='NN'
+                note={note}
+                onClick={() => setPopupShown(true)}
+            />
+            {popupShown && (
+                <ModNotesPopup
+                    user={user}
+                    subreddit={subreddit}
+                    contextID={contextID}
+                    defaultTabName={defaultTabName}
+                    defaultNoteLabel={defaultNoteLabel}
+                    onClose={() => setPopupShown(false)}
+                />
+            )}
+        </>
+    );
+};
 
 export default new Module({
     name: 'Mod Notes',
@@ -561,7 +590,7 @@ export default new Module({
             default: 'none',
         },
     ],
-}, function ({defaultTabName, defaultNoteLabel}) {
+}, function () {
     // Clean up old broken cache storage key
     // TODO: Remove this a couple versions from now when people have reasonably
     //       probably updated past this
@@ -592,91 +621,17 @@ export default new Module({
 
         // Display badge for notes if not already present
         const $target = $(e.target);
-        let $badge = $target.find('.tb-modnote-badge');
-        if (!$badge.length) {
-            $badge = createModNotesBadge({
-                user: e.detail.data.author,
-                subreddit: e.detail.data.subreddit.name,
-            });
-            // TODO: don't register this directly on the badge, use $body.on('click', selector, ...)
-            $badge.on('click', clickEvent => {
-                // Create, position, and display popup
-                const positions = drawPosition(clickEvent);
-                const $popup = createModNotesPopup({
-                    user: author,
-                    subreddit,
-                    contextID,
-                    defaultTabName,
-                    defaultNoteLabel,
-                })
-                    .css({
-                        top: positions.topPosition,
-                        left: positions.leftPosition,
-                    })
-                    .appendTo($('body'));
-
-                // Focus the note input
-                $popup.find('.tb-modnote-text-input').focus();
-            });
-            $badge.appendTo($target);
+        if ($target.find('.tb-modnote-badge-react-root').length) {
+            return;
         }
-
-        this.debug(`Fetching latest mod note for /u/${author} in /r/${subreddit}`);
-        try {
-            const note = await getLatestModNote(subreddit, author);
-            this.info(`Got note for /u/${author} in /r/${subreddit}:`, note);
-            updateModNotesBadge($badge, note);
-        } catch (error) {
-            this.error(`Error fetching mod notes for /u/${author} in /r/${subreddit}:`, error);
-        }
-    });
-
-    const $body = $('body');
-
-    // Handle note creation
-    $body.on('submit', '.tb-modnote-create-form', async event => {
-        // don't actually perform the HTML form action
-        event.preventDefault();
-
-        const $popup = $(event.target).closest('.tb-modnote-popup');
-        const $textInput = $popup.find('.tb-modnote-text-input');
-        const $labelSelect = $popup.find('.tb-modnote-label-select');
-
-        try {
-            await TBApi.createModNote({
-                user: $popup.attr('data-user'),
-                subreddit: $popup.attr('data-subreddit'),
-                note: $textInput.val(),
-                label: $labelSelect.val() || undefined,
-                redditID: $popup.attr('data-context-id'),
-            });
-            $textInput.val('');
-            textFeedback('Note saved', FEEDBACK_POSITIVE);
-
-            // Close the popup after a successful save
-            $popup.remove();
-        } catch (error) {
-            this.error('Failed to create mod note:', error);
-            textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);
-        }
-    });
-
-    // Handle delete note button clicks
-    $body.on('click', '.tb-modnote-delete-button', async event => {
-        const $button = $(event.target);
-        const $popup = $button.closest('.tb-modnote-popup');
-
-        try {
-            await TBApi.deleteModNote({
-                user: $popup.attr('data-user'),
-                subreddit: $popup.attr('data-subreddit'),
-                id: $button.attr('data-note-id'),
-            });
-            $button.closest('tr').remove();
-            textFeedback('Note removed!', FEEDBACK_POSITIVE);
-        } catch (error) {
-            this.error('Failed to delete note:', error);
-            textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
-        }
+        const badgeRoot = reactRenderer(
+            <ModNotesUserRoot
+                user={author}
+                subreddit={subreddit}
+                contextID={contextID}
+            />,
+        );
+        badgeRoot.classList.add('tb-modnote-badge-react-root');
+        $target.append(badgeRoot);
     });
 });

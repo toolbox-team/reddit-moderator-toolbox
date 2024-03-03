@@ -4,7 +4,7 @@ import browser from 'webextension-polyfill';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 
 export default new Module({

@@ -4,7 +4,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 
@@ -87,8 +87,10 @@ export default new Module({
                     title: 'Nuke tab',
                     tooltip: '',
                     content: $popupContents,
-                    footer:
-                        '<button class="tb-execute-nuke tb-action-button">Execute</button> <button class="tb-retry-nuke tb-action-button">Retry</button>',
+                    footer: `
+                        ${TBui.actionButton('Execute', 'tb-execute-nuke')}
+                        ${TBui.actionButton('Retry', 'tb-retry-nuke')}
+                    `,
                 },
             ],
             cssClass: 'nuke-button-popup',

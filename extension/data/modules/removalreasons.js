@@ -5,9 +5,31 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+
+// Error messages
+const STATUS_DEFAULT_TEXT = 'saving...';
+const APPROVE_ERROR = 'error, failed to approve post';
+const FLAIR_ERROR = 'error, failed to flair post';
+const NO_REASON_ERROR = 'error, no reason selected';
+const NO_REPLY_TYPE_ERROR = 'error, no reply type selected';
+const REPLY_ERROR = 'error, failed to post reply';
+const REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account';
+const PM_ERROR = 'error, failed to send PM';
+const MODMAIL_ERROR = 'error, failed to send Modmail';
+const MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail';
+const DISTINGUISH_ERROR = 'error, failed to distinguish reply';
+const LOCK_POST_ERROR = 'error, failed to lock post';
+const LOCK_COMMENT_ERROR = 'error, failed to lock reply';
+const LOG_REASON_MISSING_ERROR = 'error, public log reason missing';
+const LOG_POST_ERROR = 'error, failed to create log post';
+
+// Default texts
+const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}';
+const DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}';
+const DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
 
 export default new Module({
     name: 'Removal Reasons',
@@ -109,28 +131,6 @@ export default new Module({
     }
 
     const $body = $('body');
-
-    // Error texts
-    const STATUS_DEFAULT_TEXT = 'saving...';
-    const APPROVE_ERROR = 'error, failed to approve post';
-    const FLAIR_ERROR = 'error, failed to flair post';
-    const NO_REASON_ERROR = 'error, no reason selected';
-    const NO_REPLY_TYPE_ERROR = 'error, no reply type selected';
-    const REPLY_ERROR = 'error, failed to post reply';
-    const REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account';
-    const PM_ERROR = 'error, failed to send PM';
-    const MODMAIL_ERROR = 'error, failed to send Modmail';
-    const MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail';
-    const DISTINGUISH_ERROR = 'error, failed to distinguish reply';
-    const LOCK_POST_ERROR = 'error, failed to lock post';
-    const LOCK_COMMENT_ERROR = 'error, failed to lock reply';
-    const LOG_REASON_MISSING_ERROR = 'error, public log reason missing';
-    const LOG_POST_ERROR = 'error, failed to create log post';
-
-    // Default texts
-    const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}';
-    const DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}';
-    const DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
 
     // Cached data
     const notEnabled = [];
@@ -248,13 +248,13 @@ export default new Module({
 
             // Set attributes and open reason box if one already exists for this subreddit
             self.log('Opening popup');
-            const $popup = $(`#reason-popup-${data.subreddit}`);
-            // If the popup already exists, open it
-            if ($popup.length) {
+            const $overlay = $(`#reason-popup-${data.subreddit}`);
+            // If the overlay already exists, open it
+            if ($overlay.length) {
                 // Click yes on the removal
-                openPopup();
+                openOverlay();
             } else {
-                // Otherwise create the popup and open it
+                // Otherwise create the overlay and open it
                 // Get removal reasons.
                 let response = await getRemovalReasons(data.subreddit);
 
@@ -328,7 +328,7 @@ export default new Module({
                     });
                 });
 
-                // Only show popup if there's removal reasons
+                // Only show overlay if there's removal reasons
                 let removalReasonLength = 0;
                 if (isComment) {
                     // get all RR for comments that's True and undefined
@@ -346,13 +346,13 @@ export default new Module({
                     return;
                 }
 
-                // Open popup
-                createPopup();
-                openPopup();
+                // Open overlay
+                createOverlay();
+                openOverlay();
             }
 
-            function createPopup () {
-                self.log('Creating removal reason popup');
+            function createOverlay () {
+                self.log('Creating removal reason overlay');
 
                 // Options
                 const selectNoneDisplay = data.logSub ? '' : 'none'; // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
@@ -412,136 +412,211 @@ export default new Module({
                 const footerText = data.footer ? parser.render(data.footer) : '';
 
                 // Make box & add reason radio buttons
-                let popup = $(`
-                <div class="reason-popup" id="reason-popup-${data.subreddit}">
-                <attrs />
-                <div class="reason-popup-content">
-                <div class="reason-popup-header">Removal reasons for /r/${data.subreddit}:</div>
-                <div class="reason-popup-innercontent">
-                <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${
-                    TBHelpers.htmlEncode(data.title)
-                }</a></p>
-                <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
-                    <p>
-                        <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
-                        <label id="reason-header">${headerText}</label>
-                    </p>
-                </div>
-                <table id="removal-reasons-table">
-                    <thead><tr>
-                        <th class="removal-toggle"></th>
-                        <th class="reason">reason</th>
-                        <th class="flair-text">flair text</th>
-                        <th class="flair-css">flair css</th>
-                        <th class="sort">sort</th>
-                    </tr></thead>
-                    <tbody id="reason-table" />
-                </table>
-                <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}">
-                    <p>
-                        <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />
-                        <label id="reason-footer">${footerText}</label>
-                    </p>
-                </div>
-                <div id="buttons">
-                <ul>
-                    <li>
-                        <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${
-                    reasonType === 'reply' ? ' checked="1"' : ''
-                } /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
-                        <ul>
-                            <li>
-                                <input ${
-                    forced || data.kind !== 'submission' ? 'disabled' : ''
-                } class="reason-sticky" type="checkbox" id="type-stickied"${
-                    reasonSticky && data.kind === 'submission' ? 'checked' : ''
-                }/><label for="type-stickied">Sticky the removal comment.</label>
-                            </li>
-                            <li>
-                                <input ${
-                    forced ? 'disabled' : ''
-                } class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${
-                    actionLockComment ? 'checked' : ''
-                }/><label for="type-action-lock-comment">Lock the removal comment.</label>
-                            </li>
-                            <li>
-                                <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-comment-as-subreddit" id="type-reason-commnet-as-sub" type="checkbox"${
-                    reasonCommentAsSubreddit ? 'checked' : ''
-                }/><label for="type-reason-commnet-as-sub">Send as /u/${data.subreddit}-ModTeam.</label>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${
-                    reasonType === 'pm' ? ' checked="1"' : ''
-                } /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
-                        <ul>
-                            <li>
-                                <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-as-sub" type="checkbox" id="type-as-sub" ${
-                    reasonAsSub ? 'checked ' : ''
-                }/><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
-                            </li>
-                            <li>
-                                <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-auto-archive" type="checkbox" id="type-auto-archive" ${
-                    reasonAutoArchive ? 'checked ' : ''
-                }/><label for="type-auto-archive">Auto-archive sent modmail pm <b>Note:</b> Only works on new modmail.</label>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${
-                    reasonType === 'both' ? ' checked="1"' : ''
-                } /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
-                    </li>
-                    <li style="display:${selectNoneDisplay}"> /
-                        <input ${
-                    forced ? 'disabled' : ''
-                } class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${
-                    reasonType === 'none' ? ' checked="1"' : ''
-                } /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
-                    </li>
-                    <li>
-                        <input ${
-                    forced || data.kind !== 'submission' ? 'disabled' : ''
-                } class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${
-                    actionLockThread && data.kind === 'submission' ? 'checked' : ''
-                }/><label for="type-action-lock-thread">Lock the removed thread.</label>
-                    </li>
-                </ul>
-                </div>
-                <div id="log-reason" style="display:${logDisplay}">
-                    <p>Log Reason(s):
-                        <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
-                    </p>
-                    <p>
-                        (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>
-                    </p>
-                </div>
-                </div>
-                <div class="reason-popup-footer">
-                <input type="hidden" name="tom_or_not" value="no-tom">
-                <span class="status error" style="display:none">This is an easter egg.</span>
-                <button class="save tb-action-button">send</button>
-                <button class="no-reason tb-action-button">no reason</button>
-                <button class="cancel tb-action-button">cancel and approve</button>
-                </div>
-                </div>
-                </div>
-            `);
+                const $overlay = TBui.overlay({
+                    title: `Removal reasons for /r/${data.subreddit}`,
+                    tabs: [
+                        {
+                            title: 'toolbox reasons',
+                            tooltip: 'Use a removal reason defined in your subreddit\'s Toolbox configuration',
+                            content: `
+                                <p>
+                                    Removing:
+                                    <a class="mte-thread-link" href="${data.url}" target="_blank">
+                                        ${TBHelpers.htmlEncode(data.title)}
+                                    </a>
+                                </p>
+                                <div class="styled-reason" id="header-reason" style="display:${headerDisplay}">
+                                    <p>
+                                        <label><input type="checkbox" id="include-header" checked> Include header.</label><br />
+                                        <label id="reason-header">${headerText}</label>
+                                    </p>
+                                </div>
+                                <table id="removal-reasons-table">
+                                    <thead><tr>
+                                        <th class="removal-toggle"></th>
+                                        <th class="reason">reason</th>
+                                        <th class="flair-text">flair text</th>
+                                        <th class="flair-css">flair css</th>
+                                        <th class="sort">sort</th>
+                                    </tr></thead>
+                                    <tbody id="reason-table" />
+                                </table>
+                                <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}">
+                                    <p>
+                                        <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />
+                                        <label id="reason-footer">${footerText}</label>
+                                    </p>
+                                </div>
+                                <div id="buttons">
+                                    <ul>
+                                        <li>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-reply-${data.subreddit}"
+                                                value="reply"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'reply' ? ' checked' : ''}
+                                            />
+                                            <label for="type-reply-${data.subreddit}">
+                                                Reply with a comment to the item that is removed.
+                                            </label>
+                                            <ul>
+                                                <li>
+                                                    <input
+                                                        ${forced || data.kind !== 'submission' ? 'disabled' : ''}
+                                                        class="reason-sticky"
+                                                        type="checkbox"
+                                                        id="type-stickied"
+                                                        ${reasonSticky && data.kind === 'submission' ? 'checked' : ''}
+                                                    />
+                                                    <label for="type-stickied">Sticky the removal comment.</label>
+                                                </li>
+                                                <li>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="action-lock-comment"
+                                                        id="type-action-lock-comment"
+                                                        type="checkbox"
+                                                        ${actionLockComment ? 'checked' : ''}
+                                                    />
+                                                    <label for="type-action-lock-comment">
+                                                        Lock the removal comment.
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="reason-comment-as-subreddit"
+                                                        id="type-reason-commnet-as-sub"
+                                                        type="checkbox"
+                                                        ${reasonCommentAsSubreddit ? 'checked' : ''}
+                                                    />
+                                                    <label for="type-reason-commnet-as-sub">
+                                                        Send as /u/${data.subreddit}-ModTeam.
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-PM-${data.subreddit}"
+                                                value="pm"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'pm' ? ' checked' : ''}
+                                            />
+                                            <label for="type-PM-${data.subreddit}">
+                                                Send as PM (personal message)
+                                            </label>
+                                            <ul>
+                                                <li>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="reason-as-sub"
+                                                        type="checkbox"
+                                                        id="type-as-sub"
+                                                        ${reasonAsSub ? 'checked ' : ''}
+                                                    />
+                                                    <label for="type-as-sub">
+                                                        Send pm via modmail as /r/${data.subreddit}
+                                                        <b>Note:</b> This will clutter up modmail.
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <input
+                                                        ${forced ? 'disabled' : ''}
+                                                        class="reason-auto-archive"
+                                                        type="checkbox"
+                                                        id="type-auto-archive"
+                                                        ${reasonAutoArchive ? 'checked ' : ''}
+                                                    />
+                                                    <label for="type-auto-archive">
+                                                        Auto-archive sent modmail pm
+                                                        <b>Note:</b> Only works on new modmail.
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-both-${data.subreddit}"
+                                                value="both"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'both' ? ' checked' : ''}
+                                            />
+                                            <label for="type-both-${data.subreddit}">
+                                                Send as both PM and reply.
+                                            </label>
+                                        </li>
+                                        <li style="display:${selectNoneDisplay}"> /
+                                            <input
+                                                ${forced ? 'disabled' : ''}
+                                                class="reason-type"
+                                                type="radio"
+                                                id="type-none-${data.subreddit}"
+                                                value="none"
+                                                name="type-${data.subreddit}"
+                                                ${reasonType === 'none' ? ' checked' : ''}
+                                            />
+                                            <label for="type-none-${data.subreddit}">
+                                                none, will only log the removal.
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <input
+                                                ${forced || data.kind !== 'submission' ? 'disabled' : ''}
+                                                class="action-lock-thread"
+                                                id="type-action-lock-thread"
+                                                type="checkbox"
+                                                ${actionLockThread && data.kind === 'submission' ? 'checked' : ''}
+                                            />
+                                            <label for="type-action-lock-thread">Lock the removed thread.</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div id="log-reason" style="display:${logDisplay}">
+                                    <p>Log Reason(s):
+                                        <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
+                                    </p>
+                                    <p>
+                                        (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>
+                                    </p>
+                                </div>
+                            `,
+                            // TODO: once we have native reasons we'll have a second
+                            // tab and this will go in the top-level overlay footer,
+                            // but passing a footer there when there's only one tab
+                            // results in the footer being duplicated. that's an
+                            // issue with TBui.overlay() but i don't feel like
+                            // fixing it so here we are
+                            footer: `
+                                <span class="tb-reason-popup-status error" style="display:none">This is an easter egg.</span>
+                                ${TBui.actionButton('send', 'save')}
+                                ${TBui.actionButton('no reason', 'no-reason')}
+                                ${TBui.actionButton('cancel and approve', 'cancel')}
+                            `,
+                        },
+                    ],
+                    details: data,
+                    tabOrientation: 'horizontal',
+                });
 
-                popup = $(popup).appendTo('body').find('attrs').attr(data).end();
+                $overlay.addClass('reason-popup');
+                $overlay.attr('id', `reason-popup-${data.subreddit}`);
+
+                // RRs don't have a close button
+                // TODO: is this desired? also if so, refactor this into an option
+                //       in TBui.overlay()
+                $overlay.find('.buttons .close').remove();
+
+                $overlay.appendTo('body');
 
                 let reasons = [];
                 if (isComment) {
@@ -556,31 +631,47 @@ export default new Module({
                     reasons = data.reasons_posts;
                 }
 
-                // Render reasons and add to popup
+                // Render reasons and add to window
                 $(reasons).each(function (index) {
                     const reasonMarkdown = `${this.text}\n\n`;
                     const reasonHtml = parser.render(reasonMarkdown);
 
                     const tr = $(`
-                    <tr class="selectable-reason">
-                    <td class="removal-toggle">
-                    <input type="checkbox" class="reason-check" name="reason-${data.subreddit}" id="reason-${data.subreddit}-${index}" />
-                    <div class="reason-num">${index + 1}</div>
-                    </td>
-                    <td class="reason">
-                    <div class="removal-reason-title">${this.title ? this.title : ''}</div>
-                    <div class="styled-reason reason-content ${data.subreddit}-${index}">${reasonHtml}<br /></div>
-                    </td>
-                    <td class="flair-text"><span class="flair-text-span">${
-                        this.flairText ? this.flairText : ''
-                    }</span></td>
-                    <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ''}</span></td>
-                    <td class="removal-reasons-sort-buttons">
-                        <a href="javascript:;" class="tb-live-sort-up tb-icons">${TBui.icons.sortUp}</a>
-                        <a href="javascript:;" class="tb-live-sort-down tb-icons">${TBui.icons.sortDown}</a>
-                    </td>
-                    </tr>
-                `);
+                        <tr class="selectable-reason">
+                            <td class="removal-toggle">
+                                <input
+                                    type="checkbox"
+                                    class="reason-check"
+                                    name="reason-${data.subreddit}"
+                                    id="reason-${data.subreddit}-${index}"
+                                />
+                                <div class="reason-num">${index + 1}</div>
+                            </td>
+                            <td class="reason">
+                                <div class="removal-reason-title">
+                                    ${this.title || ''}
+                                </div>
+                                <div class="styled-reason reason-content ${data.subreddit}-${index}">
+                                    ${reasonHtml}
+                                    <br />
+                                </div>
+                           </td>
+                            <td class="flair-text">
+                                <span class="flair-text-span">
+                                    ${this.flairText || ''}
+                                </span>
+                            </td>
+                            <td class="flair-css">
+                                <span class="flair-css-span">
+                                    ${this.flairCSS || ''}
+                                </span>
+                            </td>
+                            <td class="removal-reasons-sort-buttons">
+                                <a href="javascript:;" class="tb-live-sort-up tb-icons">${TBui.icons.sortUp}</a>
+                                <a href="javascript:;" class="tb-live-sort-down tb-icons">${TBui.icons.sortDown}</a>
+                            </td>
+                        </tr>
+                    `);
 
                     tr.data({
                         reasonId: index,
@@ -599,38 +690,37 @@ export default new Module({
                         tr.find('.removal-reason-title').remove();
                     }
 
-                    popup.find('#reason-table').append(tr);
+                    $overlay.find('#reason-table').append(tr);
                 });
 
                 // Pre-fill reason input elements which have IDs.
-                popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
+                $overlay.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
                     this.id = `reason-input-${data.subreddit}-${this.id}`;
                     this.value = await TBStorage.getCache('RReasons', this.id, this.value);
                 });
             }
 
-            function openPopup () {
+            function openOverlay () {
                 // Reset state
-                $popup.find('attrs').attr(data);
-                $popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
-                $popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
-                $popup.find('.status').hide(); // css('display: none;');
-                $popup.find('.error-highlight').removeClass('error-highlight');
-                $popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
+                Object.entries(data).forEach(([key, value]) => {
+                    $overlay.attr(`data-${key}`, value);
+                });
+                $overlay.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
+                $overlay.find('.selectable-reason.reason-selected').removeClass('reason-selected');
+                $overlay.find('.tb-reason-popup-status').hide(); // css('display: none;');
+                $overlay.find('.error-highlight').removeClass('error-highlight');
+                $overlay.find('.mte-thread-link').attr('href', data.url).text(data.title);
 
                 // Open popup
-                /* popup.css({
-                    display: ''
-                    });*/
-                $popup.show();
+                $overlay.show();
                 $body.css('overflow', 'hidden');
             }
         },
     );
 
     // Popup events
-    function removePopup (popup) {
-        popup.remove();
+    function removeOverlay ($overlay) {
+        $overlay.remove();
         $body.css('overflow', 'auto');
     }
 
@@ -703,18 +793,17 @@ export default new Module({
 
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
-        const popup = $(this).parents('.reason-popup');
-        removePopup(popup);
+        const $overlay = $(this).parents('.reason-popup');
+        removeOverlay($overlay);
     });
 
     // 'cancel' button clicked
     $body.on('click', '.reason-popup .cancel', function () {
-        const popup = $(this).parents('.reason-popup');
-        const status = popup.find('.status');
-        const attrs = popup.find('attrs');
+        const $overlay = $(this).parents('.reason-popup');
+        const status = $overlay.find('.tb-reason-popup-status');
 
-        TBApi.approveThing(attrs.attr('fullname')).then(() => {
-            removePopup(popup);
+        TBApi.approveThing($overlay.attr('data-fullname')).then(() => {
+            removeOverlay($overlay);
         }).catch(() => {
             status.text(APPROVE_ERROR);
         });
@@ -722,20 +811,19 @@ export default new Module({
 
     // 'save' button clicked
     $body.on('click', '.reason-popup .save', function () {
-        const popup = $(this).parents('.reason-popup');
-        const notifyBy = popup.find('.reason-type:checked').val();
-        const notifyAsSub = popup.find('.reason-as-sub').prop('checked');
-        const autoArchive = popup.find('.reason-auto-archive').prop('checked');
-        const notifySticky = popup.find('.reason-sticky').prop('checked');
-        const actionLockThread = popup.find('.action-lock-thread').prop('checked');
-        const actionLockComment = popup.find('.action-lock-comment').prop('checked');
-        const reasonCommentAsSubreddit = popup.find('.reason-comment-as-subreddit').prop('checked');
-        const checked = popup.find('.reason-check:checked');
-        const status = popup.find('.status');
-        const attrs = popup.find('attrs');
-        const header = TBHelpers.htmlDecode(attrs.attr('header'));
-        const footer = TBHelpers.htmlDecode(attrs.attr('footer'));
-        const logReason = popup.find('#log-reason-input').val();
+        const $overlay = $(this).parents('.reason-popup');
+        const notifyBy = $overlay.find('.reason-type:checked').val();
+        const notifyAsSub = $overlay.find('.reason-as-sub').prop('checked');
+        const autoArchive = $overlay.find('.reason-auto-archive').prop('checked');
+        const notifySticky = $overlay.find('.reason-sticky').prop('checked');
+        const actionLockThread = $overlay.find('.action-lock-thread').prop('checked');
+        const actionLockComment = $overlay.find('.action-lock-comment').prop('checked');
+        const reasonCommentAsSubreddit = $overlay.find('.reason-comment-as-subreddit').prop('checked');
+        const checked = $overlay.find('.reason-check:checked');
+        const status = $overlay.find('.tb-reason-popup-status');
+        const header = TBHelpers.htmlDecode($overlay.attr('data-header'));
+        const footer = TBHelpers.htmlDecode($overlay.attr('data-footer'));
+        const logReason = $overlay.find('#log-reason-input').val();
         const data = {
             subreddit: '',
             fullname: '',
@@ -752,18 +840,18 @@ export default new Module({
             uri_body: '',
             uri_title: '',
         };
-        let subject = attrs.attr('subject');
-        let logTitle = attrs.attr('logTitle');
+        let subject = $overlay.attr('data-subject');
+        let logTitle = $overlay.attr('data-logTitle');
 
         // Update status
         status.text(STATUS_DEFAULT_TEXT);
         status.show();
-        popup.find('.error-highlight').removeClass('error-highlight');
+        $overlay.find('.error-highlight').removeClass('error-highlight');
 
         // Check if reason checked
         const noneSelected = $('body').find('.reason-type:checked').val();
         if (!checked.length && noneSelected !== 'none') {
-            popup.find('#reason-table').addClass('error-highlight');
+            $overlay.find('#reason-table').addClass('error-highlight');
             return status.text(NO_REASON_ERROR);
         }
 
@@ -831,18 +919,18 @@ export default new Module({
         const reasonlength = reason.trim().length;
 
         // // Add header if selected
-        if (popup.find('#include-header').is(':checked')) {
+        if ($overlay.find('#include-header').is(':checked')) {
             reason = `${header}\n\n${reason}`;
         }
 
         // // Add footer if selected
-        if (popup.find('#include-footer').is(':checked')) {
+        if ($overlay.find('#include-footer').is(':checked')) {
             reason += `\n\n${footer}`;
         }
 
         // // Convert attribs back to data.
         for (const i of Object.keys(data)) {
-            data[i] = attrs.attr(i);
+            data[i] = $overlay.attr(`data-${i}`);
         }
 
         reason = TBHelpers.replaceTokens(data, reason);
@@ -873,7 +961,7 @@ export default new Module({
             if (logTitle.indexOf('{reason}') >= 0) {
                 // Check if a log reason is selected
                 if (!logReason) {
-                    popup.find('#log-reason-input').addClass('error-highlight');
+                    $overlay.find('#log-reason-input').addClass('error-highlight');
                     return status.text(LOG_REASON_MISSING_ERROR);
                 }
 
@@ -888,7 +976,7 @@ export default new Module({
                 TBApi.approveThing(logThingId);
 
                 if (noneSelected === 'none') {
-                    removePopup(popup);
+                    removeOverlay($overlay);
                 } else {
                     sendRemovalMessage(loglinkToken);
                 }
@@ -907,7 +995,7 @@ export default new Module({
             if (reasonlength < 1) {
                 if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
                     // We'll flair only flair, we are done here.
-                    return removePopup(popup);
+                    return removeOverlay($overlay);
                 } else {
                     return status.text(NO_REASON_ERROR);
                 }
@@ -915,7 +1003,7 @@ export default new Module({
 
             // Check if a valid notification type is selected
             if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
-                popup.find('#buttons').addClass('error-highlight');
+                $overlay.find('#buttons').addClass('error-highlight');
                 return status.text(NO_REPLY_TYPE_ERROR);
             }
 
@@ -970,7 +1058,7 @@ export default new Module({
                         } else if (notifyByPM) {
                             sendPM();
                         } else {
-                            removePopup(popup);
+                            removeOverlay($overlay);
                         }
                     }).catch(() => {
                         status.text(REPLY_ERROR_SUBREDDIT);
@@ -987,7 +1075,7 @@ export default new Module({
                                 } else if (notifyByPM) {
                                     sendPM();
                                 } else {
-                                    removePopup(popup);
+                                    removeOverlay($overlay);
                                 }
                             }).catch(() => {
                                 status.text(DISTINGUISH_ERROR);
@@ -997,7 +1085,7 @@ export default new Module({
                                 const commentId = response.json.data.things[0].data.id;
                                 self.log(`Fullname of reply: ${commentId}`);
                                 TBApi.lock(commentId).then(() => {
-                                    removePopup(popup);
+                                    removeOverlay($overlay);
                                 }).catch(() => {
                                     status.text(LOCK_COMMENT_ERROR);
                                 });
@@ -1019,7 +1107,7 @@ export default new Module({
 
                 self.log('Sending removal message by PM');
                 TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
-                    removePopup(popup);
+                    removeOverlay($overlay);
                 }).catch(() => {
                     status.text(PM_ERROR);
                 });
@@ -1042,10 +1130,10 @@ export default new Module({
                         const isInternal = data.conversation.isInternal;
                         if (autoArchive && !isInternal) {
                             TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
-                                removePopup(popup);
+                                removeOverlay($overlay);
                             });
                         } else {
-                            removePopup(popup);
+                            removeOverlay($overlay);
                         }
                     }).catch(() => {
                         status.text(MODMAIL_ARCHIVE_ERROR);

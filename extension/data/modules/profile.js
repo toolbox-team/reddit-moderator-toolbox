@@ -4,7 +4,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.js';
+import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 
@@ -745,12 +745,14 @@ export default new Module({
             }</a>
                 </div>`).appendTo($options);
 
-            $options.append(`<form class="tb-searchuser">
-                        search: <input type="text" placeholder="subreddit" class="tb-subredditsearch tb-input tb-search-input"> <input type="text" placeholder="content (optional)" class="tb-contentsearch tb-input tb-search-input">
-                        <label> <input type="checkbox" class="tb-search-sort"> use sort selection </label>
-                        <input type="submit" value=" search " class="tb-action-button">
+            $options.append(`
+                <form class="tb-searchuser">
+                    search: <input type="text" placeholder="subreddit" class="tb-subredditsearch tb-input tb-search-input"> <input type="text" placeholder="content (optional)" class="tb-contentsearch tb-input tb-search-input">
+                    <label> <input type="checkbox" class="tb-search-sort"> use sort selection </label>
+                    <input type="submit" value=" search " class="tb-action-button">
                 </form>
-                <input type="button" value="cancel search" class="tb-action-button tb-cancel-profile-search">`);
+                ${TBui.actionButton('cancel search', 'tb-cancel-profile-search')}
+            `);
             initSearchSuggestion(subreddit);
         }
 

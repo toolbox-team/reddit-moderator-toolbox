@@ -44,15 +44,27 @@ inquirer
             manifestContentFirefox.version_name = `${answers.newVersion}: "${answers.newVersionName}"`;
             manifestContentChrome.version_name = `${answers.newVersion}: "${answers.newVersionName}"`;
 
-            fs.writeFileSync(chromeManifestLocation, JSON.stringify(manifestContentChrome, null, 4), 'utf8', err => {
-                if (err) {
-                    throw err;
-                }
-            });
-            fs.writeFileSync(firefoxManifestLocation, JSON.stringify(manifestContentFirefox, null, 4), 'utf8', err => {
-                if (err) {
-                    throw err;
-                }
-            });
+            fs.writeFileSync(
+                chromeManifestLocation,
+                // include trailing newline
+                `${JSON.stringify(manifestContentChrome, null, 4)}\n`,
+                'utf8',
+                err => {
+                    if (err) {
+                        throw err;
+                    }
+                },
+            );
+            fs.writeFileSync(
+                firefoxManifestLocation,
+                // include trailing newline
+                `${JSON.stringify(manifestContentFirefox, null, 4)}\n`,
+                'utf8',
+                err => {
+                    if (err) {
+                        throw err;
+                    }
+                },
+            );
         }
     });

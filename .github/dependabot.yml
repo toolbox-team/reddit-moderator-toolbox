@@ -7,5 +7,9 @@ updates:
     labels:
       - dependencies
     ignore:
+      # do not notify of patch updates (unless security-relevant; see https://github.blog/changelog/2021-05-21-dependabot-version-updates-can-now-ignore-major-minor-patch-releases/)
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+      # hold codemirror on v5
       - dependency-name: "codemirror"
         update-types: ["version-update:semver-major"]

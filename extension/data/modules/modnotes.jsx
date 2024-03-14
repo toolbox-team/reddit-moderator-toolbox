@@ -294,8 +294,6 @@ function ModNotesBadge ({
             className='tb-bracket-button tb-modnote-badge'
             tabIndex='0'
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
-            data-user='${user}'
-            data-subreddit='${subreddit}'
             onClick={onClick}
         >
             {badgeContents}

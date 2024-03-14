@@ -276,6 +276,8 @@ async function getContextURL (note) {
  */
 function ModNotesBadge ({
     label = 'NN',
+    user,
+    subreddit,
     note,
     onClick,
 }) {
@@ -543,6 +545,8 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
         <>
             <ModNotesBadge
                 label='NN'
+                user={user}
+                subreddit={subreddit}
                 note={note}
                 onClick={() => setPopupShown(true)}
             />

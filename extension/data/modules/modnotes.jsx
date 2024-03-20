@@ -7,6 +7,7 @@ import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
+import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
 import {textFeedback, TextFeedbackKind} from '../tbui.js';
@@ -18,6 +19,8 @@ import {ProgressivePager} from '../components/ProgressivePager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
 import {reactRenderer} from '../util/ui_interop.tsx';
+
+const log = TBLog('ModNotes');
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -315,7 +318,7 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
             // TODO: present note deletion visibly to user
             textFeedback('Note removed!', TextFeedbackKind.POSITIVE);
         } catch (error) {
-            this.error('Failed to delete note:', error);
+            log.error('Failed to delete note:', error);
             textFeedback('Failed to delete note', TextFeedbackKind.NEGATIVE);
         }
     }
@@ -415,7 +418,7 @@ function ModNotesPopup ({
             // Close the popup after a successful save
             onClose();
         } catch (error) {
-            this.error('Failed to create mod note:', error);
+            log.error('Failed to create mod note:', error);
             textFeedback('Failed to create mod note', TextFeedbackKind.NEGATIVE);
         }
     }

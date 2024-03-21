@@ -325,14 +325,10 @@ export default new Module({
         if (hidden) {
             $modBar.hide();
             $modbarhid.show();
-            $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
             $body.toggleClass('tb-modbar-shown', false); // New modmail uses this style to add space to the bottom of the page
         } else {
             $modBar.show();
             $modbarhid.hide();
-            if (consoleShowing && debugMode) {
-                $body.find('.tb-debug-window').show();
-            }
             $body.toggleClass('tb-modbar-shown', true);
         }
         this.set('modbarHidden', hidden);

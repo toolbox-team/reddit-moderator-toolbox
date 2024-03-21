@@ -63,12 +63,6 @@ export default new Module({
             hidden: true,
         },
         {
-            id: 'consoleShowing',
-            type: 'boolean',
-            default: false,
-            hidden: true,
-        },
-        {
             id: 'lockScroll',
             type: 'boolean',
             default: false,
@@ -106,10 +100,14 @@ export default new Module({
     enableModSubs,
     enableOldNewToggle,
     customCSS,
-    consoleShowing,
     modbarHidden,
     subredditColorSalt,
 }) {
+    // Clean up old settings related to the now-removed dev console
+    // TODO: Remove this a couple versions from now when people have reasonably
+    //       probably updated past this
+    TBStorage.setSettingAsync(this.id, 'consoleShowing', undefined);
+
     const $body = $('body');
 
     // Footer element below the page so toolbox never should be in the way.

@@ -32,7 +32,9 @@ export function getPlatform () {
     if (document.getElementById('AppRouter-main-content')) {
         return RedditPlatform.NEW;
     }
-    // TODO: shreddit
+    if (document.querySelector('shreddit-app')) {
+        return RedditPlatform.SHREDDIT;
+    }
     return null;
 }
 
@@ -52,7 +54,9 @@ export function isUserLoggedInQuick () {
         case RedditPlatform.NEW:
             return !!document.getElementById('USER_DROPDOWN_ID')?.innerText;
 
-        // TODO: shreddit
+        // shreddit will have an attribute `user-logged-in` on its app root
+        case RedditPlatform.SHREDDIT:
+            return !!document.querySelector('shreddit-app[user-logged-in=true]');
 
         // modmai will have a username in the user menu in the header
         case RedditPlatform.MODMAIL:

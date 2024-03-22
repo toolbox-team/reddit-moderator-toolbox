@@ -34,8 +34,7 @@ import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
 
 import AppRoot from './AppRoot';
-import {documentInteractive} from './util/dom.js';
-import {reactRenderer} from './util/ui_interop.js';
+import {isUserLoggedInQuick} from './util/platform';
 
 import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';
@@ -104,36 +103,16 @@ async function checkReset () {
 }
 
 /**
- * Checks whether or not there's a user logged in, retrying a handful of times
- * in case new Reddit hasn't fully loaded yet. Also checks if we've already
+ * Checks whether or not there's a user logged in. Also checks if we've already
  * loaded in this window, and whether we're in a Firefox incognito window. If
  * this function ultimately returns `false`, the init process should end early.
  * @param {number} [tries=3] Number of times to try getting a logged-in user
  * @returns {Promise<void>}
  */
 async function checkLoadConditions (tries = 3) {
-    let loggedinRedesign = false;
-    let loggedinOld = false;
-
-    const $body = $('body');
-
-    // Check for redesign
-    if (
-        $body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text()
-        || $body.find('.Header__profile').length
-    ) {
-        loggedinRedesign = true;
-    }
-
-    // Check for old reddit
-    if (
-        $body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length
-        || $body.hasClass('loggedin')
-    ) {
-        loggedinOld = true;
-    }
-
-    if (!loggedinOld && !loggedinRedesign) {
+    // Make a quick check for signs of life before sending off API requests to
+    // get information about the logged-in user
+    if (!isUserLoggedInQuick()) {
         if (tries < 1) {
             // We've tried a bunch of times and still don't have anything, so
             // assume there's no logged-in user
@@ -144,6 +123,8 @@ async function checkLoadConditions (tries = 3) {
             return checkLoadConditions(tries - 1);
         }
     }
+
+    const $body = $('body');
 
     // When firefox updates extension they get reloaded including all content scripts. Old elements remain on the page though.
     // Toolbox doesn't like this very much.

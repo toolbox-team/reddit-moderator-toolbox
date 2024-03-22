@@ -35,3 +35,30 @@ export function getPlatform () {
     // TODO: shreddit
     return null;
 }
+
+/**
+ * A quick check to determine whether there's a logged-in user or not. We don't
+ * actually need to get any information about the currently logged-in user this
+ * way; we just want to see if there is one before we start sending API requests
+ * to get user information and authentication/modhash.
+ */
+export function isUserLoggedInQuick () {
+    switch (getPlatform()) {
+        // old Reddit sets the `loggedin` class on the body
+        case RedditPlatform.OLD:
+            return document.body.classList.contains('loggedin');
+
+        // new Reddit will have text in `#USER_DROPDOWN_ID` (username, karma, etc)
+        case RedditPlatform.NEW:
+            return !!document.getElementById('USER_DROPDOWN_ID')?.innerText;
+
+        // TODO: shreddit
+
+        // modmai will have a username in the user menu in the header
+        case RedditPlatform.MODMAIL:
+            return !!document.querySelector('.Header__user:not(:empty)');
+
+        default:
+            return false;
+    }
+}

@@ -7,7 +7,7 @@ import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
-import {currentPlatform, RedditPlatform} from './util/platform.js';
+import {currentPlatform, RedditPlatform} from './util/platform.ts';
 
 const logger = TBLog('TBCore');
 

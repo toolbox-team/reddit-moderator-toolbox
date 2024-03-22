@@ -34,7 +34,9 @@ import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
 
 import AppRoot from './AppRoot';
+import {documentInteractive} from './util/dom';
 import {isUserLoggedInQuick} from './util/platform';
+import {reactRenderer} from './util/ui_interop';
 
 import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';

@@ -328,13 +328,6 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     vertical-align: middle;
 }
 
-/* console stuff */
-.mod-toolbox-rd .tb-debug-window .CodeMirror {
-    width: 800px;
-    height: 600px;
-    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
-}
-
 /* Backup warnings in settings dialog */
 /* TODO: put these in toolbox.css? Don't strictly pertain to the modbar... */
 .mod-toolbox-rd .backup-warning {

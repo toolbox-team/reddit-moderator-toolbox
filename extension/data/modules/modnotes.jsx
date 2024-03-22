@@ -10,9 +10,11 @@ import TBListener from '../tblistener.js';
 import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
-import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
+import {drawPosition, FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
 
 import {useState} from 'react';
+import {createPortal} from 'react-dom';
+
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
@@ -375,6 +377,7 @@ function ModNotesPopup ({
     contextID,
     defaultTabName,
     defaultNoteLabel,
+    initialPosition,
     onClose,
 }) {
     const tabs = [
@@ -457,6 +460,7 @@ function ModNotesPopup ({
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
             footer={popupFooter}
             draggable
+            initialPosition={initialPosition}
             onClose={onClose}
         >
             <WindowTabs
@@ -543,23 +547,46 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
     const note = useFetched(getLatestModNote(subreddit, user));
 
     const [popupShown, setPopupShown] = useState(false);
+    const [popupClickEvent, setPopupClickEvent] = useState(null);
+
+    /** @type {{top: number; left: number} | undefined} */
+    let initialPosition = undefined;
+    if (popupClickEvent) {
+        const positions = drawPosition(popupClickEvent);
+        initialPosition = {
+            top: positions.topPosition,
+            left: positions.leftPosition,
+        };
+    }
+
+    function showPopup (event) {
+        setPopupShown(true);
+        setPopupClickEvent(event);
+    }
+
+    function hidePopup () {
+        setPopupShown(false);
+        setPopupClickEvent(null);
+    }
 
     return (
         <>
             <ModNotesBadge
                 label='NN'
                 note={note}
-                onClick={() => setPopupShown(true)}
+                onClick={showPopup}
             />
-            {popupShown && (
+            {popupShown && createPortal(
                 <ModNotesPopup
                     user={user}
                     subreddit={subreddit}
                     contextID={contextID}
                     defaultTabName={defaultTabName}
                     defaultNoteLabel={defaultNoteLabel}
-                    onClose={() => setPopupShown(false)}
-                />
+                    initialPosition={initialPosition}
+                    onClose={hidePopup}
+                />,
+                document.body,
             )}
         </>
     );

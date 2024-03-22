@@ -22,7 +22,7 @@ export enum RedditPlatform {
     MODMAIL,
 }
 
-export function getPlatform () {
+export const currentPlatform = (() => {
     if (location.host === 'mod.reddit.com') {
         return RedditPlatform.MODMAIL;
     }
@@ -36,7 +36,7 @@ export function getPlatform () {
         return RedditPlatform.SHREDDIT;
     }
     return null;
-}
+})();
 
 /**
  * A quick check to determine whether there's a logged-in user or not. We don't
@@ -45,7 +45,7 @@ export function getPlatform () {
  * to get user information and authentication/modhash.
  */
 export function isUserLoggedInQuick () {
-    switch (getPlatform()) {
+    switch (currentPlatform) {
         // old Reddit sets the `loggedin` class on the body
         case RedditPlatform.OLD:
             return document.body.classList.contains('loggedin');

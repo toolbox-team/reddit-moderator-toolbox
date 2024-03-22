@@ -1,7 +1,7 @@
 // Utilities for platform-specific handling of things.
 
 /** Different Reddit platforms/frontends into which Toolbox might be loaded. */
-enum RedditPlatform {
+export enum RedditPlatform {
     /** "old Reddit," old.reddit.com */
     OLD,
     /**

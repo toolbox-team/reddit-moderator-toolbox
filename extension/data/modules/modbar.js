@@ -220,7 +220,7 @@ export default new Module({
             <a href="${TBCore.link('/message/inbox/')}" id="tb-mailCount"></a>
             <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${
         openMailTab ? 'target="_blank"' : ''
-    }>${TBui.icons.newModmail}</a>
+    }>${TBui.icons.modmail}</a>
             <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}></a>
             <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">${TBui.icons.modqueue}</a>
             <a href="${modQueueUrl}" id="tb-queueCount"></a>

@@ -61,7 +61,7 @@ export const isMod = $('body.moderator').length;
 /** @deprecated Check {@linkcode currentPlatform} directly instead. */
 export const isOldReddit = currentPlatform === RedditPlatform.OLD;
 /** @deprecated Check {@linkcode currentPlatform} directly instead. */
-export const isNewModmail = currentPlatform === RedditPlatform.NEW;
+export const isNewModmail = currentPlatform === RedditPlatform.MODMAIL;
 export const isNewMMThread = $('body').find('.ThreadViewer').length > 0;
 export const isEmbedded = $('body').hasClass('embedded-page');
 export let pageDetails = {};

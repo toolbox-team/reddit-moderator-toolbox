@@ -24,6 +24,7 @@ export const WindowTabs = ({vertical = false, tabs, defaultTabIndex = 0}: {
                         key={i}
                         title={tab.tooltip}
                         onClick={() => setActiveIndex(i)}
+                        className={activeIndex === i ? 'active' : undefined}
                     >
                         {tab.title}
                     </a>

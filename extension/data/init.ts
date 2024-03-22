@@ -49,7 +49,6 @@ import HistoryButton from './modules/historybutton.js';
 import Macros from './modules/macros.js';
 import Modbar from './modules/modbar.js';
 import ModButton from './modules/modbutton.js';
-import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
 import ModNotes from './modules/modnotes.jsx';
 import NewModmailPro from './modules/newmodmailpro.js';
@@ -351,7 +350,6 @@ async function doSettingsUpdates () {
             Usernotes,
             Comment,
             NewModmailPro,
-            ModmailPro,
             Macros,
             PersonalNotes,
             HistoryButton,

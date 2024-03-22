@@ -7,6 +7,7 @@ import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
+import {currentPlatform, RedditPlatform} from './util/platform.js';
 
 const logger = TBLog('TBCore');
 
@@ -57,8 +58,10 @@ export const shortVersion = JSON.parse(
 // Details about the current page
 const $body = $('body');
 export const isMod = $('body.moderator').length;
-export const isOldReddit = $('#header').length;
-export const isNewModmail = location.host === 'mod.reddit.com';
+/** @deprecated Check {@linkcode currentPlatform} directly instead. */
+export const isOldReddit = currentPlatform === RedditPlatform.OLD;
+/** @deprecated Check {@linkcode currentPlatform} directly instead. */
+export const isNewModmail = currentPlatform === RedditPlatform.NEW;
 export const isNewMMThread = $('body').find('.ThreadViewer').length > 0;
 export const isEmbedded = $('body').hasClass('embedded-page');
 export let pageDetails = {};

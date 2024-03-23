@@ -7,23 +7,26 @@ import {ReactNode, useEffect, useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 import {onDOMAttach} from './dom';
 
+import browser from 'webextension-polyfill';
+
 /**
  * Returns a <div> DOM element which renders the given React/JSX content when
  * added to the page.
  */
 export function reactRenderer (content: ReactNode) {
-    const contentRoot = document.createElement('div');
-    contentRoot.classList.add('tb-react-root');
+    const contentShadowHost = document.createElement('div');
+    contentShadowHost.classList.add('tb-react-shadow-host');
+    const shadowRoot = contentShadowHost.attachShadow({mode: 'open'});
     // Don't give this div its own box in the box model - just use the box of
     // whatever we're rendering inside. This avoids subtle layout issues when
     // the rendered content's top-level element is `inline` or `inline-block`
     // or something else exotic like `table-*`.
     // see https://developer.mozilla.org/en-US/docs/Web/CSS/display#contents
-    contentRoot.style.display = 'contents';
-    onDOMAttach(contentRoot, () => {
-        createRoot(contentRoot).render(content);
+    contentShadowHost.style.display = 'contents';
+    onDOMAttach(contentShadowHost, () => {
+        createRoot(shadowRoot).render(content);
     });
-    return contentRoot;
+    return contentShadowHost;
 }
 
 /** A React component which renders a jQuery element as its contents. */

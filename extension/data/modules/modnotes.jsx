@@ -13,6 +13,7 @@ import {setSettingAsync} from '../tbstorage.js';
 import {textFeedback, TextFeedbackKind} from '../tbui.js';
 
 import {useState} from 'react';
+import {ActionButton} from '../components/controls/ActionButton.tsx';
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
@@ -442,12 +443,9 @@ function ModNotesPopup ({
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
-            <button
-                type='submit'
-                className='tb-action-button'
-            >
+            <ActionButton type='submit'>
                 Create Note
-            </button>
+            </ActionButton>
         </form>
     );
 

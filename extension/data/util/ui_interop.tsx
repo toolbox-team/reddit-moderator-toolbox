@@ -24,7 +24,12 @@ export function reactRenderer (content: ReactNode) {
     // see https://developer.mozilla.org/en-US/docs/Web/CSS/display#contents
     contentShadowHost.style.display = 'contents';
     onDOMAttach(contentShadowHost, () => {
-        createRoot(shadowRoot).render(content);
+        createRoot(shadowRoot).render([
+            // pull in bundled stylesheet which contains all the CSS module code for our React components
+            <link rel='stylesheet' type='text/css' href={browser.runtime.getURL('data/bundled.css')} />,
+            // then insert the actual content
+            content,
+        ]);
     });
     return contentShadowHost;
 }

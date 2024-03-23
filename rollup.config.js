@@ -1,11 +1,13 @@
 /* eslint-env node */
 
-// import nodeResolve from '@rollup/plugin-node-resolve';
+import path from 'node:path';
+
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
+import postcss from 'rollup-plugin-postcss';
 
 // TODO: Pull entry point info and copied files from manifest itself
 export default ['chrome', 'firefox'].flatMap(platform => [
@@ -23,6 +25,9 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                     // the jsx runtime wants this to be defined
                     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
                 },
+            }),
+            postcss({
+                extract: path.resolve(`build/${platform}/data/bundled.css`),
             }),
             nodeResolve(),
             commonjs(),

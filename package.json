@@ -57,6 +57,7 @@
         "jsdoc": "^4.0.2",
         "rollup": "^4.9.6",
         "rollup-plugin-copy": "^3.5.0",
+        "rollup-plugin-postcss": "^4.0.2",
         "typescript": "^5.4.3"
     }
 }

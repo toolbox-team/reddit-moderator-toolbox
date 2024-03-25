@@ -316,7 +316,6 @@ export function debugInformation () {
         browser: '',
         browserVersion: '',
         platformInformation: '',
-        betaMode: TBStorage.getSetting('Utils', 'betaMode', false),
         debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
         compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
         advancedSettings: TBStorage.getSetting('Utils', 'advancedMode', false),
@@ -411,7 +410,6 @@ export function debugInformation () {
  * @property {string} browser Browser used (Firefox, Chrome, etc)
  * @property {string} browserVersion The version of the browser
  * @property {string} platformInformation Other platform information
- * @property {boolean} betaMode toolbox beta mode enabled
  * @property {boolean} debugMode  toolbox debugMode enabled
  * @property {boolean} compactMode toolbox compactmode enabled
  * @property {boolean} advancedSettings toolbox advanced settings enabled

@@ -28,7 +28,7 @@ const TBModule = {
             }
 
             // Don't do anything with beta modules unless beta mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
+            if (module.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                 // skip this module entirely
                 logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                 return;
@@ -63,7 +63,6 @@ const TBModule = {
         // preload some generic variables
         //
         const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
-        const betaMode = await TBStorage.getSettingAsync('Utils', 'betaMode', false);
         const advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false);
 
         const settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', '');
@@ -125,13 +124,6 @@ const TBModule = {
                     debugMode ? 'checked' : ''
                 }> Enable debug mode</label>`,
                 display: advancedMode ? '' : displayNone,
-            },
-            {
-                settingName: 'betamode',
-                content: `<label><input type="checkbox" id="betaMode" ${
-                    betaMode ? 'checked' : ''
-                }> Enable beta features</label>`,
-                display: '',
             },
             {
                 settingName: 'advancedmode',
@@ -445,7 +437,6 @@ const TBModule = {
             }
 
             TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
-            TBStorage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
             TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
 
             await TBStorage.setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
@@ -564,7 +555,7 @@ const TBModule = {
         const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
         for (const module of sortedModules) {
             // Don't do anything with beta modules unless beta mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
+            if (!['beta', 'dev'].includes(TBCore.buildType) && module.beta) {
                 continue;
             }
 

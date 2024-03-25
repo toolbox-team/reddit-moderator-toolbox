@@ -10,8 +10,12 @@ import * as TBStorage from './tbstorage.js';
 
 const logger = TBLog('TBCore');
 
-/** If true, this version of Toolbox is a beta release. */
-export const betaRelease = false; // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+// Build variables defined by Rollup
+/* global process */
+/** @type {'stable' | 'beta' | 'dev'} */
+export const buildType = process.env.BUILD_TYPE;
+/** @type {string | null} */
+const buildSha = process.env.BUILD_SHA;
 
 // Schema versioning information
 // TODO: Put these into the files they're used in, rather than keeping them here
@@ -46,13 +50,20 @@ export function isConfigValidVersion (subreddit, config) {
 
 // Generated version strings
 const manifest = browser.runtime.getManifest();
-const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
-const matchVersion = manifest.version_name.match(versionRegex);
-export const toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
-export const toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
-export const shortVersion = JSON.parse(
-    `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`,
-);
+const versionRegex = /(?<major>\d\d?)\.(?<minor>\d\d?)\.(?<patch>\d\d?)(?:\.(?<build>\d+))?.*?"(?<name>.*?)"/;
+const versionGroups = manifest.version_name.match(versionRegex).groups;
+
+const basicVersion = `${versionGroups.major}.${versionGroups.minor}.${versionGroups.patch}`;
+const buildVersion = `${basicVersion}.${versionGroups.build || 0}`;
+const namedVersion = `${basicVersion} "${versionGroups.name}"`;
+const prereleaseSuffix = buildType === 'stable'
+    ? ''
+    : ` (${buildType} build ${versionGroups.build || 0} from ${buildSha || 'local copy'})`;
+
+export const shortBuildInfo = `${buildVersion} ${buildType} ${buildSha || ''}`.trim();
+export const toolboxVersion = basicVersion + prereleaseSuffix;
+export const toolboxVersionName = namedVersion + prereleaseSuffix;
+export const shortVersion = versionGroups.major * 10000 + versionGroups.minor * 100 + versionGroups.patch * 1;
 
 // Details about the current page
 const $body = $('body');
@@ -607,7 +618,7 @@ async function fetchNewsNotes (sub) {
 export function displayNotes () {
     fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
 
-    if (betaRelease) {
+    if (buildType === 'beta') {
         fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(logger.warn);
     }
 }

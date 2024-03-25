@@ -570,7 +570,6 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
 export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
-    beta: true,
     enabledByDefault: true,
     settings: [
         {

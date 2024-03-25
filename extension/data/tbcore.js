@@ -58,9 +58,9 @@ const buildVersion = `${basicVersion}.${versionGroups.build || 0}`;
 const namedVersion = `${basicVersion} "${versionGroups.name}"`;
 const prereleaseSuffix = buildType === 'stable'
     ? ''
-    : ` (${buildType} build ${versionGroups.build || 0} from ${buildSha || 'local copy'})`;
+    : ` (${buildType} build ${versionGroups.build || 0} from ${buildSha?.slice(0, 7) || 'local copy'})`;
 
-export const shortBuildInfo = `${buildVersion} ${buildType} ${buildSha || ''}`.trim();
+export const shortBuildInfo = `${buildVersion} ${buildType} ${buildSha?.slice(0, 7) || ''}`.trim();
 export const toolboxVersion = basicVersion + prereleaseSuffix;
 export const toolboxVersionName = namedVersion + prereleaseSuffix;
 export const shortVersion = versionGroups.major * 10000 + versionGroups.minor * 100 + versionGroups.patch * 1;

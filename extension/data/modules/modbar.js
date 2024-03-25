@@ -468,6 +468,39 @@ export default new Module({
         }
     });
 
+    // Always add version label to modbar on non-stable versions
+    if (TBCore.buildType !== 'stable') {
+        $('#tb-bottombar').find('#tb-toolbarcounters').before(
+            $(`
+                <button
+                    id="tb-prerelease-link"
+                    href="${TBCore.link('/r/tb_beta')}"
+                    target="_blank"
+                    title="this is a ${TBCore.buildType} build of toolbox. click to copy version information"
+                />
+                    <i class="tb-icons">${TBui.icons.prerelease}</i>
+                    <span>${TBCore.shortBuildInfo}</span>
+                </button>
+            `).on('click', () => {
+                navigator.clipboard.writeText(TBCore.shortBuildInfo).then(() => {
+                    TBui.textFeedback(
+                        'Copied version information to clipboard',
+                        TBui.TextFeedbackKind.POSITIVE,
+                        undefined,
+                        TBui.TextFeedbackLocation.BOTTOM,
+                    );
+                }).catch(error => {
+                    TBui.textFeedback(
+                        `Failed to copy version info: ${error.message}`,
+                        TBui.TextFeedbackKind.NEGATIVE,
+                        undefined,
+                        TBui.TextFeedbackLocation.BOTTOM,
+                    );
+                });
+            }),
+        );
+    }
+
     if (debugMode) {
         // Reload button
         $('#tb-bottombar').find('#tb-toolbarcounters').before(

@@ -1,0 +1,91 @@
+name: "Publish"
+on:
+  push:
+    tags:
+    - "v*"
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    - run: npm ci
+    - run: npm run fmt
+    - run: npm run lint
+
+    - name: Update extension ID and name for Firefox
+      run: "cat extension/firefox_manifest.json | jq --indent 4 '.browser_specific_settings.gecko.id = \"toolbox-beta@toolbox-team.github.com\" | .name += \" - Beta\" | .' | tee extension/firefox_manifest.json"
+    - name: Update extension name for Chrome
+      run: "cat extension/chrome_manifest.json | jq --indent 4 '.name += \" - Beta\" | .' | tee extension/chrome_manifest.json"
+
+    - env:
+        BUILD_TYPE: beta
+        BUILD_SHA: ${{ github.sha }}
+      run: npm run build
+
+    - name: Zip Chrome build
+      run: |
+        pushd build/chrome
+        zip -r release-build-chrome.zip ./*
+        mv release-build-chrome.zip ../..
+        popd
+    - name: Zip Firefox build
+      run: |
+        pushd build/firefox
+        zip -r release-build-firefox.zip ./*
+        mv release-build-firefox.zip ../..
+        popd
+
+    - name: Upload release build artifact - Chrome
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-build-chrome
+        path: release-build-chrome.zip
+    - name: Upload release build artifact - Firefox
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-build-firefox
+        path: release-build-firefox.zip
+
+  publish-chrome:
+    runs-on: ubuntu-latest
+    needs: build-release
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: release-build-chrome
+    - uses: wdzeng/chrome-extension@v1
+      with:
+        extension-id: fdghjbbhkadpjhgoaglhafpiagpdbhem
+        zip-path: release-build-chrome.zip
+        client-id: ${{ secrets.CWS_CLIENT_ID }}
+        client-secret: ${{ secrets.CWS_CLIENT_SECRET }}
+        refresh-token: ${{ secrets.CWS_REFRESH_TOKEN }}
+
+  publish-firefox:
+    runs-on: ubuntu-latest
+    needs: build-release
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: release-build-firefox
+    - uses: wdzeng/firefox-addon@v1
+      with:
+        addon-guid: toolbox-beta@toolbox-team.github.com
+        xpi-path: release-build-firefox.zip
+        jwt-issuer: ${{ secrets.AMO_JWT_ISSUER }}
+        jwt-secret: ${{ secrets.AMO_JWT_SECRET }}
+
+  publish-github-release:
+    runs-on: ubuntu-latest
+    needs: build-release
+    steps:
+    - id: get-version
+      run: echo "version=${GITHUB_REF/refs\/tags\//}" >> "$GITHUB_OUTPUT"
+    - uses: eritbh/action-publish-release-drafts@b30c6d40e0a49c6cc5acb2f0edac09f2ba155b39
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        tag-name: ${{ steps.get-version.outputs.version }}

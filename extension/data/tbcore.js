@@ -50,20 +50,32 @@ export function isConfigValidVersion (subreddit, config) {
 
 // Generated version strings
 const manifest = browser.runtime.getManifest();
-const versionRegex = /(?<major>\d\d?)\.(?<minor>\d\d?)\.(?<patch>\d\d?)(?:\.(?<build>\d+))?.*?"(?<name>.*?)"/;
-const versionGroups = manifest.version_name.match(versionRegex).groups;
+const versionRegex = /(?<major>\d\d?)\.(?<minor>\d\d?)\.(?<patch>\d\d?)\.(?<build>\d+)/;
+const {major, minor, patch, build} = manifest.version.match(versionRegex).groups;
 
-const basicVersion = `${versionGroups.major}.${versionGroups.minor}.${versionGroups.patch}`;
-const buildVersion = `${basicVersion}.${versionGroups.build || 0}`;
-const namedVersion = `${basicVersion} "${versionGroups.name}"`;
-const prereleaseSuffix = buildType === 'stable'
-    ? ''
-    : ` (${buildType} build ${versionGroups.build || 0} from ${buildSha?.slice(0, 7) || 'local copy'})`;
-
-export const shortBuildInfo = `${buildVersion} ${buildType} ${buildSha?.slice(0, 7) || ''}`.trim();
-export const toolboxVersion = basicVersion + prereleaseSuffix;
-export const toolboxVersionName = namedVersion + prereleaseSuffix;
-export const shortVersion = versionGroups.major * 10000 + versionGroups.minor * 100 + versionGroups.patch * 1;
+/**
+ * Concise version string which includes all possibly relevant information.
+ * @example '6.1.13.0 stable 5546015'
+ * @example '7.0.0.2 beta 893745b'
+ */
+export const toolboxVersion = `${manifest.version} ${buildType} ${buildSha?.slice(0, 7) || 'local'}`.trim();
+/**
+ * User-friendly version string; stable releases exclude build and commit
+ * @example '6.1.13 "Delaying Donkey"'
+ * @example '7.0.0 "Rewriting Rattlesnake" (build 2 from 893745b)'
+ */
+export const toolboxVersionName = `${manifest.version_name}${
+    buildType === 'stable'
+        ? ''
+        : ` (${buildType} build ${build || 0} from ${buildSha?.slice(0, 7) || 'local copy'})`
+}`;
+/**
+ * Numeric representation of basic version information; compare
+ * major/minor/patch/build instead when possible
+ * @example 60113
+ * @deprecated
+ */
+export const shortVersion = major * 10000 + minor * 100 + patch * 1;
 
 // Details about the current page
 const $body = $('body');

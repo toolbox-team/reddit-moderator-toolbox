@@ -479,10 +479,10 @@ export default new Module({
                     title="this is a ${TBCore.buildType} build of toolbox. click to copy version information"
                 />
                     <i class="tb-icons">${TBui.icons.prerelease}</i>
-                    <span>${TBCore.shortBuildInfo}</span>
+                    <span>${TBCore.toolboxVersion}</span>
                 </button>
             `).on('click', () => {
-                navigator.clipboard.writeText(TBCore.shortBuildInfo).then(() => {
+                navigator.clipboard.writeText(TBCore.toolboxVersion).then(() => {
                     TBui.textFeedback(
                         'Copied version information to clipboard',
                         TBui.TextFeedbackKind.POSITIVE,

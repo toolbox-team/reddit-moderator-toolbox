@@ -27,7 +27,7 @@ const TBModule = {
                 return;
             }
 
-            // Don't do anything with beta modules unless beta mode is enabled
+            // Don't do anything with beta modules unless this is a beta build
             if (module.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                 // skip this module entirely
                 logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
@@ -554,7 +554,7 @@ const TBModule = {
         // Sort the module list alphabetically
         const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
         for (const module of sortedModules) {
-            // Don't do anything with beta modules unless beta mode is enabled
+            // Don't do anything with beta modules unless this is a beta build
             if (!['beta', 'dev'].includes(TBCore.buildType) && module.beta) {
                 continue;
             }
@@ -635,8 +635,8 @@ const TBModule = {
                 //     continue;
                 // }
 
-                // hide beta stuff unless beta mode enabled
-                if (options.beta && !await TBStorage.getSettingAsync('Utils', 'betaMode', false)) {
+                // hide beta stuff unless this is a beta build
+                if (options.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                     continue;
                 }
 
@@ -1096,7 +1096,7 @@ export class Module {
      * @param {boolean} [options.alwaysEnabled=false] If true, the module cannot
      * be disabled
      * @param {boolean} [options.beta=false] If true, the module will only show
-     * up when beta mode is enabled
+     * up in beta builds
      * @param {boolean} [options.debug=false] If true, the module will only show
      * up when debug mode is enabled
      * @param {boolean} [options.oldReddit=false] If true, the module will be

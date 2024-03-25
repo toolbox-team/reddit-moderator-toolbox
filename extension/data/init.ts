@@ -256,10 +256,6 @@ async function doSettingsUpdates () {
     // https://semver.org
     const shortVersionMinor = Math.floor(TBCore.shortVersion / 100);
     const lastVersionMinor = Math.floor(lastVersion / 100);
-
-    if (shortVersionMinor > lastVersionMinor) {
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', false);
-    }
 }
 
 (async () => {

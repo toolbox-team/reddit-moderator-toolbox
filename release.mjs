@@ -41,8 +41,9 @@ inquirer
             manifestContentFirefox.version = answers.newVersion;
             manifestContentChrome.version = answers.newVersion;
 
-            manifestContentFirefox.version_name = `${answers.newVersion}: "${answers.newVersionName}"`;
-            manifestContentChrome.version_name = `${answers.newVersion}: "${answers.newVersionName}"`;
+            const displayNewVersion = answers.newVersion.replace(/\.\d+$/, '');
+            manifestContentFirefox.version_name = `${displayNewVersion}: "${answers.newVersionName}"`;
+            manifestContentChrome.version_name = `${displayNewVersion}: "${answers.newVersionName}"`;
 
             fs.writeFileSync(
                 chromeManifestLocation,

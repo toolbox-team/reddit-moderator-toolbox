@@ -616,6 +616,11 @@ async function fetchNewsNotes (sub) {
 
 /** Fetch and display all news notes. */
 export function displayNotes () {
+    // dev releases skip all notes for my own sanity
+    if (buildType === 'dev') {
+        return;
+    }
+
     fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
 
     if (buildType === 'beta') {

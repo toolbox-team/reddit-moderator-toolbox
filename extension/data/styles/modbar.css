@@ -119,7 +119,6 @@
 }
 
 /* Custom colors for unread things */
-.mod-toolbox-rd #tb-modmail.havemail,
 .mod-toolbox-rd #tb-new_modmail.havemail {
     color: #65d260;
 }

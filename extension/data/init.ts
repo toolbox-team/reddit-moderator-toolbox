@@ -49,7 +49,6 @@ import HistoryButton from './modules/historybutton.js';
 import Macros from './modules/macros.js';
 import Modbar from './modules/modbar.js';
 import ModButton from './modules/modbutton.js';
-import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
 import ModNotes from './modules/modnotes.jsx';
 import NewModmailPro from './modules/newmodmailpro.js';
@@ -238,6 +237,34 @@ async function doSettingsUpdates () {
             await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
         }
 
+        // (old) modmail pro removed in v7, RIP old modmail. nuke its settings
+        if (lastVersion < 70000) {
+            await Promise.all([
+                'inboxStyle',
+                'filteredSubs',
+                'defaultCollapse',
+                'noRedModmail',
+                'highlightNew',
+                'expandReplies',
+                'hideInviteSpam',
+                'autoLoad',
+                'fadeRecipient',
+                'subredditColor',
+                'resThreadedModmail',
+                'subredditColorSalt',
+                'customLimit',
+                'filterBots',
+                'botsToFilter',
+                'newTabLinks',
+                'lastVisited',
+                'replied',
+                'threadProcessRate',
+                'entryProcessRate',
+                'chunkProcessSize',
+                'twoPhaseProcessing',
+            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)));
+        }
+
         // End: version changes.
 
         // This is a super extra check to make sure the wiki page for settings export really is private.
@@ -351,7 +378,6 @@ async function doSettingsUpdates () {
             Usernotes,
             Comment,
             NewModmailPro,
-            ModmailPro,
             Macros,
             PersonalNotes,
             HistoryButton,

@@ -6,6 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 
 export default new Module({
     name: 'Mod Macros',
@@ -195,7 +196,7 @@ export default new Module({
         });
     }
 
-    if (!TBCore.isNewModmail && !TBCore.isOldReddit) {
+    if (currentPlatform === RedditPlatform.NEW) {
         $('body').on('click', 'button:contains("Reply")', async function () {
             const $this = $(this);
             const $comment = $this.closest('.Comment');

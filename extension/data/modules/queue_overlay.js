@@ -4,6 +4,7 @@ import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 
 export default new Module({
     name: 'Queue Overlay',
@@ -269,10 +270,10 @@ export default new Module({
         makeQueueOverlay(type, {subreddit});
     });
 
-    // eslint-disable-next-line no-extra-parens
     if (
-        (TBCore.isOldReddit && overlayFromBarOld)
-        || (!TBCore.isOldReddit && overlayFromBarRedesign && !TBCore.isNewModmail)
+        (currentPlatform === RedditPlatform.OLD && overlayFromBarOld)
+        // TODO: should the overlayFromBarRedesign setting also apply to shreddit?
+        || (currentPlatform === RedditPlatform.NEW && overlayFromBarRedesign)
     ) {
         $body.on('click', '#tb-modqueue, #tb-queueCount', event => {
             if (event.ctrlKey || event.metaKey) {

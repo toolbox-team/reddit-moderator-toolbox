@@ -7,6 +7,7 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 import {modbarExists} from './modbar.js';
 
 const self = new Module({
@@ -290,7 +291,7 @@ function init ({
         self.initOldReddit({hideRemoved, approveComments, spamRemoved, hamSpammed});
     }
     // Do not open lightbox but go to full comment page.
-    if (commentsAsFullPage && !TBCore.isOldReddit && !TBCore.isNewModmail) {
+    if (commentsAsFullPage && currentPlatform === RedditPlatform.NEW) {
         $body.on('click', 'a', function (event) {
             const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
             const $this = $(this);

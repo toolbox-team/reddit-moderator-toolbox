@@ -102,12 +102,13 @@ As an example, a release timeline might look something like this:
 ### Tagging a New Release
 
 1. Make sure the working directory is clear and you're on the `master` branch.
-2. Run `node release.mjs`. This script will prompt you for the new four-segment version number, then the release name.
+2. Run `npm run release`. This script will prompt you for the new four-segment version number, then the release name.
    - Ensure the major.minor.patch is set correctly. You should only need to update this if the previous release was a stable release.
    - If the previous release was a beta release, increment the build number by 1. If the previous release was a stable release, instead reset the build number _to_ 1.
    - We generally only change the release name for major or minor bumps. If you're making a stable release and didn't change this during the beta series, make sure you update this to something appropriate for the new release. Tradition dictates it should be an adjective related to the development of the release, and an animal which start with the same letter.
-3. Commit the resulting changes to the `master` branch. Your commit message should just be the version tag you'll create in the next step; `v#.#.#` if you're making a stable release and `v#.#.#-beta.#` for a beta release.
-4. Tag the release with the appropriate tag name.
-5. `git push && git push --tags`
+
+   The script will then automatically commit and tag the release in your local clone.
+3. Verify that the commit created by the release script contains nothing except changes to the version strings in the manifest files.
+4. Push the commit and tag: `git push && git push --tags`.
 
 Once your tag is pushed to Github, the CI pipeline will generate release builds and automatically submit them to extension stores. Beta releases will be sent only to the beta listings; stable releases will result in updates to both the stable _and_ beta listings, with the beta listing receiving a beta-flagged build containing otherwise the same code.

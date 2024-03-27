@@ -261,7 +261,7 @@ function init ({lastSeen}) {
 
     // Beta testers
     self.manager.register('bug hunter', 'Beta testing toolbox', saveIndex => {
-        if (TBCore.betaRelease) {
+        if (TBCore.buildType === 'beta') {
             self.manager.unlock(saveIndex, 1);
         }
     });

@@ -237,8 +237,11 @@ async function doSettingsUpdates () {
             await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
         }
 
-        // (old) modmail pro removed in v7, RIP old modmail. nuke its settings
         if (lastVersion < 70000) {
+            // Beta mode setting removed in favor of dedicated beta builds #917
+            await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined);
+
+            // (old) modmail pro removed in v7, RIP old modmail. nuke its settings
             await Promise.all([
                 'inboxStyle',
                 'filteredSubs',
@@ -277,15 +280,6 @@ async function doSettingsUpdates () {
         // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
-    }
-
-    // First run changes for major and minor releases only
-    // https://semver.org
-    const shortVersionMinor = Math.floor(TBCore.shortVersion / 100);
-    const lastVersionMinor = Math.floor(lastVersion / 100);
-
-    if (shortVersionMinor > lastVersionMinor) {
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', false);
     }
 }
 

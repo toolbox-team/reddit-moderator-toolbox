@@ -38,6 +38,7 @@ export const icons = {
     unmoderated: '&#xe417;', // remove_red_eye
     userInbox: '&#xe0be;', // email
     usernote: '&#xe06f;', // note
+    prerelease: '&#xe86f;', // code,
 };
 
 /** HTML for the syntax highlighter's theme selector. */

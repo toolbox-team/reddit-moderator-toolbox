@@ -10,7 +10,8 @@
         "lint:fix": "eslint . --config .eslintrc.json --ignore-path .eslintignore --fix",
         "fmt": "dprint check",
         "fmt:fix": "dprint fmt",
-        "docs": "jsdoc -c jsdoc.json"
+        "docs": "jsdoc -c jsdoc.json",
+        "release": "node release.mjs"
     },
     "homepage": "http://www.reddit.com/r/toolbox",
     "repository": {

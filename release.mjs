@@ -1,8 +1,22 @@
 /* eslint-env node */
-import fs from 'fs';
 import inquirer from 'inquirer';
-import path from 'path';
-import {fileURLToPath} from 'url';
+import {execSync} from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+function runCommand (command) {
+    console.log('$', command);
+    execSync(command, {stdio: 'inherit'});
+    console.log();
+}
+
+// check that working directory is clean - release commits should not contain
+// any other changes
+if (execSync('git status --porcelain', {encoding: 'utf8'})) {
+    console.error('found uncommitted changes; ensure that you are on the master branch and `git status` is clean');
+    process.exit(1);
+}
 
 const versionNameRegex = /^[\d.]+?: "(.+?)"/;
 
@@ -34,6 +48,12 @@ inquirer
             message: 'New version name',
             default: currentVersionName,
         },
+        {
+            name: 'releaseType',
+            message: 'Release type',
+            type: 'list',
+            choices: ['beta', 'stable'],
+        },
     ])
     .then(answers => {
         if (answers.newVersion !== currentVersion || answers.newVersionName !== currentVersionName) {
@@ -41,9 +61,9 @@ inquirer
             manifestContentFirefox.version = answers.newVersion;
             manifestContentChrome.version = answers.newVersion;
 
-            const displayNewVersion = answers.newVersion.replace(/\.\d+$/, '');
-            manifestContentFirefox.version_name = `${displayNewVersion}: "${answers.newVersionName}"`;
-            manifestContentChrome.version_name = `${displayNewVersion}: "${answers.newVersionName}"`;
+            const versionParts = answers.newVersion.match(/(?<display>\d\d?\.\d\d?\.\d\d?)\.(?<build>\d+)$/).groups;
+            manifestContentFirefox.version_name = `${versionParts.display}: "${answers.newVersionName}"`;
+            manifestContentChrome.version_name = `${versionParts.display}: "${answers.newVersionName}"`;
 
             fs.writeFileSync(
                 chromeManifestLocation,
@@ -67,5 +87,15 @@ inquirer
                     }
                 },
             );
+
+            // tag the release
+            const tagName = `v${versionParts.display}${
+                answers.releaseType === 'beta' ? `-beta.${versionParts.build}` : ''
+            }`;
+            console.log('Creating release commit and tag:', tagName);
+            runCommand(`git commit -am "${tagName}"`);
+            runCommand(`git tag "${tagName}"`);
+
+            console.log('Commit and tag created! Verify everything looks good, then push new commit and tag');
         }
     });

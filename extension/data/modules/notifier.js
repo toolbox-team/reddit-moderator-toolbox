@@ -180,8 +180,6 @@ export default new Module({
     modSubredditsFMod,
     unmoderatedSubreddits,
     unmoderatedSubredditsFMod,
-    modmailSubreddits,
-    modmailSubredditsFromPro,
     messageUnreadLink,
     checkInterval,
     unreadMessageCount,
@@ -199,20 +197,11 @@ export default new Module({
     const unmoderatedOn = await TBStorage.getSettingAsync('Modbar', 'unmoderatedon', true); // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
     const checkIntervalMillis = TBHelpers.minutesToMilliseconds(checkInterval); // setting is in seconds, convert to milliseconds.
     const $body = $('body');
-    let modmailFilteredSubreddits = modmailSubreddits; // wat?
     let newLoad = true;
     let now = new Date().getTime();
 
     let messageunreadurl = '/message/inbox/';
     let activeNewMMcheck = false;
-
-    // use filter subs from MMP, if appropriate
-    if (modmailSubredditsFromPro) {
-        modmailFilteredSubreddits = 'mod';
-        if ((await TBStorage.getSettingAsync('ModMail', 'filteredsubs', [])).length > 0) {
-            modmailFilteredSubreddits += `-${await TBStorage.getSettingAsync('ModMail', 'filteredsubs', []).join('-')}`;
-        }
-    }
 
     if (messageUnreadLink) {
         messageunreadurl = '/message/unread/';
@@ -221,26 +210,6 @@ export default new Module({
     //
     // Counters and notifications
     //
-
-    // Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
-    // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab.
-    if (TBCore.isModmail) {
-        this.log('clearing all unread stuff');
-
-        // We have nothing unread if we're on the mod mail page.
-        this.set('lastSeenModmail', now);
-        this.set('modmailCount', 0);
-
-        TBApi.getJSON(`/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
-            TBStorage.purifyObject(json);
-            json.data.children.forEach(value => {
-                const unreadmessageid = value.data.name;
-
-                // TODO: catch errors
-                TBApi.markMessageRead(unreadmessageid);
-            });
-        });
-    }
 
     TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
         this.log('playing sound');
@@ -356,7 +325,6 @@ export default new Module({
                 unreadMessageCount: await this.get('unreadMessageCount'),
                 modqueueCount: await this.get('modqueueCount'),
                 unmoderatedCount: await this.get('unmoderatedCount'),
-                modmailCount: await this.get('modmailCount'),
                 newModmailCount: await this.get('newModmailCount'),
                 newModmailCategoryCount: await this.get('newModmailCategoryCount'),
             },
@@ -411,7 +379,6 @@ export default new Module({
         updateMessagesCount(event.detail.unreadMessageCount);
         updateModqueueCount(event.detail.modqueueCount);
         updateUnmodCount(event.detail.unmoderatedCount);
-        // updateModMailCount(event.detail.modmailCount);
         updateNewModMailCount(event.detail.newModmailCount, event.detail.newModmailCategoryCount);
     });
 
@@ -438,7 +405,6 @@ export default new Module({
             updateMessagesCount(unreadMessageCount);
             updateModqueueCount(modqueueCount);
             updateUnmodCount(unmoderatedCount);
-            // updateModMailCount(modmailCount);
             updateNewModMailCount(newModmailCount, newModmailCategoryCount);
             return;
         }

@@ -70,6 +70,7 @@ export function PageNotificationContainer () {
         <div id='tb-notifications-wrapper'>
             {notifications.map(notification => (
                 <Window
+                    key={notification.id}
                     title={notification.title}
                     className='tb-notification'
                     closable

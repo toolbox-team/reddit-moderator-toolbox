@@ -46,7 +46,8 @@
 .mod-toolbox-rd #tb-bottombar-hidden .tb-bottombar-unhide,
 .mod-toolbox-rd #tb-bottombar .tb-toolbar-new-settings,
 .mod-toolbox-rd #tb-toggle-console,
-.mod-toolbox-rd #tb-reload-link {
+.mod-toolbox-rd #tb-reload-link,
+.mod-toolbox-rd #tb-prerelease-link {
     flex: 0 0 auto;
     padding: 0 3px;
 }
@@ -118,7 +119,6 @@
 }
 
 /* Custom colors for unread things */
-.mod-toolbox-rd #tb-modmail.havemail,
 .mod-toolbox-rd #tb-new_modmail.havemail {
     color: #65d260;
 }
@@ -162,6 +162,26 @@
     order: 3;
     display: inline-block;
     margin-right: 5px;
+}
+.mod-toolbox-rd #tb-prerelease-link {
+    display: flex;
+    background: none;
+    border: none;
+    appearance: none;
+    height: 30px;
+    margin: 0 5px 0 0;
+    padding: 0 3px;
+    gap: 3px;
+    align-items: center;
+    color: red !important;
+    cursor: pointer;
+    /* Naut stuff */
+    text-transform: none;
+    font-weight: normal;
+    box-shadow: none;
+}
+.mod-toolbox-rd #tb-prerelease-link > * {
+    color: inherit !important;
 }
 
 /* My subreddits list */

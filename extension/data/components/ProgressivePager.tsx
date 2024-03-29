@@ -1,4 +1,4 @@
-import {type ReactNode, useRef} from 'react';
+import {type ReactNode} from 'react';
 import type {MaybeAsyncIterable} from '../util/iter';
 
 import {progressivePager} from '../tbui';

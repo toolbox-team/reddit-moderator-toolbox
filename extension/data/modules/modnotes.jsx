@@ -12,7 +12,7 @@ import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 
 import {Icon} from '../components/controls/Icon.tsx';
@@ -426,6 +426,18 @@ function ModNotesPopup ({
         }
     }
 
+    // Using autoFocus on the note text input causes the page to jump around;
+    // manually focus it after a paint via requestAnimationFrame to avoid this
+    const noteInputRef = useRef(null);
+    useEffect(() => {
+        if (noteInputRef.current == null) {
+            return;
+        }
+        requestAnimationFrame(() => {
+            noteInputRef.current.focus();
+        });
+    });
+
     const popupFooter = (
         <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
             <select
@@ -439,9 +451,9 @@ function ModNotesPopup ({
                 ))}
             </select>
             <input
+                ref={noteInputRef}
                 type='text'
                 name='note'
-                autoFocus
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />

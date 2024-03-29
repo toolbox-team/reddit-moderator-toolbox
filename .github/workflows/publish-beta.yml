@@ -14,10 +14,19 @@ jobs:
     - run: npm run fmt
     - run: npm run lint
 
-    - name: Update extension ID and name for Firefox
-      run: "cat extension/firefox_manifest.json | jq --indent 4 '.browser_specific_settings.gecko.id = \"toolbox-beta@toolbox-team.github.com\" | .name += \" - Beta\" | .' | tee extension/firefox_manifest.json"
-    - name: Update extension name for Chrome
-      run: "cat extension/chrome_manifest.json | jq --indent 4 '.name += \" - Beta\" | .' | tee extension/chrome_manifest.json"
+    - name: Update extension manifest for Firefox
+      run: |
+        cat extension/firefox_manifest.json | jq --indent 4 '.
+          | .browser_specific_settings.gecko.id = "toolbox-beta@toolbox-team.github.com"
+          | .icons = (.icons | map_values(sub("icon"; "beta_icon")))
+          | .name += " - Beta"
+        ' | tee extension/firefox_manifest.json
+    - name: Update extension manifest for Chrome
+      run: |
+        cat extension/chrome_manifest.json | jq --indent 4 '.
+          | .icons = (.icons | map_values(sub("icon"; "beta_icon")))
+          | .name += " - Beta"
+        ' | tee extension/chrome_manifest.json
 
     - env:
         BUILD_TYPE: beta

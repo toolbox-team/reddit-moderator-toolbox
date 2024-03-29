@@ -5,17 +5,20 @@
 }
 
 .mod-toolbox-rd .tb-queue-overlay .tb-queue-options {
-    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding-inline: 5px;
 }
 
 .mod-toolbox-rd .tb-queue-overlay input.tb-input.tb-queue-url {
-    width: calc(100% - 40px);
+    flex-grow: 1;
 }
 
 .mod-toolbox-rd .tb-queue-overlay .tb-icons.tb-queue-reload {
     cursor: pointer;
     background: rgb(199, 214, 230);
-    border-radius: 10px;
+    border-radius: 50%;
     vertical-align: middle;
 }
 

@@ -10,13 +10,18 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
-      with:
-        node-version: '16'
     - run: npm ci
     - run: npm run fmt
     - run: npm run lint
+
+    - name: Update extension ID and name for Firefox
+      run: "cat extension/firefox_manifest.json | jq --indent 4 '.browser_specific_settings.gecko.id = \"toolbox-beta@toolbox-team.github.com\" | .name += \" - Beta\" | .' | tee extension/firefox_manifest.json"
+    - name: Update extension name for Chrome
+      run: "cat extension/chrome_manifest.json | jq --indent 4 '.name += \" - Beta\" | .' | tee extension/chrome_manifest.json"
+
     - env:
-        NODE_ENV: production
+        BUILD_TYPE: beta
+        BUILD_SHA: ${{ github.sha }}
       run: npm run build
 
     - name: Zip Chrome build
@@ -52,7 +57,7 @@ jobs:
         name: release-build-chrome
     - uses: wdzeng/chrome-extension@v1
       with:
-        extension-id: jhjpjhhkcbkmgdkahnckfboefnkgghpo
+        extension-id: fdghjbbhkadpjhgoaglhafpiagpdbhem
         zip-path: release-build-chrome.zip
         client-id: ${{ secrets.CWS_CLIENT_ID }}
         client-secret: ${{ secrets.CWS_CLIENT_SECRET }}
@@ -67,7 +72,7 @@ jobs:
         name: release-build-firefox
     - uses: wdzeng/firefox-addon@v1
       with:
-        addon-guid: yes@jetpack
+        addon-guid: toolbox-beta@toolbox-team.github.com
         xpi-path: release-build-firefox.zip
         jwt-issuer: ${{ secrets.AMO_JWT_ISSUER }}
         jwt-secret: ${{ secrets.AMO_JWT_SECRET }}

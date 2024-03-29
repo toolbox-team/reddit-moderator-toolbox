@@ -58,9 +58,13 @@ Building the extension is relatively easy through [Node.js](https://nodejs.org/e
 $ npm install           # Install dependencies
 $ npm run build         # Build extension
 $ npm run build:watch   # Automatically rebuild on file changes
-$ npm run build:release # Install dependencies and perform a release build
 $ npm run docs          # Build documentation of internal interfaces
 ```
+
+You won't need to mess with these for development, but `npm run build` takes the following environment variables:'
+
+- `BUILD_TYPE`: One of `dev`, `beta`, `stable`; defaults to `dev`. Beta and stable builds are meant for distribution to others and are typically made by CI; dev builds are almost always what you want when building locally.
+- `BUILD_SHA`: Commit hash of the commit that's being built. Leaving it unset for dev builds is normal, since your changes probably aren't committed yet anyway, but the build will yell at you if you try to generate a `beta` or `stable` release without it since those are meant to be distributed to others.
 
 Once you've built the extension, you can load it up in your browser for testing:
 
@@ -77,3 +81,34 @@ Once you've built the extension, you can load it up in your browser for testing:
 - Click "This Firefox" in the sidebar.
 - Click "Load Temporary Add-on...".
 - Firefox asks for a zip or the manifest file, so load the `build/firefox/manifest.json` file.
+
+## Maintainer Information: Versioning
+
+Toolbox version numbers are identified by a major.minor.patch stable release identifier (e.g. `6.1.13`) and an incrementing build number within each stable release. A beta release uses the version number of the stable release it will eventually be a part of (i.e. beta releases should not use a major.minor.patch which is already used by a stable release). Whenever a release is first made on a new major.minor.patch version (beta or stable), the build number resets to 1; subsequent releases increment the build number further, including the final stable release.
+
+Git tags of stable releases use only the major.minor.patch identifier with a `v` prefix (e.g. `v6.1.13`). Beta releases also include a `-beta.#` suffix, where `#` is the build number (e.g. `v7.0.0-beta.1`).
+
+The manifest `version` field combines the major.minor.patch and the build number into a single four-segment version string (e.g. `6.1.13.1`). The `version_name` field uses only the major.minor.patch, in addition to whatever fun name is selected for the release (e.g. `6.1.13 "Delaying Donkey"`).
+
+As an example, a release timeline might look something like this:
+
+| Manifest `version` | Git tag         | Release type |
+| ------------------ | --------------- | ------------ |
+| `6.1.13.1`         | `v6.1.13`       | stable       |
+| `7.0.0.1`          | `v7.0.0-beta.1` | beta         |
+| `7.0.0.2`          | `v7.0.0-beta.2` | beta         |
+| `7.0.0.3`          | `v7.0.0`        | stable       |
+
+### Tagging a New Release
+
+1. Make sure the working directory is clear and you're on the `master` branch.
+2. Run `npm run release`. This script will prompt you for the new four-segment version number, then the release name.
+   - Ensure the major.minor.patch is set correctly. You should only need to update this if the previous release was a stable release.
+   - If the previous release was a beta release, increment the build number by 1. If the previous release was a stable release, instead reset the build number _to_ 1.
+   - We generally only change the release name for major or minor bumps. If you're making a stable release and didn't change this during the beta series, make sure you update this to something appropriate for the new release. Tradition dictates it should be an adjective related to the development of the release, and an animal which start with the same letter.
+
+   The script will then automatically commit and tag the release in your local clone.
+3. Verify that the commit created by the release script contains nothing except changes to the version strings in the manifest files.
+4. Push the commit and tag: `git push && git push --tags`.
+
+Once your tag is pushed to Github, the CI pipeline will generate release builds and automatically submit them to extension stores. Beta releases will be sent only to the beta listings; stable releases will result in updates to both the stable _and_ beta listings, with the beta listing receiving a beta-flagged build containing otherwise the same code.

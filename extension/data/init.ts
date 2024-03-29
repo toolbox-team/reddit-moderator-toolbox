@@ -34,8 +34,9 @@ import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
 
 import AppRoot from './AppRoot';
-import {documentInteractive} from './util/dom.js';
-import {reactRenderer} from './util/ui_interop.js';
+import {documentInteractive} from './util/dom';
+import {isUserLoggedInQuick} from './util/platform';
+import {reactRenderer} from './util/ui_interop';
 
 import Achievements from './modules/achievements.js';
 import BetterButtons from './modules/betterbuttons.js';
@@ -49,7 +50,6 @@ import HistoryButton from './modules/historybutton.js';
 import Macros from './modules/macros.js';
 import Modbar from './modules/modbar.js';
 import ModButton from './modules/modbutton.js';
-import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
 import ModNotes from './modules/modnotes.jsx';
 import NewModmailPro from './modules/newmodmailpro.js';
@@ -104,36 +104,16 @@ async function checkReset () {
 }
 
 /**
- * Checks whether or not there's a user logged in, retrying a handful of times
- * in case new Reddit hasn't fully loaded yet. Also checks if we've already
+ * Checks whether or not there's a user logged in. Also checks if we've already
  * loaded in this window, and whether we're in a Firefox incognito window. If
  * this function ultimately returns `false`, the init process should end early.
  * @param {number} [tries=3] Number of times to try getting a logged-in user
  * @returns {Promise<void>}
  */
 async function checkLoadConditions (tries = 3) {
-    let loggedinRedesign = false;
-    let loggedinOld = false;
-
-    const $body = $('body');
-
-    // Check for redesign
-    if (
-        $body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text()
-        || $body.find('.Header__profile').length
-    ) {
-        loggedinRedesign = true;
-    }
-
-    // Check for old reddit
-    if (
-        $body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length
-        || $body.hasClass('loggedin')
-    ) {
-        loggedinOld = true;
-    }
-
-    if (!loggedinOld && !loggedinRedesign) {
+    // Make a quick check for signs of life before sending off API requests to
+    // get information about the logged-in user
+    if (!isUserLoggedInQuick()) {
         if (tries < 1) {
             // We've tried a bunch of times and still don't have anything, so
             // assume there's no logged-in user
@@ -144,6 +124,8 @@ async function checkLoadConditions (tries = 3) {
             return checkLoadConditions(tries - 1);
         }
     }
+
+    const $body = $('body');
 
     // When firefox updates extension they get reloaded including all content scripts. Old elements remain on the page though.
     // Toolbox doesn't like this very much.
@@ -238,6 +220,37 @@ async function doSettingsUpdates () {
             await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
         }
 
+        if (lastVersion < 70000) {
+            // Beta mode setting removed in favor of dedicated beta builds #917
+            await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined);
+
+            // (old) modmail pro removed in v7, RIP old modmail. nuke its settings
+            await Promise.all([
+                'inboxStyle',
+                'filteredSubs',
+                'defaultCollapse',
+                'noRedModmail',
+                'highlightNew',
+                'expandReplies',
+                'hideInviteSpam',
+                'autoLoad',
+                'fadeRecipient',
+                'subredditColor',
+                'resThreadedModmail',
+                'subredditColorSalt',
+                'customLimit',
+                'filterBots',
+                'botsToFilter',
+                'newTabLinks',
+                'lastVisited',
+                'replied',
+                'threadProcessRate',
+                'entryProcessRate',
+                'chunkProcessSize',
+                'twoPhaseProcessing',
+            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)));
+        }
+
         // End: version changes.
 
         // This is a super extra check to make sure the wiki page for settings export really is private.
@@ -250,15 +263,6 @@ async function doSettingsUpdates () {
         // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
-    }
-
-    // First run changes for major and minor releases only
-    // https://semver.org
-    const shortVersionMinor = Math.floor(TBCore.shortVersion / 100);
-    const lastVersionMinor = Math.floor(lastVersion / 100);
-
-    if (shortVersionMinor > lastVersionMinor) {
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', false);
     }
 }
 
@@ -351,7 +355,6 @@ async function doSettingsUpdates () {
             Usernotes,
             Comment,
             NewModmailPro,
-            ModmailPro,
             Macros,
             PersonalNotes,
             HistoryButton,

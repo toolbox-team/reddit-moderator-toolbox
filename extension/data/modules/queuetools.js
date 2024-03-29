@@ -148,7 +148,6 @@ const self = new Module({
             id: 'groupCommentsOnModPage',
             type: 'boolean',
             default: false,
-            beta: true,
             advanced: true,
             description: 'Group comments by their parent submission when viewing mod listings.',
             oldReddit: true,

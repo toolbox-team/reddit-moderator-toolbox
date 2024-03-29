@@ -7,11 +7,16 @@ import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
+import {currentPlatform, RedditPlatform} from './util/platform.ts';
 
 const logger = TBLog('TBCore');
 
-/** If true, this version of Toolbox is a beta release. */
-export const betaRelease = false; // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+// Build variables defined by Rollup
+/* global process */
+/** @type {'stable' | 'beta' | 'dev'} */
+export const buildType = process.env.BUILD_TYPE;
+/** @type {string | null} */
+const buildSha = process.env.BUILD_SHA;
 
 // Schema versioning information
 // TODO: Put these into the files they're used in, rather than keeping them here
@@ -46,19 +51,40 @@ export function isConfigValidVersion (subreddit, config) {
 
 // Generated version strings
 const manifest = browser.runtime.getManifest();
-const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
-const matchVersion = manifest.version_name.match(versionRegex);
-export const toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
-export const toolboxVersionName = `${manifest.version_name}${betaRelease ? ' (beta)' : ''}`;
-export const shortVersion = JSON.parse(
-    `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`,
-);
+const versionRegex = /(?<major>\d\d?)\.(?<minor>\d\d?)\.(?<patch>\d\d?)\.(?<build>\d+)/;
+const {major, minor, patch, build} = manifest.version.match(versionRegex).groups;
+
+/**
+ * Concise version string which includes all possibly relevant information.
+ * @example '6.1.13.0 stable 5546015'
+ * @example '7.0.0.2 beta 893745b'
+ */
+export const toolboxVersion = `${manifest.version} ${buildType} ${buildSha?.slice(0, 7) || 'local'}`.trim();
+/**
+ * User-friendly version string; stable releases exclude build and commit
+ * @example '6.1.13 "Delaying Donkey"'
+ * @example '7.0.0 "Rewriting Rattlesnake" (build 2 from 893745b)'
+ */
+export const toolboxVersionName = `${manifest.version_name}${
+    buildType === 'stable'
+        ? ''
+        : ` (${buildType} build ${build || 0} from ${buildSha?.slice(0, 7) || 'local copy'})`
+}`;
+/**
+ * Numeric representation of basic version information; compare
+ * major/minor/patch/build instead when possible
+ * @example 60113
+ * @deprecated
+ */
+export const shortVersion = major * 10000 + minor * 100 + patch * 1;
 
 // Details about the current page
 const $body = $('body');
 export const isMod = $('body.moderator').length;
-export const isOldReddit = $('#header').length;
-export const isNewModmail = location.host === 'mod.reddit.com';
+/** @deprecated Check {@linkcode currentPlatform} directly instead. */
+export const isOldReddit = currentPlatform === RedditPlatform.OLD;
+/** @deprecated Check {@linkcode currentPlatform} directly instead. */
+export const isNewModmail = currentPlatform === RedditPlatform.MODMAIL;
 export const isNewMMThread = $('body').find('.ThreadViewer').length > 0;
 export const isEmbedded = $('body').hasClass('embedded-page');
 export let pageDetails = {};
@@ -293,7 +319,6 @@ export function debugInformation () {
         browser: '',
         browserVersion: '',
         platformInformation: '',
-        betaMode: TBStorage.getSetting('Utils', 'betaMode', false),
         debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
         compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
         advancedSettings: TBStorage.getSetting('Utils', 'advancedMode', false),
@@ -388,7 +413,6 @@ export function debugInformation () {
  * @property {string} browser Browser used (Firefox, Chrome, etc)
  * @property {string} browserVersion The version of the browser
  * @property {string} platformInformation Other platform information
- * @property {boolean} betaMode toolbox beta mode enabled
  * @property {boolean} debugMode  toolbox debugMode enabled
  * @property {boolean} compactMode toolbox compactmode enabled
  * @property {boolean} advancedSettings toolbox advanced settings enabled
@@ -605,9 +629,14 @@ async function fetchNewsNotes (sub) {
 
 /** Fetch and display all news notes. */
 export function displayNotes () {
+    // dev releases skip all notes for my own sanity
+    if (buildType === 'dev') {
+        return;
+    }
+
     fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
 
-    if (betaRelease) {
+    if (buildType === 'beta') {
         fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(logger.warn);
     }
 }

@@ -6,6 +6,7 @@ export const Window = ({
     footer,
     className = '',
     draggable = false,
+    initialPosition,
     closable = true,
     children,
     onClose,
@@ -15,6 +16,7 @@ export const Window = ({
     footer?: ReactNode;
     className?: string;
     draggable?: boolean;
+    initialPosition?: {top: number; left: number};
     closable?: boolean;
     children?: ReactNode;
     onClose?: () => void;
@@ -26,13 +28,17 @@ export const Window = ({
     if (draggable) {
         useEffect(() => {
             if (windowRef.current != null && windowHeaderRef.current != null) {
+                if (initialPosition) {
+                    windowRef.current.style.top = `${initialPosition.top}px`;
+                    windowRef.current.style.left = `${initialPosition.left}px`;
+                }
                 $(windowRef.current).drag($(windowHeaderRef.current));
             }
         }, []);
     }
 
     const handleClick: MouseEventHandler<HTMLDivElement> = event => {
-        event?.stopPropagation();
+        event.stopPropagation();
         onClick?.();
     };
 

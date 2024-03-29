@@ -145,7 +145,6 @@ export default new Module({
     const modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0);
     const newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0);
     const notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true);
-    const modmailCustomLimit = await TBStorage.getSettingAsync('ModMail', 'customLimit', 0);
 
     const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
     const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
@@ -200,16 +199,6 @@ export default new Module({
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 
-    // This is here in case notifier is disabled which is where this normally is set.
-    // Atleast, I think.... - creesch
-    let modMailUrl = $('#modmail').attr('href') || TBCore.link('/message/moderator/');
-    if (parseInt(modmailCustomLimit) > 0) {
-        modMailUrl += `?limit=${modmailCustomLimit}`;
-        $('#modmail').attr('href', modMailUrl);
-        $('#tb-modmail').attr('href', modMailUrl);
-        $('#tb-modmailcount').attr('href', modMailUrl);
-    }
-
     const modQueueUrl = TBCore.link(
         modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`,
     );
@@ -227,11 +216,9 @@ export default new Module({
         TBCore.link('/message/inbox/')
     }" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
             <a href="${TBCore.link('/message/inbox/')}" id="tb-mailCount"></a>
-            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">${TBui.icons.oldModmail}</a>
-            <a href="${modMailUrl}" id="tb-modmailcount"></a>
             <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${
         openMailTab ? 'target="_blank"' : ''
-    }>${TBui.icons.newModmail}</a>
+    }>${TBui.icons.modmail}</a>
             <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}></a>
             <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">${TBui.icons.modqueue}</a>
             <a href="${modQueueUrl}" id="tb-queueCount"></a>
@@ -367,9 +354,6 @@ export default new Module({
                     TBCore.link(`/r/${this.subreddit}`)
                 }" target="_blank">/r/${this.subreddit}</a></td>
                         <td class="tb-my-subreddits-subreddit">
-                            <a title="/r/${this.subreddit} modmail!" target="_blank" href="${
-                    TBCore.link(`/r/${this.subreddit}/message/moderator`)
-                }" data-type="modmail" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.oldModmail}</a>
                             <a title="/r/${this.subreddit} modqueue" target="_blank" href="${
                     TBCore.link(`/r/${this.subreddit}/about/modqueue`)
                 }" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
@@ -467,6 +451,39 @@ export default new Module({
             $('.tb-first-run').show().css('display', 'inline-block');
         }
     });
+
+    // Always add version label to modbar on non-stable versions
+    if (TBCore.buildType !== 'stable') {
+        $('#tb-bottombar').find('#tb-toolbarcounters').before(
+            $(`
+                <button
+                    id="tb-prerelease-link"
+                    href="${TBCore.link('/r/tb_beta')}"
+                    target="_blank"
+                    title="this is a ${TBCore.buildType} build of toolbox. click to copy version information"
+                />
+                    <i class="tb-icons">${TBui.icons.prerelease}</i>
+                    <span>${TBCore.toolboxVersion}</span>
+                </button>
+            `).on('click', () => {
+                navigator.clipboard.writeText(TBCore.toolboxVersion).then(() => {
+                    TBui.textFeedback(
+                        'Copied version information to clipboard',
+                        TBui.TextFeedbackKind.POSITIVE,
+                        undefined,
+                        TBui.TextFeedbackLocation.BOTTOM,
+                    );
+                }).catch(error => {
+                    TBui.textFeedback(
+                        `Failed to copy version info: ${error.message}`,
+                        TBui.TextFeedbackKind.NEGATIVE,
+                        undefined,
+                        TBui.TextFeedbackLocation.BOTTOM,
+                    );
+                });
+            }),
+        );
+    }
 
     if (debugMode) {
         // Reload button

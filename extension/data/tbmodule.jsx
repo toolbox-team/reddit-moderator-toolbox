@@ -27,8 +27,8 @@ const TBModule = {
                 return;
             }
 
-            // Don't do anything with beta modules unless beta mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
+            // Don't do anything with beta modules unless this is a beta build
+            if (module.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                 // skip this module entirely
                 logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                 return;
@@ -63,7 +63,6 @@ const TBModule = {
         // preload some generic variables
         //
         const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
-        const betaMode = await TBStorage.getSettingAsync('Utils', 'betaMode', false);
         const advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false);
 
         const settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', '');
@@ -125,13 +124,6 @@ const TBModule = {
                     debugMode ? 'checked' : ''
                 }> Enable debug mode</label>`,
                 display: advancedMode ? '' : displayNone,
-            },
-            {
-                settingName: 'betamode',
-                content: `<label><input type="checkbox" id="betaMode" ${
-                    betaMode ? 'checked' : ''
-                }> Enable beta features</label>`,
-                display: '',
             },
             {
                 settingName: 'advancedmode',
@@ -237,86 +229,90 @@ const TBModule = {
                         </a>.
                         <h3>made and maintained by:</h3>
                         <table className='tb-about-credits'>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/creesch/'>/u/creesch</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/agentlame'>/u/agentlame</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/LowSociety'>/u/LowSociety</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/TheEnigmaBlade'>/u/TheEnigmaBlade</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/dakta'>/u/dakta</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/largenocream'>/u/largenocream</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/noeatnosleep'>/u/noeatnosleep</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/garethp'>/u/garethp</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/WorseThanHipster' title='Literally'>
-                                        /u/WorseThanHipster
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/eritbh'>/u/eritbh</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/SpyTec13'>/u/SpyTec13</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/kenman'>/u/kenman</a>
-                                </td>
-                                <td></td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/creesch/'>/u/creesch</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/agentlame'>/u/agentlame</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/LowSociety'>/u/LowSociety</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/TheEnigmaBlade'>/u/TheEnigmaBlade</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/dakta'>/u/dakta</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/largenocream'>/u/largenocream</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/noeatnosleep'>/u/noeatnosleep</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/garethp'>/u/garethp</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/WorseThanHipster' title='Literally'>
+                                            /u/WorseThanHipster
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/eritbh'>/u/eritbh</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/SpyTec13'>/u/SpyTec13</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/kenman'>/u/kenman</a>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
                         </table>
                         <h3>Documentation by:</h3>
                         <table className='tb-about-credits'>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/gorillagnomes'>/u/gorillagnomes</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/x_minus_one'>/u/x_minus_one</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/Gustavobc'>/u/Gustavobc</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/hermithome'>/u/hermithome</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/gorillagnomes'>/u/gorillagnomes</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/x_minus_one'>/u/x_minus_one</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/Gustavobc'>/u/Gustavobc</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/hermithome'>/u/hermithome</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                         <h3>Special thanks to:</h3>
                         <a href='https://www.reddit.com/user/andytuba'>/u/andytuba</a> &{' '}
@@ -445,7 +441,6 @@ const TBModule = {
             }
 
             TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
-            TBStorage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
             TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
 
             await TBStorage.setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
@@ -563,8 +558,8 @@ const TBModule = {
         // Sort the module list alphabetically
         const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
         for (const module of sortedModules) {
-            // Don't do anything with beta modules unless beta mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'betaMode', false) && module.beta) {
+            // Don't do anything with beta modules unless this is a beta build
+            if (!['beta', 'dev'].includes(TBCore.buildType) && module.beta) {
                 continue;
             }
 
@@ -644,8 +639,8 @@ const TBModule = {
                 //     continue;
                 // }
 
-                // hide beta stuff unless beta mode enabled
-                if (options.beta && !await TBStorage.getSettingAsync('Utils', 'betaMode', false)) {
+                // hide beta stuff unless this is a beta build
+                if (options.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                     continue;
                 }
 
@@ -1105,7 +1100,7 @@ export class Module {
      * @param {boolean} [options.alwaysEnabled=false] If true, the module cannot
      * be disabled
      * @param {boolean} [options.beta=false] If true, the module will only show
-     * up when beta mode is enabled
+     * up in beta builds
      * @param {boolean} [options.debug=false] If true, the module will only show
      * up when debug mode is enabled
      * @param {boolean} [options.oldReddit=false] If true, the module will be

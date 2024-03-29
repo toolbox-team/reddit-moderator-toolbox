@@ -436,7 +436,7 @@ function ModNotesPopup ({
         requestAnimationFrame(() => {
             noteInputRef.current.focus();
         });
-    });
+    }, []);
 
     const popupFooter = (
         <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>

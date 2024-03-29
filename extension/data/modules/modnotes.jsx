@@ -10,9 +10,11 @@ import TBListener from '../tblistener.js';
 import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
-import {textFeedback, TextFeedbackKind} from '../tbui.js';
+import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
+
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
@@ -375,6 +377,7 @@ function ModNotesPopup ({
     contextID,
     defaultTabName,
     defaultNoteLabel,
+    initialPosition,
     onClose,
 }) {
     const tabs = [
@@ -423,6 +426,18 @@ function ModNotesPopup ({
         }
     }
 
+    // Using autoFocus on the note text input causes the page to jump around;
+    // manually focus it after a paint via requestAnimationFrame to avoid this
+    const noteInputRef = useRef(null);
+    useEffect(() => {
+        if (noteInputRef.current == null) {
+            return;
+        }
+        requestAnimationFrame(() => {
+            noteInputRef.current.focus();
+        });
+    }, []);
+
     const popupFooter = (
         <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
             <select
@@ -436,9 +451,9 @@ function ModNotesPopup ({
                 ))}
             </select>
             <input
+                ref={noteInputRef}
                 type='text'
                 name='note'
-                autoFocus
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
@@ -457,6 +472,7 @@ function ModNotesPopup ({
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
             footer={popupFooter}
             draggable
+            initialPosition={initialPosition}
             onClose={onClose}
         >
             <WindowTabs
@@ -543,6 +559,27 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
     const note = useFetched(getLatestModNote(subreddit, user));
 
     const [popupShown, setPopupShown] = useState(false);
+    const [popupClickEvent, setPopupClickEvent] = useState(null);
+
+    /** @type {{top: number; left: number} | undefined} */
+    let initialPosition = undefined;
+    if (popupClickEvent) {
+        const positions = drawPosition(popupClickEvent);
+        initialPosition = {
+            top: positions.topPosition,
+            left: positions.leftPosition,
+        };
+    }
+
+    function showPopup (event) {
+        setPopupShown(true);
+        setPopupClickEvent(event);
+    }
+
+    function hidePopup () {
+        setPopupShown(false);
+        setPopupClickEvent(null);
+    }
 
     return (
         <>
@@ -551,17 +588,19 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                 user={user}
                 subreddit={subreddit}
                 note={note}
-                onClick={() => setPopupShown(true)}
+                onClick={showPopup}
             />
-            {popupShown && (
+            {popupShown && createPortal(
                 <ModNotesPopup
                     user={user}
                     subreddit={subreddit}
                     contextID={contextID}
                     defaultTabName={defaultTabName}
                     defaultNoteLabel={defaultNoteLabel}
-                    onClose={() => setPopupShown(false)}
-                />
+                    initialPosition={initialPosition}
+                    onClose={hidePopup}
+                />,
+                document.body,
             )}
         </>
     );

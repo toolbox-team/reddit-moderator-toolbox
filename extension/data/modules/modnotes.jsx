@@ -10,9 +10,11 @@ import TBListener from '../tblistener.js';
 import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
-import {FEEDBACK_NEGATIVE, FEEDBACK_POSITIVE, textFeedback} from '../tbui.js';
+import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
+
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
@@ -279,6 +281,8 @@ async function getContextURL (note) {
  */
 function ModNotesBadge ({
     label = 'NN',
+    user,
+    subreddit,
     note,
     onClick,
 }) {
@@ -296,9 +300,7 @@ function ModNotesBadge ({
         <button
             className='tb-bracket-button tb-modnote-badge'
             tabIndex='0'
-            title='Mod notes for /u/${user} in /r/${subreddit}'
-            data-user='${user}'
-            data-subreddit='${subreddit}'
+            title={`Mod notes for /u/${user} in /r/${subreddit}`}
             onClick={onClick}
         >
             {badgeContents}
@@ -316,10 +318,10 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
                 id: noteID,
             });
             // TODO: present note deletion visibly to user
-            textFeedback('Note removed!', FEEDBACK_POSITIVE);
+            textFeedback('Note removed!', TextFeedbackKind.POSITIVE);
         } catch (error) {
             log.error('Failed to delete note:', error);
-            textFeedback('Failed to delete note', FEEDBACK_NEGATIVE);
+            textFeedback('Failed to delete note', TextFeedbackKind.NEGATIVE);
         }
     }
 
@@ -375,6 +377,7 @@ function ModNotesPopup ({
     contextID,
     defaultTabName,
     defaultNoteLabel,
+    initialPosition,
     onClose,
 }) {
     const tabs = [
@@ -413,15 +416,27 @@ function ModNotesPopup ({
                 note: formData.get('note'),
                 label: formData.get('label'),
             });
-            textFeedback('Note saved', FEEDBACK_POSITIVE);
+            textFeedback('Note saved', TextFeedbackKind.POSITIVE);
 
             // Close the popup after a successful save
             onClose();
         } catch (error) {
             log.error('Failed to create mod note:', error);
-            textFeedback('Failed to create mod note', FEEDBACK_NEGATIVE);
+            textFeedback('Failed to create mod note', TextFeedbackKind.NEGATIVE);
         }
     }
+
+    // Using autoFocus on the note text input causes the page to jump around;
+    // manually focus it after a paint via requestAnimationFrame to avoid this
+    const noteInputRef = useRef(null);
+    useEffect(() => {
+        if (noteInputRef.current == null) {
+            return;
+        }
+        requestAnimationFrame(() => {
+            noteInputRef.current.focus();
+        });
+    }, []);
 
     const popupFooter = (
         <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
@@ -436,9 +451,9 @@ function ModNotesPopup ({
                 ))}
             </select>
             <input
+                ref={noteInputRef}
                 type='text'
                 name='note'
-                autoFocus
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
@@ -457,6 +472,7 @@ function ModNotesPopup ({
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
             footer={popupFooter}
             draggable
+            initialPosition={initialPosition}
             onClose={onClose}
         >
             <WindowTabs
@@ -543,23 +559,48 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
     const note = useFetched(getLatestModNote(subreddit, user));
 
     const [popupShown, setPopupShown] = useState(false);
+    const [popupClickEvent, setPopupClickEvent] = useState(null);
+
+    /** @type {{top: number; left: number} | undefined} */
+    let initialPosition = undefined;
+    if (popupClickEvent) {
+        const positions = drawPosition(popupClickEvent);
+        initialPosition = {
+            top: positions.topPosition,
+            left: positions.leftPosition,
+        };
+    }
+
+    function showPopup (event) {
+        setPopupShown(true);
+        setPopupClickEvent(event);
+    }
+
+    function hidePopup () {
+        setPopupShown(false);
+        setPopupClickEvent(null);
+    }
 
     return (
         <>
             <ModNotesBadge
                 label='NN'
+                user={user}
+                subreddit={subreddit}
                 note={note}
-                onClick={() => setPopupShown(true)}
+                onClick={showPopup}
             />
-            {popupShown && (
+            {popupShown && createPortal(
                 <ModNotesPopup
                     user={user}
                     subreddit={subreddit}
                     contextID={contextID}
                     defaultTabName={defaultTabName}
                     defaultNoteLabel={defaultNoteLabel}
-                    onClose={() => setPopupShown(false)}
-                />
+                    initialPosition={initialPosition}
+                    onClose={hidePopup}
+                />,
+                document.body,
             )}
         </>
     );
@@ -568,7 +609,6 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
 export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
-    beta: true,
     enabledByDefault: true,
     settings: [
         {

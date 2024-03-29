@@ -21,7 +21,6 @@ Info| &nbsp;
 *Browser name*|{{browserName}}
 *Browser version*|{{browserVersion}}
 *Platform information*|{{platformInfo}}
-*Beta Mode*|{{betaMode}}
 *Debug Mode*|{{debugMode}}
 *Compact Mode*|{{compactMode}}
 *Advanced Settings*|{{advancedSettings}}
@@ -34,7 +33,6 @@ Info| &nbsp;
         browserName: debugInfo.browser,
         browserVersion: debugInfo.browserVersion,
         platformInfo: debugInfo.platformInformation,
-        betaMode: debugInfo.betaMode,
         debugMode: debugInfo.debugMode,
         compactMode: debugInfo.compactMode,
         advancedSettings: debugInfo.advancedSettings,

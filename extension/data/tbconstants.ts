@@ -22,8 +22,7 @@ export const icons = {
     list: '&#xe896;', // list
     modlog: '&#xe3ec;', // grid_on
     modqueue: '&#xe8b2;', // report_problem
-    newModmail: '&#xe168;', // move_to_inbox
-    oldModmail: '&#xe156;', // inbox
+    modmail: '&#xe156;', // inbox
     overlay: '&#xe8ea;', // view_array
     profile: '&#xe853;', // account_circle
     refresh: '&#xe5d5;', // refresh
@@ -39,6 +38,7 @@ export const icons = {
     unmoderated: '&#xe417;', // remove_red_eye
     userInbox: '&#xe0be;', // email
     usernote: '&#xe06f;', // note
+    prerelease: '&#xe86f;', // code,
 };
 
 /** HTML for the syntax highlighter's theme selector. */

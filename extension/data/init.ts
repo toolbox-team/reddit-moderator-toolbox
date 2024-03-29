@@ -50,7 +50,6 @@ import HistoryButton from './modules/historybutton.js';
 import Macros from './modules/macros.js';
 import Modbar from './modules/modbar.js';
 import ModButton from './modules/modbutton.js';
-import ModmailPro from './modules/modmailpro.js';
 import ModMatrix from './modules/modmatrix.js';
 import ModNotes from './modules/modnotes.jsx';
 import NewModmailPro from './modules/newmodmailpro.js';
@@ -221,6 +220,37 @@ async function doSettingsUpdates () {
             await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
         }
 
+        if (lastVersion < 70000) {
+            // Beta mode setting removed in favor of dedicated beta builds #917
+            await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined);
+
+            // (old) modmail pro removed in v7, RIP old modmail. nuke its settings
+            await Promise.all([
+                'inboxStyle',
+                'filteredSubs',
+                'defaultCollapse',
+                'noRedModmail',
+                'highlightNew',
+                'expandReplies',
+                'hideInviteSpam',
+                'autoLoad',
+                'fadeRecipient',
+                'subredditColor',
+                'resThreadedModmail',
+                'subredditColorSalt',
+                'customLimit',
+                'filterBots',
+                'botsToFilter',
+                'newTabLinks',
+                'lastVisited',
+                'replied',
+                'threadProcessRate',
+                'entryProcessRate',
+                'chunkProcessSize',
+                'twoPhaseProcessing',
+            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)));
+        }
+
         // End: version changes.
 
         // This is a super extra check to make sure the wiki page for settings export really is private.
@@ -233,15 +263,6 @@ async function doSettingsUpdates () {
         // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
         // TBStorage.setSetting('Notifier', 'modmailCount', 0);
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
-    }
-
-    // First run changes for major and minor releases only
-    // https://semver.org
-    const shortVersionMinor = Math.floor(TBCore.shortVersion / 100);
-    const lastVersionMinor = Math.floor(lastVersion / 100);
-
-    if (shortVersionMinor > lastVersionMinor) {
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', false);
     }
 }
 
@@ -334,7 +355,6 @@ async function doSettingsUpdates () {
             Usernotes,
             Comment,
             NewModmailPro,
-            ModmailPro,
             Macros,
             PersonalNotes,
             HistoryButton,

@@ -229,86 +229,90 @@ const TBModule = {
                         </a>.
                         <h3>made and maintained by:</h3>
                         <table className='tb-about-credits'>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/creesch/'>/u/creesch</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/agentlame'>/u/agentlame</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/LowSociety'>/u/LowSociety</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/TheEnigmaBlade'>/u/TheEnigmaBlade</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/dakta'>/u/dakta</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/largenocream'>/u/largenocream</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/noeatnosleep'>/u/noeatnosleep</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/garethp'>/u/garethp</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/WorseThanHipster' title='Literally'>
-                                        /u/WorseThanHipster
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/eritbh'>/u/eritbh</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/SpyTec13'>/u/SpyTec13</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/kenman'>/u/kenman</a>
-                                </td>
-                                <td></td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/creesch/'>/u/creesch</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/agentlame'>/u/agentlame</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/LowSociety'>/u/LowSociety</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/TheEnigmaBlade'>/u/TheEnigmaBlade</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/dakta'>/u/dakta</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/largenocream'>/u/largenocream</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/noeatnosleep'>/u/noeatnosleep</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/garethp'>/u/garethp</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/WorseThanHipster' title='Literally'>
+                                            /u/WorseThanHipster
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/eritbh'>/u/eritbh</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/SpyTec13'>/u/SpyTec13</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/kenman'>/u/kenman</a>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
                         </table>
                         <h3>Documentation by:</h3>
                         <table className='tb-about-credits'>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/gorillagnomes'>/u/gorillagnomes</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/x_minus_one'>/u/x_minus_one</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='https://www.reddit.com/user/Gustavobc'>/u/Gustavobc</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/hermithome'>/u/hermithome</a>
-                                </td>
-                                <td>
-                                    <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/psdtwk'>/u/psdtwk</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/gorillagnomes'>/u/gorillagnomes</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/x_minus_one'>/u/x_minus_one</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/Gustavobc'>/u/Gustavobc</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/hermithome'>/u/hermithome</a>
+                                    </td>
+                                    <td>
+                                        <a href='https://www.reddit.com/user/amici_ursi'>/u/amici_ursi</a>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                         <h3>Special thanks to:</h3>
                         <a href='https://www.reddit.com/user/andytuba'>/u/andytuba</a> &{' '}

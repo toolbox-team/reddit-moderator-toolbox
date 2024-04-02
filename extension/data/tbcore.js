@@ -86,7 +86,9 @@ export const isOldReddit = currentPlatform === RedditPlatform.OLD;
 /** @deprecated Check {@linkcode currentPlatform} directly instead. */
 export const isNewModmail = currentPlatform === RedditPlatform.MODMAIL;
 export const isNewMMThread = $('body').find('.ThreadViewer').length > 0;
-export const isEmbedded = $('body').hasClass('embedded-page');
+// TODO: break these checks out into platform.ts per-platform
+export const isEmbedded = $('body').hasClass('embedded-page')
+    || window.location.pathname.match(/^(\/r\/.*?)\/post-viewer\//);
 export let pageDetails = {};
 
 // Additional location checks to determine the type of page we're on

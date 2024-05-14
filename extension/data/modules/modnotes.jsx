@@ -442,7 +442,7 @@ function ModNotesPopup ({
                 className='tb-action-button tb-modnote-label-select'
                 defaultValue={defaultNoteLabelValueToLabelType[defaultNoteLabel]}
             >
-                <option value={undefined}>(no label)</option>
+                <option value=''>(no label)</option>
                 {Object.entries(labelNames).reverse().map(([value, name]) => (
                     <option key={value} value={value}>{name}</option>
                 ))}
@@ -585,10 +585,11 @@ export default new Module({
         'commentAuthor',
         'submissionAuthor',
         'modmailAuthor',
+        'userHovercard',
     ], ({details}) => {
         const subreddit = details.subreddit.name;
         const user = !details.user.deleted && details.user.name;
-        const contextID = details.comment?.id || details.submission?.id || null;
+        const contextID = details.comment?.fullname || details.submission?.fullname || null;
 
         const isMod = useFetched(isModSub(details.subreddit.name));
 

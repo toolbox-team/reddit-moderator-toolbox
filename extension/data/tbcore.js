@@ -1010,6 +1010,7 @@ export async function getThingInfo (sender, modCheck) {
         ham = false;
         user = $threadBase.find('.Message__author').first().text()
             || $body.find('.InfoBar__username').first().text()
+            || $body.find('.ModIdCard__UserNameLink').first().text()
             || $body.find('.ModIdCard__UserNameContainer').first().text();
     } else {
         const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);

@@ -1,8 +1,9 @@
-// Defines a system of "slots" (distinct from React slots) which modules can
-// use to render interface elements within the page. Slot locations are
-// standardized for consumers (e.g. a module says it wants to display a button
-// next to comment author usernames) and their actual position in the DOM is
-// controlled by platform-specific observers responding to changes in the page.
+// Defines a system of "slots" which modules can use to render interface
+// elements within the page. Slot locations are standardized for consumers (e.g.
+// a module says it wants to display a button next to comment author usernames)
+// and their actual position in the DOM is controlled by platform-specific
+// observers responding to changes in the page and dynamically creating React
+// roots which this code then populates with the appropriate contents.
 
 // TODO: this file probably needs to be explained a lot better im in
 //       functionality hyperfocus mode not documentation hyperfocus mode

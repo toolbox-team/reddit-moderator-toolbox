@@ -1,12 +1,9 @@
-import $ from 'jquery';
-
 import {map, page, pipeAsync} from 'iter-ops';
 
 import {useFetched, useSetting} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
-import {isModSub, isNewModmail, link} from '../tbcore.js';
+import {isModSub, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
 import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
@@ -20,7 +17,7 @@ import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
-import {reactRenderer} from '../util/ui_interop.tsx';
+import {renderInSlots} from '../frontends/index.tsx';
 
 const log = TBLog('ModNotes');
 
@@ -550,62 +547,6 @@ function NoteTableRow ({note, onDelete}) {
     );
 }
 
-const ModNotesUserRoot = ({user, subreddit, contextID}) => {
-    // Get settings
-    const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
-    const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
-
-    // Fetch the latest note for the user
-    const note = useFetched(getLatestModNote(subreddit, user));
-
-    const [popupShown, setPopupShown] = useState(false);
-    const [popupClickEvent, setPopupClickEvent] = useState(null);
-
-    /** @type {{top: number; left: number} | undefined} */
-    let initialPosition = undefined;
-    if (popupClickEvent) {
-        const positions = drawPosition(popupClickEvent);
-        initialPosition = {
-            top: positions.topPosition,
-            left: positions.leftPosition,
-        };
-    }
-
-    function showPopup (event) {
-        setPopupShown(true);
-        setPopupClickEvent(event);
-    }
-
-    function hidePopup () {
-        setPopupShown(false);
-        setPopupClickEvent(null);
-    }
-
-    return (
-        <>
-            <ModNotesBadge
-                label='NN'
-                user={user}
-                subreddit={subreddit}
-                note={note}
-                onClick={showPopup}
-            />
-            {popupShown && createPortal(
-                <ModNotesPopup
-                    user={user}
-                    subreddit={subreddit}
-                    contextID={contextID}
-                    defaultTabName={defaultTabName}
-                    defaultNoteLabel={defaultNoteLabel}
-                    initialPosition={initialPosition}
-                    onClose={hidePopup}
-                />,
-                document.body,
-            )}
-        </>
-    );
-};
-
 export default new Module({
     name: 'Mod Notes',
     id: 'ModNotes',
@@ -640,41 +581,76 @@ export default new Module({
     setSettingAsync(this.id, 'cachedParentFullnames', undefined);
 
     // Handle authors showing up on the page
-    TBListener.on('author', async e => {
-        const subreddit = e.detail.data.subreddit.name;
-        const author = e.detail.data.author;
-        const contextID = isNewModmail ? undefined : e.detail.data.comment?.id || e.detail.data.post?.id;
+    renderInSlots([
+        'commentAuthor',
+        'submissionAuthor',
+        'modmailAuthor',
+    ], ({details}) => {
+        const subreddit = details.subreddit.name;
+        const user = !details.user.deleted && details.user.name;
+        const contextID = details.comment?.id || details.submission?.id || null;
 
-        // Deleted users can't have notes
-        if (author === '[deleted]') {
-            return;
-        }
+        const isMod = useFetched(isModSub(details.subreddit.name));
 
-        // Can't fetch notes in a sub you're not a mod of
+        // Get settings
+        const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
+        const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
+
+        // Fetch the latest note for the user
+        const note = useFetched(getLatestModNote(subreddit, user));
+
+        const [popupShown, setPopupShown] = useState(false);
+        const [popupClickEvent, setPopupClickEvent] = useState(null);
+
+        // Need to know where we are and who we're looking at, and can't fetch
+        // notes in a sub you're not a mod of
         // TODO: What specific permissions are required to fetch notes?
-        const isMod = await isModSub(subreddit);
-        if (!isMod) {
-            return;
+        if (!subreddit || !user || !isMod) {
+            return <></>;
         }
 
-        // Return early if we don't have the things we need
-        if (!e.detail.data.subreddit.name || !e.detail.data.author) {
-            return;
+        /** @type {{top: number; left: number} | undefined} */
+        let initialPosition = undefined;
+        if (popupClickEvent) {
+            const positions = drawPosition(popupClickEvent);
+            initialPosition = {
+                top: positions.topPosition,
+                left: positions.leftPosition,
+            };
         }
 
-        // Display badge for notes if not already present
-        const $target = $(e.target);
-        if ($target.find('.tb-modnote-badge-react-root').length) {
-            return;
+        function showPopup (event) {
+            setPopupShown(true);
+            setPopupClickEvent(event);
         }
-        const badgeRoot = reactRenderer(
-            <ModNotesUserRoot
-                user={author}
-                subreddit={subreddit}
-                contextID={contextID}
-            />,
+
+        function hidePopup () {
+            setPopupShown(false);
+            setPopupClickEvent(null);
+        }
+
+        return (
+            <>
+                <ModNotesBadge
+                    label='NN'
+                    user={user}
+                    subreddit={subreddit}
+                    note={note}
+                    onClick={showPopup}
+                />
+                {popupShown && createPortal(
+                    <ModNotesPopup
+                        user={user}
+                        subreddit={subreddit}
+                        contextID={contextID}
+                        defaultTabName={defaultTabName}
+                        defaultNoteLabel={defaultNoteLabel}
+                        initialPosition={initialPosition}
+                        onClose={hidePopup}
+                    />,
+                    document.body,
+                )}
+            </>
         );
-        badgeRoot.classList.add('tb-modnote-badge-react-root');
-        $target.append(badgeRoot);
     });
 });

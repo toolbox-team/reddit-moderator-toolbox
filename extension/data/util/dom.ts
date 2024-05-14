@@ -16,28 +16,50 @@ export const documentInteractive = new Promise<void>(resolve => {
     }
 });
 
+/**
+ * Creates a long-lived {@linkcode MutationObserver} which observes mutations to
+ * some node's subtree and calls a callback for each individual mutation record
+ * that is observed.
+ * @param target The element to observe.
+ * @param options Mutation observer options. This convenience function defaults
+ * the `subtree` option to `true`; all others are passed through as-is.
+ * @param callback A function called for each observed
+ * {@linkcode MutationRecord}.
+ * @returns The created {@linkcode MutationObserver}.
+ */
+export function observeSubtree (
+    target: Node,
+    options: MutationObserverInit = {},
+    callback: (record: MutationRecord) => void,
+) {
+    let observer = new MutationObserver(records => records.forEach(record => callback(record)));
+    observer.observe(target, {subtree: true, ...options});
+    return observer;
+}
+
 // Keep a list of all the handlers we haven't run yet
 let pendingElementHandlers: [el: HTMLElement, handler: () => void][] = [];
 
-/** Registers a function to run when the given element appears in the DOM. */
+/**
+ * Registers a function to run when the given element appears in the DOM.
+ */
 export function onDOMAttach (el: HTMLElement, handler: () => void) {
     pendingElementHandlers.push([el, handler]);
 }
 
 // watch for elements being added to the DOM
-new MutationObserver(() => {
+observeSubtree(document, {childList: true}, record => {
     // go through the array and see if each element is present yet
     pendingElementHandlers = pendingElementHandlers.filter(([el, handler]) => {
-        if (document.contains(el)) {
-            // element is on the page, call its handler and remove from array
-            handler();
-            return false;
+        for (const addedNode of record.addedNodes ?? []) {
+            if (addedNode === el || addedNode.contains(el)) {
+                // element is on page, call its handler and remove from array
+                handler();
+                return false;
+            }
         }
 
         // element is not on page yet, keep it in the array
         return true;
     });
-}).observe(document, {
-    childList: true,
-    subtree: true,
 });

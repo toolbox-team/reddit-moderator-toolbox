@@ -47,16 +47,16 @@ export interface PlatformSlotDetails {
         user: PlatformSlotDetailsUser;
         submission?: PlatformSlotDetailsSubmission;
         subreddit: PlatformSlotDetailsSubreddit;
-        distinguishType: null | 'moderator' | 'employee' | 'alumnus';
-        stickied: boolean;
+        // distinguishType: null | 'moderator' | 'employee' | 'alumnus';
+        // stickied: boolean;
     };
     commentAuthor: {
         user: PlatformSlotDetailsUser;
         comment: PlatformSlotDetailsComment;
         submission?: PlatformSlotDetailsSubmission;
         subreddit: PlatformSlotDetailsSubreddit;
-        distinguished: boolean;
-        stickied: boolean;
+        // distinguished: boolean;
+        // stickied: boolean;
     };
     modmailAuthor: {
         user: PlatformSlotDetailsUser;

@@ -116,8 +116,6 @@ function mapEvent (event: JSAPIEvent): SlotRenderArgs | null {
             submission: {
                 fullname: event.detail.data.post.id,
             },
-            distinguishType: null, // TODO
-            stickied: false, // TODO
         }];
     }
     if (event.detail.type === 'commentAuthor') {
@@ -133,8 +131,6 @@ function mapEvent (event: JSAPIEvent): SlotRenderArgs | null {
                 fullname: event.detail.data.subreddit.id,
                 name: event.detail.data.subreddit.name,
             },
-            distinguishType: null, // TODO
-            stickied: false, // TODO
         }];
     }
 

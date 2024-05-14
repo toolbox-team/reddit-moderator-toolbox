@@ -5,6 +5,8 @@ import {type PlatformObserver, PlatformSlotDetails} from '.';
 
 const log = TBLog('observer:new');
 
+const JSAPI_CONSUMER_NAME = 'toolbox-platform-observer';
+
 interface JSAPISubreddit {
     id: string;
     name: string;
@@ -143,7 +145,7 @@ export default (createRenderer => {
     document.addEventListener('reddit', event => {
         const e = event as JSAPIEvent; // life's too short to worry about this
 
-        const target = e.target?.querySelector('[data-name="toolbox"]');
+        const target = e.target?.querySelector(`[data-name="${JSAPI_CONSUMER_NAME}"]`);
         if (!target || target.classList.contains('tb-target-seen')) {
             return;
         }
@@ -161,7 +163,7 @@ export default (createRenderer => {
     const meta = document.createElement('meta');
     meta.name = 'jsapi.consumer';
     // TODO: this can be changed back to just `toolbox` once TBListener is gone
-    meta.content = 'toolbox-platform-observer';
+    meta.content = JSAPI_CONSUMER_NAME;
     document.head.appendChild(meta);
     meta.dispatchEvent(new CustomEvent('reddit.ready'));
     log.info('Connected to jsAPI');

@@ -121,7 +121,13 @@ const createRenderer = <K extends keyof PlatformSlotDetails>(location: K, detail
             data-location={location}
         >
             {/* TODO: Do we want to do anything more sophisticated here? */}
-            {slotConsumers[location]?.map(Component => <Component details={details} location={location} />)}
+            {slotConsumers[location]?.map((Component, i) => (
+                <Component
+                    key={i}
+                    details={details}
+                    location={location}
+                />
+            ))}
         </div>,
     );
 

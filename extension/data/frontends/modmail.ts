@@ -2,8 +2,6 @@ import {getThingInfo} from '../tbcore';
 import TBLog from '../tblog';
 import {PlatformObserver} from '.';
 
-const log = TBLog('observer:modmail');
-
 const MESSAGE_SEEN_CLASS = 'tb-observer-modmail-message-seen';
 
 const SIDEBAR_SEEN_CLASS = 'tb-observer-modmail-sidebar-seen';

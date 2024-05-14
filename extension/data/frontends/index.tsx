@@ -61,8 +61,15 @@ export interface PlatformSlotDetails {
     modmailAuthor: {
         user: PlatformSlotDetailsUser;
         subreddit: PlatformSlotDetailsSubreddit;
-        authorIsModerator: boolean;
-        repliedAsSubreddit: boolean;
+        thread: {fullname: string};
+        message: {fullname: string};
+        // authorIsModerator: boolean;
+        // repliedAsSubreddit: boolean;
+    };
+    userHovercard: {
+        user: PlatformSlotDetailsUser;
+        subreddit: PlatformSlotDetailsSubreddit;
+        contextFullname?: string;
     };
 }
 export type PlatformSlotLocation = keyof PlatformSlotDetails;

@@ -1,7 +1,7 @@
 import TBLog from '../tblog';
 import {PlatformObserver} from '.';
 
-const log = TBLog('observe:shreddit');
+const log = TBLog('observer:shreddit');
 
 export default (() => {
     log.warn('Modmail observer not yet implemented');

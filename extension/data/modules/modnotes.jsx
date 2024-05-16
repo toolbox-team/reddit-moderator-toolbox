@@ -607,7 +607,7 @@ export default new Module({
         // notes in a sub you're not a mod of
         // TODO: What specific permissions are required to fetch notes?
         if (!subreddit || !user || !isMod) {
-            return <></>;
+            return null;
         }
 
         /** @type {{top: number; left: number} | undefined} */

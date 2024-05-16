@@ -589,7 +589,7 @@ export default new Module({
     ], ({details}) => {
         const subreddit = details.subreddit.name;
         const user = !details.user.deleted && details.user.name;
-        const contextID = details.comment?.fullname || details.submission?.fullname || null;
+        const contextID = details.contextFullname || details.comment?.fullname || details.submission?.fullname || null;
 
         const isMod = useFetched(isModSub(details.subreddit.name));
 

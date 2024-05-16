@@ -139,15 +139,21 @@ const createRenderer = <K extends keyof PlatformSlotDetails>(location: K, detail
     );
 
 // Initialize the appropriate observer for the platform we've loaded into
-// FIXME: this should really not be done here. export a function that does this
-//        and have it get called from init.ts only if load conditions pass
 let observers = {
     [RedditPlatform.OLD]: oldRedditObserver,
     [RedditPlatform.NEW]: newRedditObserver,
     [RedditPlatform.SHREDDIT]: shredditObserver,
     [RedditPlatform.MODMAIL]: modmailObserver,
 };
-if (currentPlatform != null) {
-    let observer = observers[currentPlatform];
-    observer(createRenderer);
+
+/**
+ * Start the platform observer, which will cause slots to be identified and
+ * populated. To be called as part of the init process after all slot consumers
+ * have been registered via {@linkcode renderInSlots}.
+ */
+export function initializeObserver () {
+    if (currentPlatform == null) {
+        return;
+    }
+    observers[currentPlatform](createRenderer);
 }

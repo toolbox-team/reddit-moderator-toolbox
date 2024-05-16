@@ -3,6 +3,8 @@
 import TBLog from '../tblog';
 import {type PlatformObserver, PlatformSlotDetails} from '.';
 
+import generalSettings from '../modules/general';
+
 const log = TBLog('observer:new');
 
 const JSAPI_CONSUMER_NAME = 'toolbox-platform-observer';
@@ -102,8 +104,11 @@ interface JSAPIEvent extends CustomEvent {
 type SlotRenderArgs<K extends keyof PlatformSlotDetails = keyof PlatformSlotDetails> = [K, PlatformSlotDetails[K]];
 
 /** Maps data received from jsAPI events into standardized slot data. */
-function mapEvent (event: JSAPIEvent): SlotRenderArgs | null {
+async function mapEvent (event: JSAPIEvent): Promise<SlotRenderArgs | null> {
     if (event.detail.type === 'postAuthor') {
+        if (await generalSettings.get('onlyshowInhover')) {
+            return null;
+        }
         return ['submissionAuthor', {
             user: event.detail.data.author === '[deleted]' ? {deleted: true} : {
                 deleted: false,
@@ -119,6 +124,9 @@ function mapEvent (event: JSAPIEvent): SlotRenderArgs | null {
         }];
     }
     if (event.detail.type === 'commentAuthor') {
+        if (await generalSettings.get('onlyshowInhover')) {
+            return null;
+        }
         return ['commentAuthor', {
             user: event.detail.data.author === '[deleted]' ? {deleted: true} : {
                 deleted: false,
@@ -133,12 +141,19 @@ function mapEvent (event: JSAPIEvent): SlotRenderArgs | null {
             },
         }];
     }
+    if (event.detail.type === 'userHovercard') {
+        return ['userHovercard', {
+            user: {deleted: false, name: event.detail.data.user.username},
+            subreddit: {name: event.detail.data.subreddit.name},
+            contextFullname: event.detail.data.contextId,
+        }];
+    }
 
     return null;
 }
 
 export default (createRenderer => {
-    document.addEventListener('reddit', event => {
+    document.addEventListener('reddit', async event => {
         const e = event as JSAPIEvent; // life's too short to worry about this
 
         const target = e.target?.querySelector(`[data-name="${JSAPI_CONSUMER_NAME}"]`);
@@ -149,7 +164,7 @@ export default (createRenderer => {
         target.classList.add('tb-target-seen');
         log.debug('saw new jsAPI event:', target, e.detail);
 
-        let renderOptions = mapEvent(e);
+        let renderOptions = await mapEvent(e);
         if (!renderOptions) {
             return;
         }

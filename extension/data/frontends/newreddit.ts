@@ -3,7 +3,7 @@
 import TBLog from '../tblog';
 import {type PlatformObserver, PlatformSlotDetails} from '.';
 
-import generalSettings from '../modules/general';
+import {getSettingAsync} from '../tbstorage';
 
 const log = TBLog('observer:new');
 
@@ -106,7 +106,7 @@ type SlotRenderArgs<K extends keyof PlatformSlotDetails = keyof PlatformSlotDeta
 /** Maps data received from jsAPI events into standardized slot data. */
 async function mapEvent (event: JSAPIEvent): Promise<SlotRenderArgs | null> {
     if (event.detail.type === 'postAuthor') {
-        if (await generalSettings.get('onlyshowInhover')) {
+        if (await getSettingAsync('GenSettings', 'onlyshowInhover', true)) {
             return null;
         }
         return ['submissionAuthor', {
@@ -124,7 +124,7 @@ async function mapEvent (event: JSAPIEvent): Promise<SlotRenderArgs | null> {
         }];
     }
     if (event.detail.type === 'commentAuthor') {
-        if (await generalSettings.get('onlyshowInhover')) {
+        if (await getSettingAsync('GenSettings', 'onlyshowInhover', true)) {
             return null;
         }
         return ['commentAuthor', {

@@ -135,20 +135,21 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 
             const isMod = useFetched(TBCore.isModSub(subreddit));
 
-            if (onlyshowInhover && ![RedditPlatform.OLD, RedditPlatform.MODMAIL].includes(currentPlatform)) {
-                return <></>;
-            }
-            if (details.user.deleted) {
-                return <></>;
-            }
-            if (!isMod) {
-                return <></>;
+            if (details.user.deleted || !isMod) {
+                return null;
             }
 
-            const $target = $('<div>');
+            // spoof the structure the rest of this code is expecting
+            // TODO: get rid of all this crap when rewriting to use React
+            const $target = $('<span>');
             $target.addClass('ut-thing');
+            $target.css('display', 'contents');
             $target.attr('data-subreddit', subreddit);
             $target.attr('data-author', author);
+            $target.attr(
+                'data-context-fullname',
+                details.contextFullname || details.comment?.fullname || details.submission?.fullname,
+            );
 
             attachNoteTag($target, subreddit, author, {
                 customText: location === 'userHovercard' ? 'Usernotes' : undefined,
@@ -514,19 +515,7 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             link = thingInfo.permalink_newmodmail;
             createUserPopup(subreddit, user, link, disableLink, e);
         } else {
-            let thingID;
-            let thingDetails;
-
-            if ($thing.data('tb-type') === 'TBcommentAuthor' || $thing.data('tb-type') === 'commentAuthor') {
-                thingDetails = $thing.data('tb-details');
-                thingID = thingDetails.data.comment.id;
-            } else if ($thing.data('tb-type') === 'userHovercard') {
-                thingDetails = $thing.data('tb-details');
-                thingID = thingDetails.data.contextId;
-            } else {
-                thingDetails = $thing.data('tb-details');
-                thingID = thingDetails.data.post.id;
-            }
+            const thingID = $thing.attr('data-context-fullname');
 
             if (!thingID) {
                 // we don't have the ID on /about/banned, so no thing data for us

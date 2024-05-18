@@ -120,7 +120,10 @@ export type PlatformObserver = (
 // the actual `createRenderer` function observers get - returns a new react root
 // which will contain all the contents different modules have registered for the
 // given slot location
-const createRenderer = <K extends keyof PlatformSlotDetails>(location: K, details: PlatformSlotDetails[K]) =>
+// NOTE: Exported because tbui builders need to manually emit their own slots.
+//       Should we just import this from the platform-specific bits instead of
+//       passing this function in to them?
+export const createRenderer = <K extends keyof PlatformSlotDetails>(location: K, details: PlatformSlotDetails[K]) =>
     reactRenderer(
         <div
             className='tb-platform-slot'

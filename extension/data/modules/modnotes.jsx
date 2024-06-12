@@ -446,7 +446,7 @@ function ModNotesPopup ({
                 className='tb-action-button tb-modnote-label-select'
                 defaultValue={defaultNoteLabelValueToLabelType[defaultNoteLabel]}
             >
-                <option value={undefined}>(no label)</option>
+                <option value=''>(no label)</option>
                 {Object.entries(labelNames).reverse().map(([value, name]) => (
                     <option key={value} value={value}>{name}</option>
                 ))}

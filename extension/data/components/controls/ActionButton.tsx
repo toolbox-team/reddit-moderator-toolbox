@@ -1,4 +1,5 @@
 import {type ComponentPropsWithoutRef} from 'react';
+import css from './ActionButton.module.css';
 
 export const ActionButton = ({
     inline,
@@ -8,7 +9,7 @@ export const ActionButton = ({
     inline?: boolean;
 }) => (
     <button
-        className={`tb-action-button ${inline ? 'inline-button' : ''} ${className}`}
+        className={`${css.actionButton} ${inline ? css.inline : ''} ${className}`}
         {...props}
     />
 );

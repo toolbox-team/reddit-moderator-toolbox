@@ -1,12 +1,16 @@
 import $ from 'jquery';
+import {createElement} from 'react';
 
+import {renderInSlots} from '../frontends/index.tsx';
+import {useFetched} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {currentPlatform, RedditPlatform} from '../util/platform.ts';
+import {JQueryRenderer} from '../util/ui_interop.tsx';
 
 // FIXME: It no longer makes sense to bake logger functions into modules
 //        themselves, since functions the module defines may not have the module
@@ -120,45 +124,40 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
 
     function addTBListener () {
         // event based handling of author elements.
-        TBListener.on('author', async e => {
-            const $target = $(e.target);
-            if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
-                const subreddit = e.detail.data.subreddit.name;
-                const author = e.detail.data.author;
-                if (author === '[deleted]') {
-                    return;
-                }
+        renderInSlots([
+            'userHovercard',
+            'submissionAuthor',
+            'commentAuthor',
+            'modmailAuthor',
+        ], ({location, details}) => {
+            const subreddit = details.subreddit.name;
+            const author = details.user.name;
 
-                $target.addClass('ut-thing');
-                $target.attr('data-subreddit', subreddit);
-                $target.attr('data-author', author);
+            const isMod = useFetched(TBCore.isModSub(subreddit));
 
-                const isMod = await TBCore.isModSub(subreddit);
-                if (isMod) {
-                    attachNoteTag($target, subreddit, author);
-                    foundSubreddit(subreddit);
-                    queueProcessSub(subreddit, $target);
-                }
+            if (details.user.deleted || !isMod) {
+                return null;
             }
-        });
 
-        // event based handling of author elements.
-        TBListener.on('userHovercard', async e => {
-            const $target = $(e.target);
-            const subreddit = e.detail.data.subreddit.name;
-            const author = e.detail.data.user.username;
+            // spoof the structure the rest of this code is expecting
+            // TODO: get rid of all this crap when rewriting to use React
+            const $target = $('<span>');
             $target.addClass('ut-thing');
+            $target.css('display', 'contents');
             $target.attr('data-subreddit', subreddit);
             $target.attr('data-author', author);
+            $target.attr(
+                'data-context-fullname',
+                details.contextFullname || details.comment?.fullname || details.submission?.fullname,
+            );
 
-            const isMod = await TBCore.isModSub(subreddit);
-            if (isMod) {
-                attachNoteTag($target, subreddit, author, {
-                    customText: 'Usernotes',
-                });
-                foundSubreddit(subreddit);
-                queueProcessSub(subreddit, $target);
-            }
+            attachNoteTag($target, subreddit, author, {
+                customText: location === 'userHovercard' ? 'Usernotes' : undefined,
+            });
+            foundSubreddit(subreddit);
+            queueProcessSub(subreddit, $target);
+
+            return createElement(JQueryRenderer, {content: $target});
         });
     }
 
@@ -516,19 +515,7 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
             link = thingInfo.permalink_newmodmail;
             createUserPopup(subreddit, user, link, disableLink, e);
         } else {
-            let thingID;
-            let thingDetails;
-
-            if ($thing.data('tb-type') === 'TBcommentAuthor' || $thing.data('tb-type') === 'commentAuthor') {
-                thingDetails = $thing.data('tb-details');
-                thingID = thingDetails.data.comment.id;
-            } else if ($thing.data('tb-type') === 'userHovercard') {
-                thingDetails = $thing.data('tb-details');
-                thingID = thingDetails.data.contextId;
-            } else {
-                thingDetails = $thing.data('tb-details');
-                thingID = thingDetails.data.post.id;
-            }
+            const thingID = $thing.attr('data-context-fullname');
 
             if (!thingID) {
                 // we don't have the ID on /about/banned, so no thing data for us

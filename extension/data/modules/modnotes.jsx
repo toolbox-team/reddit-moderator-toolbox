@@ -15,6 +15,7 @@ import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 import {useEffect, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 
+import {ActionButton} from '../components/controls/ActionButton.tsx';
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
@@ -457,12 +458,9 @@ function ModNotesPopup ({
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
-            <button
-                type='submit'
-                className='tb-action-button'
-            >
+            <ActionButton type='submit'>
                 Create Note
-            </button>
+            </ActionButton>
         </form>
     );
 

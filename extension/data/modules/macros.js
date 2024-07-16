@@ -175,11 +175,11 @@ export default new Module({
         getConfig(info.subreddit, (success, config) => {
             // if we're a mod, add macros to top level reply button.
             if (success && config.length > 0) {
-                const macroButtonHtml =
-                    `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
-                $body.find('.ThreadViewerReplyForm__replyFooter .selectWrapper').before(
-                    `<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`,
-                );
+                const macroButtonHtml = `
+                    <select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}">
+                        <option value=${MACROS}>macros</option>
+                    </select>
+                `;
                 $body.find(`
                     :is(
                         .ThreadViewerReplyForm__replyFooter,

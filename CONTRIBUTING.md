@@ -102,6 +102,7 @@ As an example, a release timeline might look something like this:
 ### Tagging a New Release
 
 1. Make sure the working directory is clear and you're on the `master` branch.
+1. Update `firefox_manifest.json`'s `strict_min_version` to the latest ESR version of Firefox. [Here's a link to the FF release calendar for reference](https://whattrainisitnow.com/calendar/). (TODO: automate this somehow. this is necessary because AMO will eventually prevent you from uploading extensions where this number is too low, but we want to set it to _something_ to prevent people from using the extension in browser versions where it will obviously not work.)
 2. Run `npm run release`. This script will prompt you for the new four-segment version number, then the release name.
    - Ensure the major.minor.patch is set correctly. You should only need to update this if the previous release was a stable release.
    - If the previous release was a beta release, increment the build number by 1. If the previous release was a stable release, instead reset the build number _to_ 1.

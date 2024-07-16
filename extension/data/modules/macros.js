@@ -180,6 +180,14 @@ export default new Module({
                 $body.find('.ThreadViewerReplyForm__replyFooter .selectWrapper').before(
                     `<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`,
                 );
+                $body.find(`
+                    :is(
+                        .ThreadViewerReplyForm__replyFooter,
+                        .ThreadViewerReplyForm__replyFooterGroup
+                    ) .selectWrapper
+                `).before(`
+                    <div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>
+                `);
 
                 populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
             }

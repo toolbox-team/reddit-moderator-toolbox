@@ -33,6 +33,15 @@
         "no-return-await": "error",
         "no-sequences": "error",
         "no-var": "error",
+        // these comment markers fail CI (notes to self in code that need to be
+        // resolved before a PR can be merged)
+        "no-warning-comments": [
+            "error",
+            {
+                "terms": ["XXX", "NOMERGE"],
+                "location": "anywhere"
+            }
+        ],
         "prefer-arrow-callback": "error",
         "prefer-const": "error",
         "prefer-numeric-literals": "error",

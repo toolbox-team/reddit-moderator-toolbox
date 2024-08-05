@@ -38,5 +38,5 @@ export function JQueryRenderer ({content}: {content: JQuery}) {
             };
         }
     }, [content]);
-    return <div ref={target} />;
+    return <div style={{display: 'contents'}} ref={target} />;
 }

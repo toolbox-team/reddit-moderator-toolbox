@@ -1,15 +1,14 @@
 import $ from 'jquery';
 import {createElement} from 'react';
 
-import {renderInSlots} from '../frontends/index.js';
+import {renderInSlots} from '../frontends/index.tsx';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
-import {JQueryRenderer} from '../util/ui_interop.js';
+import {JQueryRenderer} from '../util/ui_interop.tsx';
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 5000;

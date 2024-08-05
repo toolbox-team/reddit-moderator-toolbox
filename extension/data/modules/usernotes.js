@@ -9,7 +9,6 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
-import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 import {JQueryRenderer} from '../util/ui_interop.tsx';
 
 // FIXME: It no longer makes sense to bake logger functions into modules
@@ -48,6 +47,7 @@ const self = new Module({
             advanced: true,
             description: 'Max characters to display in current note tag (excluding date)',
         },
+        // NOMERGE - remove this setting it's unused now
         {
             id: 'onlyshowInhover',
             type: 'boolean',
@@ -61,7 +61,7 @@ const self = new Module({
 });
 export default self;
 
-function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
+function startUsernotes ({maxChars, showDate}) {
     const subs = [];
     const $body = $('body');
     const self = this;

@@ -1,4 +1,6 @@
 import {map, page, pipeAsync} from 'iter-ops';
+import {useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
 
 import {useFetched, useSetting} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
@@ -8,9 +10,6 @@ import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
-
-import {useEffect, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
 
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';

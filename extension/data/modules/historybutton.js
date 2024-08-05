@@ -1,12 +1,15 @@
 import $ from 'jquery';
+import {createElement} from 'react';
 
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+
+import {renderInSlots} from '../frontends/index.tsx';
+import {JQueryRenderer} from '../util/ui_interop.tsx';
 
 const self = new Module({
     name: 'History Button',
@@ -34,6 +37,7 @@ const self = new Module({
             advanced: true,
             description: 'Number of comments to retrieve per user history',
         },
+        // XXX: delete this setting as it's now unused
         {
             id: 'onlyshowInhover',
             type: 'boolean',
@@ -67,33 +71,24 @@ self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H
     });
 };
 
-self.runJsAPI = function ({onlyshowInhover}) {
+self.runJsAPI = function () {
     self.log('run');
 
-    TBListener.on('author', e => {
-        const $target = $(e.target);
-        // Skip adding the button next to the username if:
-        // - the onlyShowInHover preference is set,
-        // - we're not on old reddit (since the preference doesn't work there), and
-        // - we didn't make the thing the author is on (since the hovercard doesn't show up on constructed things).
-        if (onlyshowInhover && !TBCore.isOldReddit && !$target.closest('.tb-thing').length) {
-            return;
-        }
-        const author = e.detail.data.author;
-        const subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
+    renderInSlots([
+        'submissionAuthor',
+        'commentAuthor',
+        'userHovercard',
+    ], ({details, location}) => {
+        const subreddit = details.subreddit.name;
+        const user = !details.user.deleted && details.user.name;
 
-        if (author === '[deleted]') {
-            return;
+        if (details.user.deleted) {
+            return null;
         }
 
-        self.attachHistoryButton($target, author, subreddit);
-    });
-
-    TBListener.on('userHovercard', e => {
-        const $target = $(e.target);
-        const author = e.detail.data.user.username;
-        const subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
-        self.attachHistoryButton($target, author, subreddit, 'User History');
+        const $target = $('<span>');
+        self.attachHistoryButton($target, user, subreddit, location === 'userHovercard' ? 'User History' : undefined);
+        return createElement(JQueryRenderer, {content: $target});
     });
 
     window.addEventListener('TBNewPage', event => {
@@ -127,7 +122,7 @@ async function init (options) {
 
     self.log('mscheck passed');
 
-    self.runJsAPI(options);
+    self.runJsAPI();
 
     $body.on('click', '.user-history-button, #tb-user-history', function (event) {
         const $this = $(this);

@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-release
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: release-build-chrome
     - uses: wdzeng/chrome-extension@v1
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-release
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: release-build-firefox
     - uses: wdzeng/firefox-addon@v1

@@ -33,12 +33,12 @@ jobs:
         popd
 
     - name: Upload release build artifact - Chrome
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-build-chrome
         path: release-build-chrome.zip
     - name: Upload release build artifact - Firefox
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-build-firefox
         path: release-build-firefox.zip
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-release
     steps:
-    - uses: actions/download-artifact@v4.1.7
+    - uses: actions/download-artifact@v4
       with:
         name: release-build-chrome
     - uses: wdzeng/chrome-extension@v1
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-release
     steps:
-    - uses: actions/download-artifact@v4.1.7
+    - uses: actions/download-artifact@v4
       with:
         name: release-build-firefox
     - uses: wdzeng/firefox-addon@v1

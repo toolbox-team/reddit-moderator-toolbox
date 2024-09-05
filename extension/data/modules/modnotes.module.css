@@ -1,0 +1,22 @@
+.noteTable {
+	/* The modnote popup footer is very wide; fill up that extra width */
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.noteTable :is(th, td) {
+	/* stolen from usernotes, break this into a generic table component later */
+	padding: 2px 4px !important;
+	border: solid 1px #C1BFBF;
+	vertical-align: top;
+}
+
+.noteTable a {
+	color: rgb(51, 102, 153);
+	text-decoration: none;
+}
+
+.actionSummary {
+	font-style: italic;
+	opacity: 0.5;
+}

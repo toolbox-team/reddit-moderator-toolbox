@@ -22,6 +22,8 @@ import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
+import css from './modnotes.module.css';
+
 const log = TBLog('ModNotes');
 
 /**
@@ -337,7 +339,7 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
                 // construct the table and insert the generated rows for each
                 // page
                 map(pageItems => (
-                    <table className='tb-modnote-table'>
+                    <table className={css.noteTable}>
                         <thead>
                             <tr>
                                 <th>Author</th>
@@ -439,7 +441,7 @@ function ModNotesPopup ({
     }, []);
 
     const popupFooter = (
-        <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
+        <form className={css.modnoteCreateForm} onSubmit={handleNewNoteSubmit}>
             <select
                 name='label'
                 className='tb-action-button tb-modnote-label-select'
@@ -512,7 +514,7 @@ function NoteTableRow ({note, onDelete}) {
             </td>
             <td>
                 {note.mod_action_data?.action && (
-                    <span className='tb-modnote-action-summary'>
+                    <span className={css.actionSummary}>
                         Took action {'"'}
                         {note.mod_action_data.action}
                         {'"'}

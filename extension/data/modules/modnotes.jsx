@@ -588,7 +588,7 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                 note={note}
                 onClick={showPopup}
             />
-            {popupShown && createPortal(
+            {popupShown && createBodyShadowPortal(
                 <ModNotesPopup
                     user={user}
                     subreddit={subreddit}
@@ -598,7 +598,6 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                     initialPosition={initialPosition}
                     onClose={hidePopup}
                 />,
-                document.body,
             )}
         </>
     );

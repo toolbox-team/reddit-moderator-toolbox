@@ -1,4 +1,5 @@
 import {MouseEventHandler, ReactNode, useEffect, useRef} from 'react';
+import {classes} from '../util/ui_interop';
 import {Icon} from './controls/Icon';
 
 export const Window = ({
@@ -50,7 +51,11 @@ export const Window = ({
     return (
         <div
             ref={windowRef}
-            className={`tb-window ${draggable ? 'tb-window-draggable' : ''} ${className}`}
+            className={classes(
+                css.window,
+                draggable && css.draggable,
+                className,
+            )}
             onClick={handleClick}
         >
             <div ref={windowHeaderRef} className='tb-window-header'>

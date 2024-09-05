@@ -1,4 +1,4 @@
-name: "Publish"
+name: "Publish to beta listings"
 on:
   push:
     tags:
@@ -8,6 +8,8 @@ jobs:
   build-release:
     runs-on: ubuntu-latest
     steps:
+    # TODO: somehow check if the pushed tag was a backport (i.e. it's a lower
+    # version than the latest beta release) and don't publish those. #964
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
     - run: npm ci

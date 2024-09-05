@@ -1,0 +1,89 @@
+.window {
+    max-width: 1000px;
+    padding: 0 !important;
+    background-color: #FFF;
+    border: 0;
+    box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
+}
+
+.draggable {
+    position: absolute;
+    z-index: 2147483645 !important;
+}
+
+/* Header/titlebar */
+.header {
+    display: flex;
+    background-color: #CEE3F8;
+    line-height: 26px;
+    white-space: nowrap;
+}
+.header::before {
+    /* Pseudo-element added to the beginning of the window to help center titles */
+    content: "";
+    flex: 1;
+}
+.title {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    padding: 0;
+    margin: 0 10px;
+    color: #000;
+}
+/* Close/help buttons */
+.buttons {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+.buttons a {
+    display: flex;
+    background-color: #C7D6E6;
+    width: 36px;
+    margin-left: 1px;
+    text-align: center;
+    /* center inner icons */
+    justify-content: center;
+    align-items: center;
+	text-decoration: none;
+}
+.buttons a:hover {
+    background-color: #9FBAD6;
+}
+
+/* Content resets */
+.content {
+    line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
+}
+.content {
+    overflow: auto;
+    padding: 5px !important;
+}
+
+/* Footer stuff */
+.footer {
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    background-color: #CEE3F8;
+}
+/*
+ * Forms in footers are just used for submit action reasons and are transparent
+ * to how footer items are laid out
+ */
+.footer form {
+    display: contents;
+}
+/* Hide empty text segments to avoid de-centering buttons and stuff */
+.footer :not(input):empty {
+    display: none;
+}
+
+/* Adjust controls to work nicely together in footers */
+.footer .tb-input {
+    border-color: #72869A;
+}

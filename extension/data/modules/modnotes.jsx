@@ -13,7 +13,6 @@ import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 
 import {useEffect, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
 
 import {ActionButton} from '../components/controls/ActionButton.tsx';
 import {Icon} from '../components/controls/Icon.tsx';
@@ -21,7 +20,7 @@ import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
-import {reactRenderer} from '../util/ui_interop.tsx';
+import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
 const log = TBLog('ModNotes');
 
@@ -540,7 +539,7 @@ function NoteTableRow ({note, onDelete}) {
                         data-note-id={escapeHTML(note.id)}
                         onClick={() => onDelete()}
                     >
-                        <Icon negative icon='delete' />
+                        <Icon mood='negative' icon='delete' />
                     </a>
                 )}
             </td>

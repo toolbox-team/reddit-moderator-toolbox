@@ -1,0 +1,58 @@
+/* Tabs */
+.wrapper {
+    margin: -5px;
+}
+
+.tabs {
+    background-color: #C7D6E6;
+}
+.tabs a {
+    background-color: #C7D6E6;
+    border-style: dotted;
+    border-color: #A8B5C2;
+    border-width: 0;
+    border-right-width: 1px;
+    font-size: 11px;
+    display: inline-block;
+    padding: 4px;
+    cursor: pointer;
+	color: #369;
+}
+.tabs a:hover,
+.tabs a.active {
+    background-color: #9FBAD6;
+    border-style: solid;
+    border-color: #9FBAD6;
+}
+.tabs a:not(:first-child):hover,
+.tabs a:not(:first-child).active {
+    box-shadow: -1px 0 #9FBAD6;
+}
+
+/* Content resets */
+.content {
+    overflow: auto;
+    padding: 5px !important;
+}
+
+.vertical .tabs {
+    display: inline-block;
+    width: 135px;
+}
+.vertical .content {
+    display: inline-block;
+    vertical-align: top;
+    /* Leave space for the tabs on the left */
+    width: calc(100% - 135px);
+}
+
+/* Restyle the tab buttons to be vertical */
+.vertical .tabs a {
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    display: block;
+}
+.vertical .tabs a:not(:first-child):hover,
+.vertical .tabs a:not(:first-child).active {
+    box-shadow: 0 -1px #9FBAD6;
+}

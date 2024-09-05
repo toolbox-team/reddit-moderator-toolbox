@@ -1,4 +1,5 @@
 import {type ComponentPropsWithoutRef} from 'react';
+import {classes} from '../../util/ui_interop';
 import css from './ActionButton.module.css';
 
 export const ActionButton = ({
@@ -9,7 +10,7 @@ export const ActionButton = ({
     inline?: boolean;
 }) => (
     <button
-        className={`${css.actionButton} ${inline ? css.inline : ''} ${className}`}
+        className={classes(css.actionButton, inline && css.inline, className)}
         {...props}
     />
 );

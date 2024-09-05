@@ -51,7 +51,7 @@
         "docdash": "^2.0.2",
         "dprint": "^0.47.0",
         "eslint": "^8.57.0",
-        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-import": "^2.30.0",
         "eslint-plugin-react": "^7.35.0",
         "inquirer": "^10.1.7",
         "jsdoc": "^4.0.2",

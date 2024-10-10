@@ -1,7 +1,9 @@
 import {AnimatePresence, motion} from 'framer-motion';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store';
-import {TextFeedbackLocation} from '../store/textFeedbackSlice';
+import {TextFeedbackKind, TextFeedbackLocation} from '../store/textFeedbackSlice';
+import {classes} from '../util/ui_interop';
+import css from './TextFeedbackContainer.module.css';
 
 export function TextFeedbackContainer () {
     const currentMessage = useSelector((state: RootState) => state.textFeedback.current);
@@ -20,12 +22,18 @@ export function TextFeedbackContainer () {
             transform: 'translate(-50%)',
         } as const;
 
+    // really rushed and messy way to map an enum to a CSS class but whatever
+    const displayClassName = currentMessage && {
+        [TextFeedbackKind.POSITIVE]: 'positive',
+        [TextFeedbackKind.NEGATIVE]: 'negative',
+        [TextFeedbackKind.NEUTRAL]: undefined,
+    }[currentMessage.kind];
+
     return (
         <AnimatePresence>
             {currentMessage && (
                 <motion.div
-                    id='tb-feedback-window'
-                    className={currentMessage.kind}
+                    className={classes(css.window, displayClassName && css[displayClassName])}
                     style={style}
                     animate={{opacity: 1}}
                     exit={{opacity: 0}}

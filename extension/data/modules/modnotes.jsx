@@ -427,15 +427,13 @@ function ModNotesPopup ({
     }
 
     // Using autoFocus on the note text input causes the page to jump around;
-    // manually focus it after a paint via requestAnimationFrame to avoid this
+    // manually focus it with `preventScroll` to avoid this
     const noteInputRef = useRef(null);
     useEffect(() => {
         if (noteInputRef.current == null) {
             return;
         }
-        requestAnimationFrame(() => {
-            noteInputRef.current.focus();
-        });
+        noteInputRef.current.focus({preventScroll: true});
     }, []);
 
     const popupFooter = (

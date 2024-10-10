@@ -20,15 +20,21 @@ export function PageNotificationContainer () {
 
     // Register listener for messages from the background page
     useEffect(() => {
-        const messageListener = (message: any) => {
-            if (message.action === 'tb-show-page-notification') {
+        const messageListener = (message: unknown) => {
+            // TODO: we need proper types for these messages
+            if ((message as any).action === 'tb-show-page-notification') {
                 // Add to beginning of list so it shows up on top
                 // TODO: wouldn't it be better to do this via `flex-direction`?
-                setNotifications([message.details, ...notifications]);
-            } else if (message.action === 'tb-clear-page-notification') {
+                setNotifications([(message as any).details, ...notifications]);
+            } else if ((message as any).action === 'tb-clear-page-notification') {
                 // Remove the notification from the list
-                setNotifications(notifications.filter(notif => notif.id !== message.id));
+                setNotifications(notifications.filter(notif => notif.id !== (message as any).id));
             }
+
+            // `@types/webextension-polyfill` wants us to explicitly return
+            // `undefined` from synchronous listeners to indicate that we're not
+            // doing any async stuff relying on the `sendResponse` param
+            return undefined;
         };
 
         browser.runtime.onMessage.addListener(messageListener);

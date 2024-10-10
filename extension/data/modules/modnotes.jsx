@@ -30,7 +30,6 @@ const log = TBLog('ModNotes');
  * An object mapping modnote types to human-friendly display names.
  * @constant {object}
  */
-// NOTE: values of this object are not escaped before being inserted in HTML
 const typeNames = {
     NOTE: 'Note',
     APPROVAL: 'Approve',
@@ -49,7 +48,6 @@ const typeNames = {
  * which doesn't have an analogue in Toolbox usernotes.
  * @constant {object}
  */
-// NOTE: values of this object are not escaped before being inserted in HTML
 const labelColors = {
     BOT_BAN: 'black',
     PERMA_BAN: 'darkred',
@@ -65,7 +63,6 @@ const labelColors = {
  * An object mapping modnote lavels to human-friendly display names.
  * @constant {object}
  */
-// NOTE: values of this object are not escaped before being inserted in HTML
 const labelNames = {
     BOT_BAN: 'Bot Ban',
     PERMA_BAN: 'Permaban',

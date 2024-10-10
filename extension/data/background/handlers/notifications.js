@@ -18,7 +18,7 @@ const notificationMetaDataKey = notificationID => `notifmeta-${notificationID}`;
  * @param notificationObject object containing the meta data
  */
 function setNotificationMetaData (notificationID, notificationObject) {
-    return browser.storage.local.set({
+    return browser.storage.session.set({
         [notificationMetaDataKey(notificationID)]: notificationObject,
     });
 }
@@ -29,7 +29,7 @@ function setNotificationMetaData (notificationID, notificationObject) {
  * @returns {Promise<object>}
  */
 function getNotificationMetaData (notificationID) {
-    return browser.storage.local.get({[notificationMetaDataKey(notificationID)]: null});
+    return browser.storage.session.get({[notificationMetaDataKey(notificationID)]: null});
 }
 
 /**
@@ -38,7 +38,7 @@ function getNotificationMetaData (notificationID) {
  * @returns {promise<object>}
  */
 function deleteNotificationMetaData (notificationID) {
-    return browser.storage.local.remove(notificationMetaDataKey(notificationID));
+    return browser.storage.session.remove(notificationMetaDataKey(notificationID));
 }
 
 // TODO: I know we've had this conversation before but I'm 99% sure this isn't

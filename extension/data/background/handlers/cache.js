@@ -97,7 +97,7 @@ async function getSessionUserID (sender) {
     if (redditSessionCookie) {
         // The session value contains comma seperated values. The first one is the the userid in base10.
         // As reddit uses base36 everywhere else we convert the ID to that so things are easier to debug.
-        const redditUserIdBase10 = decodeURIComponent(redditSessionCookie.value).split(',')[0];
+        const redditUserIdBase10 = decodeURIComponent(redditSessionCookie.value).match(/\d+/)[0];
         redditUserIdBase36 = parseInt(redditUserIdBase10).toString(36);
     } else {
         redditUserIdBase36 = 'noSessionFallback';

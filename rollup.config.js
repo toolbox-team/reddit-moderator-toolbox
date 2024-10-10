@@ -1,11 +1,13 @@
 /* eslint-env node */
 
-// import nodeResolve from '@rollup/plugin-node-resolve';
+import path from 'node:path';
+
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
+import postcss from 'rollup-plugin-postcss';
 
 // we have three build types: dev, beta, and stable. dev is the default and the
 // other two types are mostly handled by CI, but we include some basic checks to
@@ -48,6 +50,9 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                     // the commit we're building from, mostly helpful in betas
                     'process.env.BUILD_SHA': JSON.stringify(buildSha ?? null),
                 },
+            }),
+            postcss({
+                extract: path.resolve(`build/${platform}/data/bundled.css`),
             }),
             nodeResolve(),
             commonjs(),

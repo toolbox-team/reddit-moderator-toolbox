@@ -1,4 +1,6 @@
 import {ReactNode, useState} from 'react';
+import {classes} from '../util/ui_interop';
+import css from './WindowTabs.module.css';
 
 export interface WindowTab {
     title: string;
@@ -17,20 +19,20 @@ export const WindowTabs = ({vertical = false, tabs, defaultTabIndex = 0}: {
     const [activeIndex, setActiveIndex] = useState(Math.min(tabs.length, defaultTabIndex));
 
     return (
-        <div className={`tb-window-tabs-wrapper ${vertical ? 'tb-window-tabs-wrapper-vertical' : ''}`}>
-            <div className='tb-window-tabs'>
+        <div className={classes(css.wrapper, vertical && css.vertical)}>
+            <div className={css.tabs}>
                 {tabs.map((tab, i) => (
                     <a
                         key={i}
                         title={tab.tooltip}
                         onClick={() => setActiveIndex(i)}
-                        className={activeIndex === i ? 'active' : undefined}
+                        className={classes(activeIndex === i && css.active)}
                     >
                         {tab.title}
                     </a>
                 ))}
             </div>
-            <div className='tb-window-tabs-content'>
+            <div className={css.content}>
                 {tabs[activeIndex].content}
             </div>
         </div>

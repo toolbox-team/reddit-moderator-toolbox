@@ -1,0 +1,22 @@
+/*
+ * Base stylesheet that applies in all shadow roots. Used to reset our
+ * environment to a known state for component styles to build on, and to set up
+ * things like fonts and CSS variables that are consistent everywhere.
+ */
+
+:host {
+	/* reset inherited styles from the page for a clean slate */
+	all: initial;
+	/*
+	 * Don't give host elements their own boxes in the box model - just use the
+	 * box of whatever we're rendering inside. This avoids subtle layout issues
+	 * when the rendered content's top-level element is `inline` or
+	 * `inline-block` or something else exotic like `table-*`.
+     * see https://developer.mozilla.org/en-US/docs/Web/CSS/display#contents
+	 */
+	display: contents;
+
+	/* set our preferred fonts and stuff */
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}

@@ -13,14 +13,17 @@ import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 
 import {useEffect, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
 
+import {ActionButton} from '../components/controls/ActionButton.tsx';
+import {BracketButton} from '../components/controls/BracketButton.tsx';
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
-import {ProgressivePager} from '../components/ProgressivePager.tsx';
+import {Pager} from '../components/Pager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
-import {reactRenderer} from '../util/ui_interop.tsx';
+import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
+
+import css from './modnotes.module.css';
 
 const log = TBLog('ModNotes');
 
@@ -28,7 +31,6 @@ const log = TBLog('ModNotes');
  * An object mapping modnote types to human-friendly display names.
  * @constant {object}
  */
-// NOTE: values of this object are not escaped before being inserted in HTML
 const typeNames = {
     NOTE: 'Note',
     APPROVAL: 'Approve',
@@ -47,7 +49,6 @@ const typeNames = {
  * which doesn't have an analogue in Toolbox usernotes.
  * @constant {object}
  */
-// NOTE: values of this object are not escaped before being inserted in HTML
 const labelColors = {
     BOT_BAN: 'black',
     PERMA_BAN: 'darkred',
@@ -63,7 +64,6 @@ const labelColors = {
  * An object mapping modnote lavels to human-friendly display names.
  * @constant {object}
  */
-// NOTE: values of this object are not escaped before being inserted in HTML
 const labelNames = {
     BOT_BAN: 'Bot Ban',
     PERMA_BAN: 'Permaban',
@@ -297,14 +297,14 @@ function ModNotesBadge ({
         );
     }
     return (
-        <button
+        <BracketButton
             className='tb-bracket-button tb-modnote-badge'
             tabIndex='0'
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
             onClick={onClick}
         >
             {badgeContents}
-        </button>
+        </BracketButton>
     );
 }
 
@@ -326,7 +326,7 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
     }
 
     return (
-        <ProgressivePager
+        <Pager
             controlPosition='bottom'
             emptyContent={<p>No notes</p>}
             pages={pipeAsync(
@@ -337,7 +337,7 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
                 // construct the table and insert the generated rows for each
                 // page
                 map(pageItems => (
-                    <table className='tb-modnote-table'>
+                    <table className={css.noteTable}>
                         <thead>
                             <tr>
                                 <th>Author</th>
@@ -427,19 +427,17 @@ function ModNotesPopup ({
     }
 
     // Using autoFocus on the note text input causes the page to jump around;
-    // manually focus it after a paint via requestAnimationFrame to avoid this
+    // manually focus it with `preventScroll` to avoid this
     const noteInputRef = useRef(null);
     useEffect(() => {
         if (noteInputRef.current == null) {
             return;
         }
-        requestAnimationFrame(() => {
-            noteInputRef.current.focus();
-        });
+        noteInputRef.current.focus({preventScroll: true});
     }, []);
 
     const popupFooter = (
-        <form className='tb-modnote-create-form' onSubmit={handleNewNoteSubmit}>
+        <form className={css.modnoteCreateForm} onSubmit={handleNewNoteSubmit}>
             <select
                 name='label'
                 className='tb-action-button tb-modnote-label-select'
@@ -457,12 +455,9 @@ function ModNotesPopup ({
                 className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
-            <button
-                type='submit'
-                className='tb-action-button'
-            >
+            <ActionButton type='submit'>
                 Create Note
-            </button>
+            </ActionButton>
         </form>
     );
 
@@ -515,7 +510,7 @@ function NoteTableRow ({note, onDelete}) {
             </td>
             <td>
                 {note.mod_action_data?.action && (
-                    <span className='tb-modnote-action-summary'>
+                    <span className={css.actionSummary}>
                         Took action {'"'}
                         {note.mod_action_data.action}
                         {'"'}
@@ -542,7 +537,7 @@ function NoteTableRow ({note, onDelete}) {
                         data-note-id={escapeHTML(note.id)}
                         onClick={() => onDelete()}
                     >
-                        <Icon negative icon='delete' />
+                        <Icon mood='negative' icon='delete' />
                     </a>
                 )}
             </td>
@@ -590,7 +585,7 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                 note={note}
                 onClick={showPopup}
             />
-            {popupShown && createPortal(
+            {popupShown && createBodyShadowPortal(
                 <ModNotesPopup
                     user={user}
                     subreddit={subreddit}
@@ -600,7 +595,6 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                     initialPosition={initialPosition}
                     onClose={hidePopup}
                 />,
-                document.body,
             )}
         </>
     );

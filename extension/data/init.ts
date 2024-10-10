@@ -2,6 +2,9 @@ import $ from 'jquery';
 import {createElement} from 'react';
 import browser from 'webextension-polyfill';
 
+// Pull our generic base CSS into the bundle
+import './base.css';
+
 // We load all our CodeMirror addons and modes here and they'll be available
 // anywhere else we `import CodeMirror from 'codemirror';`
 import 'codemirror';

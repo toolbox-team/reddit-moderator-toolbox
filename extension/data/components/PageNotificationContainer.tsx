@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useState} from 'react';
 import browser from 'webextension-polyfill';
 import {useSetting} from '../hooks';
 import {classes} from '../util/ui_interop';

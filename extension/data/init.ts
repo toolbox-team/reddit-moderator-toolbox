@@ -150,7 +150,7 @@ async function checkLoadConditions (tries = 3) {
     try {
         userDetails = await TBApi.getUserDetails();
     } catch (error) {
-        throw new Error('Failed to fetch user details');
+        throw new Error('Failed to fetch user details', {cause: error});
     }
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
         throw new Error(`Fetched user details are invalid: ${userDetails}`);

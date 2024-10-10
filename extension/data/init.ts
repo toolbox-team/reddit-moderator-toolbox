@@ -146,9 +146,14 @@ async function checkLoadConditions (tries = 3) {
     }
 
     // Check that we have details about the current user
-    const userDetails = await TBApi.getUserDetails();
-    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
+    let userDetails;
+    try {
+        userDetails = await TBApi.getUserDetails();
+    } catch (error) {
         throw new Error('Failed to fetch user details');
+    }
+    if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
+        throw new Error(`Fetched user details are invalid: ${userDetails}`);
     }
 
     // Write a setting and read back its value, if this fails something is wrong

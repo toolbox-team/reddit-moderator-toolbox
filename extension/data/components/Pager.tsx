@@ -1,23 +1,35 @@
 import {type ReactNode, useEffect, useMemo, useState} from 'react';
 import type {MaybeAsyncIterable} from '../util/iter';
-
 import {classes} from '../util/ui_interop';
 import {GeneralButton} from './controls';
-import css from './ProgressivePager.module.css';
+import css from './Pager.module.css';
 
+/**
+ * Takes an iterable of multiple sequential pages of content and displays one at
+ * a time, with a row of buttons to move between pages.
+ */
 // TODO: this implementation no longer uses the `wrapWithLastValue` helper which
 //       means the "load more" button will sometimes do nothing. This isn't
 //       ideal; it's probably not the largest of the UX issues with this
 //       particular interface at the moment, but
-export const ProgressivePager = ({
+export const Pager = ({
     lazy = true,
     controlPosition = 'top',
     emptyContent,
     pages,
 }: {
+    /**
+     * If true, not all pages will be pulled from the iterable at once. The
+     * final page count won't be known; a "load more" button will be displayed
+     * to attempt to load the next page. Good for asynchronous iterators where
+     * computing the next page is expensive and not all pages will be needed.
+     */
     lazy: boolean;
+    /** Where the controls are displayed relative to the page content. */
     controlPosition: 'top' | 'bottom';
+    /** Content to display in case the given iterable returns no pages. */
     emptyContent: ReactNode;
+    /** An iterable of pages to be displayed. */
     pages: MaybeAsyncIterable<ReactNode>;
 }) => {
     // Extract the iterator from the iterable we're passed in

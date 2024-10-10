@@ -18,7 +18,7 @@ import {ActionButton} from '../components/controls/ActionButton.tsx';
 import {BracketButton} from '../components/controls/BracketButton.tsx';
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
-import {ProgressivePager} from '../components/ProgressivePager.tsx';
+import {Pager} from '../components/Pager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
@@ -326,7 +326,7 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
     }
 
     return (
-        <ProgressivePager
+        <Pager
             controlPosition='bottom'
             emptyContent={<p>No notes</p>}
             pages={pipeAsync(

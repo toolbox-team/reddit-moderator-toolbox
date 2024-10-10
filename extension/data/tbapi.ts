@@ -75,7 +75,8 @@ export const sendRequest = async ({
     okOnly,
 }: RequestOptions) => {
     // Make the request
-    const messageReply = await browser.runtime.sendMessage({
+    // TODO: types for runtime messages
+    const messageReply: any = await browser.runtime.sendMessage({
         action: 'tb-request',
         method,
         endpoint,

@@ -1,4 +1,4 @@
-import {type ReactNode, useEffect, useLayoutEffect, useMemo, useState} from 'react';
+import {type ReactNode, useEffect, useMemo, useState} from 'react';
 import type {MaybeAsyncIterable} from '../util/iter';
 
 import {classes} from '../util/ui_interop';

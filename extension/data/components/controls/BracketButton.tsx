@@ -1,8 +1,8 @@
 import {type ComponentPropsWithoutRef} from 'react';
 import {classes} from '../../util/ui_interop';
-import css from './ActionButton.module.css';
+import css from './BracketButton.module.css';
 
-export const ActionButton = ({
+export const BracketButton = ({
     inline,
     className,
     ...props
@@ -10,7 +10,7 @@ export const ActionButton = ({
     inline?: boolean;
 }) => (
     <button
-        className={classes(css.actionButton, inline && css.inline, className)}
+        className={classes(css.bracketButton, className)}
         {...props}
     />
 );

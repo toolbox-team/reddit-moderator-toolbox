@@ -802,7 +802,7 @@ export const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
  * is the last one in the sequence by always reading one item ahead in the
  * iterator to check for `{done: true}` before yielding the current item.
  * @template T
- * @param {AsyncIterable<T>} iterable
+ * @param {MaybeAsyncIterable<T>} iterable
  * @returns {AsyncGenerator<{item: T, last: boolean}, void>}
  */
 export async function* wrapWithLastValue (iterable) {

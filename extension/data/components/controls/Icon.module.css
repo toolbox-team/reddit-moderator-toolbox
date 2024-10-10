@@ -1,0 +1,62 @@
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
+	src: local('Material Icons'),
+		local('MaterialIcons-Regular'),
+		/*
+         * HACK: these are just hardcoded paths relative to the final location
+         * of the bundled module CSS which feels extremely brittle. however i
+		 * have no idea what the "proper" way to reference asset file paths in
+		 * module CSS is so fuck it we ball
+		 */
+		url('./styles/font/MaterialIcons-Regular.woff2') format('woff2'),
+		url('./styles/font/MaterialIcons-Regular.woff') format('woff'),
+		url('./styles/font/MaterialIcons-Regular.ttf') format('truetype');
+}
+
+.icon {
+    font-family: 'Material Icons' !important;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 19px;  /* Preferred icon size */
+    color: #46596d;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+/*
+ * TODO: really these should be someone else's concern and we should just
+ * inherit color
+ */
+
+.negative {
+    color: #d6393c;
+}
+.negative:hover {
+    color: #9b292b !important;
+}
+
+.positive {
+    color: #36a74a;
+}
+.positive:hover {
+    color: #247533 !important;;
+}

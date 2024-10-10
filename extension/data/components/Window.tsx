@@ -1,5 +1,7 @@
 import {MouseEventHandler, ReactNode, useEffect, useRef} from 'react';
+import {classes} from '../util/ui_interop';
 import {Icon} from './controls/Icon';
+import css from './Window.module.css';
 
 export const Window = ({
     title,
@@ -50,25 +52,29 @@ export const Window = ({
     return (
         <div
             ref={windowRef}
-            className={`tb-window ${draggable ? 'tb-window-draggable' : ''} ${className}`}
+            className={classes(
+                css.window,
+                draggable && css.draggable,
+                className,
+            )}
             onClick={handleClick}
         >
-            <div ref={windowHeaderRef} className='tb-window-header'>
-                <div className='tb-window-title'>{title}</div>
-                <div className='buttons'>
+            <div ref={windowHeaderRef} className={css.header}>
+                <div className={css.title}>{title}</div>
+                <div className={css.buttons}>
                     {/* TODO: support arbitrary extra buttons (e.g. help) */}
                     {closable && (
-                        <a className='close' href='javascript:;' onClick={handleClose}>
+                        <a href='javascript:;' onClick={handleClose}>
                             <Icon icon='close' />
                         </a>
                     )}
                 </div>
             </div>
-            <div className='tb-window-content'>
+            <div className={css.content}>
                 {children}
             </div>
             {footer && (
-                <div className='tb-window-footer'>
+                <div className={css.footer}>
                     {footer}
                 </div>
             )}

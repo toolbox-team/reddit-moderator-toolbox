@@ -1,5 +1,8 @@
 import {useEffect, useState} from 'react';
 import browser from 'webextension-polyfill';
+import {useSetting} from '../hooks';
+import {classes} from '../util/ui_interop';
+import css from './PageNotificationContainer.module.css';
 import {Window} from './Window';
 
 /** An in-page notification object received from the background page */
@@ -18,6 +21,10 @@ export function PageNotificationContainer () {
     // Notifications active on the page
     const [notifications, setNotifications] = useState([] as Notification[]);
 
+    // We need to know the location of the context menu to know how to style the
+    // notification area
+    const contextMenuLocation = useSetting('GenSettings', 'contextMenuLocation', 'left');
+
     // Register listener for messages from the background page
     useEffect(() => {
         const messageListener = (message: unknown) => {
@@ -25,10 +32,17 @@ export function PageNotificationContainer () {
             if ((message as any).action === 'tb-show-page-notification') {
                 // Add to beginning of list so it shows up on top
                 // TODO: wouldn't it be better to do this via `flex-direction`?
-                setNotifications([(message as any).details, ...notifications]);
+                // NOTE: This setter can be called multiple times between
+                //       renders, which results in incoming notifications
+                //       overwriting each other; we have to use the "update
+                //       function" form of the `useState` setter for safety.
+                //       https://react.dev/reference/react/useState#updating-state-based-on-the-previous-state
+                setNotifications(currentNotifications => [(message as any).details, ...currentNotifications]);
             } else if ((message as any).action === 'tb-clear-page-notification') {
                 // Remove the notification from the list
-                setNotifications(notifications.filter(notif => notif.id !== (message as any).id));
+                setNotifications(currentNotifications =>
+                    currentNotifications.filter(notif => notif.id !== (message as any).id)
+                );
             }
 
             // `@types/webextension-polyfill` wants us to explicitly return
@@ -72,13 +86,22 @@ export function PageNotificationContainer () {
             .map(line => <p>{line}</p>);
     }
 
+    if (!contextMenuLocation) {
+        return <></>;
+    }
+
     return (
-        <div id='tb-notifications-wrapper'>
+        <div
+            className={classes(
+                css.wrapper,
+                contextMenuLocation === 'right' && css.hasRightContextMenu,
+            )}
+        >
             {notifications.map(notification => (
                 <Window
                     key={notification.id}
                     title={notification.title}
-                    className='tb-notification'
+                    className={css.notification}
                     closable
                     onClose={() => handleClose(notification.id)}
                     onClick={() => handleClick(notification.id)}

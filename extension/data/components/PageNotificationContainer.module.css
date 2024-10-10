@@ -1,0 +1,18 @@
+.wrapper {
+    position: fixed;
+    bottom: 42px;
+    right: 10px;
+    width: 300px;
+}
+/* Leave space for the context menu handle when it's on the right side */
+.wrapper.hasRightContextMenu {
+    right: 30px;
+}
+
+.notification {
+    margin-top: 5px;
+}
+
+.notification p {
+    margin: 0;
+}

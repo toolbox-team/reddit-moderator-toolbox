@@ -1,7 +1,9 @@
 import {type ReactNode, useEffect, useLayoutEffect, useMemo, useState} from 'react';
 import type {MaybeAsyncIterable} from '../util/iter';
 
-import {BracketButton} from './controls/BracketButton';
+import {classes} from '../util/ui_interop';
+import {GeneralButton} from './controls';
+import css from './ProgressivePager.module.css';
 
 // TODO: reimplement in pure React
 export const ProgressivePager = ({
@@ -112,18 +114,28 @@ export const ProgressivePager = ({
 
     // Render the controls
     const controls = (
-        <div>
+        <div className={css.controls}>
             {/* a button for each page we've already loaded */}
             {cachedPages.map((page, i) => (
-                <BracketButton onClick={() => setCurrentPageIndex(i)}>
+                <GeneralButton
+                    key={i}
+                    className={classes(
+                        css.control,
+                        currentPageIndex === i && css.active,
+                    )}
+                    onClick={() => setCurrentPageIndex(i)}
+                >
                     {i + 1}
-                </BracketButton>
+                </GeneralButton>
             ))}
             {/* if we can still try to load more pages, a "load more" button to do that */}
             {pagesDone || (
-                <BracketButton onClick={() => setCurrentPageIndex(cachedPages.length)}>
+                <GeneralButton
+                    className={css.control}
+                    onClick={() => setCurrentPageIndex(cachedPages.length)}
+                >
                     load more...
-                </BracketButton>
+                </GeneralButton>
             )}
         </div>
     );
@@ -131,7 +143,9 @@ export const ProgressivePager = ({
     return (
         <div>
             {controlPosition === 'top' && controls}
-            {currentPage}
+            <div className={css.content}>
+                {currentPage}
+            </div>
             {controlPosition === 'bottom' && controls}
         </div>
     );

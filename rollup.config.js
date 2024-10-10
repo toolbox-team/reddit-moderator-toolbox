@@ -77,6 +77,23 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                 ],
             }),
         ],
+        // When bundling a bunch of modules together, directives in each module
+        // end up not really working because the output is just one module and
+        // the build doesn't know what to do. Some React libraries have started
+        // including "use client" directives to indicate to certain build
+        // systems that the code in those modules isn't meant to be run as part
+        // of server-side rendering. We don't care about any of that (we're a
+        // browser extension, we *only* have client-side code) and the directive
+        // has no meaning at runtime so we just ignore Rollup's warnings there
+        onwarn (warning, defaultHandler) {
+            if (
+                warning.code === 'MODULE_LEVEL_DIRECTIVE'
+                && warning.message.includes('use client')
+            ) {
+                return;
+            }
+            defaultHandler(warning);
+        },
     },
     {
         input: 'extension/data/background/index.ts',

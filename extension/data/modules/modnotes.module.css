@@ -16,6 +16,11 @@
 	text-decoration: none;
 }
 
+/* note text */
+.noteTable blockquote {
+	margin: 0;
+}
+
 .actionSummary {
 	font-style: italic;
 	opacity: 0.5;

@@ -1,4 +1,4 @@
-import {MouseEventHandler, ReactNode, useEffect, useRef} from 'react';
+import {MouseEventHandler, ReactNode, useLayoutEffect, useRef} from 'react';
 import {classes} from '../util/ui_interop';
 import {Icon} from './controls/Icon';
 import css from './Window.module.css';
@@ -27,17 +27,15 @@ export const Window = ({
     const windowRef = useRef<HTMLDivElement>(null);
     const windowHeaderRef = useRef<HTMLDivElement>(null);
 
-    if (draggable) {
-        useEffect(() => {
-            if (windowRef.current != null && windowHeaderRef.current != null) {
-                if (initialPosition) {
-                    windowRef.current.style.top = `${initialPosition.top}px`;
-                    windowRef.current.style.left = `${initialPosition.left}px`;
-                }
-                $(windowRef.current).drag($(windowHeaderRef.current));
+    useLayoutEffect(() => {
+        if (draggable && windowRef.current != null && windowHeaderRef.current != null) {
+            if (initialPosition) {
+                windowRef.current.style.top = `${initialPosition.top}px`;
+                windowRef.current.style.left = `${initialPosition.left}px`;
             }
-        }, []);
-    }
+            $(windowRef.current).drag($(windowHeaderRef.current));
+        }
+    }, []);
 
     const handleClick: MouseEventHandler<HTMLDivElement> = event => {
         event.stopPropagation();

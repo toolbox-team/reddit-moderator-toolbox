@@ -38,7 +38,7 @@ export function TextFeedbackContainer () {
                     animate={{opacity: 1}}
                     exit={{opacity: 0}}
                 >
-                    <span className='tb-feedback-text'>{currentMessage.message}</span>
+                    <span className={css.text}>{currentMessage.message}</span>
                 </motion.div>
             )}
         </AnimatePresence>

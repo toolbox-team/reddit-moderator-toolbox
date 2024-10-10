@@ -5,10 +5,12 @@ import {BracketButton} from './controls/BracketButton';
 
 // TODO: reimplement in pure React
 export const ProgressivePager = ({
+    lazy = true,
     controlPosition = 'top',
     emptyContent,
     pages,
 }: {
+    lazy: boolean;
     controlPosition: 'top' | 'bottom';
     emptyContent: ReactNode;
     pages: MaybeAsyncIterable<ReactNode>;
@@ -61,6 +63,12 @@ export const ProgressivePager = ({
 
     // Pull new pages off our iterator as needed
     useEffect(() => {
+        // if we're not lazy, gotta cache 'em all
+        if (!lazy && !pagesDone) {
+            cacheNextPage();
+            return;
+        }
+
         if (currentPageIndex >= cachedPages.length) {
             // We're looking at a page we don't have cached
             if (pagesDone) {
@@ -73,7 +81,7 @@ export const ProgressivePager = ({
                 cacheNextPage();
             }
         }
-    }, [cachedPages, pagesDone, currentPageIndex]);
+    }, [lazy, cachedPages, pagesDone, currentPageIndex]);
 
     // Render the current page
     const currentPage = useMemo(() => {

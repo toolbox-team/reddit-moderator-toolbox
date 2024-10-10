@@ -5,7 +5,10 @@ import {classes} from '../util/ui_interop';
 import {GeneralButton} from './controls';
 import css from './ProgressivePager.module.css';
 
-// TODO: reimplement in pure React
+// TODO: this implementation no longer uses the `wrapWithLastValue` helper which
+//       means the "load more" button will sometimes do nothing. This isn't
+//       ideal; it's probably not the largest of the UX issues with this
+//       particular interface at the moment, but
 export const ProgressivePager = ({
     lazy = true,
     controlPosition = 'top',

@@ -157,8 +157,15 @@ async function checkLoadConditions (tries = 3) {
     }
 
     // Write a setting and read back its value, if this fails something is wrong
-    if (await TBStorage.setSettingAsync('Utils', 'echoTest', 'echo') !== 'echo') {
-        throw new Error('Settings cannot be read/written');
+    let echoValue = Math.random();
+    let echoResult: number;
+    try {
+        echoResult = await TBStorage.setSettingAsync('Utils', 'echoTest', echoValue);
+    } catch (error) {
+        throw new Error('Failed to write to settings', {cause: error});
+    }
+    if (echoResult !== echoValue) {
+        throw new Error(`Settings read/write inconsistent: expected ${echoValue}, received ${echoResult}`);
     }
 }
 

@@ -15,6 +15,7 @@ import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 import {useEffect, useRef, useState} from 'react';
 
 import {ActionButton} from '../components/controls/ActionButton.tsx';
+import {BracketButton} from '../components/controls/BracketButton.tsx';
 import {Icon} from '../components/controls/Icon.tsx';
 import {RelativeTime} from '../components/controls/RelativeTime.tsx';
 import {ProgressivePager} from '../components/ProgressivePager.tsx';
@@ -296,14 +297,14 @@ function ModNotesBadge ({
         );
     }
     return (
-        <button
+        <BracketButton
             className='tb-bracket-button tb-modnote-badge'
             tabIndex='0'
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
             onClick={onClick}
         >
             {badgeContents}
-        </button>
+        </BracketButton>
     );
 }
 

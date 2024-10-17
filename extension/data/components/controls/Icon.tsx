@@ -1,4 +1,6 @@
 import {icons} from '../../tbconstants';
+import {classes} from '../../util/ui_interop';
+import css from './Icon.module.css';
 
 // this is a mess, but still kinda better than `dangerouslySetInnerHTML`!
 // TODO: yeet this nonsense once we run out of things relying on the entity form
@@ -8,11 +10,11 @@ const iconsSafe = Object.fromEntries([...Object.entries(icons)].map(([name, enti
     return [name, String.fromCodePoint(codePoint)];
 }));
 
-export const Icon = ({icon, negative = false}: {
+export const Icon = ({icon, mood}: {
     icon: keyof typeof icons;
-    negative?: boolean;
+    mood?: 'positive' | 'negative';
 }) => (
-    <i className={`tb-icons ${negative ? 'tb-icons-negative' : ''}`}>
+    <i className={classes(css.icon, mood && css[mood])}>
         {iconsSafe[icon]}
     </i>
 );

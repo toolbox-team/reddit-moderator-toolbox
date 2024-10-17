@@ -5,33 +5,31 @@ import browser from 'webextension-polyfill';
 import {messageHandlers} from '../messageHandling';
 import {makeRequest} from './webrequest';
 
-const NOTIFICATION_STORAGE_KEY = 'tb-notifications-storage';
+/**
+ * Gets the storage key where metadata for the given notification is stored.
+ * @param {string} notificationID
+ * @returns {string}
+ */
+const notificationMetaDataKey = notificationID => `notifmeta-${notificationID}`;
 
 /**
  * Sets the notification ID and meta data object for a given notification.
  * @param notificationID string notificationID
  * @param notificationObject object containing the meta data
  */
-async function setNotificationMetaData (notificationID, notificationObject) {
-    const result = await browser.storage.local.get({[NOTIFICATION_STORAGE_KEY]: {}});
-    result[NOTIFICATION_STORAGE_KEY][notificationID] = notificationObject;
-    await browser.storage.local.set({
-        [NOTIFICATION_STORAGE_KEY]: result[NOTIFICATION_STORAGE_KEY],
+function setNotificationMetaData (notificationID, notificationObject) {
+    return browser.storage.session.set({
+        [notificationMetaDataKey(notificationID)]: notificationObject,
     });
-    return;
 }
 
 /**
  * Returns the notification meta data object for a given notification id.
  * @param notificationID notificationID
- * @returns {promise<object>}
+ * @returns {Promise<object>}
  */
-async function getNotificationMetaData (notificationID) {
-    const result = await browser.storage.local.get({[NOTIFICATION_STORAGE_KEY]: {}});
-    if (Object.prototype.hasOwnProperty.call(result[NOTIFICATION_STORAGE_KEY], notificationID)) {
-        return result[NOTIFICATION_STORAGE_KEY][notificationID];
-    }
-    return null;
+function getNotificationMetaData (notificationID) {
+    return browser.storage.session.get({[notificationMetaDataKey(notificationID)]: null});
 }
 
 /**
@@ -39,15 +37,8 @@ async function getNotificationMetaData (notificationID) {
  * @param notificationID subreddit
  * @returns {promise<object>}
  */
-async function deleteNotificationMetaData (notificationID) {
-    const result = await browser.storage.local.get({[NOTIFICATION_STORAGE_KEY]: {}});
-    if (Object.prototype.hasOwnProperty.call(result[NOTIFICATION_STORAGE_KEY], notificationID)) {
-        delete result[NOTIFICATION_STORAGE_KEY][notificationID];
-        await browser.storage.local.set({
-            [NOTIFICATION_STORAGE_KEY]: result[NOTIFICATION_STORAGE_KEY],
-        });
-    }
-    return;
+function deleteNotificationMetaData (notificationID) {
+    return browser.storage.session.remove(notificationMetaDataKey(notificationID));
 }
 
 // TODO: I know we've had this conversation before but I'm 99% sure this isn't

@@ -2,6 +2,9 @@ import $ from 'jquery';
 import {createElement} from 'react';
 import browser from 'webextension-polyfill';
 
+// Pull our generic base CSS into the bundle
+import './base.css';
+
 // We load all our CodeMirror addons and modes here and they'll be available
 // anywhere else we `import CodeMirror from 'codemirror';`
 import 'codemirror';
@@ -147,14 +150,26 @@ async function checkLoadConditions (tries = 3) {
     }
 
     // Check that we have details about the current user
-    const userDetails = await TBApi.getUserDetails();
+    let userDetails;
+    try {
+        userDetails = await TBApi.getUserDetails();
+    } catch (error) {
+        throw new Error('Failed to fetch user details', {cause: error});
+    }
     if (!userDetails || userDetails.constructor !== Object || !Object.keys(userDetails).length) {
-        throw new Error('Failed to fetch user details');
+        throw new Error(`Fetched user details are invalid: ${userDetails}`);
     }
 
     // Write a setting and read back its value, if this fails something is wrong
-    if (await TBStorage.setSettingAsync('Utils', 'echoTest', 'echo') !== 'echo') {
-        throw new Error('Settings cannot be read/written');
+    let echoValue = Math.random();
+    let echoResult: number;
+    try {
+        echoResult = await TBStorage.setSettingAsync('Utils', 'echoTest', echoValue);
+    } catch (error) {
+        throw new Error('Failed to write to settings', {cause: error});
+    }
+    if (echoResult !== echoValue) {
+        throw new Error(`Settings read/write inconsistent: expected ${echoValue}, received ${echoResult}`);
     }
 }
 

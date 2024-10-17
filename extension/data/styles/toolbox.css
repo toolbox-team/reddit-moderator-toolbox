@@ -1378,42 +1378,6 @@ body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-bracket-butto
 
 /*
 ------------
-    Feedback window
-------------
-*/
-
-.mod-toolbox-rd #tb-feedback-window {
-    max-width: 400px;
-    position: fixed;
-    z-index: 2147483647;
-    top: 50%;
-    left: 50%;
-    padding: 10px;
-    min-width: 150px;
-    text-align: center;
-    background-color: #CEE3F8;
-    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
-}
-
-.mod-toolbox-rd #tb-feedback-window .tb-feedback-text {
-    background-color: #FFF;
-    margin: 0;
-    display: block;
-    padding: 5px;
-    font-size: 12px;
-}
-
-.mod-toolbox-rd #tb-feedback-window.positive {
-    background: #69d47d;
-}
-
-.mod-toolbox-rd #tb-feedback-window.negative {
-    background: #ff7f4f;
-}
-
-
-/*
-------------
     Highlighting plugin related css
 ------------
 */

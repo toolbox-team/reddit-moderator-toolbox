@@ -1,11 +1,13 @@
 /* eslint-env node */
 
-// import nodeResolve from '@rollup/plugin-node-resolve';
+import path from 'node:path';
+
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import copy from 'rollup-plugin-copy';
+import postcss from 'rollup-plugin-postcss';
 
 // we have three build types: dev, beta, and stable. dev is the default and the
 // other two types are mostly handled by CI, but we include some basic checks to
@@ -49,6 +51,9 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                     'process.env.BUILD_SHA': JSON.stringify(buildSha ?? null),
                 },
             }),
+            postcss({
+                extract: path.resolve(`build/${platform}/data/bundled.css`),
+            }),
             nodeResolve(),
             commonjs(),
             // HACK: see https://github.com/rollup/plugins/issues/1629
@@ -72,6 +77,23 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                 ],
             }),
         ],
+        // When bundling a bunch of modules together, directives in each module
+        // end up not really working because the output is just one module and
+        // the build doesn't know what to do. Some React libraries have started
+        // including "use client" directives to indicate to certain build
+        // systems that the code in those modules isn't meant to be run as part
+        // of server-side rendering. We don't care about any of that (we're a
+        // browser extension, we *only* have client-side code) and the directive
+        // has no meaning at runtime so we just ignore Rollup's warnings there
+        onwarn (warning, defaultHandler) {
+            if (
+                warning.code === 'MODULE_LEVEL_DIRECTIVE'
+                && warning.message.includes('use client')
+            ) {
+                return;
+            }
+            defaultHandler(warning);
+        },
     },
     {
         input: 'extension/data/background/index.ts',

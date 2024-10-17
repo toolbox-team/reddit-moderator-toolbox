@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import {createElement} from 'react';
 import {renderInSlots} from '../frontends/index.tsx';
-import {useFetched} from '../hooks.js';
+import {useFetched} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';

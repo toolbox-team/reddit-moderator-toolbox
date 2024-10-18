@@ -1,0 +1,36 @@
+.aboutContent {
+    text-align: center;
+    line-height: normal;
+}
+
+.aboutContent table {
+    border-collapse: separate;
+    border-spacing: 10px;
+    display: inline-block;
+}
+
+.aboutContent td {
+    border-bottom: solid 1px #F3F3F3;
+    width: 33.3%;
+    min-width: 140px;
+    text-align: center;
+    padding: 2px;
+}
+
+.aboutContent h1 {
+    font-style: italic;
+    font-family: Serif;
+    font-size: 25px;
+    line-height: normal;
+    margin: 10px 0;
+}
+
+.aboutContent h3 {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    border-top: solid 1px #DCDCDC;
+    padding-top: 5px;
+    line-height: normal;
+    font-size: 110%;
+    font-weight: bold;
+}

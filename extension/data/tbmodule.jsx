@@ -9,6 +9,8 @@ import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';
 
+import css from './tbmodule.module.css';
+
 const logger = TBLog('TBModule');
 
 const TBModule = {
@@ -208,9 +210,9 @@ const TBModule = {
                 help_page: 'about',
                 id: 'about',
                 content: (
-                    <>
-                        <h1 id='tb-random-about-quote'>{'"'}{TBCore.RandomQuote}{'"'}</h1>
-                        <h3>About:</h3>{' '}
+                    <div className={css.aboutContent}>
+                        <h1>&ldquo;{TBCore.RandomQuote}&rdquo;</h1>
+                        <h3>About:</h3>
                         <a
                             href={TBCore.link('/r/toolbox')}
                             target='_blank'
@@ -228,7 +230,7 @@ const TBModule = {
                             found on this wiki page
                         </a>.
                         <h3>made and maintained by:</h3>
-                        <table className='tb-about-credits'>
+                        <table>
                             <tbody>
                                 <tr>
                                     <td>
@@ -288,7 +290,7 @@ const TBModule = {
                             </tbody>
                         </table>
                         <h3>Documentation by:</h3>
-                        <table className='tb-about-credits'>
+                        <table>
                             <tbody>
                                 <tr>
                                     <td>
@@ -315,7 +317,7 @@ const TBModule = {
                             </tbody>
                         </table>
                         <h3>Special thanks to:</h3>
-                        <a href='https://www.reddit.com/user/andytuba'>/u/andytuba</a> &{' '}
+                        <a href='https://www.reddit.com/user/therealadyjewel'>/u/therealadyjewel</a> &{' '}
                         <a href='https://www.reddit.com/user/erikdesjardins'>/u/erikdesjardins</a>
                         <br />for all their amazing help and support of the TB team in resolving complex issues (and
                         really simple ones)<br />
@@ -352,17 +354,17 @@ const TBModule = {
                         <br />
                         <h3>License:</h3>
                         <span>© 2013-2020 toolbox development team.</span>
-                        <p className='tb-settings-p'>
+                        <p>
                             Licensed under the Apache License, Version 2.0 (the {'"'}License{'"'});
                             <br /> you may not use this file except in compliance with the License.
                             <br /> You may obtain a copy of the License at
                         </p>
-                        <p className='tb-settings-p'>
+                        <p>
                             <a href='http://www.apache.org/licenses/LICENSE-2.0'>
                                 http://www.apache.org/licenses/LICENSE-2.0
                             </a>
                         </p>
-                        <p className='tb-settings-p'>
+                        <p>
                             Unless required by applicable law or agreed to in writing, software distributed under the
                             License is distributed on an {'"'}AS IS{'"'}{' '}
                             BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -370,7 +372,7 @@ const TBModule = {
                             See the License for the specific language governing permissions and limitations under the
                             License.
                         </p>
-                    </>
+                    </div>
                 ),
             },
         ];

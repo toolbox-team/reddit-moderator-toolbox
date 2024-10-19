@@ -60,7 +60,7 @@ export default ['chrome', 'firefox'].flatMap(platform => [
             typescript({
                 include: 'extension/**/*.(ts|tsx|js|jsx)',
                 compilerOptions: {
-                    outDir: `build/${platform}/data`
+                    outDir: `build/${platform}/data`,
                 },
             }),
             // Copy files not processed by Rollup over to the build directory

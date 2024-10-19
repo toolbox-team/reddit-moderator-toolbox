@@ -107,7 +107,11 @@ export default ['chrome', 'firefox'].flatMap(platform => [
         plugins: [
             nodeResolve(),
             commonjs(),
-            typescript(),
+            typescript({
+                compilerOptions: {
+                    outDir: `build/${platform}/data/background`,
+                },
+            }),
         ],
     },
 ]);

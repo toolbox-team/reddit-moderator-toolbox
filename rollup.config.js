@@ -59,6 +59,9 @@ export default ['chrome', 'firefox'].flatMap(platform => [
             // HACK: see https://github.com/rollup/plugins/issues/1629
             typescript({
                 include: 'extension/**/*.(ts|tsx|js|jsx)',
+                compilerOptions: {
+                    outDir: `build/${platform}/data`
+                },
             }),
             // Copy files not processed by Rollup over to the build directory
             copy({

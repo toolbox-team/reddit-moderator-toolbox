@@ -438,21 +438,19 @@ function ModNotesPopup ({
 
     const popupFooter = (
         <form className={css.modnoteCreateForm} onSubmit={handleNewNoteSubmit}>
-            <select
+            <ActionSelect
                 name='label'
-                className='tb-action-button tb-modnote-label-select'
                 defaultValue={defaultNoteLabelValueToLabelType[defaultNoteLabel]}
             >
                 <option value=''>(no label)</option>
                 {Object.entries(labelNames).reverse().map(([value, name]) => (
                     <option key={value} value={value}>{name}</option>
                 ))}
-            </select>
-            <input
+            </ActionSelect>
+            <NormalInput
                 ref={noteInputRef}
                 type='text'
                 name='note'
-                className='tb-modnote-text-input tb-input'
                 placeholder='Add a note...'
             />
             <ActionButton type='submit'>
@@ -531,7 +529,6 @@ function NoteTableRow ({note, onDelete}) {
             <td>
                 {note.type === 'NOTE' && (
                     <a
-                        className='tb-modnote-delete-button'
                         role='button'
                         title='Delete note'
                         data-note-id={escapeHTML(note.id)}

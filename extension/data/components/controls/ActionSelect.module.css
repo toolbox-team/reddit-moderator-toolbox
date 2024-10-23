@@ -1,0 +1,29 @@
+.actionSelect {
+    display: inline-block;
+    vertical-align: bottom;
+    padding: 5px 6px 4px 5px;
+    font-family: verdana,arial,helvetica,sans-serif;
+    font-size: 12px;
+    line-height: 14px;
+    background-color: #F7FAFD;
+    border-radius: 1px;
+    border-width: 1px 1px 2px 2px;
+    border-color: #72869A;
+    border-style: solid;
+    color: #17324E;
+    outline: none !important;
+}
+
+.actionSelect:active {
+    border-width: 1px;
+    border-color: #9FBAD6;
+    padding: 5px 6px;
+    outline: none !important;
+}
+
+.actionSelect.inline {
+    padding: 3px 3px 2px 2px;
+}
+.actionSelect.inline:active {
+    padding: 3px;
+}

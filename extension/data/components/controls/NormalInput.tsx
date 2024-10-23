@@ -3,12 +3,15 @@ import {classes} from '../../util/ui_interop';
 import css from './NormalInput.module.css';
 
 // TODO: this is a terrible name
-export const NormalInput = forwardRef<HTMLInputElement>(({
+export const NormalInput = forwardRef<
+    HTMLInputElement,
+    ComponentPropsWithoutRef<'input'> & {
+        inFooter?: boolean;
+    }
+>(({
     inFooter,
     className,
     ...props
-}: ComponentPropsWithoutRef<'input'> & {
-    inFooter?: boolean;
 }, ref) => (
     <input
         className={classes(

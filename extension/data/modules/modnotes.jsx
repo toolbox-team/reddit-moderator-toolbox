@@ -453,6 +453,7 @@ function ModNotesPopup ({
                 ref={noteInputRef}
                 type='text'
                 name='note'
+                inFooter
                 placeholder='Add a note...'
             />
             <ActionButton type='submit'>

@@ -1,5 +1,4 @@
 import {MouseEventHandler, ReactNode, useLayoutEffect, useRef} from 'react';
-import {WindowPlacementContext} from '../Contexts';
 import {classes} from '../util/ui_interop';
 import {Icon} from './controls/Icon';
 import css from './Window.module.css';
@@ -59,28 +58,22 @@ export const Window = ({
             onClick={handleClick}
         >
             <div ref={windowHeaderRef} className={css.header}>
-                <WindowPlacementContext.Provider value='header'>
-                    <div className={css.title}>{title}</div>
-                    <div className={css.buttons}>
-                        {/* TODO: support arbitrary extra buttons (e.g. help) */}
-                        {closable && (
-                            <a href='javascript:;' onClick={handleClose}>
-                                <Icon icon='close' />
-                            </a>
-                        )}
-                    </div>
-                </WindowPlacementContext.Provider>
+                <div className={css.title}>{title}</div>
+                <div className={css.buttons}>
+                    {/* TODO: support arbitrary extra buttons (e.g. help) */}
+                    {closable && (
+                        <a href='javascript:;' onClick={handleClose}>
+                            <Icon icon='close' />
+                        </a>
+                    )}
+                </div>
             </div>
             <div className={css.content}>
-                <WindowPlacementContext.Provider value='content'>
-                    {children}
-                </WindowPlacementContext.Provider>
+                {children}
             </div>
             {footer && (
                 <div className={css.footer}>
-                    <WindowPlacementContext.Provider value='footer'>
-                        {footer}
-                    </WindowPlacementContext.Provider>
+                    {footer}
                 </div>
             )}
         </div>

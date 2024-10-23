@@ -1,6 +1,6 @@
-import $ from 'jquery';
-
 import {map, page, pipeAsync} from 'iter-ops';
+import $ from 'jquery';
+import {useEffect, useRef, useState} from 'react';
 
 import {useFetched, useSetting} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
@@ -11,17 +11,19 @@ import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
+import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
-import {useEffect, useRef, useState} from 'react';
-
-import {ActionButton} from '../components/controls/ActionButton.tsx';
-import {BracketButton} from '../components/controls/BracketButton.tsx';
-import {Icon} from '../components/controls/Icon.tsx';
-import {RelativeTime} from '../components/controls/RelativeTime.tsx';
+import {
+    ActionButton,
+    ActionSelect,
+    BracketButton,
+    Icon,
+    NormalInput,
+    RelativeTime,
+} from '../components/controls/index.ts';
 import {Pager} from '../components/Pager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
-import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
 import css from './modnotes.module.css';
 

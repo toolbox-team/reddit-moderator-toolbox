@@ -1,10 +1,10 @@
 import {type ComponentPropsWithoutRef, forwardRef} from 'react';
 import {classes} from '../../util/ui_interop';
-import css from './ActionButton.module.css';
+import css from './ActionSelect.module.css';
 
-export const ActionButton = forwardRef<
-    HTMLButtonElement,
-    ComponentPropsWithoutRef<'button'> & {
+export const ActionSelect = forwardRef<
+    HTMLSelectElement,
+    ComponentPropsWithoutRef<'select'> & {
         inline?: boolean;
     }
 >(({
@@ -12,9 +12,9 @@ export const ActionButton = forwardRef<
     className,
     ...props
 }, ref) => (
-    <button
+    <select
         className={classes(
-            css.actionButton,
+            css.actionSelect,
             inline && css.inline,
             className,
         )}

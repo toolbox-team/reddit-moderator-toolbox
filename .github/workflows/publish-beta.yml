@@ -10,8 +10,8 @@ jobs:
     steps:
     # TODO: somehow check if the pushed tag was a backport (i.e. it's a lower
     # version than the latest beta release) and don't publish those. #964
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
     - run: npm ci
     - run: npm run fmt
     - run: npm run lint

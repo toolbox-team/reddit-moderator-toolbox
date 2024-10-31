@@ -352,7 +352,7 @@ export function debugInformation () {
             break;
         }
         case OPERA: {
-            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
+            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*).*$/);
             debugObject.browser = 'Opera';
             debugObject.browserVersion = browserMatchedInfo[2];
             debugObject.platformInformation = browserMatchedInfo[1];

@@ -1,20 +1,16 @@
-import {type ComponentPropsWithoutRef, forwardRef} from 'react';
+import {type ComponentPropsWithRef} from 'react';
 import {classes} from '../../util/ui_interop';
 import css from './BracketButton.module.css';
 
-export const BracketButton = forwardRef<
-    HTMLButtonElement,
-    ComponentPropsWithoutRef<'button'> & {
-        inline?: boolean;
-    }
->(({
+export const BracketButton = ({
     inline,
     className,
     ...props
-}, ref) => (
+}: ComponentPropsWithRef<'button'> & {
+    inline?: boolean;
+}) => (
     <button
         className={classes(css.bracketButton, className)}
         {...props}
-        ref={ref}
     />
-));
+);

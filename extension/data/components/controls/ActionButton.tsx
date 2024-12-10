@@ -1,17 +1,14 @@
-import {type ComponentPropsWithoutRef, forwardRef} from 'react';
+import {type ComponentPropsWithRef} from 'react';
 import {classes} from '../../util/ui_interop';
 import css from './ActionButton.module.css';
 
-export const ActionButton = forwardRef<
-    HTMLButtonElement,
-    ComponentPropsWithoutRef<'button'> & {
-        inline?: boolean;
-    }
->(({
+export const ActionButton = ({
     inline,
     className,
     ...props
-}, ref) => (
+}: ComponentPropsWithRef<'button'> & {
+    inline?: boolean;
+}) => (
     <button
         className={classes(
             css.actionButton,
@@ -19,6 +16,5 @@ export const ActionButton = forwardRef<
             className,
         )}
         {...props}
-        ref={ref}
     />
-));
+);

@@ -405,11 +405,7 @@ function ModNotesPopup ({
     }
 
     // Handle note creation
-    async function handleNewNoteSubmit (event) {
-        // don't actually perform the HTML form action
-        event.preventDefault();
-        const formData = new FormData(event.target);
-
+    async function submitNewNote (formData) {
         try {
             await TBApi.createModNote({
                 user,
@@ -439,7 +435,7 @@ function ModNotesPopup ({
     }, []);
 
     const popupFooter = (
-        <form className={css.modnoteCreateForm} onSubmit={handleNewNoteSubmit}>
+        <form className={css.modnoteCreateForm} action={submitNewNote}>
             <ActionSelect
                 name='label'
                 defaultValue={defaultNoteLabelValueToLabelType[defaultNoteLabel]}

@@ -1,17 +1,14 @@
-import {type ComponentPropsWithoutRef, forwardRef} from 'react';
+import {type ComponentPropsWithRef} from 'react';
 import {classes} from '../../util/ui_interop';
 import css from './ActionSelect.module.css';
 
-export const ActionSelect = forwardRef<
-    HTMLSelectElement,
-    ComponentPropsWithoutRef<'select'> & {
-        inline?: boolean;
-    }
->(({
+export const ActionSelect = ({
     inline,
     className,
     ...props
-}, ref) => (
+}: ComponentPropsWithRef<'select'> & {
+    inline?: boolean;
+}) => (
     <select
         className={classes(
             css.actionSelect,
@@ -19,6 +16,5 @@ export const ActionSelect = forwardRef<
             className,
         )}
         {...props}
-        ref={ref}
     />
-));
+);

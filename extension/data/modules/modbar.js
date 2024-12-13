@@ -620,12 +620,12 @@ function getDirectingTo () {
     if (url.startsWith('https://old.')) {
         url = url.replace('old.', 'www.');
         directingTo = 'new Reddit';
-    } else if (url.startsWith('https://new.')) {
-        url = url.replace('new.', 'www.');
+    } else if (url.startsWith('https://sh.')) {
+        url = url.replace('sh.', 'www.');
         directingTo = 'old Reddit';
     } else {
         // Redirect to old Reddit on the redesign, new Reddit otherwise
-        url = url.replace(/https:\/\/.*?\.reddit/, TBCore.isOldReddit ? 'https://new.reddit' : 'https://old.reddit');
+        url = url.replace(/https:\/\/.*?\.reddit/, TBCore.isOldReddit ? 'https://sh.reddit' : 'https://old.reddit');
         directingTo = TBCore.isOldReddit ? 'new Reddit' : 'old Reddit';
     }
     return {url, directingTo};

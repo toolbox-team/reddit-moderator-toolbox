@@ -17,7 +17,7 @@ import modmailObserver from './modmail';
 import oldRedditObserver from './oldreddit';
 import shredditObserver from './shreddit';
 
-// FIXME: document all of these
+// NOMERGE: document all of these
 interface PlatformSlotDetailsSubreddit {
     fullname?: string;
     name: string;
@@ -40,7 +40,7 @@ interface PlatformSlotDetailsComment {
 }
 
 // Slot names and the type of associated contextual information
-// FIXME: document
+// NOMERGE: document
 export interface PlatformSlotDetails {
     submissionAuthor: {
         user: PlatformSlotDetailsUser;
@@ -87,7 +87,7 @@ const slotConsumers: {
     [K in keyof PlatformSlotDetails]?: PlatformSlotContent<K>[];
 } = Object.create(null);
 
-// FIXME: document
+// NOMERGE: document
 export function renderInSlots<K extends keyof PlatformSlotDetails> (locations: K[], render: PlatformSlotContent<K>) {
     if (!Array.isArray(locations)) {
         locations = [];
@@ -102,7 +102,7 @@ export function renderInSlots<K extends keyof PlatformSlotDetails> (locations: K
 
 // Observer code (used by platform-specific observers in this directory)
 
-// FIXME: document
+// NOMERGE: document
 export type PlatformObserver = (
     /**
      * Creates a React root for a slot which will be populated with the

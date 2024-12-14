@@ -14,14 +14,6 @@ const self = new Module({
     id: 'Comments',
     enabledByDefault: true,
     settings: [
-        // NOMERGE: remove this setting, it is now unused
-        {
-            id: 'commentsAsFullPage',
-            type: 'boolean',
-            default: false,
-            advanced: false,
-            description: 'Always open comments as new page (instead of lightbox).',
-        },
         {
             id: 'openContextInPopup',
             type: 'boolean',

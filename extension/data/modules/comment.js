@@ -7,7 +7,6 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
-import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 import {modbarExists} from './modbar.js';
 
 const self = new Module({
@@ -15,13 +14,6 @@ const self = new Module({
     id: 'Comments',
     enabledByDefault: true,
     settings: [
-        {
-            id: 'commentsAsFullPage',
-            type: 'boolean',
-            default: false,
-            advanced: false,
-            description: 'Always open comments as new page (instead of lightbox).',
-        },
         {
             id: 'openContextInPopup',
             type: 'boolean',
@@ -277,7 +269,6 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
 };
 
 function init ({
-    commentsAsFullPage,
     openContextInPopup,
     hideRemoved,
     approveComments,
@@ -289,18 +280,6 @@ function init ({
 
     if (TBCore.isOldReddit) {
         self.initOldReddit({hideRemoved, approveComments, spamRemoved, hamSpammed});
-    }
-    // Do not open lightbox but go to full comment page.
-    if (commentsAsFullPage && currentPlatform === RedditPlatform.NEW) {
-        $body.on('click', 'a', function (event) {
-            const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
-            const $this = $(this);
-            const thisHref = $this.attr('href');
-            if (subredditCommentsPageReg.test(thisHref)) {
-                event.preventDefault();
-                window.location.href = thisHref;
-            }
-        });
     }
 
     if (highlighted.length) {

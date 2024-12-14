@@ -6,7 +6,6 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
-import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 
 export default new Module({
     name: 'Mod Macros',
@@ -200,34 +199,6 @@ export default new Module({
                 setTimeout(() => {
                     addNewMMMacro();
                 }, 1000);
-            }
-        });
-    }
-
-    if (currentPlatform === RedditPlatform.NEW) {
-        $('body').on('click', 'button:contains("Reply")', async function () {
-            const $this = $(this);
-            const $comment = $this.closest('.Comment');
-            const commentDetails = $comment.find('.tb-frontend-container[data-tb-type="comment"]').data('tb-details');
-            const subreddit = commentDetails.data.subreddit.name;
-            const thingID = commentDetails.data.id;
-
-            const isMod = await TBCore.isModSub(subreddit);
-            if (isMod) {
-                getConfig(subreddit, (success, config) => {
-                    // if we're a mod, add macros to top level reply button.
-                    if (success && config.length > 0) {
-                        const $macro = $(`
-                                    <select class="tb-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="${thingID}">
-                                        <option value=${MACROS}>macros</option>
-                                    </select>
-                            `).appendTo($comment);
-                        $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
-                            $macro.remove();
-                        });
-                        populateSelect('.tb-macro-select', subreddit, config, 'comment');
-                    }
-                });
             }
         });
     }

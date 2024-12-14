@@ -1,17 +1,17 @@
 import {type ComponentPropsWithRef} from 'react';
 import {classes} from '../../util/ui_interop';
-import css from './ActionButton.module.css';
+import css from './ActionSelect.module.css';
 
-export const ActionButton = ({
+export const ActionSelect = ({
     inline,
     className,
     ...props
-}: ComponentPropsWithRef<'button'> & {
+}: ComponentPropsWithRef<'select'> & {
     inline?: boolean;
 }) => (
-    <button
+    <select
         className={classes(
-            css.actionButton,
+            css.actionSelect,
             inline && css.inline,
             className,
         )}

@@ -82,8 +82,3 @@
 .footer :not(input):empty {
     display: none;
 }
-
-/* Adjust controls to work nicely together in footers */
-.footer .tb-input {
-    border-color: #72869A;
-}

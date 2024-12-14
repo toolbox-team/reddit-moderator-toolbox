@@ -230,18 +230,19 @@ async function doSettingsUpdates () {
             await TBStorage.setSettingAsync('QueueTools', 'reportsThreshold', 0);
         }
 
-        // Some new modmail settings were removed in 5.7.0
-        if (lastVersion < 50700) {
-            await TBStorage.setSettingAsync('NewModMail', 'searchhelp', undefined);
-            await TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined);
-        }
+        // Clean up removed settings - it doesn't really matter what version
+        // we're coming from, we just want to make sure these removed settings
+        // aren't cluttering up storage
+        await Promise.all([
+            // Some new modmail settings were removed in 5.7.0
+            TBStorage.setSettingAsync('NewModMail', 'searchhelp', undefined),
+            TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined),
 
-        if (lastVersion < 70000) {
             // Beta mode setting removed in favor of dedicated beta builds #917
-            await TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined);
+            TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined),
 
-            // (old) modmail pro removed in v7, RIP old modmail. nuke its settings
-            await Promise.all([
+            // (old) modmail pro removed in v7, RIP old modmail
+            ...[
                 'inboxStyle',
                 'filteredSubs',
                 'defaultCollapse',
@@ -264,8 +265,13 @@ async function doSettingsUpdates () {
                 'entryProcessRate',
                 'chunkProcessSize',
                 'twoPhaseProcessing',
-            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)));
-        }
+            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)),
+
+            // new reddit is dead, long live shreddit i guess. the setting to
+            // skip the new reddit lightbox when viewing comments no longer
+            // applies to anything, remove it
+            TBStorage.setSettingAsync('Comments', 'commentsAsFullPage', undefined),
+        ]);
 
         // End: version changes.
 

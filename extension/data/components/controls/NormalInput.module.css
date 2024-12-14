@@ -1,0 +1,27 @@
+.normalInput {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    border: solid 1px #c7d6e7;
+    font-size: 1em;
+    padding: 5px 6px;
+    height: 14px;
+    line-height: 14px;
+    background-color: #fff;
+    color: #000;
+    color-scheme: none;
+}
+
+.normalInput:focus-visible {
+    outline-color: #9fbad7;
+    border-color: #9fbad7;
+    color-scheme: none;
+}
+
+.normalInput.inWindowContent {
+    width: calc(100% - 16px); /* 16px = margin + border + padding */
+}
+
+/* Adjust controls to work nicely together in footers */
+.normalInput.inWindowFooter {
+    border-color: #72869A;
+}

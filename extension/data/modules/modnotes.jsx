@@ -12,10 +12,14 @@ import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 import {createBodyShadowPortal} from '../util/ui_interop.tsx';
 
-import {ActionButton} from '../components/controls/ActionButton.tsx';
-import {BracketButton} from '../components/controls/BracketButton.tsx';
-import {Icon} from '../components/controls/Icon.tsx';
-import {RelativeTime} from '../components/controls/RelativeTime.tsx';
+import {
+    ActionButton,
+    ActionSelect,
+    BracketButton,
+    Icon,
+    NormalInput,
+    RelativeTime,
+} from '../components/controls/index.ts';
 import {Pager} from '../components/Pager.tsx';
 import {Window} from '../components/Window.tsx';
 import {WindowTabs} from '../components/WindowTabs.tsx';
@@ -400,11 +404,7 @@ function ModNotesPopup ({
     }
 
     // Handle note creation
-    async function handleNewNoteSubmit (event) {
-        // don't actually perform the HTML form action
-        event.preventDefault();
-        const formData = new FormData(event.target);
-
+    async function submitNewNote (formData) {
         try {
             await TBApi.createModNote({
                 user,
@@ -434,22 +434,21 @@ function ModNotesPopup ({
     }, []);
 
     const popupFooter = (
-        <form className={css.modnoteCreateForm} onSubmit={handleNewNoteSubmit}>
-            <select
+        <form className={css.modnoteCreateForm} action={submitNewNote}>
+            <ActionSelect
                 name='label'
-                className='tb-action-button tb-modnote-label-select'
                 defaultValue={defaultNoteLabelValueToLabelType[defaultNoteLabel]}
             >
                 <option value=''>(no label)</option>
                 {Object.entries(labelNames).reverse().map(([value, name]) => (
                     <option key={value} value={value}>{name}</option>
                 ))}
-            </select>
-            <input
+            </ActionSelect>
+            <NormalInput
                 ref={noteInputRef}
                 type='text'
                 name='note'
-                className='tb-modnote-text-input tb-input'
+                inFooter
                 placeholder='Add a note...'
             />
             <ActionButton type='submit'>
@@ -528,7 +527,6 @@ function NoteTableRow ({note, onDelete}) {
             <td>
                 {note.type === 'NOTE' && (
                     <a
-                        className='tb-modnote-delete-button'
                         role='button'
                         title='Delete note'
                         data-note-id={escapeHTML(note.id)}

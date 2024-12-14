@@ -255,7 +255,7 @@ export function getLastVersion () {
  * modmail we use www.reddit.com; wnywhere else we use whatever is the current
  * domain.
  */
-export const baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com'
+export const baseDomain = window.location.hostname === 'mod.reddit.com'
     ? 'https://www.reddit.com'
     : `https://${window.location.hostname}`;
 
@@ -379,7 +379,7 @@ export function debugInformation () {
             break;
         }
         case OPERA: {
-            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
+            browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*).*$/);
             debugObject.browser = 'Opera';
             debugObject.browserVersion = browserMatchedInfo[2];
             debugObject.platformInformation = browserMatchedInfo[1];

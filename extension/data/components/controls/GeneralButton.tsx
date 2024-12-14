@@ -1,4 +1,4 @@
-import {type ComponentPropsWithoutRef} from 'react';
+import {type ComponentPropsWithRef} from 'react';
 import {classes} from '../../util/ui_interop';
 import css from './GeneralButton.module.css';
 
@@ -6,7 +6,7 @@ export const GeneralButton = ({
     inline,
     className,
     ...props
-}: ComponentPropsWithoutRef<'button'> & {
+}: ComponentPropsWithRef<'button'> & {
     inline?: boolean;
 }) => (
     <button

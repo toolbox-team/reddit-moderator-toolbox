@@ -4,15 +4,11 @@
 export enum RedditPlatform {
     /** "old Reddit," old.reddit.com */
     OLD,
+    // new.reddit.com, the first "new reddit", has been completely removed from
+    // the site and is no longer accessible. it previously used `NEW`
     /**
-     * new.reddit.com, the first"new reddit", which has been completely removed
-     * from the site and is no longer accessible. should no longer be used since
-     * there's no way to access it anymore
-     */
-    NEW,
-    /**
-     * "shreddit" or "new new reddit," sh.reddit.com and gradually replacing
-     * "new reddit" on new.reddit.com
+     * "shreddit" or "new new reddit" (or nowadays just "new reddit" to many,
+     * since the first "new reddit" is completely dead), sh.reddit.com
      */
     SHREDDIT,
     /**

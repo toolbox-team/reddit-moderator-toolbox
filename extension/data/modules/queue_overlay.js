@@ -272,7 +272,7 @@ export default new Module({
 
     if (
         (currentPlatform === RedditPlatform.OLD && overlayFromBarOld)
-        // TODO: should the overlayFromBarRedesign setting also apply to shreddit?
+        || (currentPlatform === RedditPlatform.SHREDDIT && overlayFromBarRedesign)
     ) {
         $body.on('click', '#tb-modqueue, #tb-queueCount', event => {
             if (event.ctrlKey || event.metaKey) {

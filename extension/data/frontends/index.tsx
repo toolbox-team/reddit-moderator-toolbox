@@ -14,7 +14,6 @@ import {currentPlatform, RedditPlatform} from '../util/platform';
 import {reactRenderer} from '../util/ui_interop';
 
 import modmailObserver from './modmail';
-import newRedditObserver from './newreddit';
 import oldRedditObserver from './oldreddit';
 import shredditObserver from './shreddit';
 
@@ -144,7 +143,6 @@ export const createRenderer = <K extends keyof PlatformSlotDetails>(location: K,
 // Initialize the appropriate observer for the platform we've loaded into
 let observers = {
     [RedditPlatform.OLD]: oldRedditObserver,
-    [RedditPlatform.NEW]: newRedditObserver,
     [RedditPlatform.SHREDDIT]: shredditObserver,
     [RedditPlatform.MODMAIL]: modmailObserver,
 };

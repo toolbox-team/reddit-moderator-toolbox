@@ -5,8 +5,9 @@ export enum RedditPlatform {
     /** "old Reddit," old.reddit.com */
     OLD,
     /**
-     * "new reddit," often referred to as new.reddit.com, though this frontend
-     * is increasingly being replaced by shreddit even on the new.reddit domain
+     * new.reddit.com, the first"new reddit", which has been completely removed
+     * from the site and is no longer accessible. should no longer be used since
+     * there's no way to access it anymore
      */
     NEW,
     /**
@@ -29,9 +30,6 @@ export const currentPlatform = (() => {
     if (document.getElementById('header')) {
         return RedditPlatform.OLD;
     }
-    if (document.getElementById('AppRouter-main-content')) {
-        return RedditPlatform.NEW;
-    }
     if (document.querySelector('shreddit-app')) {
         return RedditPlatform.SHREDDIT;
     }
@@ -49,10 +47,6 @@ export function isUserLoggedInQuick () {
         // old Reddit sets the `loggedin` class on the body
         case RedditPlatform.OLD:
             return document.body.classList.contains('loggedin');
-
-        // new Reddit will have text in `#USER_DROPDOWN_ID` (username, karma, etc)
-        case RedditPlatform.NEW:
-            return !!document.getElementById('USER_DROPDOWN_ID')?.innerText;
 
         // shreddit will have an attribute `user-logged-in` on its app root
         case RedditPlatform.SHREDDIT:

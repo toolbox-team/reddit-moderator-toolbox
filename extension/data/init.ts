@@ -37,6 +37,7 @@ import TBModule from './tbmodule.jsx';
 import * as TBStorage from './tbstorage.js';
 
 import AppRoot from './AppRoot';
+import {initializeObserver} from './frontends';
 import {documentInteractive} from './util/dom';
 import {isUserLoggedInQuick} from './util/platform';
 import {reactRenderer} from './util/ui_interop';
@@ -400,5 +401,6 @@ async function doSettingsUpdates () {
     // Once all modules are initialized and have had a chance to register event
     // listeners, start emitting jsAPI events and page URL change events
     TBListener.start();
+    initializeObserver();
     TBCore.watchForURLChanges();
 })();

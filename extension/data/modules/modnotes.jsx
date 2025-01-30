@@ -482,6 +482,17 @@ function ModNotesPopup ({
                 tabs={tabs}
                 defaultTabIndex={defaultTabIndex}
             />
+            <div style={{background: 'darkred', color: 'white'}}>
+                <h1>temporary debug shit, if this makes it into a release kill erin</h1>
+                <p>because fuck getting redux devtools connected to a browser extension</p>
+                <pre>{JSON.stringify({thing, stuff, defaultTabName, defaultNoteLabel})}</pre>
+                <button onClick={() => dispatch(setSetting('ModNotes', 'defaultTabName', 'notes'))}>
+                    set default tab to <code>notes</code>
+                </button>
+                <button onClick={() => dispatch(resetSetting('ModNotes', 'defaultTabName'))}>
+                    reset default tab to default (<code>undefined</code>, computed to <code>all_activity</code>)
+                </button>
+            </div>
         </Window>
     );
 }

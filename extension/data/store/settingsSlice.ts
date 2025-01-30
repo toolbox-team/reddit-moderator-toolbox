@@ -1,7 +1,9 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
+import browser from 'webextension-polyfill';
+
 import TBLog from '../tblog.js';
 import {getSettings, setSettingAsync} from '../tbstorage.js';
-import {AppThunk} from './index.js';
+import {type AppThunk} from './index.js';
 
 export enum SettingsInitialLoadState {
     PENDING,
@@ -59,12 +61,14 @@ export const settingsSlice = createSlice({
     },
 });
 export default settingsSlice.reducer;
+
 const {
     settingUpdated,
     settingReset,
     settingsLoaded,
     settingsLoadFailed,
 } = settingsSlice.actions;
+export {settingsLoaded};
 
 /** Writes a change to a setting. */
 export const setSetting = (moduleID: string, setting: string, value: any): AppThunk => async dispatch => {
@@ -99,16 +103,54 @@ export const setSetting = (moduleID: string, setting: string, value: any): AppTh
 export const resetSetting = (moduleID: string, setting: string) => setSetting(moduleID, setting, undefined);
 
 /** Performs the initial load of settings values into the store. */
-export const loadSettings = (): AppThunk => dispatch =>
-    getSettings().then(
-        settings => dispatch(settingsLoaded({values: settings})),
-        error => {
-            // it should be impossible for this initial load to fail - should
-            // either load correctly or just never resolve. but i'm adding an
-            // error handler for it anyway, because toolbox has a strange knack
-            // for failing in ways that developers think should be impossible
-            const log = TBLog('store:settings');
-            log.error('Failed to load initial settinsg?? wtf', error);
-            dispatch(settingsLoadFailed());
-        },
-    );
+export const loadSettings = (): AppThunk => dispatch => {
+    let settings: Promise<SettingsState['values']>;
+    try {
+        settings = getSettings();
+    } catch (error) {
+        // it should be impossible for this initial load to fail - should either
+        // load correctly or just never resolve. but i'm adding an error handler
+        // for it anyway, because toolbox has a strange knack for failing in
+        // ways that developers think should be impossible
+        const log = TBLog('store:settings');
+        log.error('Failed to load initial settinsg?? wtf', error);
+        dispatch(settingsLoadFailed());
+        return;
+    }
+
+    dispatch(settingsLoaded({values: settings}));
+
+    // begin handling incoming settings updates from other tabs
+    // TODO: we can really rewrite all this "responding to setting updates"
+    //       stuff to be in terms of `browser.storage.onChanged` instead of
+    //       manually passing messages around, especially since there's no more
+    //       distinction between how we handle single-key changes and entire
+    //       state overwrites
+    browser.runtime.onMessage.addListener(async (message: /* TODO */ any) => {
+        if (['tb-settings-update', 'tb-single-setting-update'].includes(message.action)) {
+            const settings = await browser.storage.local.get();
+            // the full settings message does come with a copy of the new
+            // settings, but we don't actually have to listen to that - it's
+            // simpler to just fetch the entire settings object fresh and
+            // overwrite the current state with it. This is fine to do in
+            // response to single-setting updates as well - we use selectors to
+            // read individual setting values, so nothing is re-rendered unless
+            // the specific settings it needs on are among the changes.
+            dispatch(settingsLoaded({
+                // TODO: we read settings directly out of extension storage
+                //       here, because the alternative is using `getSettings()`,
+                //       which relies on the value of the `TBsettingsObject`
+                //       having already been updated, which it might not have
+                //       been if this message listener is being run before the
+                //       other message listener that's responsible for updating
+                //       that object. ideally we want nothing to rely on that
+                //       object at all because it sucks, but because there are
+                //       still some uses of the sync storage methods it shambles
+                //       on for now. maybe we can replace it with synchronous
+                //       state reads out of the redux store eventually, maybe
+                //       that's what will make me not hate working on storage
+                values: (await browser.storage.local.get('tbsettings')).tbsettings as {[key: string]: any},
+            }));
+        }
+    });
+};

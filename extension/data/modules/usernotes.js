@@ -129,7 +129,7 @@ function startUsernotes ({maxChars, showDate}) {
             'submissionAuthor',
             'commentAuthor',
             'modmailAuthor',
-        ], ({location, details}) => {
+        ], ({slotType, details}) => {
             const subreddit = details.subreddit.name;
             const author = details.user.name;
 
@@ -152,7 +152,7 @@ function startUsernotes ({maxChars, showDate}) {
             );
 
             attachNoteTag($target, subreddit, author, {
-                customText: location === 'userHovercard' ? 'Usernotes' : undefined,
+                customText: slotType === 'userHovercard' ? 'Usernotes' : undefined,
             });
             foundSubreddit(subreddit);
             queueProcessSub(subreddit, $target);

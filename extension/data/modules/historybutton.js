@@ -78,7 +78,7 @@ self.runJsAPI = function () {
         'submissionAuthor',
         'commentAuthor',
         'userHovercard',
-    ], ({details, location}) => {
+    ], ({details, slotType}) => {
         const subreddit = details.subreddit.name;
         const user = !details.user.deleted && details.user.name;
 
@@ -87,7 +87,7 @@ self.runJsAPI = function () {
         }
 
         const $target = $('<span>');
-        self.attachHistoryButton($target, user, subreddit, location === 'userHovercard' ? 'User History' : undefined);
+        self.attachHistoryButton($target, user, subreddit, slotType === 'userHovercard' ? 'User History' : undefined);
         return createElement(JQueryRenderer, {content: $target});
     });
 

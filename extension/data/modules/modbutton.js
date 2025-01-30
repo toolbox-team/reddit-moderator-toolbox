@@ -74,7 +74,7 @@ self.runRedesign = async function () {
         'submissionAuthor',
         'commentAuthor',
         'userHovercard',
-    ], ({details, location}) => {
+    ], ({details, slotType}) => {
         const contextFullname = details.contextFullname || details.comment?.fullname || details.submission?.fullname
             || 'unknown';
         const subreddit = details.subreddit.name;
@@ -96,7 +96,7 @@ self.runRedesign = async function () {
                     data-parentID="${contextFullname}"
                     class="global-mod-button tb-bracket-button"
                 >
-                    ${location === 'userHovercard' ? 'Mod Button' : 'M'}
+                    ${slotType === 'userHovercard' ? 'Mod Button' : 'M'}
                 </a>
             `),
         });

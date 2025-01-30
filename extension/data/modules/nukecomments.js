@@ -287,7 +287,7 @@ export default new Module({
     // Add nuke buttons where needed
     // XXX 3: this also needs to be able to appear in hovercards apparently?? what
     // the fuck is going on with all the special casing in this goddamn module
-    renderInSlots(['commentAuthor'], ({details, location}) => {
+    renderInSlots(['commentAuthor'], ({details, slotType}) => {
         const subreddit = details.subreddit.name;
         const commentID = details.comment.fullname.substring(3);
         const submissionID = details.submission?.fullname.substring(3);
@@ -305,7 +305,7 @@ export default new Module({
 
         const NukeButtonHTML =
             `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${submissionID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${
-                location === 'userHovercard' ? 'Nuke' : 'R'
+                slotType === 'userHovercard' ? 'Nuke' : 'R'
             }</span>`;
 
         // XXX 2: implement showNextToUser setting. for now we always show next

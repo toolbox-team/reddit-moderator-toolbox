@@ -464,9 +464,9 @@ function ModNotesPopup ({
         </form>
     );
 
+    // NOMERGE debug shit
     const thing = useSetting('ModNotes', 'defaultTabName');
     const stuff = useSetting('ModNotes', 'defaultNoteLabel');
-
     const dispatch = useDispatch();
 
     // Create the base popup
@@ -482,6 +482,8 @@ function ModNotesPopup ({
                 tabs={tabs}
                 defaultTabIndex={defaultTabIndex}
             />
+
+            {/* NOMERGE debug shit */}
             <div style={{background: 'darkred', color: 'white'}}>
                 <h1>temporary debug shit, if this makes it into a release kill erin</h1>
                 <p>because fuck getting redux devtools connected to a browser extension</p>

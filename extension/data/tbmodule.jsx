@@ -1,6 +1,7 @@
 import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
+import {NO_WIKI_PAGE, postToWiki, readFromWiki, WIKI_PAGE_UNKNOWN} from './tbapi.ts';
 import * as TBConstants from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
@@ -12,6 +13,67 @@ import * as TBui from './tbui.js';
 import css from './tbmodule.module.css';
 
 const logger = TBLog('TBModule');
+
+/**
+ * Saves a copy of currently-stored settings to the `tbsettings` wiki page of
+ * the given subreddit.
+ * @param {string} subreddit The name of the subreddit to save the backup to
+ * @returns {Promise<void>}
+ */
+export async function exportSettings (subreddit) {
+    const settingsObject = await TBStorage.getSettings();
+
+    // Transform from the normal setting storage format to the backup format
+    const backupObject = Object.fromEntries(
+        Object.entries(settingsObject)
+            // In extension storage, keys are `Toolbox.Module.settingName` - in the
+            // backup format however they're just `Module.settingName`. Let's convert
+            .map(([key, value]) => [key.replace('Toolbox.', ''), value])
+            // don't backup the setting registry
+            // TODO: wait, what is this??
+            .filter(([key]) => key !== 'Storage.setting')
+            // DO NOT, EVER save null (or undefined, but we shouldn't ever get
+            // that)
+            .filter(([_key, value]) => value != null),
+    );
+
+    await postToWiki('tbsettings', subreddit, backupObject, 'exportSettings', true, false);
+}
+
+/**
+ * Pulls a settings backup from the `tbstorage` wiki page of the given subreddit
+ * and writes it over the currently-stored settings.
+ * @param {string} subreddit Name of the subreddit to pull the backup from
+ * @returns {Promise<void>}
+ */
+export async function importSettings (subreddit) {
+    const resp = await readFromWiki(subreddit, 'tbsettings', true);
+    if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
+        logger.log('Error loading wiki page');
+        return;
+    }
+    TBStorage.purifyObject(resp);
+
+    if (resp['Utils.lastversion'] < 300) {
+        logger.log('Cannot import from a toolbox version under 3.0');
+        return;
+    }
+
+    const doNotImport = [
+        'oldreddit.enabled',
+    ];
+
+    const newSettings = Object.fromEntries(
+        Object.entries(resp)
+            // Exclude certain settings whose values shouldn't be changed
+            .filter(([key]) => !(doNotImport.includes(key)))
+            // In backups, keys are `Module.settingName` - in extension storage
+            // they're `Toolbox.Module.settingName`
+            .map(([key, value]) => [`Toolbox.${key}`, value]),
+    );
+
+    await TBStorage.writeSettings(newSettings);
+}
 
 const TBModule = {
     modules: [],
@@ -499,7 +561,7 @@ const TBModule = {
 
             if ($(e.target).hasClass('tb-settings-import')) {
                 try {
-                    await TBCore.importSettings(sub);
+                    await importSettings(sub);
                     await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
                     await TBStorage.clearCache();
                 } catch (error) {
@@ -514,7 +576,7 @@ const TBModule = {
                 }, 1000);
             } else {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
-                await TBCore.exportSettings(sub);
+                await exportSettings(sub);
                 await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
                 await TBStorage.clearCache();
                 window.location.reload();

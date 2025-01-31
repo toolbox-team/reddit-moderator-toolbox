@@ -3,5 +3,6 @@ import './handlers/globalmessage.js';
 import './handlers/modqueue.js';
 import './handlers/notifications.js';
 import './handlers/reload.js';
+import './handlers/settings.js';
 import './handlers/url_changed.js';
 import './handlers/webrequest.js';

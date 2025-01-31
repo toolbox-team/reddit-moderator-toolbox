@@ -7,6 +7,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 
 const self = new Module({
     name: 'toolbox Config',
@@ -19,7 +20,7 @@ const self = new Module({
 
     // Set up some base variables
     const $body = $('body');
-    const unManager = TBStorage.getSetting('UserNotes', 'unManagerLink', true);
+    const unManager = getSettingSync('UserNotes', 'unManagerLink', true);
     let config = TBCore.config;
     let sortReasons = [];
     let subreddit;
@@ -211,7 +212,7 @@ const self = new Module({
                         </ul>
                     </div>
                     <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${
-                        TBStorage.getSetting('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'
+                        getSettingSync('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'
                     }>show advanced settings</a>
                     <h3 class="rr-advanced">Advanced settings</h3>
                     <div class="rr-advanced">
@@ -530,12 +531,12 @@ const self = new Module({
         const $textArea = $wikiContentArea.find('.edit-wikidata');
         const $saveButton = $wikiFooterArea.find('.save-wiki-data');
 
-        if (TBStorage.getSetting('Syntax', 'enabled', true)) {
+        if (getSettingSync('Syntax', 'enabled', true)) {
             $body.addClass('mod-syntax');
             let configEditor;
             let defaultMode = 'default';
-            const selectedTheme = TBStorage.getSetting('Syntax', 'selectedTheme') || 'dracula';
-            const enableWordWrap = TBStorage.getSetting('Syntax', 'enableWordWrap');
+            const selectedTheme = getSettingSync('Syntax', 'selectedTheme') || 'dracula';
+            const enableWordWrap = getSettingSync('Syntax', 'enableWordWrap');
 
             if (page === 'automoderator') {
                 defaultMode = 'text/x-yaml';

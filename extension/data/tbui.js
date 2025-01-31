@@ -14,6 +14,7 @@ import {showTextFeedback, TextFeedbackKind, TextFeedbackLocation} from './store/
 
 import store from './store/index.ts';
 import {icons} from './tbconstants.ts';
+import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 export {icons};
 
 const $body = $('body');
@@ -357,7 +358,7 @@ export function overlay ({
             tab.disabled = typeof tab.disabled === 'boolean' ? tab.disabled : false;
             tab.help_page = typeof tab.help_page !== 'undefined' ? tab.help_page : '';
 
-            if (!TBStorage.getSetting('Utils', 'advancedMode', false) && tab.advanced) {
+            if (!getSettingSync('Utils', 'advancedMode', false) && tab.advanced) {
                 continue;
             }
 

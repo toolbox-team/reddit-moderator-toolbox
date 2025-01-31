@@ -13,70 +13,74 @@ const logger = TBLog('TBStorage');
 export const domain = window.location.hostname.split('.')[0];
 logger.debug(`Domain: ${domain}`);
 
-/**
- * A list of all currently loaded settings keys.
- * @type {string[]}
- */
-export const settings = [];
+// Setting storage stuff
+
+/** @typedef {import('./store/settingsSlice.ts').SettingsObject} SettingsObject */
 
 /**
- * An object mapping setting keys to their currently loaded values.
- * @type {{[key: string]: any}}
+ * Retrieves the current settings object directly from extension storage.
+ * @returns {Promise<SettingsObject>}
  */
-let TBsettingsObject;
+export const getSettings = async () => (await browser.storage.local.get('tbsettings')).tbsettings;
 
 /**
- * A promise which will fulfill once the current settings are fetched from
- * extension storage. Once this promise fulfills, it's safe to assume
- * `TBsettingsObject` contains our settings. Settings reads are delayed until
- * then - either by awaiting this promise, or by waiting for the
- * `TBStorageLoaded` window event, which is emitted at the same time.
+ * Writes the given settings object into extension storage.
+ * @param {SettingsObject} newSettings A full settings object to write
+ * @returns {Promise<void>}
  */
-const initialLoadPromise = browser.storage.local.get('tbsettings').then(sObject => {
-    if (sObject.tbsettings) {
-        TBsettingsObject = sObject.tbsettings;
+export const writeSettings = async newSettings => {
+    await browser.runtime.sendMessage({
+        action: 'tb-overwrite-all-settings',
+        newSettings,
+    });
+};
 
-        // Paranoid, malicious settings might be stored.
-        purifyObject(TBsettingsObject);
-    } else {
-        TBsettingsObject = {};
+/**
+ * Updates the values of multiple settings.
+ * @param {Partial<SettingsObject>} updatedSettings Object mapping setting keys
+ * to their new values. Keys not present in this object will retain their stored
+ * values. Keys of this object whose values are `undefined` will be removed from
+ * storage. `null` is an invalid value for settings and will be ignored.
+ */
+export const updateSettings = async settings => {
+    await browser.runtime.sendMessage({
+        action: 'tb-update-settings',
+        updatedSettings: Object.fromEntries(Object.entries(settings).filter(([_key, value]) => value != null)),
+        deletedSettings: Object.keys(settings).filter(key => settings[key] === undefined),
+    });
+};
+
+// Listen for updated settings and notify other places that care
+//
+// TODO: remove all of this. Everything should be either subscribing to the
+//       Redux store and getting settings that way, or listening to
+//       `browser.storage.onChanged`
+browser.runtime.onMessage.addListener(message => {
+    // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
+    if (message.action === 'tb-settings-update') {
+        // gonna be a long time before we can get rid of this i'm afraid
+        const $body = $('body');
+        $body.find('.tb-window-footer').addClass('tb-footer-save-warning');
+        $('body').find('.tb-personal-settings .tb-save').before(
+            '<div class="tb-save-warning">Settings have been saved in a different browser tab! Saving from this window will overwrite those settings.</div>',
+        );
     }
 
-    // Once that's all done, this promise will fulfill and pending storage calls
-    // will be unblocked.
-});
+    // Single setting. Usually reserved for background operations as such we'll simply update it in the backround.
+    if (message.action === 'tb-single-setting-update') {
+        const keySplit = message.payload.key.split('.');
+        const detailObject = {
+            module: keySplit[1],
+            setting: keySplit[2],
+            value: message.payload.value,
+        };
 
-// Don't handle background page messages until we've got our initial settings.
-initialLoadPromise.then(() => {
-    // Listen for updated settings and update the settings object.
-    browser.runtime.onMessage.addListener(message => {
-        // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
-        if (message.action === 'tb-settings-update') {
-            TBsettingsObject = message.payload.tbsettings;
-            const $body = $('body');
-            $body.find('.tb-window-footer').addClass('tb-footer-save-warning');
-            $('body').find('.tb-personal-settings .tb-save').before(
-                '<div class="tb-save-warning">Settings have been saved in a different browser tab! Saving from this window will overwrite those settings.</div>',
-            );
-        }
-
-        // Single setting. Usually reserved for background operations as such we'll simply update it in the backround.
-        if (message.action === 'tb-single-setting-update') {
-            TBsettingsObject[message.payload.key] = message.payload.value;
-            const keySplit = message.payload.key.split('.');
-            const detailObject = {
-                module: keySplit[1],
-                setting: keySplit[2],
-                value: message.payload.value,
-            };
-
-            window.dispatchEvent(
-                new CustomEvent('tbSingleSettingUpdate', {
-                    detail: detailObject,
-                }),
-            );
-        }
-    });
+        window.dispatchEvent(
+            new CustomEvent('tbSingleSettingUpdate', {
+                detail: detailObject,
+            }),
+        );
+    }
 });
 
 /**
@@ -84,88 +88,89 @@ initialLoadPromise.then(() => {
  * settings omitted and other settings represented differently.
  * @returns {Promise<object>}
  */
-export const getAnonymizedSettings = () =>
-    new Promise(resolve => {
-        settingsToObject(sObject => {
-            // settings we delete
-            delete sObject['Toolbox.Achievements.lastSeen'];
-            delete sObject['Toolbox.Achievements.last_seen'];
-            delete sObject['Toolbox.Bagels.bagelType'];
-            delete sObject['Toolbox.Bagels.enabled'];
-            delete sObject['Toolbox.Modbar.customCSS'];
-            delete sObject['Toolbox.ModMail.lastVisited'];
-            delete sObject['Toolbox.ModMail.replied'];
-            delete sObject['Toolbox.ModMail.subredditColorSalt'];
-            delete sObject['Toolbox.Notifier.lastChecked'];
-            delete sObject['Toolbox.Notifier.lastSeenModmail'];
-            delete sObject['Toolbox.Notifier.lastSeenUnmoderated'];
-            delete sObject['Toolbox.Notifier.modmailCount'];
-            delete sObject['Toolbox.Notifier.modqueueCount'];
-            delete sObject['Toolbox.Notifier.modqueuePushed'];
-            delete sObject['Toolbox.Notifier.unmoderatedCount'];
-            delete sObject['Toolbox.Notifier.unreadMessageCount'];
-            delete sObject['Toolbox.Notifier.unreadPushed'];
-            delete sObject['Toolbox.QueueTools.kitteh'];
-            delete sObject['Toolbox.RReasons.customRemovalReason'];
-            delete sObject['Toolbox.Snoo.enabled'];
-            delete sObject['Toolbox.Storage.settings'];
-            delete sObject['Toolbox.Utils.echoTest'];
-            delete sObject['Toolbox.Utils.tbDevs'];
+export const getAnonymizedSettings = async () => {
+    const sObject = await getSettings();
 
-            // these settings we want the length of the val.
-            sObject['Toolbox.Comments.highlighted'] = undefindedOrLength(sObject['Toolbox.Comments.highlighted']);
-            sObject['Toolbox.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolbox.ModButton.savedSubs']);
-            sObject['Toolbox.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolbox.ModMail.botsToFilter']);
-            sObject['Toolbox.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolbox.ModMail.filteredSubs']);
-            sObject['Toolbox.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolbox.Modbar.shortcuts']);
-            sObject['Toolbox.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolbox.QueueTools.botCheckmark']);
-            sObject['Toolbox.Utils.seenNotes'] = undefindedOrLength(sObject['Toolbox.Utils.seenNotes']);
+    // in creesch's words: "because we are paranoid"
+    purifyObject(sObject);
 
-            // these settings we just want to know if they are populated at all
-            sObject['Toolbox.Achievements.save'] = undefindedOrTrue(sObject['Toolbox.Achievements.save']);
-            sObject['Toolbox.ModButton.lastAction'] = undefindedOrTrue(sObject['Toolbox.ModButton.lastAction']);
-            sObject['Toolbox.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolbox.Modbar.lastExport']);
-            sObject['Toolbox.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modSubreddits']);
-            sObject['Toolbox.Notifier.modmailSubreddits'] = undefindedOrTrue(
-                sObject['Toolbox.Notifier.modmailSubreddits'],
-            );
-            sObject['Toolbox.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(
-                sObject['Toolbox.Notifier.unmoderatedSubreddits'],
-            );
-            sObject['Toolbox.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolbox.PNotes.noteWiki']);
-            sObject['Toolbox.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolbox.QueueTools.queueCreature']);
-            sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(
-                sObject['Toolbox.QueueTools.subredditColorSalt'],
-            );
-            sObject['Toolbox.Utils.settingSub'] = undefindedOrTrue(sObject['Toolbox.Utils.settingSub']);
+    // settings we delete
+    delete sObject['Toolbox.Achievements.lastSeen'];
+    delete sObject['Toolbox.Achievements.last_seen'];
+    delete sObject['Toolbox.Bagels.bagelType'];
+    delete sObject['Toolbox.Bagels.enabled'];
+    delete sObject['Toolbox.Modbar.customCSS'];
+    delete sObject['Toolbox.ModMail.lastVisited'];
+    delete sObject['Toolbox.ModMail.replied'];
+    delete sObject['Toolbox.ModMail.subredditColorSalt'];
+    delete sObject['Toolbox.Notifier.lastChecked'];
+    delete sObject['Toolbox.Notifier.lastSeenModmail'];
+    delete sObject['Toolbox.Notifier.lastSeenUnmoderated'];
+    delete sObject['Toolbox.Notifier.modmailCount'];
+    delete sObject['Toolbox.Notifier.modqueueCount'];
+    delete sObject['Toolbox.Notifier.modqueuePushed'];
+    delete sObject['Toolbox.Notifier.unmoderatedCount'];
+    delete sObject['Toolbox.Notifier.unreadMessageCount'];
+    delete sObject['Toolbox.Notifier.unreadPushed'];
+    delete sObject['Toolbox.QueueTools.kitteh'];
+    delete sObject['Toolbox.RReasons.customRemovalReason'];
+    delete sObject['Toolbox.Snoo.enabled'];
+    delete sObject['Toolbox.Storage.settings'];
+    delete sObject['Toolbox.Utils.echoTest'];
+    delete sObject['Toolbox.Utils.tbDevs'];
 
-            resolve(sObject);
+    // these settings we want the length of the val.
+    sObject['Toolbox.Comments.highlighted'] = undefindedOrLength(sObject['Toolbox.Comments.highlighted']);
+    sObject['Toolbox.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolbox.ModButton.savedSubs']);
+    sObject['Toolbox.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolbox.ModMail.botsToFilter']);
+    sObject['Toolbox.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolbox.ModMail.filteredSubs']);
+    sObject['Toolbox.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolbox.Modbar.shortcuts']);
+    sObject['Toolbox.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolbox.QueueTools.botCheckmark']);
+    sObject['Toolbox.Utils.seenNotes'] = undefindedOrLength(sObject['Toolbox.Utils.seenNotes']);
 
-            function undefindedOrLength (setting) {
-                return setting === undefined ? 0 : setting.length;
-            }
+    // these settings we just want to know if they are populated at all
+    sObject['Toolbox.Achievements.save'] = undefindedOrTrue(sObject['Toolbox.Achievements.save']);
+    sObject['Toolbox.ModButton.lastAction'] = undefindedOrTrue(sObject['Toolbox.ModButton.lastAction']);
+    sObject['Toolbox.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolbox.Modbar.lastExport']);
+    sObject['Toolbox.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modSubreddits']);
+    sObject['Toolbox.Notifier.modmailSubreddits'] = undefindedOrTrue(
+        sObject['Toolbox.Notifier.modmailSubreddits'],
+    );
+    sObject['Toolbox.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(
+        sObject['Toolbox.Notifier.unmoderatedSubreddits'],
+    );
+    sObject['Toolbox.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolbox.PNotes.noteWiki']);
+    sObject['Toolbox.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolbox.QueueTools.queueCreature']);
+    sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(
+        sObject['Toolbox.QueueTools.subredditColorSalt'],
+    );
+    sObject['Toolbox.Utils.settingSub'] = undefindedOrTrue(sObject['Toolbox.Utils.settingSub']);
 
-            function undefindedOrTrue (setting) {
-                if (!setting) {
-                    return false;
-                }
-                if (setting.length > 0) {
-                    return true;
-                }
-            }
-        });
-    });
+    return sObject;
+
+    function undefindedOrLength (setting) {
+        return setting === undefined ? 0 : setting.length;
+    }
+
+    function undefindedOrTrue (setting) {
+        if (!setting) {
+            return false;
+        }
+        if (setting.length > 0) {
+            return true;
+        }
+    }
+};
 
 /**
  * Clears all cache keys.
  * @returns {Promise<void>}
  */
-export async function clearCache () {
-    await browser.runtime.sendMessage({
+export const clearCache = () =>
+    browser.runtime.sendMessage({
         action: 'tb-cache',
         method: 'clear',
     });
-}
 
 // The below block of code will keep watch for events that require clearing the cache like account switching and people accepting mod invites.
 $('body').on(
@@ -177,60 +182,12 @@ $('body').on(
 );
 
 /**
- * Saves current settings, then verifies that they've been saved accurately. If
- * the save was successful, tells the background page to update the settings
- * state of other tabs. Calls back with whether or not the save was successful.
- * @param {(success: boolean) => void} callback
- */
-export function verifiedSettingsSave (callback) {
-    settingsToObject(sObject => {
-        const settingsObject = sObject;
-
-        // save settings
-        browser.storage.local.set({
-            tbsettings: sObject,
-        }).then(() => {
-            // now verify them
-            browser.storage.local.get('tbsettings').then(returnObject => {
-                if (returnObject.tbsettings && isEquivalent(returnObject.tbsettings, settingsObject)) {
-                    // Succes, tell other browser tabs with toolbox that there are new settings.
-                    browser.runtime.sendMessage({
-                        action: 'tb-global',
-                        globalEvent: 'tb-settings-update',
-                        payload: returnObject,
-                        excludeBackground: true,
-                    });
-                    callback(true);
-                } else {
-                    logger.debug('Settings could not be verified');
-                    callback(false);
-                }
-            });
-        });
-    });
-}
-
-/**
  * Uses DOMPurify to sanitize untrusted HTML strings.
  * @param {string} input
  * @returns {string}
  */
 export function purify (input) {
     return DOMPurify.sanitize(input, {SAFE_FOR_JQUERY: true});
-}
-
-// TODO: to be honest I'm not sure what this one does
-function registerSetting (module, setting) {
-    // First parse out any of the ones we never want to save.
-    if (module === undefined || module === 'cache') {
-        return;
-    }
-
-    const keyName = `${module}.${setting}`;
-
-    if (!settings.includes(keyName)) {
-        settings.push(keyName);
-    }
 }
 
 /**
@@ -287,7 +244,7 @@ export function purifyObject (input) {
 
 // TODO: this is another purify function used exclusively for settings, I'm not
 //       sure how it works either.
-function purifyThing (input) {
+export function purifyThing (input) {
     let output;
     const itemType = typeof input;
     switch (itemType) {
@@ -326,122 +283,21 @@ function purifyThing (input) {
 }
 
 /**
- * Calls back with a copy of the current settings object, containing all setting
- * keys and their values.
- * @param {(settings: object) => void} callback
- */
-function settingsToObject (callback) {
-    initialLoadPromise.then(() => {
-        // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
-        const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
-
-        // We are paranoid, so we are going to purify the object first.s
-        purifyObject(settingsObject);
-
-        callback(settingsObject);
-    });
-}
-
-/**
- * Promises a copy of the current settings object, containing all setting keys
- * and their values.
- * @returns {Promise<object>}
- */
-// TODO: convert original function to promise
-export const getSettings = () => new Promise(resolve => settingsToObject(resolve));
-
-/**
- * Commits the current settings to extension storage.
- * @returns {Promise<void>}
- */
-async function saveSettingsToBrowser () {
-    browser.storage.local.set({
-        tbsettings: await getSettings(),
-    });
-}
-
-/**
- * Returns the value of a setting.
- * @deprecated Use `getSettingAsync` instead
- * @param {string} module The ID of the module the setting belongs to
- * @param {string} setting The name of the setting
- * @param {any} defaultVal The value returned if the setting is not set
- * @returns {any}
- */
-export function getSetting (module, setting, defaultVal) {
-    const storageKey = `Toolbox.${module}.${setting}`;
-    registerSetting(module, setting);
-
-    defaultVal = defaultVal !== undefined ? defaultVal : null;
-    let result;
-
-    if (TBsettingsObject[storageKey] === undefined) {
-        return defaultVal;
-    } else {
-        result = TBsettingsObject[storageKey];
-
-        // send back the default if, somehow, someone stored `null`
-        // NOTE: never, EVER store `null`!
-        if (
-            result === null
-            && defaultVal !== null
-        ) {
-            result = defaultVal;
-        }
-
-        // Again, being extra paranoid here but let's sanitize.
-        const sanitzedResult = purifyThing(result);
-        return sanitzedResult;
-    }
-}
-
-/**
- * Returns the value of a setting.
+ * Returns the value of a setting, falling back to a given value if the setting
+ * has not been set.
  * @param {string} module The ID of the module the setting belongs to
  * @param {string} setting The name of the setting
  * @param {any} defaultVal The value returned if the setting is not set
  * @returns {Promise<any>}
  */
-export async function getSettingAsync (module, setting, defaultVal) {
-    await initialLoadPromise;
-    return getSetting(module, setting, defaultVal);
-}
+export async function getSettingAsync (module, setting, defaultVal = undefined) {
+    const settings = await getSettings();
+    const value = settings[`Toolbox.${module}.${setting}`];
 
-/**
- * Sets a setting to a new value.
- * @deprecated Use `setSettingAsync` instead
- * @param {string} module The ID of the module the setting belongs to
- * @param {string} setting The name of the setting
- * @param {any} value The new value of the setting
- * @param {boolean} [syncSettings=true] If false, settings will not be committed
- * to storage after performing this action
- * @returns {any} The new value of the setting
- */
-export function setSetting (module, setting, value, syncSettings = true) {
-    const storageKey = `Toolbox.${module}.${setting}`;
-    registerSetting(module, setting);
-
-    // Sanitize the setting
-    const sanitzedValue = purifyThing(value);
-
-    TBsettingsObject[storageKey] = sanitzedValue;
-    // try to save our settings.
-    if (syncSettings) {
-        saveSettingsToBrowser();
-
-        // Communicate the new setting to other open tabs.
-        browser.runtime.sendMessage({
-            action: 'tb-global',
-            globalEvent: 'tb-single-setting-update',
-            excludeBackground: true,
-            payload: {
-                key: storageKey,
-                value: sanitzedValue,
-            },
-        });
+    if (value == null) {
+        return defaultVal;
     }
-
-    return getSetting(module, setting);
+    return value;
 }
 
 /**
@@ -451,12 +307,12 @@ export function setSetting (module, setting, value, syncSettings = true) {
  * @param {any} value The new value of the setting
  * @param {boolean} [syncSettings=true] If false, settings will not be committed
  * to storage after performing this action
- * @returns {Promise<any>} The new value of the setting
+ * @returns {Promise<void>}
  */
-export async function setSettingAsync (module, setting, value, syncSettings = true) {
-    await initialLoadPromise;
-    return setSetting(module, setting, value, syncSettings);
-}
+export const setSettingAsync = (module, setting, value) =>
+    updateSettings({
+        [`Toolbox.${module}.${setting}`]: value,
+    });
 
 /**
  * Gets a value in the cache.
@@ -505,50 +361,4 @@ export function setCache (module, setting, inputValue) {
             resolve(value);
         });
     });
-}
-
-/**
- * Checks whether two objects are deeply equivalent by recursively comparing
- * their property values. Does not check reference equality.
- * @param {any} a
- * @param {any} b
- * @returns {boolean}
- */
-// based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html
-// added recursive object checks - al
-function isEquivalent (a, b) {
-    // Create arrays of property names
-    const aProps = Object.getOwnPropertyNames(a);
-    const bProps = Object.getOwnPropertyNames(b);
-
-    // If number of properties is different,
-    // objects are not equivalent
-    if (aProps.length !== bProps.length) {
-        logger.debug(`length :${aProps.length} ${bProps.length}`);
-        return false;
-    }
-
-    for (let i = 0; i < aProps.length; i++) {
-        const propName = aProps[i];
-        const propA = a[propName];
-        const propB = b[propName];
-
-        // If values of same property are not equal,
-        // objects are not equivalent
-        if (propA !== propB) {
-            if (typeof propA === 'object' && typeof propB === 'object') {
-                if (!isEquivalent(propA, propB)) {
-                    logger.debug(`prop :${propA} ${propB}`);
-                    return false;
-                }
-            } else {
-                logger.debug(`prop :${propA} ${propB}`);
-                return false;
-            }
-        }
-    }
-
-    // If we made it this far, objects
-    // are considered equivalent
-    return true;
 }

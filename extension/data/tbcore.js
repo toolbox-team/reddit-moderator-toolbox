@@ -7,6 +7,7 @@ import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
 import * as TBStorage from './tbstorage.js';
+import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 import {currentPlatform, RedditPlatform} from './util/platform.ts';
 
 const logger = TBLog('TBCore');
@@ -321,9 +322,9 @@ export function debugInformation () {
         browser: '',
         browserVersion: '',
         platformInformation: '',
-        debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
-        compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
-        advancedSettings: TBStorage.getSetting('Utils', 'advancedMode', false),
+        debugMode: getSettingSync('Utils', 'debugMode', false),
+        compactMode: getSettingSync('Modbar', 'compactHide', false),
+        advancedSettings: getSettingSync('Utils', 'advancedMode', false),
         cookiesEnabled: navigator.cookieEnabled,
     };
 
@@ -511,6 +512,8 @@ export const alert = ({message, noteID, showClose}) =>
         }
         $noteDiv.appendTo($body);
 
+        // TODO: this is the last remaining use of this event and i would very
+        //       much like to remove it from the universe
         window.addEventListener('tbSingleSettingUpdate', event => {
             const settingDetail = event.detail;
             if (
@@ -870,22 +873,24 @@ export async function getConfig (sub) {
 }
 
 // TODO: Move this function to tbmodule, the only place it's ever used
-export function exportSettings (subreddit, callback) {
-    const settingsObject = {};
-    $(TBStorage.settings).each(function () {
-        if (this === 'Storage.settings') {
-            return;
-        } // don't backup the setting registry.
+export async function exportSettings (subreddit, callback) {
+    const settingsObject = await TBStorage.getSettings();
 
-        const key = this.split('.');
-        const setting = TBStorage.getSetting(key[0], key[1], null);
+    // Transform from the normal setting storage format to the backup format
+    const backupObject = Object.fromEntries(
+        Object.entries(settingsObject)
+            // In extension storage, keys are `Toolbox.Module.settingName` - in the
+            // backup format however they're just `Module.settingName`. Let's convert
+            .map(([key, value]) => [key.replace('Toolbox.', ''), value])
+            // don't backup the setting registry
+            // TODO: wait, what is this??
+            .filter(([key]) => key !== 'Storage.setting')
+            // DO NOT, EVER save null (or undefined, but we shouldn't ever get
+            // that)
+            .filter(([_key, value]) => value != null),
+    );
 
-        if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
-            settingsObject[this] = setting;
-        }
-    });
-
-    TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
+    TBApi.postToWiki('tbsettings', subreddit, backupObject, 'exportSettings', true, false).then(callback);
 }
 
 // TODO: Move this function to tbmodule, the only place it's ever used
@@ -906,16 +911,16 @@ export async function importSettings (subreddit) {
         'oldreddit.enabled',
     ];
 
-    Object.entries(resp).forEach(([fullKey, value]) => {
-        const key = fullKey.split('.');
+    const newSettings = Object.fromEntries(
+        Object.entries(resp)
+            // Exclude certain settings whose values shouldn't be changed
+            .filter(([key]) => !(doNotImport.includes(key)))
+            // In backups, keys are `Module.settingName` - in extension storage
+            // they're `Toolbox.Module.settingName`
+            .map(([key, value]) => [`Toolbox.${key}`, value]),
+    );
 
-        // Do not import certain legacy settings.
-        if (doNotImport.includes(fullKey)) {
-            logger.log(`Skipping ${fullKey} import`);
-        } else {
-            TBStorage.setSetting(key[0], key[1], value, false);
-        }
-    });
+    await TBStorage.writeSettings(newSettings);
 }
 
 // Misc. functions

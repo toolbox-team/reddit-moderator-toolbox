@@ -1,11 +1,10 @@
 import {map, page, pipeAsync} from 'iter-ops';
 import $ from 'jquery';
 import {useEffect, useRef, useState} from 'react';
-import {Provider, useDispatch} from 'react-redux';
+import {Provider} from 'react-redux';
 
 import {useFetched, useSetting} from '../hooks.ts';
 import store from '../store/index.ts';
-import {resetSetting, setSetting} from '../store/settingsSlice.ts';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
@@ -467,7 +466,6 @@ function ModNotesPopup ({
     // NOMERGE debug shit
     const thing = useSetting('ModNotes', 'defaultTabName');
     const stuff = useSetting('ModNotes', 'defaultNoteLabel');
-    const dispatch = useDispatch();
 
     // Create the base popup
     return (
@@ -488,10 +486,10 @@ function ModNotesPopup ({
                 <h1>temporary debug shit, if this makes it into a release kill erin</h1>
                 <p>because fuck getting redux devtools connected to a browser extension</p>
                 <pre>{JSON.stringify({thing, stuff, defaultTabName, defaultNoteLabel})}</pre>
-                <button onClick={() => dispatch(setSetting('ModNotes', 'defaultTabName', 'notes'))}>
+                <button onClick={() => setSettingAsync('ModNotes', 'defaultTabName', 'notes')}>
                     set default tab to <code>notes</code>
                 </button>
-                <button onClick={() => dispatch(resetSetting('ModNotes', 'defaultTabName'))}>
+                <button onClick={() => setSettingAsync('ModNotes', 'defaultTabName', undefined)}>
                     reset default tab to default (<code>undefined</code>, computed to <code>all_activity</code>)
                 </button>
             </div>

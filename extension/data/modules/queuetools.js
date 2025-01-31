@@ -7,6 +7,7 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 
 const self = new Module({
     name: 'Queue Tools',
@@ -1114,7 +1115,7 @@ self.queuetoolsOld = function ({
 
     // Regex is used in multiple functions
     const regexMatchFinder = /\[(.*?)\]/g;
-    const highlightEnabled = TBStorage.getSetting('Comments', 'highlighted', []);
+    const highlightEnabled = getSettingSync('Comments', 'highlighted', []);
     function getAutomodActionReason (sub) {
         self.log(sub);
         TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {

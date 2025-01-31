@@ -59,21 +59,25 @@ const TBModule = {
     },
 
     async showSettings () {
+        const log = TBLog('settings window');
         const $body = $('body');
+
+        // Get a current snapshot of settings which we can work with
+        const settingsObject = await TBStorage.getSettings();
 
         //
         // preload some generic variables
         //
-        const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
-        const advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false);
+        const debugMode = settingsObject['Toolbox.Utils.debugMode'] ?? false;
+        const advancedMode = settingsObject['Toolbox.Utils.advancedMode'] ?? false;
 
-        const settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', '');
-        const shortLength = await TBStorage.getSettingAsync('Utils', 'shortLength', 15);
-        const longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45);
+        const settingSub = settingsObject['Toolbox.Utils.settingSub'] ?? '';
+        const shortLength = settingsObject['Toolbox.Utils.shortLength'] ?? 15;
+        const longLength = settingsObject['Toolbox.Utils.longLength'] ?? 45;
 
         // last export stuff
-        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport') ?? 0;
-        const showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder');
+        const lastExport = settingsObject['Toolbox.Modbar.lastExport'] ?? 0;
+        const showExportReminder = settingsObject['Toolbox.Modbar.showExportReminder'];
         const lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport));
         const lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
@@ -439,18 +443,17 @@ const TBModule = {
                 sub = TBHelpers.cleanSubredditName(sub);
 
                 // Save the sub, first.
-                TBStorage.setSetting('Utils', 'settingSub', sub);
+                settingsObject['Toolbox.Utils.settingSub'] = sub;
             }
 
-            TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
-            TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
+            settingsObject['Toolbox.Utils.debugMode'] = $('#debugMode').prop('checked');
+            settingsObject['Toolbox.Utils.advancedMode'] = $('#advancedMode').prop('checked');
 
             await TBStorage.setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
 
             // save cache settings.
-            TBStorage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
-
-            TBStorage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
+            settingsObject['Toolbox.Utils.longLength'] = parseInt($('input[name=longLength]').val());
+            settingsObject['Toolbox.Utils.shortLength'] = parseInt($('input[name=shortLength]').val());
 
             if ($('#clearcache').prop('checked')) {
                 TBStorage.clearCache();
@@ -462,19 +465,21 @@ const TBModule = {
                 $('body').css('overflow', 'auto');
             }
 
-            TBStorage.verifiedSettingsSave(succ => {
-                if (succ) {
-                    TBui.textFeedback('Settings saved and verified', TBui.FEEDBACK_POSITIVE);
+            TBStorage.writeSettings(settingsObject).then(
+                () => {
+                    TBui.textFeedback('Settings saved', TBui.FEEDBACK_POSITIVE);
                     setTimeout(() => {
                         // Only reload in dev mode if we asked to.
                         if (!debugMode || reload) {
                             window.location.reload();
                         }
                     }, 1000);
-                } else {
+                },
+                error => {
+                    log.error('Failed to save settings:', error);
                     TBui.textFeedback('Save could not be verified', TBui.FEEDBACK_NEGATIVE);
-                }
-            });
+                },
+            );
         });
 
         $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', async e => {
@@ -490,25 +495,26 @@ const TBModule = {
             sub = TBHelpers.cleanSubredditName(sub);
 
             // Save the sub, first.
-            TBStorage.setSetting('Utils', 'settingSub', sub);
+            await TBStorage.setSettingAsync('Utils', 'settingSub', sub);
 
             if ($(e.target).hasClass('tb-settings-import')) {
-                await TBCore.importSettings(sub);
-                await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                await TBStorage.clearCache();
-                TBStorage.verifiedSettingsSave(succ => {
-                    if (succ) {
-                        TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
-                    }
-                });
+                try {
+                    await TBCore.importSettings(sub);
+                    await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
+                    await TBStorage.clearCache();
+                } catch (error) {
+                    log.error('Error importing settings:', error);
+                    TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
+                    return;
+                }
+
+                TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
-                TBCore.exportSettings(sub);
+                await TBCore.exportSettings(sub);
                 await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
                 await TBStorage.clearCache();
                 window.location.reload();
@@ -566,7 +572,7 @@ const TBModule = {
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
+            if (!debugMode && module.debugMode) {
                 continue;
             }
 
@@ -647,19 +653,19 @@ const TBModule = {
                 }
 
                 // hide debug stuff unless debug mode enabled
-                if (options.debug && !await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
+                if (options.debug && !debugMode) {
                     continue;
                 }
 
                 // hide hidden settings, ofc
                 // TODO: Tie to a specific setting rather than debug mode
-                if (options.hidden && !await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
+                if (options.hidden && !debugMode) {
                     continue;
                 }
 
                 // hide advanced settings, but do it via CSS so it can be overridden.
                 let displaySetting = true;
-                if (options.advanced && !await TBStorage.getSettingAsync('Utils', 'advancedMode', false)) {
+                if (options.advanced && !advancedMode) {
                     displaySetting = false;
                 }
 
@@ -775,7 +781,7 @@ body {
                             // Syntax highlighter selection stuff
                             $body.addClass('mod-syntax');
                             let editorSettings;
-                            const enableWordWrap = await TBStorage.getSettingAsync('Syntax', 'enableWordWrap', true);
+                            const enableWordWrap = settingsObject['Toolbox.Syntax.enableWordWrap'] ?? true;
                             $setting.find(`#${module.id}_syntax_theme_css`).each(async (index, elem) => {
                                 // Editor setup.
                                 editorSettings = CodeMirror.fromTextArea(elem, {
@@ -996,7 +1002,7 @@ body {
                 const $moduleEnabled = $(
                     `.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.id}Enabled`,
                 ).prop('checked');
-                TBStorage.setSetting(module.id, 'enabled', $moduleEnabled);
+                settingsObject[`Toolbox.${module.id}.enabled`] = $moduleEnabled;
 
                 // handle the regular settings tab
                 const $settings_page = $(`.tb-window-tab.${module.id.toLowerCase()} .tb-window-content`);
@@ -1059,7 +1065,7 @@ body {
                             value = JSON.parse($this.find('textarea').val());
                             break;
                     }
-                    module.set($this.data('setting'), value, false);
+                    settingsObject[`Toolbox.${module.id}.${$this.data('setting')}`] = value;
                 });
             });
         }

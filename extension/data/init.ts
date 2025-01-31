@@ -161,12 +161,12 @@ async function checkLoadConditions (tries = 3) {
 
     // Write a setting and read back its value, if this fails something is wrong
     let echoValue = Math.random();
-    let echoResult: number;
     try {
-        echoResult = await TBStorage.setSettingAsync('Utils', 'echoTest', echoValue);
+        await TBStorage.setSettingAsync('Utils', 'echoTest', echoValue);
     } catch (error) {
         throw new Error('Failed to write to settings', {cause: error});
     }
+    const echoResult = await TBStorage.getSettingAsync('Utils', 'echoTest');
     if (echoResult !== echoValue) {
         throw new Error(`Settings read/write inconsistent: expected ${echoValue}, received ${echoResult}`);
     }
@@ -281,8 +281,8 @@ async function doSettingsUpdates () {
         }
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
-        // TBStorage.setSetting('Notifier', 'modmailCount', 0);
+        // await TBStorage.setSettingAsync('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
+        // await TBStorage.setSettingAsync('Notifier', 'modmailCount', 0);
         await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
     }
 }
@@ -300,7 +300,7 @@ async function doSettingsUpdates () {
     try {
         await checkLoadConditions();
     } catch (error) {
-        logger.error('Load condition not met:', (error as Error).message);
+        logger.error('Load condition not met:', error);
         return;
     }
 

@@ -7,6 +7,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {clearCache} from '../util/cache.ts';
+import {icons} from '../util/icons.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
@@ -260,7 +261,7 @@ const self = new Module({
                     title: 'edit removal reasons',
                     tooltip: 'Edit and add your removal reasons here.',
                     content: `
-                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new removal reason</a>
+                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${icons.addCircle}</i> Add new removal reason</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form" class="tb-removal-reason-field">
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
@@ -307,7 +308,7 @@ const self = new Module({
                     title: 'edit mod macros',
                     tooltip: 'Edit and add your mod macros here.',
                     content: `
-                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
+                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <div id="tb-add-mod-macro-form">
                     <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
@@ -422,7 +423,7 @@ const self = new Module({
                 TBui.contextTrigger('tb-config-link', {
                     addTrigger: true,
                     triggerText: `/r/${subreddit} config`,
-                    triggerIcon: TBui.icons.tbSubConfig,
+                    triggerIcon: icons.tbSubConfig,
                     title: `toolbox configuration for /r/${subreddit}`,
                     dataAttributes: {
                         subreddit,
@@ -714,7 +715,7 @@ const self = new Module({
                 <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${key}"></td>
                 <td><input class="color" name="type-color" type="color" value="${safeColor}"></td>
                 <td>
-                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortUp}</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortDown}</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">${TBui.icons.delete}</a>
+                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${icons.sortUp}</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${icons.sortDown}</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">${icons.delete}</a>
                 </td>
                 <td class="usernote-error error"></td>
 		    </tr>
@@ -798,8 +799,8 @@ const self = new Module({
                 const removalReasonTemplate = `
                 <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="removal-reasons-buttons">
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${TBui.icons.edit}</a> <br>
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${TBui.icons.delete}</a>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${icons.edit}</a> <br>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${icons.delete}</a>
                     </td>
                     <td class="removal-reasons-content" data-reason="{{i}}">
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
@@ -858,8 +859,8 @@ const self = new Module({
                 const removalReasonTemplateHTML = `
                 <tr class="removal-reason" data-reason="${index}" data-subreddit="${subreddit}">
                     <td class="removal-reasons-sort-buttons">
-                        <a href="javascript:;" class="tb-sort-up tb-icons">${TBui.icons.sortUp}</a>
-                        <a href="javascript:;" class="tb-sort-down tb-icons">${TBui.icons.sortDown}</a>
+                        <a href="javascript:;" class="tb-sort-up tb-icons">${icons.sortUp}</a>
+                        <a href="javascript:;" class="tb-sort-down tb-icons">${icons.sortDown}</a>
                     </td>
                     <td class="removal-reasons-content">
                         <span class="removal-reason-label">${removalReasonTitle}</span>
@@ -893,8 +894,8 @@ const self = new Module({
                 const modMacroTemplate = `
                 <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="mod-macros-buttons">
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${TBui.icons.edit}</a> <br>
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${TBui.icons.delete}</a>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${icons.edit}</a> <br>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${icons.delete}</a>
                     </td>
                     <td class="mod-macros-content" data-macro="{{i}}">
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>

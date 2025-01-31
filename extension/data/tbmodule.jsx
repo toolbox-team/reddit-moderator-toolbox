@@ -2,13 +2,13 @@ import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
 import {NO_WIKI_PAGE, postToWiki, readFromWiki, WIKI_PAGE_UNKNOWN} from './tbapi.ts';
-import * as TBConstants from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
 import TBLog from './tblog.ts';
 import * as TBui from './tbui.js';
 import {clearCache} from './util/cache.ts';
+import {icons} from './util/icons.ts';
 import {purify, purifyObject} from './util/purify.js';
 import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 
@@ -76,6 +76,60 @@ export async function importSettings (subreddit) {
 
     await writeSettings(newSettings);
 }
+
+/** HTML for the syntax highlighter's theme selector. */
+// HACK: kept here instead of in the syntax highlighter module itself, to avoid
+//       circular dependency issues, since it's used by both
+export const syntaxHighlighterThemeSelect = `
+    <select id="theme_selector">
+        <option value="3024-day">3024-day</option>
+        <option value="3024-night">3024-night</option>
+        <option value="abcdef">abcdef</option>
+        <option value="ambiance">ambiance</option>
+        <option value="base16-dark">base16-dark</option>
+        <option value="base16-light">base16-light</option>
+        <option value="bespin">bespin</option>
+        <option value="blackboard">blackboard</option>
+        <option value="cobalt">cobalt</option>
+        <option value="colorforth">colorforth</option>
+        <option value="dracula">dracula</option>
+        <option value="eclipse">eclipse</option>
+        <option value="elegant">elegant</option>
+        <option value="erlang-dark">erlang-dark</option>
+        <option value="hopscotch">hopscotch</option>
+        <option value="icecoder">icecoder</option>
+        <option value="isotope">isotope</option>
+        <option value="lesser-dark">lesser-dark</option>
+        <option value="liquibyte">liquibyte</option>
+        <option value="material">material</option>
+        <option value="mbo">mbo</option>
+        <option value="mdn-like">mdn-like</option>
+        <option value="midnight">midnight</option>
+        <option value="monokai">monokai</option>
+        <option value="neat">neat</option>
+        <option value="neo">neo</option>
+        <option value="night">night</option>
+        <option value="panda-syntax">panda-syntax</option>
+        <option value="paraiso-dark">paraiso-dark</option>
+        <option value="paraiso-light">paraiso-light</option>
+        <option value="pastel-on-dark">pastel-on-dark</option>
+        <option value="railscasts">railscasts</option>
+        <option value="rubyblue">rubyblue</option>
+        <option value="seti">seti</option>
+        <option value="solarized dark">solarized dark</option>
+        <option value="solarized light">solarized light</option>
+        <option value="the-matrix">the-matrix</option>
+        <option value="tomorrow-night-bright">tomorrow-night-bright</option>
+        <option value="tomorrow-night-eighties">tomorrow-night-eighties</option>
+        <option value="ttcn">ttcn</option>
+        <option value="twilight">twilight</option>
+        <option value="vibrant-ink">vibrant-ink</option>
+        <option value="xq-dark">xq-dark</option>
+        <option value="xq-light">xq-light</option>
+        <option value="yeti">yeti</option>
+        <option value="zenburn">zenburn</option>
+    </select>
+`;
 
 const TBModule = {
     modules: [],
@@ -232,7 +286,7 @@ const TBModule = {
                 <p id="tb-toolbox-${settingName}" class="tb-settings-p" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
-                    ${TBConstants.icons.tbSettingLink}
+                    ${icons.tbSettingLink}
                     </a>&nbsp;
                 </p>
                 <div style="display: none;" class="tb-setting-input tb-setting-input-${settingName}">
@@ -451,7 +505,7 @@ const TBModule = {
         const $settingsDialog = TBui.overlay({
             title: 'toolbox Settings',
             buttons:
-                `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
+                `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${icons.help}</i></a>`,
             tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
             footer: `
@@ -676,7 +730,7 @@ const TBModule = {
                 }>Enable ${TBHelpers.htmlEncode(module.name)}</label>
                                 <a class="tb-help-toggle" href="javascript:;" data-module="${module.id}" title="Help">?</a>
                         <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
-                            ${TBConstants.icons.tbSettingLink}
+                            ${icons.tbSettingLink}
                         </a>&nbsp;
                         ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
                     </p>
@@ -821,7 +875,7 @@ const TBModule = {
                     }
                     case 'syntaxTheme': {
                         $setting.append(`${title}:<br/>`);
-                        $setting.append(TBConstants.syntaxHighlighterThemeSelect);
+                        $setting.append(syntaxHighlighterThemeSelect);
                         $setting.find('select').attr('id', `${module.id}_syntax_theme`);
                         $setting.append($(`
                     <textarea class="tb-input syntax-example" id="${module.id}_syntax_theme_css">
@@ -951,7 +1005,7 @@ body {
                     $setting.append(
                         `&nbsp;<a ${
                             displaySetting ? '' : 'style="display:none;"'
-                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${TBConstants.icons.tbSettingLink}</a>`
+                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${icons.tbSettingLink}</a>`
                             + `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">`
                             + `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>`
                             + `<input  type="text" class="tb-input" readonly="readonly" value="${internetLink}"/></div>`,

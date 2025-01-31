@@ -4,10 +4,10 @@ import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
 
 import * as TBApi from './tbapi.ts';
-import {icons} from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import {onDOMAttach} from './util/dom.ts';
+import {icons} from './util/icons.ts';
 import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 import {purify, purifyObject} from './util/purify.js';
 import {getSettingAsync} from './util/settings.ts';
@@ -15,8 +15,6 @@ import {reactRenderer} from './util/ui_interop.tsx';
 
 import store from './store/index.ts';
 import {showTextFeedback, TextFeedbackKind, TextFeedbackLocation} from './store/textFeedbackSlice.ts';
-
-export {icons};
 
 const $body = $('body');
 

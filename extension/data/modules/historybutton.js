@@ -6,6 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
 import {purify, purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 
@@ -103,7 +104,7 @@ self.runJsAPI = function ({onlyshowInhover}) {
             TBui.contextTrigger('tb-user-history', {
                 addTrigger: true,
                 triggerText: 'user history',
-                triggerIcon: TBui.icons.history,
+                triggerIcon: icons.history,
                 title: `Show history for /u/${user}`,
                 dataAttributes: {
                     author: user,

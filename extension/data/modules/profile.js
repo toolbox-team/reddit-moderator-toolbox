@@ -6,6 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 
@@ -876,7 +877,7 @@ export default new Module({
             TBui.contextTrigger('tb-user-profile', {
                 addTrigger: true,
                 triggerText: 'toolbox profile',
-                triggerIcon: TBui.icons.profile,
+                triggerIcon: icons.profile,
                 title: `Show toolbox profile for /u/${user}`,
                 dataAttributes: {
                     user,

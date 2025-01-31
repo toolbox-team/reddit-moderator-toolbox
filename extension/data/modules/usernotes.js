@@ -5,8 +5,10 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {clearCache, getCache, setCache} from '../util/cache.ts';
+import {purifyObject} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
 
 // FIXME: It no longer makes sense to bake logger functions into modules
 //        themselves, since functions the module defines may not have the module
@@ -47,7 +49,7 @@ const self = new Module({
         {
             id: 'onlyshowInhover',
             type: 'boolean',
-            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            default: () => getSettingAsync('GenSettings', 'onlyshowInhover', true),
             hidden: true,
         },
     ],
@@ -959,9 +961,9 @@ function startUsernotesManager ({unManagerLink}) {
                 delete subUsenotes.users[user];
 
                 // Update notes cache
-                const cachedNotes = await TBStorage.getCache('Utils', 'noteCache', {});
+                const cachedNotes = await getCache('Utils', 'noteCache', {});
                 cachedNotes[sub] = subUsenotes;
-                await TBStorage.setCache('Utils', 'noteCache', cachedNotes);
+                await setCache('Utils', 'noteCache', cachedNotes);
 
                 // TODO: don't swallow errors
                 await saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`).catch(() => {});
@@ -981,9 +983,9 @@ function startUsernotesManager ({unManagerLink}) {
             subUsenotes.users[user].notes.splice(note, 1);
 
             // Update notes cache
-            const cachedNotes = await TBStorage.getCache('Utils', 'noteCache', {});
+            const cachedNotes = await getCache('Utils', 'noteCache', {});
             cachedNotes[sub] = subUsenotes;
-            TBStorage.setCache('Utils', 'noteCache', cachedNotes);
+            setCache('Utils', 'noteCache', cachedNotes);
 
             // TODO: don't swallow errors
             await saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`).catch(() => {});
@@ -1212,8 +1214,8 @@ async function getUserNotes (subreddit, forceSkipCache) {
     }
 
     // Check cache (if not skipped)
-    const cachedNotes = await TBStorage.getCache('Utils', 'noteCache', {});
-    const cachedSubsWithNoNotes = await TBStorage.getCache('Utils', 'noNotes', []);
+    const cachedNotes = await getCache('Utils', 'noteCache', {});
+    const cachedSubsWithNoNotes = await getCache('Utils', 'noNotes', []);
     if (!forceSkipCache) {
         if (cachedNotes[subreddit] !== undefined) {
             self.log('notes found in cache');
@@ -1235,21 +1237,21 @@ async function getUserNotes (subreddit, forceSkipCache) {
     }
     if (resp === TBApi.NO_WIKI_PAGE) {
         cachedSubsWithNoNotes.push(subreddit);
-        await TBStorage.setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
+        await setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
 
         throw new Error(TBApi.NO_WIKI_PAGE);
     }
     // No notes exist in wiki page
     if (resp.length < 1) {
         cachedSubsWithNoNotes.push(subreddit);
-        await TBStorage.setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
+        await setCache('Utils', 'noNotes', cachedSubsWithNoNotes);
 
         self.log('Usernotes read error: wiki empty');
         throw new Error('wiki empty');
     }
 
     // Success
-    TBStorage.purifyObject(resp);
+    purifyObject(resp);
     self.log('We have notes!');
     const notes = convertNotes(resp, subreddit);
     if (!notes) {
@@ -1258,7 +1260,7 @@ async function getUserNotes (subreddit, forceSkipCache) {
 
     // We have notes, cache them and return them.
     cachedNotes[subreddit] = notes;
-    await TBStorage.setCache('Utils', 'noteCache', cachedNotes);
+    await setCache('Utils', 'noteCache', cachedNotes);
     return notes;
 
     // Inflate notes from the database, converting between versions if necessary.
@@ -1285,7 +1287,7 @@ async function getUserNotes (subreddit, forceSkipCache) {
                         try {
                             await saveUserNotes(subreddit, notes, `Updated notes to schema v${TBCore.notesSchema}`);
                             TBui.textFeedback('Notes saved!', TBui.FEEDBACK_POSITIVE);
-                            await TBStorage.clearCache();
+                            await clearCache();
                             window.location.reload();
                         } catch (error) {
                             // TODO: do something with this
@@ -1361,9 +1363,9 @@ async function saveUserNotes (sub, notes, reason) {
     }
 
     // Update cached notes with new notes object for this subreddit
-    TBStorage.getCache('Utils', 'noteCache', {}).then(async cachedNotes => {
+    getCache('Utils', 'noteCache', {}).then(async cachedNotes => {
         cachedNotes[sub] = notes;
-        await TBStorage.setCache('Utils', 'noteCache', cachedNotes);
+        await setCache('Utils', 'noteCache', cachedNotes);
     });
 
     // Deconvert notes to wiki format

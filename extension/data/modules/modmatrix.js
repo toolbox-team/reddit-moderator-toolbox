@@ -4,8 +4,8 @@ import SnuOwnd from 'snuownd';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {purify, purifyObject} from '../util/purify.js';
 
 const self = new Module({
     name: 'Mod Log Matrix',
@@ -253,7 +253,7 @@ self.renderMatrix = function () {
 
         for (let i = 0; i < subredditNames.length; i++) {
             TBApi.getJSON(`/r/${subredditNames[i]}/about/moderators.json`).then(moderatorData => {
-                TBStorage.purifyObject(moderatorData);
+                purifyObject(moderatorData);
                 for (let j = 0; j < moderatorData.data.children.length; j++) {
                     $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
                 }
@@ -483,7 +483,7 @@ self.getActions = function (callback) {
         self.processData(this.dataCache[cacheKey], callback);
     } else {
         TBApi.getJSON(url, requestData).then(response => {
-            TBStorage.purifyObject(response);
+            purifyObject(response);
             self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
             const data = response.data;
             self.processData(data, callback);
@@ -659,7 +659,7 @@ self.processData = function (data, callback) {
         const lastEntryDate = new Date(self.lastEntry.created_utc * 1000);
         const firstEntryDate = new Date(self.firstEntry.created_utc * 1000);
         $('#mod-matrix-statistics').html(
-            TBStorage.purify(
+            purify(
                 `showing <strong>${self.total} actions</strong> between <strong title="${lastEntryDate}">${lastEntryDate.toDateString().toLowerCase()}</strong> and <strong title="${firstEntryDate}">${firstEntryDate.toDateString().toLowerCase()}</strong> ${
                     errored ? '(<span style=\'color:red\'>error occured</span>)' : ''
                 } | <a id="exporttocsv">export table to CSV</a>`,
@@ -819,7 +819,7 @@ function init () {
         TBApi.getJSON(modlogUrl, {
             raw_json: 1,
         }).then(result => {
-            TBStorage.purifyObject(result);
+            purifyObject(result);
             lastAfter = result.data.after;
             const $modActions = $('.modactionlisting');
             $modActions.addClass('tb-comments-loaded');
@@ -830,7 +830,7 @@ function init () {
                     );
 
                     // Render string markdown to HTML first.
-                    const renderedMarkdown = TBStorage.purify(parser.render(child.data.target_body));
+                    const renderedMarkdown = purify(parser.render(child.data.target_body));
 
                     // Put it in a template.
                     const comment = `

@@ -1,16 +1,18 @@
 import {map, page, pipeAsync} from 'iter-ops';
 import $ from 'jquery';
 import {useEffect, useRef, useState} from 'react';
+import {Provider} from 'react-redux';
 
 import {useFetched, useSetting} from '../hooks.ts';
+import store from '../store/index.ts';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
-import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
+import {setSettingAsync} from '../util/settings.ts';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
 import {
@@ -333,6 +335,8 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
             emptyContent={<p>No notes</p>}
             pages={pipeAsync(
                 // fetch mod notes that match this tab
+                // TODO: can we memoize or cache this or something to make the
+                //       popup contents not flash when other state is changed
                 getAllModNotes(subreddit, user, noteFilter),
                 // group into pages of 20 items each
                 page(20),
@@ -377,8 +381,6 @@ function ModNotesPopup ({
     user,
     subreddit,
     contextID,
-    defaultTabName,
-    defaultNoteLabel,
     initialPosition,
     onClose,
 }) {
@@ -396,6 +398,9 @@ function ModNotesPopup ({
             content: <ModNotesPager user={user} subreddit={subreddit} filter='MOD_ACTION' />,
         },
     ];
+
+    const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
+    const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
 
     let defaultTabIndex = 0;
     if (defaultTabName === 'notes') {
@@ -542,10 +547,6 @@ function NoteTableRow ({note, onDelete}) {
 }
 
 const ModNotesUserRoot = ({user, subreddit, contextID}) => {
-    // Get settings
-    const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
-    const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
-
     // Fetch the latest note for the user
     const note = useFetched(getLatestModNote(subreddit, user));
 
@@ -586,8 +587,6 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                     user={user}
                     subreddit={subreddit}
                     contextID={contextID}
-                    defaultTabName={defaultTabName}
-                    defaultNoteLabel={defaultNoteLabel}
                     initialPosition={initialPosition}
                     onClose={hidePopup}
                 />,
@@ -658,11 +657,13 @@ export default new Module({
             return;
         }
         const badgeRoot = reactRenderer(
-            <ModNotesUserRoot
-                user={author}
-                subreddit={subreddit}
-                contextID={contextID}
-            />,
+            <Provider store={store}>
+                <ModNotesUserRoot
+                    user={author}
+                    subreddit={subreddit}
+                    contextID={contextID}
+                />
+            </Provider>,
         );
         badgeRoot.classList.add('tb-modnote-badge-react-root');
         $target.append(badgeRoot);

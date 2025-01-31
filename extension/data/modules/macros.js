@@ -4,8 +4,8 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {purify} from '../util/purify.js';
 
 export default new Module({
     name: 'Mod Macros',
@@ -390,7 +390,7 @@ export default new Module({
 
                     // Render markdown and to be extra sure put it through purify to prevent possible issues with
                     // people pasting malicious input on advice of shitty people.
-                    const renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
+                    const renderedHTML = purify(TBHelpers.parser.render(e.target.value));
                     $previewArea.html(`
                     <h3 class="tb-preview-heading">Preview</h3>
                     <div class="tb-comment-body">

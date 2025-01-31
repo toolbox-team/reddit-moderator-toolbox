@@ -6,7 +6,8 @@ import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
 import TBLog from './tblog';
-import * as TBStorage from './tbstorage.js';
+import {getCache, setCache} from './util/cache.js';
+import {purifyObject} from './util/purify.js';
 
 const logger = TBLog('TBApi');
 
@@ -193,8 +194,8 @@ export const apiOauthDELETE = (endpoint: string, query: QueryParams) =>
 const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
     try {
         const data = await getJSON('/api/me.json');
-        TBStorage.purifyObject(data);
-        TBStorage.setCache('Utils', 'userDetails', data);
+        purifyObject(data);
+        setCache('Utils', 'userDetails', data);
         return data;
     } catch (error) {
         // 504 Gateway Timeout errors can be retried
@@ -207,7 +208,7 @@ const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
     }
 })()
     // If getting details from API fails, fall back to the cached value (if any)
-    .catch(() => TBStorage.getCache('Utils', 'userDetails'));
+    .catch(() => getCache('Utils', 'userDetails'));
 
 /** Gets details about the current user from `/api/me.json`. */
 export const getUserDetails = () => userDetailsPromise;
@@ -445,7 +446,7 @@ export interface BanState {
 export const getBanState = async (subreddit: string, user: string) => {
     // Fetch ban info for just this one user
     const data = await getJSON(`/r/${subreddit}/about/banned/.json`, {user});
-    TBStorage.purifyObject(data);
+    purifyObject(data);
     // This API sometimes returns weird things if the user isn't banned, so we
     // use .find() to ensure `undefined` is returned if we don't get information
     // about the right user
@@ -833,7 +834,7 @@ export const aboutUser = async (user: string) =>
     getJSON(`/user/${user}/about.json`, {
         uh: await getModhash(),
     }).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response;
     });
 
@@ -846,7 +847,7 @@ export const getLastActive = async (user: string) =>
     getJSON(`/user/${user}.json?limit=1&sort=new`, {
         uh: await getModhash(),
     }).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response.data.children[0].data.created_utc;
     }).catch(error => {
         throw error.responseText;
@@ -861,7 +862,7 @@ export const getRules = async (sub: string) =>
     getJSON(`/r/${sub}/about/rules.json`, {
         uh: await getModhash(),
     }).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response;
     });
 
@@ -887,7 +888,7 @@ export const getModNotes = ({subreddit, user, filter, before}: {
         before,
         limit: '100',
     }).then(response => response.json()).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return {
             notes: response.mod_notes,
             startCursor: response.start_cursor,
@@ -910,7 +911,7 @@ export const getRecentModNotes = (subreddits: string[], users: string[]) =>
         subreddits: subreddits.join(','),
         users: users.join(','),
     }).then(response => response.json()).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response.mod_notes;
     });
 

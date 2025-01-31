@@ -32,6 +32,9 @@
         "no-implied-eval": "error",
         "no-return-await": "error",
         "no-sequences": "error",
+        "no-unused-vars": ["error", {
+            "destructuredArrayIgnorePattern": "^_"
+        }],
         "no-var": "error",
         // these comment markers fail CI (notes to self in code that need to be
         // resolved before a PR can be merged)

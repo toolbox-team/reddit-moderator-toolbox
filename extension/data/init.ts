@@ -28,17 +28,18 @@ import 'codemirror/mode/yaml/yaml.js';
 
 import './tbplugins.js';
 
+import AppRoot from './AppRoot';
+
 import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
 import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
 import TBLog from './tblog';
 import TBModule from './tbmodule.jsx';
-import * as TBStorage from './tbstorage.js';
-
-import AppRoot from './AppRoot';
+import {getCache, setCache} from './util/cache';
 import {documentInteractive} from './util/dom';
 import {isUserLoggedInQuick} from './util/platform';
+import {getSettingAsync, setSettingAsync, updateSettings} from './util/settings';
 import {reactRenderer} from './util/ui_interop';
 
 import Achievements from './modules/achievements.js';
@@ -161,12 +162,12 @@ async function checkLoadConditions (tries = 3) {
 
     // Write a setting and read back its value, if this fails something is wrong
     let echoValue = Math.random();
-    let echoResult: number;
     try {
-        echoResult = await TBStorage.setSettingAsync('Utils', 'echoTest', echoValue);
+        await setSettingAsync('Utils', 'echoTest', echoValue);
     } catch (error) {
         throw new Error('Failed to write to settings', {cause: error});
     }
+    const echoResult = await getSettingAsync('Utils', 'echoTest');
     if (echoResult !== echoValue) {
         throw new Error(`Settings read/write inconsistent: expected ${echoValue}, received ${echoResult}`);
     }
@@ -184,11 +185,11 @@ async function doSettingsUpdates () {
     const currentUser = await TBApi.getCurrentUser();
     let lastVersion = await TBCore.getLastVersion();
 
-    const cacheName = await TBStorage.getCache('Utils', 'cacheName', '');
+    const cacheName = await getCache('Utils', 'cacheName', '');
 
     // Update cache if we're logged in as someone else
     if (cacheName !== currentUser) {
-        await TBStorage.setCache(SETTINGS_NAME, 'cacheName', currentUser);
+        await setCache(SETTINGS_NAME, 'cacheName', currentUser);
 
         // Force refresh of timed cache
         browser.runtime.sendMessage({
@@ -199,26 +200,26 @@ async function doSettingsUpdates () {
     // Extra checks on old faults
     if (typeof lastVersion !== 'number') {
         lastVersion = parseInt(lastVersion);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', lastVersion);
+        await setSettingAsync(SETTINGS_NAME, 'lastVersion', lastVersion);
     }
 
-    let shortLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'shortLength', 15);
-    let longLength = await TBStorage.getSettingAsync(SETTINGS_NAME, 'longLength', 45);
+    let shortLength = await getSettingAsync(SETTINGS_NAME, 'shortLength', 15);
+    let longLength = await getSettingAsync(SETTINGS_NAME, 'longLength', 45);
 
     if (typeof shortLength !== 'number') {
         shortLength = parseInt(shortLength);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'shortLength', shortLength);
+        await setSettingAsync(SETTINGS_NAME, 'shortLength', shortLength);
     }
 
     if (typeof longLength !== 'number') {
         longLength = parseInt(longLength);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'longLength', longLength);
+        await setSettingAsync(SETTINGS_NAME, 'longLength', longLength);
     }
 
     // First run changes for all releases.
     if (TBCore.shortVersion > lastVersion) {
         // These need to happen for every version change
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'lastVersion', TBCore.shortVersion); // set last version to this version.
+        await setSettingAsync(SETTINGS_NAME, 'lastVersion', TBCore.shortVersion); // set last version to this version.
         TBCore.getToolboxDevs(); // always repopulate tb devs for each version change
 
         // This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release.
@@ -226,19 +227,19 @@ async function doSettingsUpdates () {
         // Start: version changes.
         // reportsThreshold should be 0 by default
         if (lastVersion < 50101) {
-            await TBStorage.setSettingAsync('QueueTools', 'reportsThreshold', 0);
+            await setSettingAsync('QueueTools', 'reportsThreshold', 0);
         }
 
         // Clean up removed settings - it doesn't really matter what version
         // we're coming from, we just want to make sure these removed settings
         // aren't cluttering up storage
-        await Promise.all([
+        const keysToDelete = [
             // Some new modmail settings were removed in 5.7.0
-            TBStorage.setSettingAsync('NewModMail', 'searchhelp', undefined),
-            TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined),
+            'Toolbox.NewModMail.searchhelp',
+            'Toolbox.NewModMail.checkForNewMessages',
 
             // Beta mode setting removed in favor of dedicated beta builds #917
-            TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined),
+            'Toolbox.Utils.betaMode',
 
             // (old) modmail pro removed in v7, RIP old modmail
             ...[
@@ -264,26 +265,27 @@ async function doSettingsUpdates () {
                 'entryProcessRate',
                 'chunkProcessSize',
                 'twoPhaseProcessing',
-            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)),
+            ].map(setting => `Toolbox.ModMail.${setting}`),
 
             // new reddit is dead, long live shreddit i guess. the setting to
             // skip the new reddit lightbox when viewing comments no longer
             // applies to anything, remove it
-            TBStorage.setSettingAsync('Comments', 'commentsAsFullPage', undefined),
-        ]);
+            'Toolbox.Comments.commentsAsFullPage',
+        ];
+        await updateSettings(Object.fromEntries(keysToDelete.map(key => [key, undefined])));
 
         // End: version changes.
 
         // This is a super extra check to make sure the wiki page for settings export really is private.
-        const settingSubEnabled = await TBStorage.getSettingAsync('Utils', 'settingSub', '');
+        const settingSubEnabled = await getSettingAsync('Utils', 'settingSub', '');
         if (settingSubEnabled) {
             TBCore.setWikiPrivate('tbsettings', settingSubEnabled, false);
         }
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
-        // TBStorage.setSetting('Notifier', 'modmailCount', 0);
-        await TBStorage.setSettingAsync(SETTINGS_NAME, 'debugMode', false);
+        // await setSettingAsync('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
+        // await setSettingAsync('Notifier', 'modmailCount', 0);
+        await setSettingAsync(SETTINGS_NAME, 'debugMode', false);
     }
 }
 
@@ -300,7 +302,7 @@ async function doSettingsUpdates () {
     try {
         await checkLoadConditions();
     } catch (error) {
-        logger.error('Load condition not met:', (error as Error).message);
+        logger.error('Load condition not met:', error);
         return;
     }
 

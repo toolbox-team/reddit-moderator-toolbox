@@ -4,16 +4,18 @@ import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
 
 import * as TBApi from './tbapi.ts';
+import {icons} from './tbconstants.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
-import * as TBStorage from './tbstorage.js';
 import {onDOMAttach} from './util/dom.ts';
+import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
+import {purify, purifyObject} from './util/purify.js';
+import {getSettingAsync} from './util/settings.ts';
 import {reactRenderer} from './util/ui_interop.tsx';
 
+import store from './store/index.ts';
 import {showTextFeedback, TextFeedbackKind, TextFeedbackLocation} from './store/textFeedbackSlice.ts';
 
-import store from './store/index.ts';
-import {icons} from './tbconstants.ts';
 export {icons};
 
 const $body = $('body');
@@ -32,10 +34,10 @@ let contextMenuAttention = 'open';
 let contextMenuClick = false;
 
 (async () => {
-    subredditColorSalt = await TBStorage.getSettingAsync('QueueTools', 'subredditColorSalt', 'PJSalt');
-    contextMenuLocation = await TBStorage.getSettingAsync('GenSettings', 'contextMenuLocation', 'left');
-    contextMenuAttention = await TBStorage.getSettingAsync('GenSettings', 'contextMenuAttention', 'open');
-    contextMenuClick = await TBStorage.getSettingAsync('GenSettings', 'contextMenuClick', false);
+    subredditColorSalt = await getSettingAsync('QueueTools', 'subredditColorSalt', 'PJSalt');
+    contextMenuLocation = await getSettingAsync('GenSettings', 'contextMenuLocation', 'left');
+    contextMenuAttention = await getSettingAsync('GenSettings', 'contextMenuAttention', 'open');
+    contextMenuClick = await getSettingAsync('GenSettings', 'contextMenuClick', false);
 })();
 
 // Icons NOTE: string line length is ALWAYS 152 chars
@@ -357,7 +359,7 @@ export function overlay ({
             tab.disabled = typeof tab.disabled === 'boolean' ? tab.disabled : false;
             tab.help_page = typeof tab.help_page !== 'undefined' ? tab.help_page : '';
 
-            if (!TBStorage.getSetting('Utils', 'advancedMode', false) && tab.advanced) {
+            if (!getSettingSync('Utils', 'advancedMode', false) && tab.advanced) {
                 continue;
             }
 
@@ -966,13 +968,13 @@ export function tbRedditEvent ($elements) {
  * @returns {object} jquery object with the build submission.
  */
 export function makeSubmissionEntry (submission, submissionOptions) {
-    TBStorage.purifyObject(submission);
+    purifyObject(submission);
     // Misc
     const canModsubmission = submission.data.can_mod_post;
 
     // submission basis (author, body, time)
     const submissionAuthor = submission.data.author;
-    const submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html); // html string
+    const submissionSelfTextHTML = purify(submission.data.selftext_html); // html string
     const submissionCreatedUTC = submission.data.created_utc; // unix epoch
     const submissionPermalink = TBCore.link(submission.data.permalink);
     const submissionSubreddit = submission.data.subreddit;
@@ -1317,13 +1319,13 @@ export function makeSubmissionEntry (submission, submissionOptions) {
  * @returns {object} jquery object with the build comment.
  */
 export function makeSingleComment (comment, commentOptions = {}) {
-    TBStorage.purifyObject(comment);
+    purifyObject(comment);
     // Misc
     const canModComment = comment.data.can_mod_post;
 
     // Comment basis (author, body, time)
     const commentAuthor = comment.data.author;
-    const commentBodyHTML = TBStorage.purify(comment.data.body_html); // html string
+    const commentBodyHTML = purify(comment.data.body_html); // html string
     // commentMarkdownBody = comment.data.body, // markdown string
     // commentCreated = comment.data.created, // unix epoch
     const commentCreatedUTC = comment.data.created_utc; // unix epoch
@@ -2180,7 +2182,7 @@ $body.on('click', '.tb-load-more-comments', function () {
         const fetchUrl = `/${threadPermalink}${id}.json?limit=1500`;
         // Lets get the comments.
         TBApi.getJSON(fetchUrl, {raw_json: 1}).then(data => {
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             const $comments = makeCommentThread(data[1].data.children, commentOptions);
             window.requestAnimationFrame(() => {
                 $thisMoreComments.before($comments.html());

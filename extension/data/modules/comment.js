@@ -5,8 +5,9 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {purifyObject} from '../util/purify.js';
+
 import {modbarExists} from './modbar.js';
 
 const self = new Module({
@@ -433,7 +434,7 @@ function init ({
         TBui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
         // Lets get the comments.
         const data = await TBApi.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
-        TBStorage.purifyObject(data);
+        purifyObject(data);
         // put the json through our deconstructor.
         data[1].isreply = false;
         parseComments(data[1]);
@@ -509,7 +510,7 @@ function init ({
 
             // Get the context
             TBApi.getJSON(contextUrl, {raw_json: 1}).then(data => {
-                TBStorage.purifyObject(data);
+                purifyObject(data);
 
                 // data[1] is a listing containing comments
                 // if there are no comments in the listing, the thing we're trying to get context for has been

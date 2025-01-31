@@ -6,13 +6,6 @@ import TBLog from './tblog.ts';
 
 const logger = TBLog('TBStorage');
 
-/**
- * The current subdomain (NOT full domain).
- * @type {string}
- */
-export const domain = window.location.hostname.split('.')[0];
-logger.debug(`Domain: ${domain}`);
-
 // Setting storage stuff
 
 /** @typedef {import('./store/settingsSlice.ts').SettingsObject} SettingsObject */

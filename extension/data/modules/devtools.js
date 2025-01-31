@@ -6,6 +6,7 @@ import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
 import {purifyObject} from '../util/purify.js';
 
 export default new Module({
@@ -84,7 +85,7 @@ export default new Module({
         TBui.contextTrigger('tb-testCommentUI-link', {
             addTrigger: true,
             triggerText: 'Show ze overlay!',
-            triggerIcon: TBui.icons.overlay,
+            triggerIcon: icons.overlay,
         });
     }
 

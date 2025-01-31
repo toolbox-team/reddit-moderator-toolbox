@@ -7,6 +7,7 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {clearCache, getCache, setCache} from '../util/cache.ts';
+import {icons} from '../util/icons.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 
@@ -488,7 +489,7 @@ function startUsernotes ({maxChars, showDate, onlyshowInhover}) {
                                 ${typeSpan}
                                 <span class="note-text">${noteString}</span>
                             </td>
-                            <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${TBui.icons.delete}</i></td>
+                            <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${icons.delete}</i></td>
                         </tr>
                     `);
                     $noteRow.find('td:first-child').append($noteTime);
@@ -722,7 +723,7 @@ function startUsernotesManager ({unManagerLink}) {
                     TBui.contextTrigger('tb-un-config-link', {
                         addTrigger: true,
                         triggerText: 'edit usernotes',
-                        triggerIcon: TBui.icons.usernote,
+                        triggerIcon: icons.usernote,
                         title: `edit usernotes for /r/${subreddit}`,
                         dataAttributes: {
                             subreddit,
@@ -1019,8 +1020,8 @@ function startUsernotesManager ({unManagerLink}) {
         const $userContentTemplate = $(`
                 <div class="tb-un-user" data-user="NONE">
                     <div class="tb-un-user-header">
-                        <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">${TBui.icons.refresh}</a>
-                        <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">${TBui.icons.delete}</a>
+                        <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">${icons.refresh}</a>
+                        <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">${icons.delete}</a>
                         <span class="user">
                             <a href="${TBCore.link('/u/NONE')}">/u/NONE</a>
                         </span>
@@ -1048,7 +1049,7 @@ function startUsernotesManager ({unManagerLink}) {
 
                 const $note = $(`
                         <div class="tb-un-note-details">
-                            <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${TBui.icons.delete}</a>
+                            <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user.name}" href="javascript:;">${icons.delete}</a>
                             <span class="note">
                                 <span class="note-type" ${
                     color.key !== 'none' ? `style="color:${TBHelpers.htmlEncode(color.color)}"` : ''

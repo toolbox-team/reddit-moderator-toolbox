@@ -6,6 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
 import {purifyObject} from '../util/purify.js';
 
 import {modbarExists} from './modbar.js';
@@ -100,19 +101,19 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
             const $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
             if (removedCounter === 1) {
-                $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]`);
+                $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[1]`);
             } else if (removedCounter > 1) {
                 $tbToggle.html(
-                    `<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]`,
+                    `<span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[${removedCounter.toString()}]`,
                 );
             }
         } else if (removedCounter === 1) {
             $('#tb-bottombar').find('#tb-toolbarcounters').prepend(
-                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]</a>`,
+                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[1]</a>`,
             );
         } else if (removedCounter > 1) {
             $('#tb-bottombar').find('#tb-toolbarcounters').prepend(
-                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]</a>`,
+                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[${removedCounter.toString()}]</a>`,
             );
         }
 
@@ -328,7 +329,7 @@ function init ({
                 addTrigger: true,
                 title: 'View comments for this thread in chronological flat view.',
                 triggerText: 'comment flat view',
-                triggerIcon: TBui.icons.list,
+                triggerIcon: icons.list,
             });
         } else {
             TBui.contextTrigger('tb-flatview-link', {addTrigger: false});

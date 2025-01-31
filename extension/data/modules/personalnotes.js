@@ -5,6 +5,7 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
 
 import {modbarExists} from './modbar.js';
 
@@ -45,7 +46,7 @@ export default new Module({
     const noteListTemplate = `
             <li>
                 <a href="javascript:void(0)" class="tb-personal-note-delete tb-icons tb-icons-negative" data-wiki="{{name}}">
-                    ${TBui.icons.delete}
+                    ${icons.delete}
                 </a>
                 <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="{{name}}">
                     {{name}}

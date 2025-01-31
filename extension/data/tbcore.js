@@ -3,10 +3,10 @@ import browser from 'webextension-polyfill';
 
 import * as TBApi from './tbapi.ts';
 import {getModhash} from './tbapi.ts';
-import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
 import {getCache, setCache} from './util/cache.ts';
+import {icons} from './util/icons.ts';
 import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 import {currentPlatform, RedditPlatform} from './util/platform.ts';
 import {purifyObject} from './util/purify.js';

@@ -3,6 +3,7 @@ import $ from 'jquery';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
 import {currentPlatform, RedditPlatform} from '../util/platform.ts';
 import {purify} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
@@ -135,7 +136,7 @@ export default new Module({
                         content: `
                                 <div class="tb-queue-options">
                                     <input type="text" class="tb-input tb-queue-url">
-                                    <span class="tb-icons tb-queue-reload">${TBui.icons.refresh}</span>
+                                    <span class="tb-icons tb-queue-reload">${icons.refresh}</span>
                                 </div>
                             `,
                         footer: '',
@@ -146,7 +147,7 @@ export default new Module({
                         content: `
                                 <div class="tb-queue-options">
                                     <input type="text" class="tb-input tb-queue-url">
-                                    <span class="tb-icons tb-queue-reload">${TBui.icons.refresh}</span>
+                                    <span class="tb-icons tb-queue-reload">${icons.refresh}</span>
                                 </div>
                             `,
                         footer: '',
@@ -157,7 +158,7 @@ export default new Module({
                         content: `
                                 <div class="tb-queue-options">
                                     <input type="text" class="tb-input tb-queue-url">
-                                    <span class="tb-icons tb-queue-reload">${TBui.icons.refresh}</span>
+                                    <span class="tb-icons tb-queue-reload">${icons.refresh}</span>
                                 </div>
                             `,
                         footer: '',
@@ -168,7 +169,7 @@ export default new Module({
                         content: `
                                 <div class="tb-queue-options">
                                     <input type="text" class="tb-input tb-queue-url">
-                                    <span class="tb-icons tb-queue-reload">${TBui.icons.refresh}</span>
+                                    <span class="tb-icons tb-queue-reload">${icons.refresh}</span>
                                 </div>
                             `,
                         footer: '',
@@ -179,7 +180,7 @@ export default new Module({
                         content: `
                                 <div class="tb-queue-options">
                                     <input type="text" class="tb-input tb-queue-url">
-                                    <span class="tb-icons tb-queue-reload">${TBui.icons.refresh}</span>
+                                    <span class="tb-icons tb-queue-reload">${icons.refresh}</span>
                                 </div>
                             `,
                         footer: '',

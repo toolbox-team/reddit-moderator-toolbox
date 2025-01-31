@@ -1,4 +1,4 @@
-import {icons} from '../../tbconstants';
+import {icons} from '../../util/icons';
 import {classes} from '../../util/ui_interop';
 import css from './Icon.module.css';
 

@@ -8,6 +8,7 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
+import {icons} from '../util/icons.ts';
 
 // Error messages
 const STATUS_DEFAULT_TEXT = 'saving...';
@@ -667,8 +668,8 @@ export default new Module({
                                 </span>
                             </td>
                             <td class="removal-reasons-sort-buttons">
-                                <a href="javascript:;" class="tb-live-sort-up tb-icons">${TBui.icons.sortUp}</a>
-                                <a href="javascript:;" class="tb-live-sort-down tb-icons">${TBui.icons.sortDown}</a>
+                                <a href="javascript:;" class="tb-live-sort-up tb-icons">${icons.sortUp}</a>
+                                <a href="javascript:;" class="tb-live-sort-down tb-icons">${icons.sortDown}</a>
                             </td>
                         </tr>
                     `);

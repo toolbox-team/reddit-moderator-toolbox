@@ -50,39 +50,6 @@ export const updateSettings = async settings => {
     });
 };
 
-// Listen for updated settings and notify other places that care
-//
-// TODO: remove all of this. Everything should be either subscribing to the
-//       Redux store and getting settings that way, or listening to
-//       `browser.storage.onChanged`
-browser.runtime.onMessage.addListener(message => {
-    // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
-    if (message.action === 'tb-settings-update') {
-        // gonna be a long time before we can get rid of this i'm afraid
-        const $body = $('body');
-        $body.find('.tb-window-footer').addClass('tb-footer-save-warning');
-        $('body').find('.tb-personal-settings .tb-save').before(
-            '<div class="tb-save-warning">Settings have been saved in a different browser tab! Saving from this window will overwrite those settings.</div>',
-        );
-    }
-
-    // Single setting. Usually reserved for background operations as such we'll simply update it in the backround.
-    if (message.action === 'tb-single-setting-update') {
-        const keySplit = message.payload.key.split('.');
-        const detailObject = {
-            module: keySplit[1],
-            setting: keySplit[2],
-            value: message.payload.value,
-        };
-
-        window.dispatchEvent(
-            new CustomEvent('tbSingleSettingUpdate', {
-                detail: detailObject,
-            }),
-        );
-    }
-});
-
 /**
  * Generates an anonymized version of the settings object, with some sensitive
  * settings omitted and other settings represented differently.

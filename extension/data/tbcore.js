@@ -512,21 +512,26 @@ export const alert = ({message, noteID, showClose}) =>
         }
         $noteDiv.appendTo($body);
 
-        // TODO: this is the last remaining use of this event and i would very
-        //       much like to remove it from the universe
-        window.addEventListener('tbSingleSettingUpdate', event => {
-            const settingDetail = event.detail;
-            if (
-                settingDetail.module === 'Utils' && settingDetail.setting === 'seenNotes'
-                && settingDetail.value.includes(noteID)
-            ) {
-                $noteDiv.remove();
-                resolve(false);
+        const seenNotesChangeListener = (changes, storageArea) => {
+            if (storageArea !== 'local') {
                 return;
             }
-        });
+            for (const [key, {newValue}] of Object.entries(changes)) {
+                if (key !== 'Toolbox.Utils.seenNotes') {
+                    continue;
+                }
+                if (newValue.includes(noteID)) {
+                    $noteDiv.remove();
+                    resolve(false);
+                    return;
+                }
+            }
+        };
+
+        browser.storage.onChanged.addListener(seenNotesChangeListener);
 
         $noteDiv.click(e => {
+            browser.storage.onChanged.removeListener(seenNotesChangeListener);
             $noteDiv.remove();
             if (e.target.className === 'note-close') {
                 resolve(false);

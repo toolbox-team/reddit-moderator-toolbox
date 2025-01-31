@@ -22,7 +22,7 @@ import {messageHandlers} from '../messageHandling';
 const settingsWriteMutex = new Mutex();
 
 /** Reads settings from storage */
-const getSettings = async () => (await browser.storage.local.get('tbsettings')).tbsettings;
+const getSettings = async () => (await browser.storage.local.get('tbsettings')).tbsettings ?? {};
 
 /** Writes a full settings object into storage */
 const writeSettings = newSettings => browser.storage.local.set({tbsettings: newSettings});

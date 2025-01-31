@@ -5,9 +5,10 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {clearCache} from '../util/cache.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
+import {purify, purifyObject} from '../util/purify.js';
 
 const self = new Module({
     name: 'toolbox Config',
@@ -447,7 +448,7 @@ const self = new Module({
                 showConfig(subreddit, config);
             } else {
                 config = resp;
-                TBStorage.purifyObject(config);
+                purifyObject(config);
                 if (TBCore.isConfigValidVersion(subreddit, config)) {
                     showConfig(subreddit, config);
                 } else {
@@ -486,7 +487,7 @@ const self = new Module({
                 $body.find('.edit_automoderator_config .error').hide();
             }
             self.log('clearing cache');
-            await TBStorage.clearCache();
+            await clearCache();
 
             TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
         }).catch(async err => {
@@ -497,7 +498,7 @@ const self = new Module({
 
                 const responseJSON = await err.response.json();
                 const saveError = responseJSON.special_errors[0];
-                $error.find('.errorMessage').html(TBStorage.purify(saveError));
+                $error.find('.errorMessage').html(purify(saveError));
 
                 TBui.textFeedback('Config not saved!', TBui.FEEDBACK_NEGATIVE);
             } else {
@@ -1100,7 +1101,7 @@ const self = new Module({
                     }
 
                     config = resp;
-                    TBStorage.purifyObject(config);
+                    purifyObject(config);
                     populateUsernoteTypes();
                 });
             } else {
@@ -1250,7 +1251,7 @@ const self = new Module({
                     }
 
                     config = resp;
-                    TBStorage.purifyObject(config);
+                    purifyObject(config);
                     removalReasonsContent();
                 });
             } else {
@@ -1345,7 +1346,7 @@ const self = new Module({
 
         const $removalReasonLabel = $removalContent.find('.removal-reason-label');
         $removalReasonLabel.html(
-            TBStorage.purify(
+            purify(
                 `<span><h3 class="removal-title">${TBHelpers.htmlEncode(reasonTitle)}</h3>${label}</span>`,
             ),
         );
@@ -1501,7 +1502,7 @@ const self = new Module({
                 }
 
                 config = resp;
-                TBStorage.purifyObject(config);
+                purifyObject(config);
                 removalReasonsEditContent();
             });
         } else {
@@ -1584,7 +1585,7 @@ const self = new Module({
                     }
 
                     config = resp;
-                    TBStorage.purifyObject(config);
+                    purifyObject(config);
                     modMacrosContent();
                 });
             } else {
@@ -1711,7 +1712,7 @@ const self = new Module({
         }
 
         const $modMacroLabel = $macroContent.find('.mod-macro-label');
-        $modMacroLabel.html(TBStorage.purify(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`));
+        $modMacroLabel.html(purify(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`));
 
         $modMacroLabel.show();
         $macroContent.find('.mod-macro-edit').hide();
@@ -1882,7 +1883,7 @@ const self = new Module({
     // When the import button is clicked on the domain tags thing.
     $body.on('click', '.domain_tags .import', async () => {
         const json = await TBApi.getJSON(`/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`);
-        TBStorage.purifyObject(json);
+        purifyObject(json);
         if (json.data.content_md) {
             const tags = JSON.parse(json.data.content_md).domainTags;
             if (tags) {

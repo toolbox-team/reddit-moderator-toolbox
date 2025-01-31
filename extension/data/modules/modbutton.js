@@ -5,8 +5,9 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {purifyObject} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 5000;
@@ -46,7 +47,7 @@ const self = new Module({
         {
             id: 'onlyshowInhover',
             type: 'boolean',
-            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            default: () => getSettingAsync('GenSettings', 'onlyshowInhover', true),
             hidden: true,
         },
         {
@@ -374,7 +375,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                         type: 'banuser',
                         limit: '1000',
                     });
-                    TBStorage.purifyObject(logData);
+                    purifyObject(logData);
                     const logged = logData.data.children;
                     for (let i = 0; i < logged.length; i++) {
                         if (logged[i].data.target_fullname === user_fullname) {
@@ -716,7 +717,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             return;
         }
 
-        TBStorage.purifyObject(userFlairInfo);
+        purifyObject(userFlairInfo);
         $textinput.val(userFlairInfo.current.flair_text);
         $classinput.val(userFlairInfo.current.flair_css_class);
 

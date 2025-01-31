@@ -3,7 +3,7 @@ import $ from 'jquery';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import {getSettingAsync} from '../tbstorage.js';
+import {getSettingAsync} from '../util/settings.ts';
 
 const self = new Module({
     name: 'Achievements',

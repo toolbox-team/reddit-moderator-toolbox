@@ -11,8 +11,8 @@ import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
-import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
+import {setSettingAsync} from '../util/settings.ts';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
 import {

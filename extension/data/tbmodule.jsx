@@ -7,8 +7,10 @@ import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
 import TBLog from './tblog.ts';
-import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';
+import {clearCache} from './util/cache.ts';
+import {purify, purifyObject} from './util/purify.js';
+import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 
 import css from './tbmodule.module.css';
 
@@ -21,7 +23,7 @@ const logger = TBLog('TBModule');
  * @returns {Promise<void>}
  */
 export async function exportSettings (subreddit) {
-    const settingsObject = await TBStorage.getSettings();
+    const settingsObject = await getSettings();
 
     // Transform from the normal setting storage format to the backup format
     const backupObject = Object.fromEntries(
@@ -41,8 +43,8 @@ export async function exportSettings (subreddit) {
 }
 
 /**
- * Pulls a settings backup from the `tbstorage` wiki page of the given subreddit
- * and writes it over the currently-stored settings.
+ * Pulls a settings backup from the `tbsettings` wiki page of the given
+ * subreddit and writes it over the currently-stored settings.
  * @param {string} subreddit Name of the subreddit to pull the backup from
  * @returns {Promise<void>}
  */
@@ -52,7 +54,7 @@ export async function importSettings (subreddit) {
         logger.log('Error loading wiki page');
         return;
     }
-    TBStorage.purifyObject(resp);
+    purifyObject(resp);
 
     if (resp['Utils.lastversion'] < 300) {
         logger.log('Cannot import from a toolbox version under 3.0');
@@ -72,7 +74,7 @@ export async function importSettings (subreddit) {
             .map(([key, value]) => [`Toolbox.${key}`, value]),
     );
 
-    await TBStorage.writeSettings(newSettings);
+    await writeSettings(newSettings);
 }
 
 const TBModule = {
@@ -83,7 +85,7 @@ const TBModule = {
     },
 
     init: async function tbInit () {
-        logger.debug('TBModule has TBStorage, loading modules');
+        logger.debug('loading modules');
         // Check if each module should be enabled, then call its initializer
         await Promise.all(TBModule.modules.map(async module => {
             // Don't do anything with modules the user has disabled
@@ -99,7 +101,7 @@ const TBModule = {
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
+            if (!await getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
                 // skip this module entirely
                 logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
                 return;
@@ -125,7 +127,7 @@ const TBModule = {
         const $body = $('body');
 
         // Get a current snapshot of settings which we can work with
-        const settingsObject = await TBStorage.getSettings();
+        const settingsObject = await getSettings();
 
         //
         // preload some generic variables
@@ -511,14 +513,14 @@ const TBModule = {
             settingsObject['Toolbox.Utils.debugMode'] = $('#debugMode').prop('checked');
             settingsObject['Toolbox.Utils.advancedMode'] = $('#advancedMode').prop('checked');
 
-            await TBStorage.setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
+            await setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
 
             // save cache settings.
             settingsObject['Toolbox.Utils.longLength'] = parseInt($('input[name=longLength]').val());
             settingsObject['Toolbox.Utils.shortLength'] = parseInt($('input[name=shortLength]').val());
 
             if ($('#clearcache').prop('checked')) {
-                TBStorage.clearCache();
+                clearCache();
             }
 
             $(settingsDialog).remove();
@@ -527,7 +529,7 @@ const TBModule = {
                 $('body').css('overflow', 'auto');
             }
 
-            TBStorage.writeSettings(settingsObject).then(
+            writeSettings(settingsObject).then(
                 () => {
                     TBui.textFeedback('Settings saved', TBui.FEEDBACK_POSITIVE);
                     setTimeout(() => {
@@ -557,13 +559,13 @@ const TBModule = {
             sub = TBHelpers.cleanSubredditName(sub);
 
             // Save the sub, first.
-            await TBStorage.setSettingAsync('Utils', 'settingSub', sub);
+            await setSettingAsync('Utils', 'settingSub', sub);
 
             if ($(e.target).hasClass('tb-settings-import')) {
                 try {
                     await importSettings(sub);
-                    await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                    await TBStorage.clearCache();
+                    await setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
+                    await clearCache();
                 } catch (error) {
                     log.error('Error importing settings:', error);
                     TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
@@ -577,8 +579,8 @@ const TBModule = {
             } else {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
                 await exportSettings(sub);
-                await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                await TBStorage.clearCache();
+                await setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
+                await clearCache();
                 window.location.reload();
             }
         });
@@ -606,12 +608,12 @@ const TBModule = {
 
             const $editSettings = $('.tb-edit-settings');
 
-            TBStorage.getSettings().then(settings => {
+            getSettings().then(settings => {
                 $editSettings.val(JSON.stringify(settings, null, 2));
             });
 
             $viewSettings.on('click', '.anonymize-settings', async () => {
-                const anonymizedSettings = await TBStorage.getAnonymizedSettings();
+                const anonymizedSettings = await getAnonymizedSettings();
                 $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
             });
         });
@@ -920,7 +922,7 @@ body {
                                 }
 
                                 const $a = $('<div>').attr('class', `achievement ${aClass}`);
-                                $a.append($('<p>').attr('class', 'title').html(TBStorage.purify(aTitle)));
+                                $a.append($('<p>').attr('class', 'title').html(purify(aTitle)));
                                 $a.append($('<p>').attr('class', 'description').text(aDescr));
                                 $list.append($a);
                             }
@@ -1256,13 +1258,16 @@ export class Module {
             throw new TypeError(`Module ${this.name} does not have a setting ${id} to get`);
         }
 
-        // TBStorage doesn't actually accept straight storage keys, so we have
-        // to split the key into a module name and the rest of the key
+        // The settings utils don't actually accept straight storage keys, so we
+        // have to split the key into a module name and the rest of the key
         const mod = setting.storageKey.split('.')[0];
-        const value = await TBStorage.getSettingAsync(mod, setting.storageKey.slice(mod.length + 1));
 
-        // TODO: TBStorage should return `undefined` instead of `null` for unset
-        //       settings, and this check should only be for `undefined`
+        // We don't use the `defaultVal` option here because for some reason we
+        // support defaults being functions, and we want to avoid running
+        // defaults that are functions unless we actually don't have another
+        // value - eagerly evaluating those could cause problems
+        const value = await getSettingAsync(mod, setting.storageKey.slice(mod.length + 1));
+
         if (value == null) {
             if (typeof setting.default === 'function') {
                 return setting.default();
@@ -1285,10 +1290,10 @@ export class Module {
             throw new TypeError(`Module ${this.name} does not have a setting ${id} to set`);
         }
 
-        // TBStorage doesn't actually accept straight storage keys, so we have
-        // to split the key into a module name and the rest of the key
+        // The settings utils don't actually accept straight storage keys, so we
+        // have to split the key into a module name and the rest of the key
         const mod = setting.storageKey.split('.')[0];
-        return TBStorage.setSettingAsync(mod, setting.storageKey.slice(mod.length + 1), value);
+        return setSettingAsync(mod, setting.storageKey.slice(mod.length + 1), value);
     }
 
     /**
@@ -1314,7 +1319,7 @@ export class Module {
         if (this.alwaysEnabled) {
             return true;
         }
-        return !!await TBStorage.getSettingAsync(this.id, 'enabled', this.enabledByDefault);
+        return !!await getSettingAsync(this.id, 'enabled', this.enabledByDefault);
     }
 
     /**
@@ -1329,6 +1334,6 @@ export class Module {
             throw new Error(`Cannot disable module ${this.id} which is always enabled`);
         }
 
-        return TBStorage.setSettingAsync(this.id, 'enabled', !!enable);
+        return setSettingAsync(this.id, 'enabled', !!enable);
     }
 }

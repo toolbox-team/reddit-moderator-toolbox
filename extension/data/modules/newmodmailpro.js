@@ -5,7 +5,8 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
+import {getCache, setCache} from '../util/cache.ts';
+import {purify} from '../util/purify.js';
 
 export default new Module({
     name: 'New Mod Mail Pro',
@@ -279,7 +280,7 @@ export default new Module({
 
                     // Render markdown and to be extra sure put it through purify to prevent possible issues with
                     // people pasting malicious input on advice of shitty people.
-                    let renderedHTML = TBStorage.purify(TBHelpers.parser.render(e.target.value));
+                    let renderedHTML = purify(TBHelpers.parser.render(e.target.value));
                     // Fix relative urls as new modmail uses a different subdomain.
                     renderedHTML = renderedHTML.replace(/href="\//g, 'href="https://www.reddit.com/');
 
@@ -356,14 +357,14 @@ export default new Module({
                         if (!$currentSourceBtn.closest('.Thread__message').has('.tb-source-field').length) {
                             let conversationInfo;
                             if (conversationCached) {
-                                conversationInfo = await TBStorage.getCache('NewModmailPro', 'current-conversation');
+                                conversationInfo = await getCache('NewModmailPro', 'current-conversation');
                             } else {
                                 // Fetch and store the conversation info in cache
                                 const currentID = event.detail.data.post.id;
                                 conversationInfo = await TBApi.apiOauthGET(`/api/mod/conversations/${currentID}`).then(
                                     r => r.json(),
                                 );
-                                TBStorage.setCache('NewModmailPro', 'current-conversation', conversationInfo);
+                                setCache('NewModmailPro', 'current-conversation', conversationInfo);
                                 conversationCached = true;
                             }
                             // Getting the body in markdown from selected message

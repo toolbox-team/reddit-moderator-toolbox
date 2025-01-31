@@ -6,8 +6,8 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {getCache, setCache} from '../util/cache.ts';
 
 // Error messages
 const STATUS_DEFAULT_TEXT = 'saving...';
@@ -696,7 +696,7 @@ export default new Module({
                 // Pre-fill reason input elements which have IDs.
                 $overlay.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
                     this.id = `reason-input-${data.subreddit}-${this.id}`;
-                    this.value = await TBStorage.getCache('RReasons', this.id, this.value);
+                    this.value = await getCache('RReasons', this.id, this.value);
                 });
             }
 
@@ -1152,7 +1152,7 @@ export default new Module({
         'change',
         '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]',
         function () {
-            TBStorage.setCache('RReasons', this.id, this.selectedIndex || this.value);
+            setCache('RReasons', this.id, this.selectedIndex || this.value);
         },
     );
 });

@@ -5,8 +5,8 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {purify, purifyObject} from '../util/purify.js';
 
 export default new Module({
     name: 'Comment Nuke',
@@ -105,7 +105,7 @@ export default new Module({
             });
 
         TBApi.getJSON(fetchURL, {raw_json: 1}).then(data => {
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             parseComments(data[1].data.children[0], postID, subreddit).then(() => {
                 TBui.longLoadSpinner(false);
                 $popup.find('.tb-nuke-feedback').text('Finished analyzing comments.');
@@ -113,7 +113,7 @@ export default new Module({
                 const removalChainLength = removalChain.length;
                 // Distinguished chain
                 const distinguishedCommentsLength = distinguishedComments.length;
-                $popup.find('.tb-nuke-details').html(TBStorage.purify(`
+                $popup.find('.tb-nuke-details').html(purify(`
                     <p>${
                     removalChainLength + distinguishedCommentsLength
                 } comments found (Already removed comments not included).</p>
@@ -269,7 +269,7 @@ export default new Module({
                         const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                         // Lets get the comments.
                         const data = await TBApi.getJSON(fetchUrl, {raw_json: 1});
-                        TBStorage.purifyObject(data);
+                        purifyObject(data);
                         await parseComments(data[1].data.children[0], postID, subreddit);
                     }
                 }

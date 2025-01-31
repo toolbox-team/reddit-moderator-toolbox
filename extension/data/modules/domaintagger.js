@@ -4,8 +4,9 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {getCache, setCache} from '../util/cache.ts';
+import {purifyObject} from '../util/purify.js';
 
 export default new Module({
     name: 'Domain Tagger',
@@ -32,9 +33,9 @@ export default new Module({
 
     function postToWiki (sub, json, reason) {
         // Update config cache to contain the new configuration
-        TBStorage.getCache('Utils', 'configCache', {}).then(cachedConfigs => {
+        getCache('Utils', 'configCache', {}).then(cachedConfigs => {
             cachedConfigs[sub] = json;
-            TBStorage.setCache('Utils', 'configCache', cachedConfigs);
+            setCache('Utils', 'configCache', cachedConfigs);
         });
 
         // Save the edit to the wiki
@@ -267,7 +268,7 @@ export default new Module({
 
             // if we got this far, we have valid JSON
             config = resp;
-            TBStorage.purifyObject(config);
+            purifyObject(config);
 
             if (config.domainTags) {
                 const tags = config.domainTags.filter(d => d.name === domainTag.name);

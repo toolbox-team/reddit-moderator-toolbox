@@ -2,9 +2,10 @@ import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import {currentPlatform, RedditPlatform} from '../util/platform.ts';
+import {purify} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
 
 export default new Module({
     name: 'Queue Overlay',
@@ -29,10 +30,10 @@ export default new Module({
 }, async ({overlayFromBarRedesign, overlayFromBarOld}) => {
     const $body = $('body');
 
-    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
-    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
-    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
-    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const modSubredditsFMod = await getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const modSubreddits = await getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubredditsFMod = await getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const unmoderatedSubreddits = await getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
 
     // Array used to keep track of loading iframes so that when the overlay gets closed we can properly stop all long load animations.
     let activeLoading = [];
@@ -102,7 +103,7 @@ export default new Module({
     function reloadIframe ($reloadListing, $tbQueueUrl, $iframe, type) {
         $reloadListing.addClass('loading');
         TBui.longLoadSpinner(true);
-        const multi = TBStorage.purify($tbQueueUrl.val());
+        const multi = purify($tbQueueUrl.val());
         let newUrl;
         if (multi === 'mod' && baseUrls[type].fmod) {
             newUrl = `/me/f/mod/about/${type}/`;

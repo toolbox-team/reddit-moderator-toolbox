@@ -2,18 +2,13 @@ import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 import browser from 'webextension-polyfill';
 
 import TBLog from '../tblog.js';
-import {getSettings} from '../tbstorage.js';
+import {getSettings, SettingsObject} from '../util/settings';
 import {type AppThunk} from './index.js';
 
 export enum SettingsInitialLoadState {
     PENDING,
     LOADED,
     FAILED,
-}
-
-// TODO: we can do better than this probably
-export interface SettingsObject {
-    [key: string]: any;
 }
 
 export interface SettingsState {

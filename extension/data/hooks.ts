@@ -27,9 +27,9 @@ export const useSetting = (moduleName: string, settingName: string, defaultValue
     const savedValue = useSelector((state: RootState) => state.settings.values[`Toolbox.${moduleName}.${settingName}`]);
 
     // Return the given default value if the setting doesn't have a value (i.e.
-    // is `undefined`) *or* if the setting's value is `null` (mirroring the
-    // implementation of `getSetting` in `tbstorage.js`, which says that `null`
-    // is never a valid value for any setting)
+    // is `undefined`) *or* if the setting's value is `null` (mirroring the old
+    // implementation of `getSetting` from the old `tbstorage.js`, which says
+    // that `null` is never a valid value for any setting)
     if (savedValue == null) {
         return defaultValue;
     }

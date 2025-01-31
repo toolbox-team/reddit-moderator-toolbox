@@ -4,8 +4,9 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBModule, {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {purify} from '../util/purify.js';
+import {getSettingAsync, setSettingAsync} from '../util/settings.ts';
 
 // Hold onto the modbarExists resolver so we can call it when the time is right
 let resolveModbarExists = null;
@@ -106,7 +107,7 @@ export default new Module({
     // Clean up old settings related to the now-removed dev console
     // TODO: Remove this a couple versions from now when people have reasonably
     //       probably updated past this
-    TBStorage.setSettingAsync(this.id, 'consoleShowing', undefined);
+    setSettingAsync(this.id, 'consoleShowing', undefined);
 
     const $body = $('body');
 
@@ -135,23 +136,23 @@ export default new Module({
     // preload some generic variables
     //
 
-    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
+    const debugMode = await getSettingAsync('Utils', 'debugMode', false);
 
-    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
-    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
-    const unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0);
-    const modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0);
-    const unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0);
-    const modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0);
-    const newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0);
-    const notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true);
+    const modSubreddits = await getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubreddits = await getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const unreadMessageCount = await getSettingAsync('Notifier', 'unreadMessageCount', 0);
+    const modqueueCount = await getSettingAsync('Notifier', 'modqueueCount', 0);
+    const unmoderatedCount = await getSettingAsync('Notifier', 'unmoderatedCount', 0);
+    const modmailCount = await getSettingAsync('Notifier', 'modmailCount', 0);
+    const newModmailCount = await getSettingAsync('Notifier', 'newModmailCount', 0);
+    const notifierEnabled = await getSettingAsync('Notifier', 'enabled', true);
 
-    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
-    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const modSubredditsFMod = await getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const unmoderatedSubredditsFMod = await getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Ready some details for new modmail linking
-    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail');
-    const openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail;
+    const modmailLink = await getSettingAsync('NewModMail', 'modmaillink', 'all_modmail');
+    const openMailTab = await getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail;
     const newModmailBaseUrl = 'https://mod.reddit.com/mail/';
     let newModmailUrl;
 
@@ -341,8 +342,8 @@ export default new Module({
 
             let subList = '';
 
-            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false);
-            const usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
+            const configEnabled = await getSettingAsync('TBConfig', 'enabled', false);
+            const usernotesEnabled = await getSettingAsync('UserNotes', 'enabled', false);
             this.log('got mod subs');
             this.log(mySubsData.length);
 
@@ -548,7 +549,7 @@ export default new Module({
         if (!$modBarHidTooltip.length) {
             $modBarHidTooltip = $('<div id="tb-modbar-hide-tooltip"></div>').appendTo($body);
         }
-        $modBarHidTooltip.html(TBStorage.purify(hoverContent));
+        $modBarHidTooltip.html(purify(hoverContent));
         $modBarHidTooltip.fadeIn(200);
     }).mouseleave(() => {
         $modBarHidTooltip.fadeOut(200);

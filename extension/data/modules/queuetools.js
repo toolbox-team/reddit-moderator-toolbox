@@ -5,9 +5,10 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {getCache, setCache} from '../util/cache.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
+import {purifyObject} from '../util/purify.js';
 
 const self = new Module({
     name: 'Queue Tools',
@@ -889,7 +890,7 @@ self.queuetoolsOld = function ({
                     const $elem = $(elem);
                     const sr = $elem.text();
 
-                    TBStorage.getCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, '[0,0]').then(
+                    getCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, '[0,0]').then(
                         cacheData => {
                             const data = JSON.parse(cacheData);
 
@@ -913,10 +914,10 @@ self.queuetoolsOld = function ({
 
                             function updateModqueueCount (sr) {
                                 TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
-                                    TBStorage.purifyObject(d);
+                                    purifyObject(d);
                                     const items = d.data.children.length;
                                     self.log(`  subreddit: ${sr} items: ${items}`);
-                                    TBStorage.setCache(
+                                    setCache(
                                         'QueueTools',
                                         `${prefix + TBApi.getCurrentUser()}-${sr}`,
                                         `[${items},${new Date().valueOf()}]`,
@@ -1119,7 +1120,7 @@ self.queuetoolsOld = function ({
     function getAutomodActionReason (sub) {
         self.log(sub);
         TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {
-            TBStorage.purifyObject(json);
+            purifyObject(json);
             json.data.children.forEach(value => {
                 const actionReasonText = value.data.details;
                 const targetFullName = value.data.target_fullname;
@@ -1323,7 +1324,7 @@ function init (options) {
          */
     function getModlog (subreddit, callback) {
         TBApi.getJSON(`/r/${subreddit}/about/log/.json`, {limit: 500}).then(json => {
-            TBStorage.purifyObject(json);
+            purifyObject(json);
             json.data.children.forEach(value => {
                 const fullName = value.data.target_fullname;
                 const actionID = value.data.id;

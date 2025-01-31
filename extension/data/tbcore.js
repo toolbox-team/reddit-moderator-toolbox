@@ -6,9 +6,11 @@ import {getModhash} from './tbapi.ts';
 import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
 import TBLog from './tblog.ts';
-import * as TBStorage from './tbstorage.js';
+import {getCache, setCache} from './util/cache.ts';
 import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 import {currentPlatform, RedditPlatform} from './util/platform.ts';
+import {purifyObject} from './util/purify.js';
+import {getSettingAsync, setSettingAsync} from './util/settings.ts';
 
 const logger = TBLog('TBCore');
 
@@ -168,13 +170,13 @@ export async function getModSubs (data) {
     // Are we already fetching subs? If so, wait for them to be refreshed before attempting to return anything.
     if (fetchModSubsActive) {
         await waitForModSubsRefresh();
-        return TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
+        return getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
     } else {
         fetchModSubsActive = true;
     }
 
     // Try to load the info we need from cache
-    const cachedData = await TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
+    const cachedData = await getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
     if (cachedData.length) {
         // Got cache let other waiting instances of this function know and return cachedData
         window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));
@@ -201,8 +203,8 @@ export async function getModSubs (data) {
         'subscribers',
     );
 
-    await TBStorage.setCache('Utils', 'moderatedSubs', mySubs);
-    await TBStorage.setCache('Utils', 'moderatedSubsData', mySubsData);
+    await setCache('Utils', 'moderatedSubs', mySubs);
+    await setCache('Utils', 'moderatedSubsData', mySubsData);
 
     fetchModSubsActive = false;
     window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));
@@ -246,7 +248,7 @@ let lastVersionPromise = null;
  */
 export function getLastVersion () {
     if (!lastVersionPromise) {
-        lastVersionPromise = TBStorage.getSettingAsync(SETTINGS_NAME, 'lastVersion', 0);
+        lastVersionPromise = getSettingAsync(SETTINGS_NAME, 'lastVersion', 0);
     }
     return lastVersionPromise;
 }
@@ -556,7 +558,7 @@ export async function notification (title, body, path, markreadid = false) {
     const notificationTimeout = 6000;
     const notificationID = await browser.runtime.sendMessage({
         action: 'tb-notification',
-        native: await TBStorage.getSettingAsync('GenSettings', 'nativeNotifications', true),
+        native: await getSettingAsync('GenSettings', 'nativeNotifications', true),
         details: {
             title,
             body,
@@ -601,7 +603,7 @@ export async function showNote (note) {
     }
 
     // If we've already seen this note, skip it
-    if ((await TBStorage.getSettingAsync('Utils', 'seenNotes', [])).includes(note.id)) {
+    if ((await getSettingAsync('Utils', 'seenNotes', [])).includes(note.id)) {
         return;
     }
 
@@ -613,9 +615,9 @@ export async function showNote (note) {
     }).then(async resp => {
         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
             // Fetch seenNotes fresh, add this note's ID, and save the result
-            const seenNotes = await TBStorage.getSettingAsync('Utils', 'seenNotes', []);
+            const seenNotes = await getSettingAsync('Utils', 'seenNotes', []);
             seenNotes.push(note.id);
-            await TBStorage.setSettingAsync('Utils', 'seenNotes', seenNotes);
+            await setSettingAsync('Utils', 'seenNotes', seenNotes);
             window.setTimeout(() => {
                 window.open(note.link);
             }, 100);
@@ -630,7 +632,7 @@ export async function showNote (note) {
  */
 async function fetchNewsNotes (sub) {
     const resp = await TBApi.readFromWiki(sub, 'tbnotes', true);
-    TBStorage.purifyObject(resp);
+    purifyObject(resp);
     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE || resp.length < 1) {
         throw new Error(`Failed to fetch notes for /r/${sub}`);
     }
@@ -847,12 +849,12 @@ export function forEachChunkedDynamic (array, process, options) {
 
 export async function getConfig (sub) {
     // Check
-    const cachedSubsWithNoConfig = await TBStorage.getCache('Utils', 'noConfig', []);
+    const cachedSubsWithNoConfig = await getCache('Utils', 'noConfig', []);
     if (cachedSubsWithNoConfig.includes(sub)) {
         return undefined;
     }
 
-    const cachedConfigs = await TBStorage.getCache('Utils', 'configCache', {});
+    const cachedConfigs = await getCache('Utils', 'configCache', {});
     if (cachedConfigs[sub] !== undefined) {
         return cachedConfigs[sub];
     }
@@ -866,14 +868,14 @@ export async function getConfig (sub) {
     if (resp === TBApi.NO_WIKI_PAGE) {
         // Subreddit not configured yet, at least add it to the noConfig cache
         cachedSubsWithNoConfig.push(sub);
-        TBStorage.setCache('Utils', 'noConfig', cachedSubsWithNoConfig);
+        setCache('Utils', 'noConfig', cachedSubsWithNoConfig);
         return undefined;
     }
 
     // We have new config data from the wiki, update the config cache and return
-    TBStorage.purifyObject(resp);
+    purifyObject(resp);
     cachedConfigs[sub] = resp;
-    TBStorage.setCache('Utils', 'configCache', cachedConfigs);
+    setCache('Utils', 'configCache', cachedConfigs);
     return resp;
 }
 
@@ -1141,7 +1143,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) =>
         if (id.startsWith('t4_')) {
             const shortID = id.substr(3);
             TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {
-                TBStorage.purifyObject(response);
+                purifyObject(response);
                 const message = findMessage(response, shortID);
                 const body = message.data.body;
                 const user = message.data.author;
@@ -1186,7 +1188,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) =>
         } else {
             const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
             TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(async response => {
-                TBStorage.purifyObject(response);
+                purifyObject(response);
                 const data = response.data;
 
                 let user = data.children[0].data.author;
@@ -1270,7 +1272,7 @@ async function fetchModSubs (after, tries = 1) {
             after,
             limit: 100,
         });
-        TBStorage.purifyObject(json);
+        purifyObject(json);
     } catch (error) {
         // Retry 504s, up to 5 attempts; otherwise throw the error
         if (error.response && error.response.status === 504 && tries < 5) {
@@ -1298,7 +1300,7 @@ let devsFetchPromise = null;
  */
 export async function getToolboxDevs () {
     // Try to get from cache
-    const cachedDevs = await TBStorage.getSettingAsync('Utils', 'tbDevs', []);
+    const cachedDevs = await getSettingAsync('Utils', 'tbDevs', []);
     if (cachedDevs && cachedDevs.length) {
         return cachedDevs;
     }
@@ -1313,7 +1315,7 @@ export async function getToolboxDevs () {
             try {
                 // Fetch the /r/toolbox mod list
                 const resp = await TBApi.getJSON('/r/toolbox/about/moderators.json');
-                TBStorage.purifyObject(resp);
+                purifyObject(resp);
                 devs = resp.data.children
                     // We only care about usernames
                     .map(child => child.name)
@@ -1338,7 +1340,7 @@ export async function getToolboxDevs () {
             }
 
             // Since we didn't find the devs in cache, update the cache
-            await TBStorage.setSettingAsync('Utils', 'tbDevs', devs);
+            await setSettingAsync('Utils', 'tbDevs', devs);
 
             // We're done fetching - unset the promise and return
             devsFetchPromise = null;
@@ -1591,23 +1593,23 @@ export function watchForURLChanges () {
 }
 
 // Clean up old seen items if the lists are getting too long
-TBStorage.getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {
+getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {
     if (pushedunread.length > 250) {
         pushedunread.splice(150, pushedunread.length - 150);
-        await TBStorage.setSettingAsync('Notifier', 'unreadPushed', pushedunread);
+        await setSettingAsync('Notifier', 'unreadPushed', pushedunread);
     }
 });
-TBStorage.getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
+getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
     if (pusheditems.length > 250) {
         pusheditems.splice(150, pusheditems.length - 150);
-        await TBStorage.setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
+        await setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
     }
 });
-TBStorage.getSettingAsync('Utils', 'seenNotes', []).then(async seenNotes => {
+getSettingAsync('Utils', 'seenNotes', []).then(async seenNotes => {
     if (seenNotes.length > 250) {
         logger.log('clearing seen notes');
         seenNotes.splice(150, seenNotes.length - 150);
-        await TBStorage.setSettingAsync('Utils', 'seenNotes', seenNotes);
+        await setSettingAsync('Utils', 'seenNotes', seenNotes);
     }
 });
 

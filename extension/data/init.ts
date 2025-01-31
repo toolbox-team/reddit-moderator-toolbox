@@ -232,13 +232,13 @@ async function doSettingsUpdates () {
         // Clean up removed settings - it doesn't really matter what version
         // we're coming from, we just want to make sure these removed settings
         // aren't cluttering up storage
-        await Promise.all([
+        const keysToDelete = [
             // Some new modmail settings were removed in 5.7.0
-            TBStorage.setSettingAsync('NewModMail', 'searchhelp', undefined),
-            TBStorage.setSettingAsync('NewModMail', 'checkForNewMessages', undefined),
+            'Toolbox.NewModMail.searchhelp',
+            'Toolbox.NewModMail.checkForNewMessages',
 
             // Beta mode setting removed in favor of dedicated beta builds #917
-            TBStorage.setSettingAsync(SETTINGS_NAME, 'betaMode', undefined),
+            'Toolbox.Utils.betaMode',
 
             // (old) modmail pro removed in v7, RIP old modmail
             ...[
@@ -264,13 +264,14 @@ async function doSettingsUpdates () {
                 'entryProcessRate',
                 'chunkProcessSize',
                 'twoPhaseProcessing',
-            ].map(setting => TBStorage.setSettingAsync('ModMail', setting, undefined)),
+            ].map(setting => `Toolbox.ModMail.${setting}`),
 
             // new reddit is dead, long live shreddit i guess. the setting to
             // skip the new reddit lightbox when viewing comments no longer
             // applies to anything, remove it
-            TBStorage.setSettingAsync('Comments', 'commentsAsFullPage', undefined),
-        ]);
+            'Toolbox.Comments.commentsAsFullPage',
+        ];
+        await TBStorage.updateSettings(Object.fromEntries(keysToDelete.map(key => [key, undefined])));
 
         // End: version changes.
 

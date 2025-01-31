@@ -2,7 +2,7 @@ import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 import browser from 'webextension-polyfill';
 
 import TBLog from '../tblog.js';
-import {getSettings, setSettingAsync} from '../tbstorage.js';
+import {getSettings} from '../tbstorage.js';
 import {type AppThunk} from './index.js';
 
 export enum SettingsInitialLoadState {

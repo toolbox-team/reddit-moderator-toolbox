@@ -463,10 +463,6 @@ function ModNotesPopup ({
         </form>
     );
 
-    // NOMERGE debug shit
-    const thing = useSetting('ModNotes', 'defaultTabName');
-    const stuff = useSetting('ModNotes', 'defaultNoteLabel');
-
     // Create the base popup
     return (
         <Window
@@ -480,19 +476,6 @@ function ModNotesPopup ({
                 tabs={tabs}
                 defaultTabIndex={defaultTabIndex}
             />
-
-            {/* NOMERGE debug shit */}
-            <div style={{background: 'darkred', color: 'white'}}>
-                <h1>temporary debug shit, if this makes it into a release kill erin</h1>
-                <p>because fuck getting redux devtools connected to a browser extension</p>
-                <pre>{JSON.stringify({thing, stuff, defaultTabName, defaultNoteLabel})}</pre>
-                <button onClick={() => setSettingAsync('ModNotes', 'defaultTabName', 'notes')}>
-                    set default tab to <code>notes</code>
-                </button>
-                <button onClick={() => setSettingAsync('ModNotes', 'defaultTabName', undefined)}>
-                    reset default tab to default (<code>undefined</code>, computed to <code>all_activity</code>)
-                </button>
-            </div>
         </Window>
     );
 }

@@ -16,7 +16,6 @@ import {reactRenderer} from './util/ui_interop.tsx';
 import store from './store/index.ts';
 import {showTextFeedback, TextFeedbackKind, TextFeedbackLocation} from './store/textFeedbackSlice.ts';
 
-// NOMERGE: we are getting rid of this shit here, it is so far past due
 export {icons};
 
 const $body = $('body');

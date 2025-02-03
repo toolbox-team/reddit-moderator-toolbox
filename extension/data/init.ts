@@ -28,13 +28,14 @@ import 'codemirror/mode/yaml/yaml.js';
 
 import './tbplugins.js';
 
-import AppRoot from './AppRoot';
-
 import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
 import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
 import TBModule from './tbmodule.jsx';
+
+import AppRoot from './AppRoot';
+import {initializeObserver} from './frontends';
 import {getCache, setCache} from './util/cache';
 import {documentInteractive} from './util/dom';
 import createLogger from './util/logging';
@@ -402,5 +403,6 @@ async function doSettingsUpdates () {
     // Once all modules are initialized and have had a chance to register event
     // listeners, start emitting jsAPI events and page URL change events
     TBListener.start();
+    initializeObserver();
     TBCore.watchForURLChanges();
 })();

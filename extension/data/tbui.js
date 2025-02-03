@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import tinycolor from 'tinycolor2';
 import browser from 'webextension-polyfill';
 
+import {createRenderer as createSlotRenderer} from './frontends/index.tsx';
 import * as TBApi from './tbapi.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
@@ -1305,6 +1306,15 @@ export function makeSubmissionEntry (submission, submissionOptions) {
         $buildsubmission.css('border-left', `solid 3px ${subColor}`);
     }
 
+    // Add frontend slots so modules can put buttons on these too
+    $buildsubmission.find('.tb-submission-author').after(createSlotRenderer('submissionAuthor', {
+        user: submissionAuthor === '[deleted]'
+            ? {deleted: true}
+            : {deleted: false, name: submissionAuthor},
+        subreddit: {name: submissionSubreddit},
+        submission: {fullname: submissionName},
+    }));
+
     return $buildsubmission;
 }
 
@@ -1717,6 +1727,15 @@ export function makeSingleComment (comment, commentOptions = {}) {
         const subColor = TBHelpers.stringToColor(commentSubreddit + subredditColorSalt);
         $buildComment.css('border-left', `solid 3px ${subColor}`);
     }
+
+    // Add frontend slots so modules can put buttons on these too
+    $buildComment.find('.tb-comment-author').after(createSlotRenderer('commentAuthor', {
+        user: commentAuthor === '[deleted]'
+            ? {deleted: true}
+            : {deleted: false, name: commentAuthor},
+        subreddit: {name: commentSubreddit},
+        comment: {fullname: commentName},
+    }));
 
     return $buildComment;
 }

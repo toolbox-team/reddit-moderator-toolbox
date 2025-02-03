@@ -61,7 +61,7 @@ export function JQueryRenderer ({content}: {content: JQuery}) {
             };
         }
     }, [content]);
-    return <div ref={target} />;
+    return <div style={{display: 'contents'}} ref={target} />;
 }
 
 // this isn't really an "interop" thing but whatever it lives here for now

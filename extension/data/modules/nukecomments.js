@@ -1,13 +1,16 @@
 import $ from 'jquery';
 
+import {createElement} from 'react';
+import {renderInSlots} from '../frontends/index.tsx';
+import {useFetched} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import createLogger from '../util/logging.ts';
 import {purify, purifyObject} from '../util/purify.js';
+import {JQueryRenderer} from '../util/ui_interop.tsx';
 
 const log = createLogger('CommentNuke');
 
@@ -283,37 +286,41 @@ export default new Module({
     }
 
     // Add nuke buttons where needed
-    TBListener.on('comment', async e => {
-        const pageType = TBCore.pageDetails.pageType;
-        const $target = $(e.target);
-        const subreddit = e.detail.data.subreddit.name;
-        const commentID = e.detail.data.id.substring(3);
-        const postID = e.detail.data.post.id.substring(3);
+    // XXX 3: this also needs to be able to appear in hovercards apparently?? what
+    // the fuck is going on with all the special casing in this goddamn module
+    renderInSlots(['commentAuthor'], ({details, slotType}) => {
+        const subreddit = details.subreddit.name;
+        const commentID = details.comment.fullname.substring(3);
+        const submissionID = details.submission?.fullname.substring(3);
 
-        const isMod = await TBCore.isModSub(subreddit);
-        // We have to mod the subreddit to show the button
-        if (!isMod) {
-            return;
+        const isMod = useFetched(TBCore.isModSub(subreddit));
+        if (!commentID || !submissionID || !isMod) {
+            return null;
         }
-        // We also have to be on a comments page or looking at a context popup
-        if (
-            pageType !== 'subredditCommentsPage' && pageType !== 'subredditCommentPermalink'
-            && !$target.closest('.context-button-popup').length
-        ) {
-            return;
-        }
+
+        // XXX: implement the old check that makes this only show up in comments
+        // trees and context pages and context popups. i don't know how this
+        // will be done but we do not want this button showing up on single
+        // comments in flat listings because thats just not reasonable and we
+        // dont want to encourage people to act on a whole tree in a vacuum
 
         const NukeButtonHTML =
-            `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${
-                e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'
+            `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${submissionID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${
+                slotType === 'userHovercard' ? 'Nuke' : 'R'
             }</span>`;
-        if (showNextToUser && TBCore.isOldReddit) {
-            const $userContainter = $target.closest('.entry, .tb-comment-entry').find(
-                '.tb-jsapi-author-container .tb-frontend-container',
-            );
-            $userContainter.append(NukeButtonHTML);
-        } else {
-            $target.append(NukeButtonHTML);
-        }
+
+        // XXX 2: implement showNextToUser setting. for now we always show next
+        // to the author name because we don't have any other slots implemented
+        // on comments but when this changes we should revisit this. old logic:
+        //     if (showNextToUser && TBCore.isOldReddit) {
+        //         const $userContainter = $target.closest('.entry, .tb-comment-entry').find(
+        //             '.tb-jsapi-author-container .tb-frontend-container',
+        //         );
+        //         $userContainter.append(NukeButtonHTML);
+        //     } else {
+        //         $target.append(NukeButtonHTML);
+        //     }
+
+        return createElement(JQueryRenderer, {content: $(NukeButtonHTML)});
     });
 });

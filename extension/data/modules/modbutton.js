@@ -1,14 +1,16 @@
 import $ from 'jquery';
+import {createElement} from 'react';
 
+import {renderInSlots} from '../frontends/index.tsx';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
+import {JQueryRenderer} from '../util/ui_interop.tsx';
 
 const log = createLogger('ModButton');
 
@@ -64,7 +66,6 @@ const self = new Module({
 export default self;
 
 const $body = $('body');
-const titleText = 'Perform various mod actions on this user';
 
 self.runRedesign = async function () {
     // Not a mod, don't bother.
@@ -72,49 +73,37 @@ self.runRedesign = async function () {
     if (mySubs.length < 1) {
         return;
     }
-    const onlyshowInhover = await self.get('onlyshowInhover');
 
-    TBListener.on('author', e => {
-        const $target = $(e.target);
+    renderInSlots([
+        'submissionAuthor',
+        'commentAuthor',
+        'userHovercard',
+    ], ({details, slotType}) => {
+        const contextFullname = details.contextFullname || details.comment?.fullname || details.submission?.fullname
+            || 'unknown';
+        const subreddit = details.subreddit.name;
+        const user = !details.user.deleted && details.user.name;
 
-        // As the modbutton is already accessible in the sidebar and not needed for mods we don't show it in modmail threads.
-        if (e.detail.type === 'TBmodmailCommentAuthor') {
-            return;
+        // End of state/hooks - render
+        if (details.user.deleted) {
+            return null;
         }
-        if ($target.closest('.tb-thing').length || !onlyshowInhover || TBCore.isOldReddit || TBCore.isNewModmail) {
-            const subreddit = e.detail.data.subreddit.name;
-            const author = e.detail.data.author;
 
-            if (author === '[deleted]') {
-                return;
-            }
-
-            let parentID;
-            if (e.detail.data.comment) {
-                parentID = e.detail.data.comment.id;
-            } else if (e.detail.data.post) {
-                parentID = e.detail.data.post.id;
-            } else {
-                parentID = 'unknown';
-            }
-            requestAnimationFrame(() => {
-                $target.append(
-                    `<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">M</a>`,
-                );
-            });
-        }
-    });
-
-    // event based handling of author elements.
-    TBListener.on('userHovercard', e => {
-        const $target = $(e.target);
-        const subreddit = e.detail.data.subreddit.name;
-        const author = e.detail.data.user.username;
-        const parentID = e.detail.data.contextId;
-
-        $target.append(
-            `<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">Mod Button</a>`,
-        );
+        // TODO: convert the whole popup thing to be React-oriented
+        return createElement(JQueryRenderer, {
+            content: $(`
+                <a
+                    href="javascript:;"
+                    title="Perform various mod actions on this user"
+                    data-subreddit="${subreddit}"
+                    data-author="${user}"
+                    data-parentID="${contextFullname}"
+                    class="global-mod-button tb-bracket-button"
+                >
+                    ${slotType === 'userHovercard' ? 'Mod Button' : 'M'}
+                </a>
+            `),
+        });
     });
 };
 

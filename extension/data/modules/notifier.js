@@ -5,8 +5,11 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
+import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('Notifier');
 
 export default new Module({
     name: 'Notifier',
@@ -213,7 +216,7 @@ export default new Module({
     //
 
     TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
-        this.log('playing sound');
+        log.debug('playing sound');
 
         const audio = new Audio(NOTIFICATION_SOUND);
         audio.play();
@@ -317,7 +320,7 @@ export default new Module({
     }
 
     const updateAllTabs = async () => {
-        this.log('updating all counters accross tabs');
+        log.debug('updating all counters accross tabs');
         await browser.runtime.sendMessage({
             action: 'tb-global',
             globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
@@ -346,7 +349,7 @@ export default new Module({
                     updateAllTabs();
                     activeNewMMcheck = false;
                 }).catch(error => {
-                    this.log(error);
+                    log.debug(error);
                     activeNewMMcheck = false;
                 });
             }, 500);
@@ -369,14 +372,14 @@ export default new Module({
                 .ThreadViewerHeader__right
             `,
             () => {
-                this.log('Checking modmail count based on click on specific element.');
+                log.debug('Checking modmail count based on click on specific element.');
                 newModMailCheck();
             },
         );
     }
 
     window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
-        this.log('updating counters from background');
+        log.debug('updating counters from background');
         updateMessagesCount(event.detail.unreadMessageCount);
         updateModqueueCount(event.detail.modqueueCount);
         updateUnmodCount(event.detail.unmoderatedCount);
@@ -384,7 +387,7 @@ export default new Module({
     });
 
     const getmessages = async () => {
-        this.log('getting messages');
+        log.debug('getting messages');
 
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
         const lastchecked = await this.get('lastChecked');
@@ -568,7 +571,7 @@ export default new Module({
                 }
                 this.set('unreadPushed', pushedunread);
             }
-        }).catch(error => this.error(error));
+        }).catch(error => log.error(error));
 
         //
         // Modqueue
@@ -804,7 +807,7 @@ export default new Module({
                 updateAllTabs();
             }
         }).catch(error => {
-            this.log(error);
+            log.debug(error);
         });
     };
 

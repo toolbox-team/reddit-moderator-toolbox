@@ -7,8 +7,11 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
+import createLogger from '../util/logging.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 import {purifyObject} from '../util/purify.js';
+
+const log = createLogger('QueueTools');
 
 const self = new Module({
     name: 'Queue Tools',
@@ -189,7 +192,7 @@ self.queuetoolsOld = function ({
 
     const $noResults = $body.find('p#noresults');
     if (TBCore.isModpage && queueCreature !== 'i_have_no_soul' && $noResults.length > 0) {
-        self.log(queueCreature);
+        log.debug(queueCreature);
         if (queueCreature === 'puppy') {
             $noResults.addClass('tb-puppy-old');
         } else if (queueCreature === 'kitteh') {
@@ -221,7 +224,7 @@ self.queuetoolsOld = function ({
     }
 
     if (subredditColor) {
-        self.log('adding sub colors');
+        log.debug('adding sub colors');
         $('.thing').each(colorSubreddits);
     }
 
@@ -243,11 +246,11 @@ self.queuetoolsOld = function ({
     // NER for these things.
     window.addEventListener('TBNewThings', () => {
         if (subredditColor) {
-            self.log('adding sub colors (ner)');
+            log.debug('adding sub colors (ner)');
             $('.thing').not('.color-processed').each(colorSubreddits);
         }
         if (highlightNegativePosts && TBCore.isModpage) {
-            self.log('adding zero-score highlights');
+            log.debug('adding zero-score highlights');
             $('.thing').not('.highlight-processed').each(highlightBadPosts);
         }
         if (TBCore.isModpage && highlightAutomodMatches) {
@@ -502,7 +505,7 @@ self.queuetoolsOld = function ({
                 return;
             }
 
-            self.log('thing selected.');
+            log.debug('thing selected.');
             $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });
 
@@ -512,7 +515,7 @@ self.queuetoolsOld = function ({
         // the following call will uncheck it.
 
         $body.on('click', '.reported-stamp', function () {
-            self.log('reports selected.');
+            log.debug('reports selected.');
             $(this).closest('.thing').find('input[type=checkbox]:first').click();
         });
 
@@ -707,7 +710,7 @@ self.queuetoolsOld = function ({
 
             $thing.find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
-                self.log('hiding item');
+                log.debug('hiding item');
                 $thing.hide();
             } else if ($this.hasClass('negative')) {
                 $thing.removeClass('removed approved');
@@ -766,7 +769,7 @@ self.queuetoolsOld = function ({
 
         // NER support.
         window.addEventListener('TBNewThings', () => {
-            self.log('proc new things');
+            log.debug('proc new things');
             const things = $('.thing').not('.mte-processed');
 
             processNewThings(things);
@@ -776,7 +779,7 @@ self.queuetoolsOld = function ({
         let expandosOpen = false;
         $('.open-expandos').on('click', () => {
             if (!expandosOpen) {
-                self.log('expanding all expandos.');
+                log.debug('expanding all expandos.');
 
                 $('.open-expandos').text('[-]');
                 $('.expando-button.collapsed').each(function (index) {
@@ -790,7 +793,7 @@ self.queuetoolsOld = function ({
                 });
                 expandosOpen = true;
             } else {
-                self.log('collapsing all expandos.');
+                log.debug('collapsing all expandos.');
 
                 $('.open-expandos').text('[+]');
                 $('.expando-button.expanded').each(function () {
@@ -857,18 +860,18 @@ self.queuetoolsOld = function ({
             let prefix = '';
             let page = '';
             if (TBCore.isUnmoderatedPage) {
-                self.log('sorting unmod');
+                log.debug('sorting unmod');
                 prefix = 'umq-';
                 page = 'unmoderated';
             } else if (TBCore.isModQueuePage) {
-                self.log('sorting mod queue');
+                log.debug('sorting mod queue');
                 prefix = 'mq-';
                 page = 'modqueue';
             } else {
                 return;
             }
 
-            self.log('sorting queue sidebar');
+            log.debug('sorting queue sidebar');
 
             $('.tb-subreddit-item-count').remove();
 
@@ -916,7 +919,7 @@ self.queuetoolsOld = function ({
                                 TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
                                     purifyObject(d);
                                     const items = d.data.children.length;
-                                    self.log(`  subreddit: ${sr} items: ${items}`);
+                                    log.debug(`  subreddit: ${sr} items: ${items}`);
                                     setCache(
                                         'QueueTools',
                                         `${prefix + TBApi.getCurrentUser()}-${sr}`,
@@ -1118,7 +1121,7 @@ self.queuetoolsOld = function ({
     const regexMatchFinder = /\[(.*?)\]/g;
     const highlightEnabled = getSettingSync('Comments', 'highlighted', []);
     function getAutomodActionReason (sub) {
-        self.log(sub);
+        log.debug(sub);
         TBApi.getJSON(`/r/${sub}/about/log/.json?limit=500&mod=AutoModerator`).then(json => {
             purifyObject(json);
             json.data.children.forEach(value => {
@@ -1204,23 +1207,23 @@ Action reason: ${value.data.details}
     if (TBCore.isModpage && showAutomodActionReason) {
         const queueSubs = [];
 
-        self.log('getting automod action reasons');
+        log.debug('getting automod action reasons');
 
         $('#siteTable .thing').each(function () {
             const $this = $(this);
             const subreddit = TBHelpers.cleanSubredditName($this.find('a.subreddit').text());
             const removedBy = $this.find('.flat-list li[title]').text();
 
-            self.log(`  subreddit: ${subreddit}`);
-            self.log(`  removedby: ${removedBy}`);
+            log.debug(`  subreddit: ${subreddit}`);
+            log.debug(`  removedby: ${removedBy}`);
 
             if (!queueSubs.includes(subreddit) && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
                 queueSubs.push(subreddit);
             }
         });
 
-        self.log('queuesubs:');
-        self.log(queueSubs);
+        log.debug('queuesubs:');
+        log.debug(queueSubs);
 
         for (let i = 0; i < queueSubs.length; i++) {
             const sub = queueSubs[i];
@@ -1270,7 +1273,7 @@ function init (options) {
         if (gotQueueCreature) {
             const $creatureParent = $redditQueueCreature.parents().eq(0);
             const $queueCreature = $('<div id="queueCreature"></div>');
-            self.log(queueCreature);
+            log.debug(queueCreature);
             if (queueCreature === 'puppy') {
                 $queueCreature.addClass('tb-puppy');
             } else if (queueCreature === 'kitteh') {
@@ -1373,7 +1376,7 @@ function init (options) {
          * @param {getActionsCallback} callback - callback that handles further modlog interactions
          */
     function getActions (subreddit, fullName, callback) {
-        self.log(subreddit);
+        log.debug(subreddit);
         const dateNow = Date.now();
 
         // check if we even have data

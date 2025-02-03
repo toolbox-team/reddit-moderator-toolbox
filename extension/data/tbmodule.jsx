@@ -5,16 +5,16 @@ import {NO_WIKI_PAGE, postToWiki, readFromWiki, WIKI_PAGE_UNKNOWN} from './tbapi
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.ts';
 import * as TBui from './tbui.js';
 import {clearCache} from './util/cache.ts';
 import {icons} from './util/icons.ts';
+import createLogger from './util/logging.ts';
 import {purify, purifyObject} from './util/purify.js';
 import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 
 import css from './tbmodule.module.css';
 
-const logger = TBLog('TBModule');
+const log = createLogger('TBModule');
 
 /**
  * Saves a copy of currently-stored settings to the `tbsettings` wiki page of
@@ -51,13 +51,13 @@ export async function exportSettings (subreddit) {
 export async function importSettings (subreddit) {
     const resp = await readFromWiki(subreddit, 'tbsettings', true);
     if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
-        logger.log('Error loading wiki page');
+        log.debug('Error loading wiki page');
         return;
     }
     purifyObject(resp);
 
     if (resp['Utils.lastversion'] < 300) {
-        logger.log('Cannot import from a toolbox version under 3.0');
+        log.debug('Cannot import from a toolbox version under 3.0');
         return;
     }
 
@@ -139,7 +139,7 @@ const TBModule = {
     },
 
     init: async function tbInit () {
-        logger.debug('loading modules');
+        log.debug('loading modules');
         // Check if each module should be enabled, then call its initializer
         await Promise.all(TBModule.modules.map(async module => {
             // Don't do anything with modules the user has disabled
@@ -150,25 +150,25 @@ const TBModule = {
             // Don't do anything with beta modules unless this is a beta build
             if (module.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                 // skip this module entirely
-                logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
+                log.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                 return;
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
             if (!await getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
                 // skip this module entirely
-                logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
+                log.debug(`Debug mode not enabled. Skipping ${module.name} module`);
                 return;
             }
 
             // FIXME: implement environment switches in modules
             if (!TBCore.isOldReddit && module.oldReddit) {
-                logger.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
+                log.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
                 return;
             }
 
             // lock 'n load
-            logger.debug(`Loading ${module.id} module`);
+            log.debug(`Loading ${module.id} module`);
             await module.init();
         }));
 
@@ -177,7 +177,7 @@ const TBModule = {
     },
 
     async showSettings () {
-        const log = TBLog('settings window');
+        const log = createLogger('settings window');
         const $body = $('body');
 
         // Get a current snapshot of settings which we can work with
@@ -605,7 +605,7 @@ const TBModule = {
             if (!sub) {
                 TBui.textFeedback('You have not set a subreddit to backup/restore settings', TBui.FEEDBACK_NEGATIVE);
 
-                logger.debug('no setting sub');
+                log.debug('no setting sub');
                 return;
             }
 
@@ -942,13 +942,13 @@ body {
                     case 'achievement_save': {
                         noWrap = true;
 
-                        logger.debug('----------');
-                        logger.debug('GENERATING ACHIEVEMENT PAGE');
+                        log.debug('----------');
+                        log.debug('GENERATING ACHIEVEMENT PAGE');
                         const total = module.manager.getAchievementTotal();
                         const unlocked = module.manager.getUnlockedCount();
 
-                        logger.debug(`  total=${total}`);
-                        logger.debug(`  unlocked=${unlocked}`);
+                        log.debug(`  total=${total}`);
+                        log.debug(`  unlocked=${unlocked}`);
 
                         $setting = $('<div>').attr('class', 'achievements');
                         $setting.append($('<h1>').text('Mod Achievements'));
@@ -960,9 +960,9 @@ body {
 
                         const $list = $('<div>').attr('class', 'achievements-list');
                         for (let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
-                            logger.debug(`  saveIndex: ${saveIndex}`);
+                            log.debug(`  saveIndex: ${saveIndex}`);
                             for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
-                                logger.debug(`  index: ${index}`);
+                                log.debug(`  index: ${index}`);
                                 let aTitle = '???';
                                 let aDescr = '??????';
                                 let aClass = '';
@@ -1296,9 +1296,6 @@ export class Module {
                 ...setting,
             });
         }
-
-        // Add logging functions
-        Object.assign(this, TBLog(this));
     }
 
     /**

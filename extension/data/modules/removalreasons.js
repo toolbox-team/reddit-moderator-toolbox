@@ -9,6 +9,9 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
 import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
+
+const log = createLogger('RReasons');
 
 // Error messages
 const STATUS_DEFAULT_TEXT = 'saving...';
@@ -111,7 +114,7 @@ export default new Module({
             hidden: true,
         },
     ],
-}, function init ({
+}, ({
     alwaysShow,
     commentReasons,
     customRemovalReason,
@@ -122,12 +125,10 @@ export default new Module({
     reasonCommentAsSubreddit: reasonCommentAsSubredditSetting,
     actionLock: actionLockSetting,
     actionLockComment: actionLockCommentSetting,
-}) {
-    const self = this;
-
+}) => {
     // Check if removal reasons are runnable
     if (TBCore.isModmail) {
-        self.log('Disabled because modmail');
+        log.debug('Disabled because modmail');
         return;
     }
 
@@ -243,12 +244,12 @@ export default new Module({
 
             // TODO: Dis ain't finished
             // TBApi.getRules(data.subreddit).then(rules => {
-            //    self.log('getting rules');
-            //    self.log(rules);
+            //    log.debug('getting rules');
+            //    log.debug(rules);
             // });
 
             // Set attributes and open reason box if one already exists for this subreddit
-            self.log('Opening popup');
+            log.debug('Opening popup');
             const $overlay = $(`#reason-popup-${data.subreddit}`);
             // If the overlay already exists, open it
             if ($overlay.length) {
@@ -269,7 +270,7 @@ export default new Module({
                     }
 
                     // Otherwise, setup a completely empty reason.
-                    self.log('Using custom reason');
+                    log.debug('Using custom reason');
 
                     const customReasons = {
                         pmsubject: '',
@@ -353,7 +354,7 @@ export default new Module({
             }
 
             function createOverlay () {
-                self.log('Creating removal reason overlay');
+                log.debug('Creating removal reason overlay');
 
                 // Options
                 const selectNoneDisplay = data.logSub ? '' : 'none'; // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
@@ -1015,11 +1016,11 @@ export default new Module({
 
             // Lock thread if requested
             if (actionLockThread) {
-                self.log(`Fullname of this link: ${data.fullname}`);
+                log.debug(`Fullname of this link: ${data.fullname}`);
                 try {
                     await TBApi.lock(data.fullname);
                 } catch (error) {
-                    self.error(`error locking ${data.fullname}:`, error);
+                    log.error(`error locking ${data.fullname}:`, error);
                     return status.text(LOCK_POST_ERROR);
                 }
             }
@@ -1032,9 +1033,9 @@ export default new Module({
 
             // Reply to submission/comment
             if (notifyByReply) {
-                self.log('Sending removal message by comment reply.');
+                log.debug('Sending removal message by comment reply.');
                 if (reasonCommentAsSubreddit) {
-                    self.log('Commenting as subreddit.');
+                    log.debug('Commenting as subreddit.');
                     let modactionsEndpoint;
                     if (data.fullname.startsWith('t1')) {
                         modactionsEndpoint = '/api/v1/modactions/removal_comment_message';
@@ -1084,7 +1085,7 @@ export default new Module({
                             // Lock reply if requested
                             if (actionLockComment) {
                                 const commentId = response.json.data.things[0].data.id;
-                                self.log(`Fullname of reply: ${commentId}`);
+                                log.debug(`Fullname of reply: ${commentId}`);
                                 TBApi.lock(commentId).then(() => {
                                     removeOverlay($overlay);
                                 }).catch(() => {
@@ -1106,7 +1107,7 @@ export default new Module({
             function sendPM () {
                 const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
-                self.log('Sending removal message by PM');
+                log.debug('Sending removal message by PM');
                 TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
                     removeOverlay($overlay);
                 }).catch(() => {
@@ -1117,7 +1118,7 @@ export default new Module({
             function sendNewModmail () {
                 const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
-                self.log('Sending removal message by New Modmail');
+                log.debug('Sending removal message by New Modmail');
                 TBApi.apiOauthPOST('/api/mod/conversations', {
                     to: data.author,
                     isAuthorHidden: true,

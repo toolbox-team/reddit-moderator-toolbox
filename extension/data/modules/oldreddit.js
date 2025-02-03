@@ -2,6 +2,9 @@ import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
+import createLogger from '../util/logging.ts';
+
+const log = createLogger('oldreddit');
 
 const self = new Module({
     name: 'Old Reddit',
@@ -51,7 +54,7 @@ function dispatchApiEvent (element, object) {
     try {
         element.dispatchEvent(apiEvent);
     } catch (error) {
-        self.log('Could not dispatch event', object);
+        log.debug('Could not dispatch event', object);
     }
 }
 

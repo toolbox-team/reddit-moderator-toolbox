@@ -34,10 +34,10 @@ import * as TBApi from './tbapi';
 import * as TBCore from './tbcore.js';
 import {delay} from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog';
 import TBModule from './tbmodule.jsx';
 import {getCache, setCache} from './util/cache';
 import {documentInteractive} from './util/dom';
+import createLogger from './util/logging';
 import {isUserLoggedInQuick} from './util/platform';
 import {getSettingAsync, setSettingAsync, updateSettings} from './util/settings';
 import {reactRenderer} from './util/ui_interop';
@@ -296,13 +296,13 @@ async function doSettingsUpdates () {
     }
 
     // Create a logger
-    const logger = TBLog('Init');
+    const log = createLogger('Init');
 
     // Ensure that other conditions are met, and return early if not
     try {
         await checkLoadConditions();
     } catch (error) {
-        logger.error('Load condition not met:', error);
+        log.error('Load condition not met:', error);
         return;
     }
 
@@ -392,7 +392,7 @@ async function doSettingsUpdates () {
             OldReddit,
         ]
     ) {
-        logger.debug('Registering module', m);
+        log.debug('Registering module', m);
         TBModule.register_module(m);
     }
 

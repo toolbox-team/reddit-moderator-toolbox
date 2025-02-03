@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-import TBLog from './tblog.ts';
+import createLogger from './util/logging.ts';
 
-const logger = TBLog('TBListener');
+const log = createLogger('TBListener');
 
 /**
  * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,
@@ -31,7 +31,7 @@ const listenerAliases = {
  * @private
  */
 function runTasks (tasks) {
-    logger.debug('run tasks');
+    log.debug('run tasks');
     let task;
     while ((task = tasks.shift())) {
         task();
@@ -245,7 +245,7 @@ class TBListener {
         }
 
         if (error) {
-            logger.error('task errored', error.message);
+            log.error('task errored', error.message);
             if (this.catch) {
                 this.catch(error);
             } else {

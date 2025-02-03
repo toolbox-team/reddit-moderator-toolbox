@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import browser from 'webextension-polyfill';
 
-import TBLog from '../tblog.js';
+import createLogger from './logging';
 
-const logger = TBLog('util:cache');
+const log = createLogger('util:cache');
 
 /**
  * Clears all cache keys.
@@ -33,7 +33,7 @@ export function getCache (moduleID: string, key: string, defaultVal: any = undef
             inputValue,
         }).then((response: /* TODO */ any) => {
             if (response.errorThrown !== undefined) {
-                logger.debug(`${storageKey} is corrupted.  Sending default.`);
+                log.debug(`${storageKey} is corrupted.  Sending default.`);
                 resolve(defaultVal);
             } else {
                 resolve(response.value);

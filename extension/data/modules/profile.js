@@ -7,8 +7,11 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('Profile');
 
 export default new Module({
     name: 'Profile Pro',
@@ -47,19 +50,18 @@ export default new Module({
             hidden: true,
         },
     ],
-}, function init ({
+}, ({
     alwaysTbProfile,
     directProfileToLegacy,
     subredditColor,
     profileButtonEnabled,
     onlyshowInhover,
-}) {
+}) => {
     const $body = $('body');
     let filterModThings = false;
     let hideModActions = false;
     let cancelSearch = true;
     const listingTypes = ['overview', 'submitted', 'comments'];
-    const self = this;
 
     // When profile links are clicked open them in the legacy view directly
     if (directProfileToLegacy) {
@@ -374,7 +376,7 @@ export default new Module({
 
             addModSubsToSidebar(user, $sidebar);
         }).catch(error => {
-            self.error('Error fetching user information:', inputURL, error);
+            log.error('Error fetching user information:', inputURL, error);
             // This CSS uses inline-block and having whitespace screws it
             // up, so this HTML has to start immediately after the quote :|
             $tabWrapper.after(`<div class="tb-profile-sidebar">
@@ -803,7 +805,7 @@ export default new Module({
                     $options.show();
                 });
             }).catch(error => {
-                self.error('Error fetching profile activity:', inputURL, error);
+                log.error('Error fetching profile activity:', inputURL, error);
                 $('.tb-profile-overlay .tb-window-content').html(`
                         <h1>No activity found</h1>
                         <p>Reddit doesn't seem to have anything for this account. Try checking your subreddit's moderation log to find posts and comments from them.</p>

@@ -6,7 +6,10 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import createLogger from '../util/logging.ts';
 import {purify, purifyObject} from '../util/purify.js';
+
+const log = createLogger('CommentNuke');
 
 export default new Module({
     name: 'Comment Nuke',
@@ -37,7 +40,7 @@ export default new Module({
             advanced: true,
         },
     ],
-}, function init ({ignoreDistinguished, showNextToUser, executionType}) {
+}, ({ignoreDistinguished, showNextToUser, executionType}) => {
     // This will contain a flat listing of all comments to be removed.
     let removalChain = [];
     // Distinguished chain
@@ -49,11 +52,9 @@ export default new Module({
     let nukeOpen = false;
     const $body = $('body');
 
-    const self = this;
-
     // Nuke button clicked
     $body.on('click', '.tb-nuke-button', function (event) {
-        self.log('nuke button clicked.');
+        log.debug('nuke button clicked.');
         if (nukeOpen) {
             TBui.textFeedback('Nuke popup is already open.', TBui.FEEDBACK_NEGATIVE);
             return;
@@ -257,7 +258,7 @@ export default new Module({
 
             case 'more':
                 {
-                    self.log('"load more" encountered, going even deeper');
+                    log.debug('"load more" encountered, going even deeper');
                     let commentIDs = object.data.children;
                     if (!commentIDs.length) {
                         // "continue this thread" links generated when a thread gets
@@ -275,7 +276,7 @@ export default new Module({
                 }
                 break;
             default: {
-                self.log('default, this should not happen...');
+                log.debug('default, this should not happen...');
                 // This shouldn't actually happen...
             }
         }

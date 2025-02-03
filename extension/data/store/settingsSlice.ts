@@ -1,7 +1,7 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 import browser from 'webextension-polyfill';
 
-import TBLog from '../tblog.js';
+import createLogger from '../util/logging';
 import {getSettings, SettingsObject} from '../util/settings';
 import {type AppThunk} from './index.js';
 
@@ -61,7 +61,7 @@ export const loadSettings = (): AppThunk => dispatch => {
         // load correctly or just never resolve. but i'm adding an error handler
         // for it anyway, because toolbox has a strange knack for failing in
         // ways that developers think should be impossible
-        const log = TBLog('store:settings');
+        const log = createLogger('store:settings');
         log.error('Failed to load initial settinsg?? wtf', error);
         dispatch(settingsLoadFailed());
         return;

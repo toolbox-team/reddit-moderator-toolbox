@@ -7,9 +7,12 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 
 import {modbarExists} from './modbar.js';
+
+const log = createLogger('Comments');
 
 const self = new Module({
     name: 'Comments',
@@ -96,7 +99,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
             removedCounter += 1;
         });
 
-        self.log(removedCounter);
+        log.debug(removedCounter);
 
         if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
             const $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
@@ -201,7 +204,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         if (TBCore.isUserPage) {
             const $modActions = $('.moderator, [data-subreddit="spam"]');
             if ($modActions.length > 0) {
-                self.log('found mod actions');
+                log.debug('found mod actions');
 
                 if ($('.tb-hide-mod-comments').length < 1) {
                     $('.menuarea').append(
@@ -209,7 +212,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
                     );
 
                     $body.on('click', '.tb-hide-mod-comments', function () {
-                        self.log('hiding mod actions');
+                        log.debug('hiding mod actions');
                         hidden = true;
                         $modActions.closest('.thing').hide();
                         $(this).hide();
@@ -224,7 +227,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
     window.addEventListener('TBNewThings', () => {
         addHideModButton();
         if (hidden) {
-            self.log('hiding mod actions');
+            log.debug('hiding mod actions');
             $('.moderator, [data-subreddit="spam"]').closest('.thing').hide();
         }
     });
@@ -239,7 +242,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         );
 
         $body.on('click', '.tb-hide-old', () => {
-            self.log('hiding old comments');
+            log.debug('hiding old comments');
             $('.entry').show(); // reset before hiding.
             $('.old-expand').removeClass('old-expand'); // new old expands
 
@@ -403,12 +406,12 @@ function init ({
         const $htmlCommentView = $body.find('#tb-sitetable'); // This will contain the new html we will add to the page.
 
         $body.find('.tb-flatview-search-input').keyup(() => {
-            self.log('typing');
+            log.debug('typing');
             const FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
             const FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
 
-            self.log(FlatViewSearchName);
-            self.log(FlatViewSearchContent);
+            log.debug(FlatViewSearchName);
+            log.debug(FlatViewSearchContent);
 
             $htmlCommentView.find('.tb-comment').each(function () {
                 const $this = $(this);
@@ -486,10 +489,10 @@ function init ({
             });
         }
 
-        self.log('openContextInPopup enabled.');
+        log.debug('openContextInPopup enabled.');
 
         $body.on('click', '.tb-comment-context-popup', function (event) {
-            self.log('Context button clicked.');
+            log.debug('Context button clicked.');
 
             const $this = $(this);
 

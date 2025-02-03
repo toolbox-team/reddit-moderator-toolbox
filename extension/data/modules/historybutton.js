@@ -7,8 +7,11 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
 import {purify, purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('HButton');
 
 const self = new Module({
     name: 'History Button',
@@ -70,7 +73,7 @@ self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H
 };
 
 self.runJsAPI = function ({onlyshowInhover}) {
-    self.log('run');
+    log.debug('run');
 
     TBListener.on('author', e => {
         const $target = $(e.target);
@@ -120,14 +123,14 @@ self.runJsAPI = function ({onlyshowInhover}) {
  * Initiate the module
  */
 async function init (options) {
-    self.log('init');
+    log.debug('init');
     const $body = $('body');
     if (!await TBCore.modSubCheck()) {
-        self.log('mscheck failed');
+        log.debug('mscheck failed');
         return;
     }
 
-    self.log('mscheck passed');
+    log.debug('mscheck passed');
 
     self.runJsAPI(options);
 
@@ -394,7 +397,7 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
         sort: 'new',
         limit: 100,
     }).catch(() => {
-        self.log('Shadowbanned?');
+        log.debug('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
         TBui.longLoadNonPersistent(false);
     }).then(d => {

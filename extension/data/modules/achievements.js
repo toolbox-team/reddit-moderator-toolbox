@@ -3,7 +3,7 @@ import $ from 'jquery';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {getSettingAsync} from '../util/settings.ts';
 
 const log = createLogger('Achievements');

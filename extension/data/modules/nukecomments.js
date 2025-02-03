@@ -6,7 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
 const log = createLogger('CommentNuke');

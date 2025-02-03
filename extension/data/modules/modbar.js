@@ -6,7 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBModule, {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {purify} from '../util/purify.js';
 import {getSettingAsync, setSettingAsync} from '../util/settings.ts';
 

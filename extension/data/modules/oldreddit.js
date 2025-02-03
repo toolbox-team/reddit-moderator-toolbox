@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 
 const log = createLogger('oldreddit');
 

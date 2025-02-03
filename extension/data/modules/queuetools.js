@@ -7,7 +7,7 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 import {purifyObject} from '../util/purify.js';
 

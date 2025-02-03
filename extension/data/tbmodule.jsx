@@ -8,7 +8,7 @@ import TBListener from './tblistener.js';
 import * as TBui from './tbui.js';
 import {clearCache} from './util/cache.ts';
 import {icons} from './util/icons.ts';
-import createLogger from './util/logger.ts';
+import createLogger from './util/logging.ts';
 import {purify, purifyObject} from './util/purify.js';
 import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 

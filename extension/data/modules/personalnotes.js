@@ -7,7 +7,7 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
 
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {modbarExists} from './modbar.js';
 
 const log = createLogger('PNotes');

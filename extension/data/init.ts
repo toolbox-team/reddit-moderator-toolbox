@@ -37,7 +37,7 @@ import TBListener from './tblistener.js';
 import TBModule from './tbmodule.jsx';
 import {getCache, setCache} from './util/cache';
 import {documentInteractive} from './util/dom';
-import createLogger from './util/logger';
+import createLogger from './util/logging';
 import {isUserLoggedInQuick} from './util/platform';
 import {getSettingAsync, setSettingAsync, updateSettings} from './util/settings';
 import {reactRenderer} from './util/ui_interop';

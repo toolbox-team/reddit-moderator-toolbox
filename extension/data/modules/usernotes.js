@@ -8,7 +8,7 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {clearCache, getCache, setCache} from '../util/cache.ts';
 import {icons} from '../util/icons.ts';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 

@@ -5,7 +5,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
 const log = createLogger('ModMatrix');

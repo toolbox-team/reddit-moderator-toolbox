@@ -9,7 +9,7 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
 import {icons} from '../util/icons.ts';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 
 const log = createLogger('RReasons');
 

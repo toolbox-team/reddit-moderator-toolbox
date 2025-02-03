@@ -4,7 +4,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
 import {actionButton} from '../tbui.js';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {getSettingAsync} from '../util/settings.ts';
 
 const log = createLogger('BButtons');

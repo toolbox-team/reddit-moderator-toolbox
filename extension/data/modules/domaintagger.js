@@ -6,7 +6,7 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 
 const log = createLogger('DTagger');

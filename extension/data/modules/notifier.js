@@ -5,7 +5,7 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import createLogger from '../util/logger.ts';
+import createLogger from '../util/logging.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 

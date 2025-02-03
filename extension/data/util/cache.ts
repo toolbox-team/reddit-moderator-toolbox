@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import browser from 'webextension-polyfill';
 
-import createLogger from './logger';
+import createLogger from './logging';
 
 const log = createLogger('util:cache');
 

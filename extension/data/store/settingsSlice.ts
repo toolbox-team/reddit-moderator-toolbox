@@ -1,7 +1,7 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 import browser from 'webextension-polyfill';
 
-import createLogger from '../util/logger';
+import createLogger from '../util/logging';
 import {getSettings, SettingsObject} from '../util/settings';
 import {type AppThunk} from './index.js';
 

@@ -51,13 +51,13 @@ export async function exportSettings (subreddit) {
 export async function importSettings (subreddit) {
     const resp = await readFromWiki(subreddit, 'tbsettings', true);
     if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
-        logger.log('Error loading wiki page');
+        logger.debug('Error loading wiki page');
         return;
     }
     purifyObject(resp);
 
     if (resp['Utils.lastversion'] < 300) {
-        logger.log('Cannot import from a toolbox version under 3.0');
+        logger.debug('Cannot import from a toolbox version under 3.0');
         return;
     }
 

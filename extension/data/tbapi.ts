@@ -248,7 +248,7 @@ export const getRatelimit = () =>
         const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!;
         const ratelimitReset = response.headers.get('x-ratelimit-reset')!;
 
-        logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
+        logger.debug(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
 
         return {
             ratelimitRemaining,
@@ -309,7 +309,7 @@ export async function postToWiki (
         data = JSON.stringify(data);
     }
 
-    logger.log(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
+    logger.debug(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
 
     // If we update automoderator we want to replace any tabs with four spaces.
     if (updateAM) {
@@ -384,7 +384,7 @@ export const readFromWiki = (
                 parsedWikiData = JSON.parse(wikiData);
             } catch (err) {
                 // we should really have a INVAILD_DATA error for this.
-                logger.log(err);
+                logger.debug(err);
                 resolve(NO_WIKI_PAGE);
             }
             // Moved out of the try so random exceptions don't erase the entire wiki page
@@ -735,15 +735,15 @@ export const postComment = async (parent: string, text: string) => {
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.log(`Failed to post comment to on ${parent}`);
-            logger.log(response.json.fails);
+            logger.debug(`Failed to post comment to on ${parent}`);
+            logger.debug(response.json.fails);
             throw response.json.errors;
         }
-        logger.log(`Successfully posted comment on ${parent}`);
+        logger.debug(`Successfully posted comment on ${parent}`);
         return response;
     } catch (error) {
-        logger.log(`Failed to post link to on ${parent}`);
-        logger.log(error);
+        logger.debug(`Failed to post link to on ${parent}`);
+        logger.debug(error);
         throw error;
     }
 };
@@ -768,15 +768,15 @@ export const postLink = async (link: string, title: string, subreddit: string) =
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.log(`Failed to post link to /r/${subreddit}`);
-            logger.log(response.json.errors);
+            logger.debug(`Failed to post link to /r/${subreddit}`);
+            logger.debug(response.json.errors);
             throw response.json.errors;
         }
-        logger.log(`Successfully posted link to /r/${subreddit}`);
+        logger.debug(`Successfully posted link to /r/${subreddit}`);
         return response;
     } catch (error) {
-        logger.log(`Failed to post link to /r/${subreddit}`);
-        logger.log(error);
+        logger.debug(`Failed to post link to /r/${subreddit}`);
+        logger.debug(error);
         throw error;
     }
 };
@@ -801,15 +801,15 @@ export const sendMessage = async (user: string, subject: string, message: string
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.log(`Failed to send link to /u/${user}`);
-            logger.log(response.json.errors);
+            logger.debug(`Failed to send link to /u/${user}`);
+            logger.debug(response.json.errors);
             throw response.json.errors;
         }
-        logger.log(`Successfully send link to /u/${user}`);
+        logger.debug(`Successfully send link to /u/${user}`);
         return response;
     } catch (error) {
-        logger.log(`Failed to send link to /u/${user}`);
-        logger.log(error);
+        logger.debug(`Failed to send link to /u/${user}`);
+        logger.debug(error);
         throw error;
     }
 };

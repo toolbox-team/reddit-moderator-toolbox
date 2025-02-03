@@ -7,11 +7,11 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 import {purifyObject} from '../util/purify.js';
 
-const log = TBLog('QueueTools');
+const log = createLogger('QueueTools');
 
 const self = new Module({
     name: 'Queue Tools',

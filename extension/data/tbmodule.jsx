@@ -8,13 +8,13 @@ import TBListener from './tblistener.js';
 import * as TBui from './tbui.js';
 import {clearCache} from './util/cache.ts';
 import {icons} from './util/icons.ts';
-import TBLog from './util/logger.ts';
+import createLogger from './util/logger.ts';
 import {purify, purifyObject} from './util/purify.js';
 import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 
 import css from './tbmodule.module.css';
 
-const log = TBLog('TBModule');
+const log = createLogger('TBModule');
 
 /**
  * Saves a copy of currently-stored settings to the `tbsettings` wiki page of
@@ -177,7 +177,7 @@ const TBModule = {
     },
 
     async showSettings () {
-        const log = TBLog('settings window');
+        const log = createLogger('settings window');
         const $body = $('body');
 
         // Get a current snapshot of settings which we can work with

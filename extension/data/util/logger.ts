@@ -71,7 +71,7 @@ type Logger = {
  * @param caller A module serving as the caller, or a string
  * representing the name of non-module callers
  */
-export default function TBLog (caller?: string | {id: string}) {
+export default function createLogger (caller?: string | {id: string}) {
     // Create a new object
     const obj: Partial<Logger> = {};
     // The object gets a function for every log type

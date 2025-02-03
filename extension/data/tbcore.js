@@ -6,13 +6,13 @@ import {getModhash} from './tbapi.ts';
 import * as TBHelpers from './tbhelpers.js';
 import {getCache, setCache} from './util/cache.ts';
 import {icons} from './util/icons.ts';
-import TBLog from './util/logger.ts';
+import createLogger from './util/logger.ts';
 import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 import {currentPlatform, RedditPlatform} from './util/platform.ts';
 import {purifyObject} from './util/purify.js';
 import {getSettingAsync, setSettingAsync} from './util/settings.ts';
 
-const log = TBLog('TBCore');
+const log = createLogger('TBCore');
 
 // Build variables defined by Rollup
 /* global process */

@@ -5,10 +5,10 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
-const log = TBLog('ModMatrix');
+const log = createLogger('ModMatrix');
 
 const self = new Module({
     name: 'Mod Log Matrix',

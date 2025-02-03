@@ -8,11 +8,11 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {clearCache} from '../util/cache.ts';
 import {icons} from '../util/icons.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
-const log = TBLog('TBConfig');
+const log = createLogger('TBConfig');
 
 export default new Module({
     name: 'toolbox Config',

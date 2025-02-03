@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
-import TBLog from './util/logger.ts';
+import createLogger from './util/logger.ts';
 
-const log = TBLog('TBListener');
+const log = createLogger('TBListener');
 
 /**
  * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,

@@ -2,9 +2,9 @@ import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
 import {Module} from '../tbmodule.jsx';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 
-const log = TBLog('oldreddit');
+const log = createLogger('oldreddit');
 
 const self = new Module({
     name: 'Old Reddit',

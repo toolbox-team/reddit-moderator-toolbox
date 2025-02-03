@@ -37,7 +37,7 @@ import TBListener from './tblistener.js';
 import TBModule from './tbmodule.jsx';
 import {getCache, setCache} from './util/cache';
 import {documentInteractive} from './util/dom';
-import TBLog from './util/logger';
+import createLogger from './util/logger';
 import {isUserLoggedInQuick} from './util/platform';
 import {getSettingAsync, setSettingAsync, updateSettings} from './util/settings';
 import {reactRenderer} from './util/ui_interop';
@@ -296,7 +296,7 @@ async function doSettingsUpdates () {
     }
 
     // Create a logger
-    const log = TBLog('Init');
+    const log = createLogger('Init');
 
     // Ensure that other conditions are met, and return early if not
     try {

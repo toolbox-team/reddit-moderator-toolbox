@@ -7,12 +7,12 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purifyObject} from '../util/purify.js';
 
 import {modbarExists} from './modbar.js';
 
-const log = TBLog('Comments');
+const log = createLogger('Comments');
 
 const self = new Module({
     name: 'Comments',

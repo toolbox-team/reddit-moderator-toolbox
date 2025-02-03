@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import browser from 'webextension-polyfill';
 
-import TBLog from './logger';
+import createLogger from './logger';
 
-const log = TBLog('util:cache');
+const log = createLogger('util:cache');
 
 /**
  * Clears all cache keys.

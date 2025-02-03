@@ -11,7 +11,7 @@ import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {setSettingAsync} from '../util/settings.ts';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
@@ -29,7 +29,7 @@ import {WindowTabs} from '../components/WindowTabs.tsx';
 
 import css from './modnotes.module.css';
 
-const log = TBLog('ModNotes');
+const log = createLogger('ModNotes');
 
 /**
  * An object mapping modnote types to human-friendly display names.

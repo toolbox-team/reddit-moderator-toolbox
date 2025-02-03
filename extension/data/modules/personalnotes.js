@@ -7,10 +7,10 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
 
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {modbarExists} from './modbar.js';
 
-const log = TBLog('PNotes');
+const log = createLogger('PNotes');
 
 export default new Module({
     name: 'Personal Notes',

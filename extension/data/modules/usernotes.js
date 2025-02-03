@@ -8,11 +8,11 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {clearCache, getCache, setCache} from '../util/cache.ts';
 import {icons} from '../util/icons.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 
-const log = TBLog('UserNotes');
+const log = createLogger('UserNotes');
 
 // FIXME: It no longer makes sense to bake logger functions into modules
 //        themselves, since functions the module defines may not have the module

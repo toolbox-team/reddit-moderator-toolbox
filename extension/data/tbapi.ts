@@ -6,10 +6,10 @@ import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
 import {getCache, setCache} from './util/cache.js';
-import TBLog from './util/logger';
+import createLogger from './util/logger';
 import {purifyObject} from './util/purify.js';
 
-const log = TBLog('TBApi');
+const log = createLogger('TBApi');
 
 // Error codes used in lots of places
 export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';

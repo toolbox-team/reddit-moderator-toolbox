@@ -6,11 +6,11 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBModule, {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purify} from '../util/purify.js';
 import {getSettingAsync, setSettingAsync} from '../util/settings.ts';
 
-const log = TBLog('Modbar');
+const log = createLogger('Modbar');
 
 // Hold onto the modbarExists resolver so we can call it when the time is right
 let resolveModbarExists = null;

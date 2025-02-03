@@ -6,11 +6,11 @@ import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 
-const log = TBLog('ModButton');
+const log = createLogger('ModButton');
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 5000;

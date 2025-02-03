@@ -7,11 +7,11 @@ import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purify, purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 
-const log = TBLog('HButton');
+const log = createLogger('HButton');
 
 const self = new Module({
     name: 'History Button',

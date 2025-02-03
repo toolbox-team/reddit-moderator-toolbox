@@ -6,10 +6,10 @@ import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
-import TBLog from '../util/logger.ts';
+import createLogger from '../util/logger.ts';
 import {purifyObject} from '../util/purify.js';
 
-const log = TBLog('DTagger');
+const log = createLogger('DTagger');
 
 export default new Module({
     name: 'Domain Tagger',

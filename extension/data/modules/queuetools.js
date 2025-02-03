@@ -62,7 +62,6 @@ const self = new Module({
             id: 'showReportReasons',
             type: 'boolean',
             default: false,
-            beta: false,
             description: 'Add button to show reports on posts with ignored reports.',
         },
         //
@@ -144,7 +143,6 @@ const self = new Module({
             id: 'highlightAutomodMatches',
             type: 'boolean',
             default: true,
-            beta: false,
             description:
                 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
             oldReddit: true,

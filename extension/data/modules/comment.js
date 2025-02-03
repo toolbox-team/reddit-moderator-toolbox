@@ -23,7 +23,6 @@ const self = new Module({
             id: 'openContextInPopup',
             type: 'boolean',
             default: true,
-            beta: false,
             description: 'Add a link to comments where appropiate to open the context in a popup on page.',
         },
         {

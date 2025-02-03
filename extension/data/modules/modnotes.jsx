@@ -9,9 +9,9 @@ import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
+import TBLog from '../util/logger.ts';
 import {setSettingAsync} from '../util/settings.ts';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 

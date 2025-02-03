@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import browser from 'webextension-polyfill';
 
-import TBLog from '../tblog.js';
+import TBLog from './logger';
 
 const logger = TBLog('util:cache');
 

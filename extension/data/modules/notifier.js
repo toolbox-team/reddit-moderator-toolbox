@@ -4,8 +4,8 @@ import browser from 'webextension-polyfill';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
+import TBLog from '../util/logger.ts';
 import {purifyObject} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
 

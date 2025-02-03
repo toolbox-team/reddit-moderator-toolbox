@@ -5,8 +5,8 @@
 import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
-import TBLog from './tblog';
 import {getCache, setCache} from './util/cache.js';
+import TBLog from './util/logger';
 import {purifyObject} from './util/purify.js';
 
 const logger = TBLog('TBApi');

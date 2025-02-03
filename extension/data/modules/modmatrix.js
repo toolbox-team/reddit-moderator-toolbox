@@ -3,9 +3,9 @@ import SnuOwnd from 'snuownd';
 
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
-import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import TBLog from '../util/logger.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
 const log = TBLog('ModMatrix');

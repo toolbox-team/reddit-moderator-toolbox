@@ -1,8 +1,8 @@
 import $ from 'jquery';
 
 import * as TBCore from '../tbcore.js';
-import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
+import TBLog from '../util/logger.ts';
 
 const log = TBLog('oldreddit');
 

@@ -5,10 +5,10 @@ import {NO_WIKI_PAGE, postToWiki, readFromWiki, WIKI_PAGE_UNKNOWN} from './tbapi
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.ts';
 import * as TBui from './tbui.js';
 import {clearCache} from './util/cache.ts';
 import {icons} from './util/icons.ts';
+import TBLog from './util/logger.ts';
 import {purify, purifyObject} from './util/purify.js';
 import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 

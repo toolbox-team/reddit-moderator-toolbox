@@ -5,11 +5,11 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
-import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {getCache, setCache} from '../util/cache.ts';
 import {icons} from '../util/icons.ts';
+import TBLog from '../util/logger.ts';
 
 const log = TBLog('RReasons');
 

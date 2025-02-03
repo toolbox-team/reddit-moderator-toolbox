@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import TBLog from './tblog.ts';
+import TBLog from './util/logger.ts';
 
 const logger = TBLog('TBListener');
 

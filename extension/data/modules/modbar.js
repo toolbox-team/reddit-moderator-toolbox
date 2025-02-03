@@ -3,10 +3,10 @@ import $ from 'jquery';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
-import TBLog from '../tblog.ts';
 import TBModule, {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
+import TBLog from '../util/logger.ts';
 import {purify} from '../util/purify.js';
 import {getSettingAsync, setSettingAsync} from '../util/settings.ts';
 

@@ -29,29 +29,18 @@ type LogType = keyof typeof logTypes;
 /**
  * Executes a log of a given type.
  * @private
- * @param caller The caller, if any, a TB module or a string
+ * @param caller The caller, if any
  * @param type The name of the log type to use
  * @param args Arbitrary content passed through to the console
  */
-function log (caller: string | {id: string} | undefined, type: LogType, ...args: any[]) {
-    let callerName;
-    if (!caller) {
-        callerName = 'unknown';
-    } else if (typeof caller === 'object') {
-        // If it's an object, we assume it's a module
-        // TODO: stop using this
-        callerName = caller.id;
-    } else {
-        // Should be a string
-        callerName = caller;
-    }
+function log (caller: string | undefined, type: LogType, ...args: any[]) {
     // Get the appropriate styles for this log type, and send the message
     const config = logTypes[type];
     const {color, background, func} = config;
     const text = ('text' in config) ? config.text : type;
     func(
         // First part of the message line
-        `tb: %c[${callerName}] %c${text}`,
+        `tb: %c[${caller || 'unknown'}] %c${text}`,
         // Caller style
         'font-weight: bold',
         // Styles for the type name
@@ -68,10 +57,11 @@ type Logger = {
 
 /**
  * Creates a logger object with a given caller.
- * @param caller A module serving as the caller, or a string
- * representing the name of non-module callers
+ * @param caller A string representing the module or other section of code
+ * that's calling the logger, to be displayed in the console alongside all
+ * messages emitted by the logger
  */
-export default function createLogger (caller?: string | {id: string}) {
+export default function createLogger (caller?: string) {
     // Create a new object
     const obj: Partial<Logger> = {};
     // The object gets a function for every log type

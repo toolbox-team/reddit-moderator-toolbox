@@ -6,7 +6,7 @@ import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
 import {getCache, setCache} from './util/cache.js';
-import createLogger from './util/logging.ts';
+import createLogger from './util/logging';
 import {purifyObject} from './util/purify.js';
 
 const log = createLogger('TBApi');

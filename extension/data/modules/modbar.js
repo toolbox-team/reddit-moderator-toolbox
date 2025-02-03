@@ -463,8 +463,6 @@ export default new Module({
             $(`
                 <button
                     id="tb-prerelease-link"
-                    href="${TBCore.link('/r/tb_beta')}"
-                    target="_blank"
                     title="this is a ${TBCore.buildType} build of toolbox. click to copy version information"
                 />
                     <i class="tb-icons">${icons.prerelease}</i>

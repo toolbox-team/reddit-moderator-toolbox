@@ -29,18 +29,18 @@ type LogType = keyof typeof logTypes;
 /**
  * Executes a log of a given type.
  * @private
- * @param caller The caller, if any
+ * @param caller The caller
  * @param type The name of the log type to use
  * @param args Arbitrary content passed through to the console
  */
-function log (caller: string | undefined, type: LogType, ...args: any[]) {
+function log (caller: string, type: LogType, ...args: any[]) {
     // Get the appropriate styles for this log type, and send the message
     const config = logTypes[type];
     const {color, background, func} = config;
     const text = ('text' in config) ? config.text : type;
     func(
         // First part of the message line
-        `tb: %c[${caller || 'unknown'}] %c${text}`,
+        `tb: %c[${caller}] %c${text}`,
         // Caller style
         'font-weight: bold',
         // Styles for the type name
@@ -61,7 +61,7 @@ type Logger = {
  * that's calling the logger, to be displayed in the console alongside all
  * messages emitted by the logger
  */
-export default function createLogger (caller?: string) {
+export default function createLogger (caller: string) {
     // Create a new object
     const obj: Partial<Logger> = {};
     // The object gets a function for every log type

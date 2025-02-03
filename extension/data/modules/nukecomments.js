@@ -7,9 +7,12 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import createLogger from '../util/logging.ts';
+import {purify, purifyObject} from '../util/purify.js';
 import {JQueryRenderer} from '../util/ui_interop.tsx';
+
+const log = createLogger('CommentNuke');
 
 export default new Module({
     name: 'Comment Nuke',
@@ -40,7 +43,7 @@ export default new Module({
             advanced: true,
         },
     ],
-}, function init ({ignoreDistinguished, showNextToUser, executionType}) {
+}, ({ignoreDistinguished, showNextToUser, executionType}) => {
     // This will contain a flat listing of all comments to be removed.
     let removalChain = [];
     // Distinguished chain
@@ -52,11 +55,9 @@ export default new Module({
     let nukeOpen = false;
     const $body = $('body');
 
-    const self = this;
-
     // Nuke button clicked
     $body.on('click', '.tb-nuke-button', function (event) {
-        self.log('nuke button clicked.');
+        log.debug('nuke button clicked.');
         if (nukeOpen) {
             TBui.textFeedback('Nuke popup is already open.', TBui.FEEDBACK_NEGATIVE);
             return;
@@ -108,7 +109,7 @@ export default new Module({
             });
 
         TBApi.getJSON(fetchURL, {raw_json: 1}).then(data => {
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             parseComments(data[1].data.children[0], postID, subreddit).then(() => {
                 TBui.longLoadSpinner(false);
                 $popup.find('.tb-nuke-feedback').text('Finished analyzing comments.');
@@ -116,7 +117,7 @@ export default new Module({
                 const removalChainLength = removalChain.length;
                 // Distinguished chain
                 const distinguishedCommentsLength = distinguishedComments.length;
-                $popup.find('.tb-nuke-details').html(TBStorage.purify(`
+                $popup.find('.tb-nuke-details').html(purify(`
                     <p>${
                     removalChainLength + distinguishedCommentsLength
                 } comments found (Already removed comments not included).</p>
@@ -260,7 +261,7 @@ export default new Module({
 
             case 'more':
                 {
-                    self.log('"load more" encountered, going even deeper');
+                    log.debug('"load more" encountered, going even deeper');
                     let commentIDs = object.data.children;
                     if (!commentIDs.length) {
                         // "continue this thread" links generated when a thread gets
@@ -272,13 +273,13 @@ export default new Module({
                         const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                         // Lets get the comments.
                         const data = await TBApi.getJSON(fetchUrl, {raw_json: 1});
-                        TBStorage.purifyObject(data);
+                        purifyObject(data);
                         await parseComments(data[1].data.children[0], postID, subreddit);
                     }
                 }
                 break;
             default: {
-                self.log('default, this should not happen...');
+                log.debug('default, this should not happen...');
                 // This shouldn't actually happen...
             }
         }

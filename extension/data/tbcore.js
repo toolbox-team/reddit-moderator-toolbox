@@ -3,13 +3,16 @@ import browser from 'webextension-polyfill';
 
 import * as TBApi from './tbapi.ts';
 import {getModhash} from './tbapi.ts';
-import {icons} from './tbconstants.ts';
 import * as TBHelpers from './tbhelpers.js';
-import TBLog from './tblog.ts';
-import * as TBStorage from './tbstorage.js';
+import {getCache, setCache} from './util/cache.ts';
+import {icons} from './util/icons.ts';
+import createLogger from './util/logging.ts';
+import {getSettingSync} from './util/oldLegacyStorageBullshit.ts';
 import {currentPlatform, RedditPlatform} from './util/platform.ts';
+import {purifyObject} from './util/purify.js';
+import {getSettingAsync, setSettingAsync} from './util/settings.ts';
 
-const logger = TBLog('TBCore');
+const log = createLogger('TBCore');
 
 // Build variables defined by Rollup
 /* global process */
@@ -37,7 +40,7 @@ export const notesMaxSchema = 6; // The non-default max version (to allow phase-
  */
 export function isConfigValidVersion (subreddit, config) {
     if (config.ver < configMinSchema || config.ver > configMaxSchema) {
-        logger.error(`Failed config version check:
+        log.error(`Failed config version check:
 \tsubreddit: ${subreddit}
 \tconfig.ver: ${config.ver}
 \tTBCore.configSchema: ${configSchema}
@@ -162,18 +165,18 @@ function waitForModSubsRefresh () {
  * @returns {Promise<array>} array with subreddit names or subreddit objects with details.
  */
 export async function getModSubs (data) {
-    logger.log('getting mod subs');
+    log.debug('getting mod subs');
 
     // Are we already fetching subs? If so, wait for them to be refreshed before attempting to return anything.
     if (fetchModSubsActive) {
         await waitForModSubsRefresh();
-        return TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
+        return getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
     } else {
         fetchModSubsActive = true;
     }
 
     // Try to load the info we need from cache
-    const cachedData = await TBStorage.getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
+    const cachedData = await getCache('Utils', data ? 'moderatedSubsData' : 'moderatedSubs', []);
     if (cachedData.length) {
         // Got cache let other waiting instances of this function know and return cachedData
         window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));
@@ -200,8 +203,8 @@ export async function getModSubs (data) {
         'subscribers',
     );
 
-    await TBStorage.setCache('Utils', 'moderatedSubs', mySubs);
-    await TBStorage.setCache('Utils', 'moderatedSubsData', mySubsData);
+    await setCache('Utils', 'moderatedSubs', mySubs);
+    await setCache('Utils', 'moderatedSubsData', mySubsData);
 
     fetchModSubsActive = false;
     window.dispatchEvent(new CustomEvent('tb-fresh-mod-subs'));
@@ -245,7 +248,7 @@ let lastVersionPromise = null;
  */
 export function getLastVersion () {
     if (!lastVersionPromise) {
-        lastVersionPromise = TBStorage.getSettingAsync(SETTINGS_NAME, 'lastVersion', 0);
+        lastVersionPromise = getSettingAsync(SETTINGS_NAME, 'lastVersion', 0);
     }
     return lastVersionPromise;
 }
@@ -279,7 +282,7 @@ if (isModFakereddit || !post_site || invalidPostSites.indexOf(post_site) !== -1)
 // Page event management
 
 export function sendEvent (tbuEvent) {
-    logger.log('Sending event:', tbuEvent);
+    log.debug('Sending event:', tbuEvent);
     window.dispatchEvent(new CustomEvent(tbuEvent));
 }
 
@@ -321,9 +324,9 @@ export function debugInformation () {
         browser: '',
         browserVersion: '',
         platformInformation: '',
-        debugMode: TBStorage.getSetting('Utils', 'debugMode', false),
-        compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
-        advancedSettings: TBStorage.getSetting('Utils', 'advancedMode', false),
+        debugMode: getSettingSync('Utils', 'debugMode', false),
+        compactMode: getSettingSync('Modbar', 'compactHide', false),
+        advancedSettings: getSettingSync('Utils', 'advancedMode', false),
         cookiesEnabled: navigator.cookieEnabled,
     };
 
@@ -406,7 +409,7 @@ export function debugInformation () {
         }
     }
     // info level is always displayed
-    logger.info('Version/browser information:', debugObject);
+    log.info('Version/browser information:', debugObject);
     return debugObject;
 }
 /**
@@ -511,19 +514,26 @@ export const alert = ({message, noteID, showClose}) =>
         }
         $noteDiv.appendTo($body);
 
-        window.addEventListener('tbSingleSettingUpdate', event => {
-            const settingDetail = event.detail;
-            if (
-                settingDetail.module === 'Utils' && settingDetail.setting === 'seenNotes'
-                && settingDetail.value.includes(noteID)
-            ) {
-                $noteDiv.remove();
-                resolve(false);
+        const seenNotesChangeListener = (changes, storageArea) => {
+            if (storageArea !== 'local') {
                 return;
             }
-        });
+            for (const [key, {newValue}] of Object.entries(changes)) {
+                if (key !== 'Toolbox.Utils.seenNotes') {
+                    continue;
+                }
+                if (newValue.includes(noteID)) {
+                    $noteDiv.remove();
+                    resolve(false);
+                    return;
+                }
+            }
+        };
+
+        browser.storage.onChanged.addListener(seenNotesChangeListener);
 
         $noteDiv.click(e => {
+            browser.storage.onChanged.removeListener(seenNotesChangeListener);
             $noteDiv.remove();
             if (e.target.className === 'note-close') {
                 resolve(false);
@@ -548,7 +558,7 @@ export async function notification (title, body, path, markreadid = false) {
     const notificationTimeout = 6000;
     const notificationID = await browser.runtime.sendMessage({
         action: 'tb-notification',
-        native: await TBStorage.getSettingAsync('GenSettings', 'nativeNotifications', true),
+        native: await getSettingAsync('GenSettings', 'nativeNotifications', true),
         details: {
             title,
             body,
@@ -593,7 +603,7 @@ export async function showNote (note) {
     }
 
     // If we've already seen this note, skip it
-    if ((await TBStorage.getSettingAsync('Utils', 'seenNotes', [])).includes(note.id)) {
+    if ((await getSettingAsync('Utils', 'seenNotes', [])).includes(note.id)) {
         return;
     }
 
@@ -605,9 +615,9 @@ export async function showNote (note) {
     }).then(async resp => {
         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
             // Fetch seenNotes fresh, add this note's ID, and save the result
-            const seenNotes = await TBStorage.getSettingAsync('Utils', 'seenNotes', []);
+            const seenNotes = await getSettingAsync('Utils', 'seenNotes', []);
             seenNotes.push(note.id);
-            await TBStorage.setSettingAsync('Utils', 'seenNotes', seenNotes);
+            await setSettingAsync('Utils', 'seenNotes', seenNotes);
             window.setTimeout(() => {
                 window.open(note.link);
             }, 100);
@@ -622,7 +632,7 @@ export async function showNote (note) {
  */
 async function fetchNewsNotes (sub) {
     const resp = await TBApi.readFromWiki(sub, 'tbnotes', true);
-    TBStorage.purifyObject(resp);
+    purifyObject(resp);
     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE || resp.length < 1) {
         throw new Error(`Failed to fetch notes for /r/${sub}`);
     }
@@ -636,10 +646,10 @@ export function displayNotes () {
         return;
     }
 
-    fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
+    fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(log.warn);
 
     if (buildType === 'beta') {
-        fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(logger.warn);
+        fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(log.warn);
     }
 }
 
@@ -839,12 +849,12 @@ export function forEachChunkedDynamic (array, process, options) {
 
 export async function getConfig (sub) {
     // Check
-    const cachedSubsWithNoConfig = await TBStorage.getCache('Utils', 'noConfig', []);
+    const cachedSubsWithNoConfig = await getCache('Utils', 'noConfig', []);
     if (cachedSubsWithNoConfig.includes(sub)) {
         return undefined;
     }
 
-    const cachedConfigs = await TBStorage.getCache('Utils', 'configCache', {});
+    const cachedConfigs = await getCache('Utils', 'configCache', {});
     if (cachedConfigs[sub] !== undefined) {
         return cachedConfigs[sub];
     }
@@ -858,64 +868,15 @@ export async function getConfig (sub) {
     if (resp === TBApi.NO_WIKI_PAGE) {
         // Subreddit not configured yet, at least add it to the noConfig cache
         cachedSubsWithNoConfig.push(sub);
-        TBStorage.setCache('Utils', 'noConfig', cachedSubsWithNoConfig);
+        setCache('Utils', 'noConfig', cachedSubsWithNoConfig);
         return undefined;
     }
 
     // We have new config data from the wiki, update the config cache and return
-    TBStorage.purifyObject(resp);
+    purifyObject(resp);
     cachedConfigs[sub] = resp;
-    TBStorage.setCache('Utils', 'configCache', cachedConfigs);
+    setCache('Utils', 'configCache', cachedConfigs);
     return resp;
-}
-
-// TODO: Move this function to tbmodule, the only place it's ever used
-export function exportSettings (subreddit, callback) {
-    const settingsObject = {};
-    $(TBStorage.settings).each(function () {
-        if (this === 'Storage.settings') {
-            return;
-        } // don't backup the setting registry.
-
-        const key = this.split('.');
-        const setting = TBStorage.getSetting(key[0], key[1], null);
-
-        if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
-            settingsObject[this] = setting;
-        }
-    });
-
-    TBApi.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false).then(callback);
-}
-
-// TODO: Move this function to tbmodule, the only place it's ever used
-export async function importSettings (subreddit) {
-    const resp = await TBApi.readFromWiki(subreddit, 'tbsettings', true);
-    if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-        logger.log('Error loading wiki page');
-        return;
-    }
-    TBStorage.purifyObject(resp);
-
-    if (resp['Utils.lastversion'] < 300) {
-        logger.log('Cannot import from a toolbox version under 3.0');
-        return;
-    }
-
-    const doNotImport = [
-        'oldreddit.enabled',
-    ];
-
-    Object.entries(resp).forEach(([fullKey, value]) => {
-        const key = fullKey.split('.');
-
-        // Do not import certain legacy settings.
-        if (doNotImport.includes(fullKey)) {
-            logger.log(`Skipping ${fullKey} import`);
-        } else {
-            TBStorage.setSetting(key[0], key[1], value, false);
-        }
-    });
 }
 
 // Misc. functions
@@ -1157,7 +1118,7 @@ function findMessage (object, searchID) {
             }
             break;
         case 't4':
-            logger.log('t4:', object.data.id);
+            log.debug('t4:', object.data.id);
             if (object.data.id === searchID) {
                 found = object;
             }
@@ -1183,7 +1144,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) =>
         if (id.startsWith('t4_')) {
             const shortID = id.substr(3);
             TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {
-                TBStorage.purifyObject(response);
+                purifyObject(response);
                 const message = findMessage(response, shortID);
                 const body = message.data.body;
                 const user = message.data.author;
@@ -1228,7 +1189,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) =>
         } else {
             const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
             TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(async response => {
-                TBStorage.purifyObject(response);
+                purifyObject(response);
                 const data = response.data;
 
                 let user = data.children[0].data.author;
@@ -1312,7 +1273,7 @@ async function fetchModSubs (after, tries = 1) {
             after,
             limit: 100,
         });
-        TBStorage.purifyObject(json);
+        purifyObject(json);
     } catch (error) {
         // Retry 504s, up to 5 attempts; otherwise throw the error
         if (error.response && error.response.status === 504 && tries < 5) {
@@ -1340,7 +1301,7 @@ let devsFetchPromise = null;
  */
 export async function getToolboxDevs () {
     // Try to get from cache
-    const cachedDevs = await TBStorage.getSettingAsync('Utils', 'tbDevs', []);
+    const cachedDevs = await getSettingAsync('Utils', 'tbDevs', []);
     if (cachedDevs && cachedDevs.length) {
         return cachedDevs;
     }
@@ -1355,7 +1316,7 @@ export async function getToolboxDevs () {
             try {
                 // Fetch the /r/toolbox mod list
                 const resp = await TBApi.getJSON('/r/toolbox/about/moderators.json');
-                TBStorage.purifyObject(resp);
+                purifyObject(resp);
                 devs = resp.data.children
                     // We only care about usernames
                     .map(child => child.name)
@@ -1380,7 +1341,7 @@ export async function getToolboxDevs () {
             }
 
             // Since we didn't find the devs in cache, update the cache
-            await TBStorage.setSettingAsync('Utils', 'tbDevs', devs);
+            await setSettingAsync('Utils', 'tbDevs', devs);
 
             // We're done fetching - unset the promise and return
             devsFetchPromise = null;
@@ -1422,7 +1383,7 @@ export async function setWikiPrivate (subreddit, page, failAlert) {
                 alert('error setting wiki page to mod only access');
                 window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
             } else {
-                logger.log('error setting wiki page to mod only access');
+                log.debug('error setting wiki page to mod only access');
             }
         });
 }
@@ -1633,23 +1594,23 @@ export function watchForURLChanges () {
 }
 
 // Clean up old seen items if the lists are getting too long
-TBStorage.getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {
+getSettingAsync('Notifier', 'unreadPushed', []).then(async pushedunread => {
     if (pushedunread.length > 250) {
         pushedunread.splice(150, pushedunread.length - 150);
-        await TBStorage.setSettingAsync('Notifier', 'unreadPushed', pushedunread);
+        await setSettingAsync('Notifier', 'unreadPushed', pushedunread);
     }
 });
-TBStorage.getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
+getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
     if (pusheditems.length > 250) {
         pusheditems.splice(150, pusheditems.length - 150);
-        await TBStorage.setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
+        await setSettingAsync('Notifier', 'modqueuePushed', pusheditems);
     }
 });
-TBStorage.getSettingAsync('Utils', 'seenNotes', []).then(async seenNotes => {
+getSettingAsync('Utils', 'seenNotes', []).then(async seenNotes => {
     if (seenNotes.length > 250) {
-        logger.log('clearing seen notes');
+        log.debug('clearing seen notes');
         seenNotes.splice(150, seenNotes.length - 150);
-        await TBStorage.setSettingAsync('Utils', 'seenNotes', seenNotes);
+        await setSettingAsync('Utils', 'seenNotes', seenNotes);
     }
 });
 
@@ -1682,7 +1643,7 @@ if ($('#header').length) {
                 return;
             }
 
-            logger.log(`TBNewThings firing from: ${$target.attr('class')}`);
+            log.debug(`TBNewThings firing from: ${$target.attr('class')}`);
             // It is entirely possible that TBNewThings is fired multiple times.
             // That is why we only set a new timeout if there isn't one set already.
             if (!newThingRunning) {
@@ -1712,5 +1673,5 @@ if ($('#header').length) {
 
 // NER support. todo: finish this.
 // window.addEventListener("neverEndingLoad", function () {
-//    logger.log('NER! NER! NER! NER!');
+//    log.debug('NER! NER! NER! NER!');
 // });

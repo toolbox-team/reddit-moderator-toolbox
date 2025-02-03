@@ -4,8 +4,13 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBModule, {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
+import {purify} from '../util/purify.js';
+import {getSettingAsync, setSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('Modbar');
 
 // Hold onto the modbarExists resolver so we can call it when the time is right
 let resolveModbarExists = null;
@@ -106,7 +111,7 @@ export default new Module({
     // Clean up old settings related to the now-removed dev console
     // TODO: Remove this a couple versions from now when people have reasonably
     //       probably updated past this
-    TBStorage.setSettingAsync(this.id, 'consoleShowing', undefined);
+    setSettingAsync(this.id, 'consoleShowing', undefined);
 
     const $body = $('body');
 
@@ -135,23 +140,23 @@ export default new Module({
     // preload some generic variables
     //
 
-    const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
+    const debugMode = await getSettingAsync('Utils', 'debugMode', false);
 
-    const modSubreddits = await TBStorage.getSettingAsync('Notifier', 'modSubreddits', 'mod');
-    const unmoderatedSubreddits = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
-    const unreadMessageCount = await TBStorage.getSettingAsync('Notifier', 'unreadMessageCount', 0);
-    const modqueueCount = await TBStorage.getSettingAsync('Notifier', 'modqueueCount', 0);
-    const unmoderatedCount = await TBStorage.getSettingAsync('Notifier', 'unmoderatedCount', 0);
-    const modmailCount = await TBStorage.getSettingAsync('Notifier', 'modmailCount', 0);
-    const newModmailCount = await TBStorage.getSettingAsync('Notifier', 'newModmailCount', 0);
-    const notifierEnabled = await TBStorage.getSettingAsync('Notifier', 'enabled', true);
+    const modSubreddits = await getSettingAsync('Notifier', 'modSubreddits', 'mod');
+    const unmoderatedSubreddits = await getSettingAsync('Notifier', 'unmoderatedSubreddits', 'mod');
+    const unreadMessageCount = await getSettingAsync('Notifier', 'unreadMessageCount', 0);
+    const modqueueCount = await getSettingAsync('Notifier', 'modqueueCount', 0);
+    const unmoderatedCount = await getSettingAsync('Notifier', 'unmoderatedCount', 0);
+    const modmailCount = await getSettingAsync('Notifier', 'modmailCount', 0);
+    const newModmailCount = await getSettingAsync('Notifier', 'newModmailCount', 0);
+    const notifierEnabled = await getSettingAsync('Notifier', 'enabled', true);
 
-    const modSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'modSubredditsFMod', false);
-    const unmoderatedSubredditsFMod = await TBStorage.getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
+    const modSubredditsFMod = await getSettingAsync('Notifier', 'modSubredditsFMod', false);
+    const unmoderatedSubredditsFMod = await getSettingAsync('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Ready some details for new modmail linking
-    const modmailLink = await TBStorage.getSettingAsync('NewModMail', 'modmaillink', 'all_modmail');
-    const openMailTab = await TBStorage.getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail;
+    const modmailLink = await getSettingAsync('NewModMail', 'modmaillink', 'all_modmail');
+    const openMailTab = await getSettingAsync('NewModMail', 'openmailtab', false) && !TBCore.isNewModmail;
     const newModmailBaseUrl = 'https://mod.reddit.com/mail/';
     let newModmailUrl;
 
@@ -204,8 +209,8 @@ export default new Module({
     );
     const $modBar = $(`
 <div id="tb-bottombar">
-    <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">${TBui.icons.arrowLeft}</a>
-    <a class="tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">${TBui.icons.settings}</a>
+    <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">${icons.arrowLeft}</a>
+    <a class="tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">${icons.settings}</a>
     <label class="tb-first-run">&#060;-- Click for settings</label>
     <span id="tb-bottombar-contentleft">
         <span id="tb-toolbarshortcuts"></span>
@@ -214,13 +219,13 @@ export default new Module({
         <span id="tb-toolbarcounters">
             <a title="no mail" href="${
         TBCore.link('/message/inbox/')
-    }" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
+    }" class="nohavemail tb-icons" id="tb-mail">${icons.userInbox}</a>
             <a href="${TBCore.link('/message/inbox/')}" id="tb-mailCount"></a>
             <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${
         openMailTab ? 'target="_blank"' : ''
-    }>${TBui.icons.modmail}</a>
+    }>${icons.modmail}</a>
             <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}></a>
-            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">${TBui.icons.modqueue}</a>
+            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">${icons.modqueue}</a>
             <a href="${modQueueUrl}" id="tb-queueCount"></a>
         </span>
     </span>
@@ -290,7 +295,7 @@ export default new Module({
                 : `/r/${unmoderatedSubreddits}/about/unmoderated`,
         );
         $modBar.find('#tb-toolbarcounters').append(`
-<a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">${TBui.icons.unmoderated}</a>
+<a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">${icons.unmoderated}</a>
 <a href="${unModQueueUrl}" id="tb-unmoderatedCount"></a>
 `);
     }
@@ -298,7 +303,7 @@ export default new Module({
     const $modbarhid = $(`
 <div id="tb-bottombar-hidden" class="${compactHide ? 'tb-bottombar-compact' : ''}">
     <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${
-        compactHide ? TBui.icons.dotMenu : TBui.icons.arrowRight
+        compactHide ? icons.dotMenu : icons.arrowRight
     }</a>
 </div>
 `);
@@ -341,10 +346,10 @@ export default new Module({
 
             let subList = '';
 
-            const configEnabled = await TBStorage.getSettingAsync('TBConfig', 'enabled', false);
-            const usernotesEnabled = await TBStorage.getSettingAsync('UserNotes', 'enabled', false);
-            this.log('got mod subs');
-            this.log(mySubsData.length);
+            const configEnabled = await getSettingAsync('TBConfig', 'enabled', false);
+            const usernotesEnabled = await getSettingAsync('UserNotes', 'enabled', false);
+            log.debug('got mod subs');
+            log.debug(mySubsData.length);
 
             $(mySubsData).each(function () {
                 const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
@@ -356,24 +361,24 @@ export default new Module({
                         <td class="tb-my-subreddits-subreddit">
                             <a title="/r/${this.subreddit} modqueue" target="_blank" href="${
                     TBCore.link(`/r/${this.subreddit}/about/modqueue`)
-                }" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modqueue}</a>
+                }" data-type="modqueue" data-subreddit="${this.subreddit}" class="tb-icons">${icons.modqueue}</a>
                             <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${
                     TBCore.link(`/r/${this.subreddit}/about/unmoderated`)
-                }" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.unmoderated}</a>
+                }" data-type="unmoderated" data-subreddit="${this.subreddit}" class="tb-icons">${icons.unmoderated}</a>
                             <a title="/r/${this.subreddit} moderation log" target="_blank" href="${
                     TBCore.link(`/r/${this.subreddit}/about/log`)
-                }" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.modlog}</a>
+                }" data-type="modlog" data-subreddit="${this.subreddit}" class="tb-icons">${icons.modlog}</a>
                             <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${
                     TBCore.link(`/r/${this.subreddit}/about/traffic`)
-                }" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${TBui.icons.subTraffic}</a>
+                }" data-type="traffic" data-subreddit="${this.subreddit}" class="tb-icons">${icons.subTraffic}</a>
                             ${
                     usernotesEnabled
-                        ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.usernote}</a>`
+                        ? `<a title="/r/${this.subreddit} usernotes" href="javascript:;" class="tb-un-config-link tb-icons" data-subreddit="${this.subreddit}">${icons.usernote}</a>`
                         : ''
                 }
                             ${
                     configEnabled
-                        ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>`
+                        ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${icons.tbSubConfig}</a>`
                         : ''
                 }
                         </td>
@@ -462,7 +467,7 @@ export default new Module({
                     target="_blank"
                     title="this is a ${TBCore.buildType} build of toolbox. click to copy version information"
                 />
-                    <i class="tb-icons">${TBui.icons.prerelease}</i>
+                    <i class="tb-icons">${icons.prerelease}</i>
                     <span>${TBCore.toolboxVersion}</span>
                 </button>
             `).on('click', () => {
@@ -488,11 +493,11 @@ export default new Module({
     if (debugMode) {
         // Reload button
         $('#tb-bottombar').find('#tb-toolbarcounters').before(
-            `<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">${TBui.icons.tbReload}</a>`,
+            `<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">${icons.tbReload}</a>`,
         );
 
         $body.on('click', '#tb-reload-link', () => {
-            this.log('reloading chrome');
+            log.debug('reloading chrome');
             TBui.reloadToolbox();
         });
     }
@@ -548,7 +553,7 @@ export default new Module({
         if (!$modBarHidTooltip.length) {
             $modBarHidTooltip = $('<div id="tb-modbar-hide-tooltip"></div>').appendTo($body);
         }
-        $modBarHidTooltip.html(TBStorage.purify(hoverContent));
+        $modBarHidTooltip.html(purify(hoverContent));
         $modBarHidTooltip.fadeIn(200);
     }).mouseleave(() => {
         $modBarHidTooltip.fadeOut(200);
@@ -591,7 +596,7 @@ export default new Module({
         let module = event.detail.tbsettings;
         if (module) {
             let setting = event.detail.setting;
-            this.log(setting);
+            log.debug(setting);
             module = module.toLowerCase();
 
             if (setting) {

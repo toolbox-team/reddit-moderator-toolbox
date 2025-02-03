@@ -5,10 +5,11 @@
 import browser from 'webextension-polyfill';
 
 import {createDeferredProcessQueue} from './tbhelpers.js';
-import TBLog from './tblog';
-import * as TBStorage from './tbstorage.js';
+import {getCache, setCache} from './util/cache.js';
+import createLogger from './util/logging';
+import {purifyObject} from './util/purify.js';
 
-const logger = TBLog('TBApi');
+const log = createLogger('TBApi');
 
 // Error codes used in lots of places
 export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
@@ -193,8 +194,8 @@ export const apiOauthDELETE = (endpoint: string, query: QueryParams) =>
 const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
     try {
         const data = await getJSON('/api/me.json');
-        TBStorage.purifyObject(data);
-        TBStorage.setCache('Utils', 'userDetails', data);
+        purifyObject(data);
+        setCache('Utils', 'userDetails', data);
         return data;
     } catch (error) {
         // 504 Gateway Timeout errors can be retried
@@ -207,7 +208,7 @@ const userDetailsPromise = (async function fetchUserDetails (tries = 3) {
     }
 })()
     // If getting details from API fails, fall back to the cached value (if any)
-    .catch(() => TBStorage.getCache('Utils', 'userDetails'));
+    .catch(() => getCache('Utils', 'userDetails'));
 
 /** Gets details about the current user from `/api/me.json`. */
 export const getUserDetails = () => userDetailsPromise;
@@ -247,7 +248,7 @@ export const getRatelimit = () =>
         const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!;
         const ratelimitReset = response.headers.get('x-ratelimit-reset')!;
 
-        logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
+        log.debug(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
 
         return {
             ratelimitRemaining,
@@ -308,7 +309,7 @@ export async function postToWiki (
         data = JSON.stringify(data);
     }
 
-    logger.log(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
+    log.debug(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
 
     // If we update automoderator we want to replace any tabs with four spaces.
     if (updateAM) {
@@ -323,7 +324,7 @@ export async function postToWiki (
             uh: await getModhash(),
         });
     } catch (error) {
-        logger.error(error);
+        log.error(error);
         throw error;
     }
 
@@ -383,7 +384,7 @@ export const readFromWiki = (
                 parsedWikiData = JSON.parse(wikiData);
             } catch (err) {
                 // we should really have a INVAILD_DATA error for this.
-                logger.log(err);
+                log.debug(err);
                 resolve(NO_WIKI_PAGE);
             }
             // Moved out of the try so random exceptions don't erase the entire wiki page
@@ -397,7 +398,7 @@ export const readFromWiki = (
         // We have valid data, but it's not JSON.
         resolve(wikiData);
     }).catch(async error => {
-        logger.error(`Wiki error (${subreddit}/${page}):`, error);
+        log.error(`Wiki error (${subreddit}/${page}):`, error);
         if (!error.response) {
             resolve(WIKI_PAGE_UNKNOWN);
             return;
@@ -445,7 +446,7 @@ export interface BanState {
 export const getBanState = async (subreddit: string, user: string) => {
     // Fetch ban info for just this one user
     const data = await getJSON(`/r/${subreddit}/about/banned/.json`, {user});
-    TBStorage.purifyObject(data);
+    purifyObject(data);
     // This API sometimes returns weird things if the user isn't banned, so we
     // use .find() to ensure `undefined` is returned if we don't get information
     // about the right user
@@ -734,15 +735,15 @@ export const postComment = async (parent: string, text: string) => {
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.log(`Failed to post comment to on ${parent}`);
-            logger.log(response.json.fails);
+            log.debug(`Failed to post comment to on ${parent}`);
+            log.debug(response.json.fails);
             throw response.json.errors;
         }
-        logger.log(`Successfully posted comment on ${parent}`);
+        log.debug(`Successfully posted comment on ${parent}`);
         return response;
     } catch (error) {
-        logger.log(`Failed to post link to on ${parent}`);
-        logger.log(error);
+        log.debug(`Failed to post link to on ${parent}`);
+        log.debug(error);
         throw error;
     }
 };
@@ -767,15 +768,15 @@ export const postLink = async (link: string, title: string, subreddit: string) =
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.log(`Failed to post link to /r/${subreddit}`);
-            logger.log(response.json.errors);
+            log.debug(`Failed to post link to /r/${subreddit}`);
+            log.debug(response.json.errors);
             throw response.json.errors;
         }
-        logger.log(`Successfully posted link to /r/${subreddit}`);
+        log.debug(`Successfully posted link to /r/${subreddit}`);
         return response;
     } catch (error) {
-        logger.log(`Failed to post link to /r/${subreddit}`);
-        logger.log(error);
+        log.debug(`Failed to post link to /r/${subreddit}`);
+        log.debug(error);
         throw error;
     }
 };
@@ -800,15 +801,15 @@ export const sendMessage = async (user: string, subject: string, message: string
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.log(`Failed to send link to /u/${user}`);
-            logger.log(response.json.errors);
+            log.debug(`Failed to send link to /u/${user}`);
+            log.debug(response.json.errors);
             throw response.json.errors;
         }
-        logger.log(`Successfully send link to /u/${user}`);
+        log.debug(`Successfully send link to /u/${user}`);
         return response;
     } catch (error) {
-        logger.log(`Failed to send link to /u/${user}`);
-        logger.log(error);
+        log.debug(`Failed to send link to /u/${user}`);
+        log.debug(error);
         throw error;
     }
 };
@@ -833,7 +834,7 @@ export const aboutUser = async (user: string) =>
     getJSON(`/user/${user}/about.json`, {
         uh: await getModhash(),
     }).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response;
     });
 
@@ -846,7 +847,7 @@ export const getLastActive = async (user: string) =>
     getJSON(`/user/${user}.json?limit=1&sort=new`, {
         uh: await getModhash(),
     }).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response.data.children[0].data.created_utc;
     }).catch(error => {
         throw error.responseText;
@@ -861,7 +862,7 @@ export const getRules = async (sub: string) =>
     getJSON(`/r/${sub}/about/rules.json`, {
         uh: await getModhash(),
     }).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response;
     });
 
@@ -887,7 +888,7 @@ export const getModNotes = ({subreddit, user, filter, before}: {
         before,
         limit: '100',
     }).then(response => response.json()).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return {
             notes: response.mod_notes,
             startCursor: response.start_cursor,
@@ -910,7 +911,7 @@ export const getRecentModNotes = (subreddits: string[], users: string[]) =>
         subreddits: subreddits.join(','),
         users: users.join(','),
     }).then(response => response.json()).then(response => {
-        TBStorage.purifyObject(response);
+        purifyObject(response);
         return response.mod_notes;
     });
 

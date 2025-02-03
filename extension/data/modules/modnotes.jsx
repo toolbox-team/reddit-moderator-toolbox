@@ -1,15 +1,17 @@
 import {map, page, pipeAsync} from 'iter-ops';
 import {useEffect, useRef, useState} from 'react';
+import {Provider} from 'react-redux';
 
 import {renderInSlots} from '../frontends/index.tsx';
 import {useFetched, useSetting} from '../hooks.ts';
+import store from '../store/index.ts';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
-import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
-import {setSettingAsync} from '../tbstorage.js';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
+import createLogger from '../util/logging.ts';
+import {setSettingAsync} from '../util/settings.ts';
 import {createBodyShadowPortal} from '../util/ui_interop.tsx';
 
 import {
@@ -26,7 +28,7 @@ import {WindowTabs} from '../components/WindowTabs.tsx';
 
 import css from './modnotes.module.css';
 
-const log = TBLog('ModNotes');
+const log = createLogger('ModNotes');
 
 /**
  * An object mapping modnote types to human-friendly display names.
@@ -332,6 +334,8 @@ function ModNotesPager ({user, subreddit, filter: noteFilter}) {
             emptyContent={<p>No notes</p>}
             pages={pipeAsync(
                 // fetch mod notes that match this tab
+                // TODO: can we memoize or cache this or something to make the
+                //       popup contents not flash when other state is changed
                 getAllModNotes(subreddit, user, noteFilter),
                 // group into pages of 20 items each
                 page(20),
@@ -376,8 +380,6 @@ function ModNotesPopup ({
     user,
     subreddit,
     contextID,
-    defaultTabName,
-    defaultNoteLabel,
     initialPosition,
     onClose,
 }) {
@@ -395,6 +397,9 @@ function ModNotesPopup ({
             content: <ModNotesPager user={user} subreddit={subreddit} filter='MOD_ACTION' />,
         },
     ];
+
+    const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
+    const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
 
     let defaultTabIndex = 0;
     if (defaultTabName === 'notes') {
@@ -586,10 +591,6 @@ export default new Module({
 
         const isMod = useFetched(isModSub(details.subreddit.name));
 
-        // Get settings
-        const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
-        const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
-
         // Fetch the latest note for the user
         const note = useFetched(getLatestModNote(subreddit, user));
 
@@ -624,7 +625,7 @@ export default new Module({
         }
 
         return (
-            <>
+            <Provider store={store}>
                 <ModNotesBadge
                     label='NN'
                     user={user}
@@ -637,13 +638,11 @@ export default new Module({
                         user={user}
                         subreddit={subreddit}
                         contextID={contextID}
-                        defaultTabName={defaultTabName}
-                        defaultNoteLabel={defaultNoteLabel}
                         initialPosition={initialPosition}
                         onClose={hidePopup}
                     />,
                 )}
-            </>
+            </Provider>
         );
     });
 });

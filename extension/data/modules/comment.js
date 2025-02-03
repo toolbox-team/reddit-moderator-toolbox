@@ -5,9 +5,14 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
+import {purifyObject} from '../util/purify.js';
+
 import {modbarExists} from './modbar.js';
+
+const log = createLogger('Comments');
 
 const self = new Module({
     name: 'Comments',
@@ -94,24 +99,24 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
             removedCounter += 1;
         });
 
-        self.log(removedCounter);
+        log.debug(removedCounter);
 
         if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
             const $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
             if (removedCounter === 1) {
-                $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]`);
+                $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[1]`);
             } else if (removedCounter > 1) {
                 $tbToggle.html(
-                    `<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]`,
+                    `<span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[${removedCounter.toString()}]`,
                 );
             }
         } else if (removedCounter === 1) {
             $('#tb-bottombar').find('#tb-toolbarcounters').prepend(
-                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]</a>`,
+                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[1]</a>`,
             );
         } else if (removedCounter > 1) {
             $('#tb-bottombar').find('#tb-toolbarcounters').prepend(
-                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]</a>`,
+                `<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${icons.comments}</span>[${removedCounter.toString()}]</a>`,
             );
         }
 
@@ -199,7 +204,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         if (TBCore.isUserPage) {
             const $modActions = $('.moderator, [data-subreddit="spam"]');
             if ($modActions.length > 0) {
-                self.log('found mod actions');
+                log.debug('found mod actions');
 
                 if ($('.tb-hide-mod-comments').length < 1) {
                     $('.menuarea').append(
@@ -207,7 +212,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
                     );
 
                     $body.on('click', '.tb-hide-mod-comments', function () {
-                        self.log('hiding mod actions');
+                        log.debug('hiding mod actions');
                         hidden = true;
                         $modActions.closest('.thing').hide();
                         $(this).hide();
@@ -222,7 +227,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
     window.addEventListener('TBNewThings', () => {
         addHideModButton();
         if (hidden) {
-            self.log('hiding mod actions');
+            log.debug('hiding mod actions');
             $('.moderator, [data-subreddit="spam"]').closest('.thing').hide();
         }
     });
@@ -237,7 +242,7 @@ self.initOldReddit = async function ({hideRemoved, approveComments, spamRemoved,
         );
 
         $body.on('click', '.tb-hide-old', () => {
-            self.log('hiding old comments');
+            log.debug('hiding old comments');
             $('.entry').show(); // reset before hiding.
             $('.old-expand').removeClass('old-expand'); // new old expands
 
@@ -327,7 +332,7 @@ function init ({
                 addTrigger: true,
                 title: 'View comments for this thread in chronological flat view.',
                 triggerText: 'comment flat view',
-                triggerIcon: TBui.icons.list,
+                triggerIcon: icons.list,
             });
         } else {
             TBui.contextTrigger('tb-flatview-link', {addTrigger: false});
@@ -401,12 +406,12 @@ function init ({
         const $htmlCommentView = $body.find('#tb-sitetable'); // This will contain the new html we will add to the page.
 
         $body.find('.tb-flatview-search-input').keyup(() => {
-            self.log('typing');
+            log.debug('typing');
             const FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
             const FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
 
-            self.log(FlatViewSearchName);
-            self.log(FlatViewSearchContent);
+            log.debug(FlatViewSearchName);
+            log.debug(FlatViewSearchContent);
 
             $htmlCommentView.find('.tb-comment').each(function () {
                 const $this = $(this);
@@ -433,7 +438,7 @@ function init ({
         TBui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
         // Lets get the comments.
         const data = await TBApi.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
-        TBStorage.purifyObject(data);
+        purifyObject(data);
         // put the json through our deconstructor.
         data[1].isreply = false;
         parseComments(data[1]);
@@ -484,10 +489,10 @@ function init ({
             });
         }
 
-        self.log('openContextInPopup enabled.');
+        log.debug('openContextInPopup enabled.');
 
         $body.on('click', '.tb-comment-context-popup', function (event) {
-            self.log('Context button clicked.');
+            log.debug('Context button clicked.');
 
             const $this = $(this);
 
@@ -509,7 +514,7 @@ function init ({
 
             // Get the context
             TBApi.getJSON(contextUrl, {raw_json: 1}).then(data => {
-                TBStorage.purifyObject(data);
+                purifyObject(data);
 
                 // data[1] is a listing containing comments
                 // if there are no comments in the listing, the thing we're trying to get context for has been

@@ -5,8 +5,13 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
+import {purify, purifyObject} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('HButton');
 
 import {renderInSlots} from '../frontends/index.tsx';
 import {JQueryRenderer} from '../util/ui_interop.tsx';
@@ -41,7 +46,7 @@ const self = new Module({
         {
             id: 'onlyshowInhover',
             type: 'boolean',
-            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            default: () => getSettingAsync('GenSettings', 'onlyshowInhover', true),
             hidden: true,
         },
         {
@@ -72,7 +77,7 @@ self.attachHistoryButton = function ($target, author, subreddit, buttonText = 'H
 };
 
 self.runJsAPI = function () {
-    self.log('run');
+    log.debug('run');
 
     renderInSlots([
         'submissionAuthor',
@@ -97,7 +102,7 @@ self.runJsAPI = function () {
             TBui.contextTrigger('tb-user-history', {
                 addTrigger: true,
                 triggerText: 'user history',
-                triggerIcon: TBui.icons.history,
+                triggerIcon: icons.history,
                 title: `Show history for /u/${user}`,
                 dataAttributes: {
                     author: user,
@@ -113,14 +118,14 @@ self.runJsAPI = function () {
  * Initiate the module
  */
 async function init (options) {
-    self.log('init');
+    log.debug('init');
     const $body = $('body');
     if (!await TBCore.modSubCheck()) {
-        self.log('mscheck failed');
+        log.debug('mscheck failed');
         return;
     }
 
-    self.log('mscheck passed');
+    log.debug('mscheck passed');
 
     self.runJsAPI();
 
@@ -292,7 +297,7 @@ self.showAuthorInformation = async function (author) {
     const $contentBox = self.fetched[author].popup;
 
     const d = await TBApi.getJSON(`/user/${author}/about.json`);
-    TBStorage.purifyObject(d);
+    purifyObject(d);
     const joinedDate = new Date(d.data.created_utc * 1000);
     const redditorTime = TBHelpers.niceDateDiff(joinedDate);
 
@@ -387,21 +392,21 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
         sort: 'new',
         limit: 100,
     }).catch(() => {
-        self.log('Shadowbanned?');
+        log.debug('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
         TBui.longLoadNonPersistent(false);
     }).then(d => {
         if (!d) {
             return;
         }
-        TBStorage.purifyObject(d);
+        purifyObject(d);
         // This is another exit point of the script. Hits this code after loading 1000 submissions for a user
         if ($.isEmptyObject(d.data.children)) {
             requestAnimationFrame(() => {
                 if (user.counters.submissions > 0) {
-                    $submissionCount.html(TBStorage.purify(`${user.counters.submissions}+`));
+                    $submissionCount.html(purify(`${user.counters.submissions}+`));
                 } else {
-                    $submissionCount.html(TBStorage.purify(user.counters.submissions));
+                    $submissionCount.html(purify(user.counters.submissions));
                 }
 
                 // If the error elements can be seen it is because there are no submissions
@@ -420,12 +425,12 @@ self.populateSubmissionHistory = function (after, author, thisSubreddit, options
         user.counters.submissions += d.data.children.length;
         // There's still more subsmissions to load, so we're going to run again
         if (after) {
-            $submissionCount.html(TBStorage.purify(`Loading... (${user.counters.submissions})`));
+            $submissionCount.html(purify(`Loading... (${user.counters.submissions})`));
             self.populateSubmissionHistory(after, author, thisSubreddit, options);
         } else {
             // All of the submissions have been loaded at this point
             user.gettingUserData = false;
-            $submissionCount.html(TBStorage.purify(user.counters.submissions));
+            $submissionCount.html(purify(user.counters.submissions));
         }
 
         TBui.longLoadNonPersistent(false);
@@ -722,7 +727,7 @@ self.populateCommentHistory = function (after, author, thisSubreddit, options) {
         if (!d) {
             return;
         }
-        TBStorage.purifyObject(d);
+        purifyObject(d);
         d.data.children.forEach(value => {
             const data = value.data;
 
@@ -769,8 +774,8 @@ self.populateCommentHistory = function (after, author, thisSubreddit, options) {
         // `|| 0` to handle NaN
         const percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100) || 0;
 
-        $commentCount.html(TBStorage.purify(user.counters.comments));
-        $commentCountOp.html(TBStorage.purify(`${user.counters.commentsOP} (${percentageOP}%)`));
+        $commentCount.html(purify(user.counters.comments));
+        $commentCountOp.html(purify(`${user.counters.commentsOP} (${percentageOP}%)`));
 
         TBui.longLoadNonPersistent(false);
     });

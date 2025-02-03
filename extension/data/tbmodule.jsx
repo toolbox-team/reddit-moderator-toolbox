@@ -1,17 +1,135 @@
 import CodeMirror from 'codemirror';
 import $ from 'jquery';
 
-import * as TBConstants from './tbconstants.ts';
+import {NO_WIKI_PAGE, postToWiki, readFromWiki, WIKI_PAGE_UNKNOWN} from './tbapi.ts';
 import * as TBCore from './tbcore.js';
 import * as TBHelpers from './tbhelpers.js';
 import TBListener from './tblistener.js';
-import TBLog from './tblog.ts';
-import * as TBStorage from './tbstorage.js';
 import * as TBui from './tbui.js';
+import {clearCache} from './util/cache.ts';
+import {icons} from './util/icons.ts';
+import createLogger from './util/logging.ts';
+import {purify, purifyObject} from './util/purify.js';
+import {getAnonymizedSettings, getSettingAsync, getSettings, setSettingAsync, writeSettings} from './util/settings.ts';
 
 import css from './tbmodule.module.css';
 
-const logger = TBLog('TBModule');
+const log = createLogger('TBModule');
+
+/**
+ * Saves a copy of currently-stored settings to the `tbsettings` wiki page of
+ * the given subreddit.
+ * @param {string} subreddit The name of the subreddit to save the backup to
+ * @returns {Promise<void>}
+ */
+export async function exportSettings (subreddit) {
+    const settingsObject = await getSettings();
+
+    // Transform from the normal setting storage format to the backup format
+    const backupObject = Object.fromEntries(
+        Object.entries(settingsObject)
+            // In extension storage, keys are `Toolbox.Module.settingName` - in the
+            // backup format however they're just `Module.settingName`. Let's convert
+            .map(([key, value]) => [key.replace('Toolbox.', ''), value])
+            // don't backup the setting registry
+            // TODO: wait, what is this??
+            .filter(([key]) => key !== 'Storage.setting')
+            // DO NOT, EVER save null (or undefined, but we shouldn't ever get
+            // that)
+            .filter(([_key, value]) => value != null),
+    );
+
+    await postToWiki('tbsettings', subreddit, backupObject, 'exportSettings', true, false);
+}
+
+/**
+ * Pulls a settings backup from the `tbsettings` wiki page of the given
+ * subreddit and writes it over the currently-stored settings.
+ * @param {string} subreddit Name of the subreddit to pull the backup from
+ * @returns {Promise<void>}
+ */
+export async function importSettings (subreddit) {
+    const resp = await readFromWiki(subreddit, 'tbsettings', true);
+    if (!resp || resp === WIKI_PAGE_UNKNOWN || resp === NO_WIKI_PAGE) {
+        log.debug('Error loading wiki page');
+        return;
+    }
+    purifyObject(resp);
+
+    if (resp['Utils.lastversion'] < 300) {
+        log.debug('Cannot import from a toolbox version under 3.0');
+        return;
+    }
+
+    const doNotImport = [
+        'oldreddit.enabled',
+    ];
+
+    const newSettings = Object.fromEntries(
+        Object.entries(resp)
+            // Exclude certain settings whose values shouldn't be changed
+            .filter(([key]) => !(doNotImport.includes(key)))
+            // In backups, keys are `Module.settingName` - in extension storage
+            // they're `Toolbox.Module.settingName`
+            .map(([key, value]) => [`Toolbox.${key}`, value]),
+    );
+
+    await writeSettings(newSettings);
+}
+
+/** HTML for the syntax highlighter's theme selector. */
+// HACK: kept here instead of in the syntax highlighter module itself, to avoid
+//       circular dependency issues, since it's used by both
+export const syntaxHighlighterThemeSelect = `
+    <select id="theme_selector">
+        <option value="3024-day">3024-day</option>
+        <option value="3024-night">3024-night</option>
+        <option value="abcdef">abcdef</option>
+        <option value="ambiance">ambiance</option>
+        <option value="base16-dark">base16-dark</option>
+        <option value="base16-light">base16-light</option>
+        <option value="bespin">bespin</option>
+        <option value="blackboard">blackboard</option>
+        <option value="cobalt">cobalt</option>
+        <option value="colorforth">colorforth</option>
+        <option value="dracula">dracula</option>
+        <option value="eclipse">eclipse</option>
+        <option value="elegant">elegant</option>
+        <option value="erlang-dark">erlang-dark</option>
+        <option value="hopscotch">hopscotch</option>
+        <option value="icecoder">icecoder</option>
+        <option value="isotope">isotope</option>
+        <option value="lesser-dark">lesser-dark</option>
+        <option value="liquibyte">liquibyte</option>
+        <option value="material">material</option>
+        <option value="mbo">mbo</option>
+        <option value="mdn-like">mdn-like</option>
+        <option value="midnight">midnight</option>
+        <option value="monokai">monokai</option>
+        <option value="neat">neat</option>
+        <option value="neo">neo</option>
+        <option value="night">night</option>
+        <option value="panda-syntax">panda-syntax</option>
+        <option value="paraiso-dark">paraiso-dark</option>
+        <option value="paraiso-light">paraiso-light</option>
+        <option value="pastel-on-dark">pastel-on-dark</option>
+        <option value="railscasts">railscasts</option>
+        <option value="rubyblue">rubyblue</option>
+        <option value="seti">seti</option>
+        <option value="solarized dark">solarized dark</option>
+        <option value="solarized light">solarized light</option>
+        <option value="the-matrix">the-matrix</option>
+        <option value="tomorrow-night-bright">tomorrow-night-bright</option>
+        <option value="tomorrow-night-eighties">tomorrow-night-eighties</option>
+        <option value="ttcn">ttcn</option>
+        <option value="twilight">twilight</option>
+        <option value="vibrant-ink">vibrant-ink</option>
+        <option value="xq-dark">xq-dark</option>
+        <option value="xq-light">xq-light</option>
+        <option value="yeti">yeti</option>
+        <option value="zenburn">zenburn</option>
+    </select>
+`;
 
 const TBModule = {
     modules: [],
@@ -21,7 +139,7 @@ const TBModule = {
     },
 
     init: async function tbInit () {
-        logger.debug('TBModule has TBStorage, loading modules');
+        log.debug('loading modules');
         // Check if each module should be enabled, then call its initializer
         await Promise.all(TBModule.modules.map(async module => {
             // Don't do anything with modules the user has disabled
@@ -32,25 +150,25 @@ const TBModule = {
             // Don't do anything with beta modules unless this is a beta build
             if (module.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
                 // skip this module entirely
-                logger.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
+                log.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
                 return;
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
+            if (!await getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
                 // skip this module entirely
-                logger.debug(`Debug mode not enabled. Skipping ${module.name} module`);
+                log.debug(`Debug mode not enabled. Skipping ${module.name} module`);
                 return;
             }
 
             // FIXME: implement environment switches in modules
             if (!TBCore.isOldReddit && module.oldReddit) {
-                logger.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
+                log.debug(`Module not suitable for new reddit. Skipping ${module.name} module`);
                 return;
             }
 
             // lock 'n load
-            logger.debug(`Loading ${module.id} module`);
+            log.debug(`Loading ${module.id} module`);
             await module.init();
         }));
 
@@ -59,21 +177,25 @@ const TBModule = {
     },
 
     async showSettings () {
+        const log = createLogger('settings window');
         const $body = $('body');
+
+        // Get a current snapshot of settings which we can work with
+        const settingsObject = await getSettings();
 
         //
         // preload some generic variables
         //
-        const debugMode = await TBStorage.getSettingAsync('Utils', 'debugMode', false);
-        const advancedMode = await TBStorage.getSettingAsync('Utils', 'advancedMode', false);
+        const debugMode = settingsObject['Toolbox.Utils.debugMode'] ?? false;
+        const advancedMode = settingsObject['Toolbox.Utils.advancedMode'] ?? false;
 
-        const settingSub = await TBStorage.getSettingAsync('Utils', 'settingSub', '');
-        const shortLength = await TBStorage.getSettingAsync('Utils', 'shortLength', 15);
-        const longLength = await TBStorage.getSettingAsync('Utils', 'longLength', 45);
+        const settingSub = settingsObject['Toolbox.Utils.settingSub'] ?? '';
+        const shortLength = settingsObject['Toolbox.Utils.shortLength'] ?? 15;
+        const longLength = settingsObject['Toolbox.Utils.longLength'] ?? 45;
 
         // last export stuff
-        const lastExport = await TBStorage.getSettingAsync('Modbar', 'lastExport') ?? 0;
-        const showExportReminder = await TBStorage.getSettingAsync('Modbar', 'showExportReminder');
+        const lastExport = settingsObject['Toolbox.Modbar.lastExport'] ?? 0;
+        const showExportReminder = settingsObject['Toolbox.Modbar.showExportReminder'];
         const lastExportDays = Math.round(TBHelpers.millisecondsToDays(TBHelpers.getTime() - lastExport));
         const lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
@@ -164,7 +286,7 @@ const TBModule = {
                 <p id="tb-toolbox-${settingName}" class="tb-settings-p" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
-                    ${TBConstants.icons.tbSettingLink}
+                    ${icons.tbSettingLink}
                     </a>&nbsp;
                 </p>
                 <div style="display: none;" class="tb-setting-input tb-setting-input-${settingName}">
@@ -383,7 +505,7 @@ const TBModule = {
         const $settingsDialog = TBui.overlay({
             title: 'toolbox Settings',
             buttons:
-                `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBConstants.icons.help}</i></a>`,
+                `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${icons.help}</i></a>`,
             tabs: settingsTabs,
             // FIXME: Use a dedicated setting for save and reload rather than using debug mode
             footer: `
@@ -439,21 +561,20 @@ const TBModule = {
                 sub = TBHelpers.cleanSubredditName(sub);
 
                 // Save the sub, first.
-                TBStorage.setSetting('Utils', 'settingSub', sub);
+                settingsObject['Toolbox.Utils.settingSub'] = sub;
             }
 
-            TBStorage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
-            TBStorage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
+            settingsObject['Toolbox.Utils.debugMode'] = $('#debugMode').prop('checked');
+            settingsObject['Toolbox.Utils.advancedMode'] = $('#advancedMode').prop('checked');
 
-            await TBStorage.setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
+            await setSettingAsync('Modbar', 'showExportReminder', $('#showExportReminder').prop('checked'));
 
             // save cache settings.
-            TBStorage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
-
-            TBStorage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
+            settingsObject['Toolbox.Utils.longLength'] = parseInt($('input[name=longLength]').val());
+            settingsObject['Toolbox.Utils.shortLength'] = parseInt($('input[name=shortLength]').val());
 
             if ($('#clearcache').prop('checked')) {
-                TBStorage.clearCache();
+                clearCache();
             }
 
             $(settingsDialog).remove();
@@ -462,19 +583,21 @@ const TBModule = {
                 $('body').css('overflow', 'auto');
             }
 
-            TBStorage.verifiedSettingsSave(succ => {
-                if (succ) {
-                    TBui.textFeedback('Settings saved and verified', TBui.FEEDBACK_POSITIVE);
+            writeSettings(settingsObject).then(
+                () => {
+                    TBui.textFeedback('Settings saved', TBui.FEEDBACK_POSITIVE);
                     setTimeout(() => {
                         // Only reload in dev mode if we asked to.
                         if (!debugMode || reload) {
                             window.location.reload();
                         }
                     }, 1000);
-                } else {
+                },
+                error => {
+                    log.error('Failed to save settings:', error);
                     TBui.textFeedback('Save could not be verified', TBui.FEEDBACK_NEGATIVE);
-                }
-            });
+                },
+            );
         });
 
         $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', async e => {
@@ -482,7 +605,7 @@ const TBModule = {
             if (!sub) {
                 TBui.textFeedback('You have not set a subreddit to backup/restore settings', TBui.FEEDBACK_NEGATIVE);
 
-                logger.debug('no setting sub');
+                log.debug('no setting sub');
                 return;
             }
 
@@ -490,27 +613,28 @@ const TBModule = {
             sub = TBHelpers.cleanSubredditName(sub);
 
             // Save the sub, first.
-            TBStorage.setSetting('Utils', 'settingSub', sub);
+            await setSettingAsync('Utils', 'settingSub', sub);
 
             if ($(e.target).hasClass('tb-settings-import')) {
-                await TBCore.importSettings(sub);
-                await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                await TBStorage.clearCache();
-                TBStorage.verifiedSettingsSave(succ => {
-                    if (succ) {
-                        TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
-                    }
-                });
+                try {
+                    await importSettings(sub);
+                    await setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
+                    await clearCache();
+                } catch (error) {
+                    log.error('Error importing settings:', error);
+                    TBui.textFeedback('Imported settings could not be verified', TBui.FEEDBACK_NEGATIVE);
+                    return;
+                }
+
+                TBui.textFeedback('Settings imported and verified, reloading page', TBui.FEEDBACK_POSITIVE);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } else {
                 TBui.textFeedback(`Backing up settings to /r/${sub}`, TBui.FEEDBACK_NEUTRAL);
-                TBCore.exportSettings(sub);
-                await TBStorage.setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
-                await TBStorage.clearCache();
+                await exportSettings(sub);
+                await setSettingAsync('Modbar', 'lastExport', TBHelpers.getTime());
+                await clearCache();
                 window.location.reload();
             }
         });
@@ -538,12 +662,12 @@ const TBModule = {
 
             const $editSettings = $('.tb-edit-settings');
 
-            TBStorage.getSettings().then(settings => {
+            getSettings().then(settings => {
                 $editSettings.val(JSON.stringify(settings, null, 2));
             });
 
             $viewSettings.on('click', '.anonymize-settings', async () => {
-                const anonymizedSettings = await TBStorage.getAnonymizedSettings();
+                const anonymizedSettings = await getAnonymizedSettings();
                 $editSettings.val(JSON.stringify(anonymizedSettings, null, 2));
             });
         });
@@ -566,7 +690,7 @@ const TBModule = {
             }
 
             // Don't do anything with dev modules unless debug mode is enabled
-            if (!await TBStorage.getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
+            if (!debugMode && module.debugMode) {
                 continue;
             }
 
@@ -606,7 +730,7 @@ const TBModule = {
                 }>Enable ${TBHelpers.htmlEncode(module.name)}</label>
                                 <a class="tb-help-toggle" href="javascript:;" data-module="${module.id}" title="Help">?</a>
                         <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
-                            ${TBConstants.icons.tbSettingLink}
+                            ${icons.tbSettingLink}
                         </a>&nbsp;
                         ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
                     </p>
@@ -647,19 +771,19 @@ const TBModule = {
                 }
 
                 // hide debug stuff unless debug mode enabled
-                if (options.debug && !await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
+                if (options.debug && !debugMode) {
                     continue;
                 }
 
                 // hide hidden settings, ofc
                 // TODO: Tie to a specific setting rather than debug mode
-                if (options.hidden && !await TBStorage.getSettingAsync('Utils', 'debugMode', false)) {
+                if (options.hidden && !debugMode) {
                     continue;
                 }
 
                 // hide advanced settings, but do it via CSS so it can be overridden.
                 let displaySetting = true;
-                if (options.advanced && !await TBStorage.getSettingAsync('Utils', 'advancedMode', false)) {
+                if (options.advanced && !advancedMode) {
                     displaySetting = false;
                 }
 
@@ -751,7 +875,7 @@ const TBModule = {
                     }
                     case 'syntaxTheme': {
                         $setting.append(`${title}:<br/>`);
-                        $setting.append(TBConstants.syntaxHighlighterThemeSelect);
+                        $setting.append(syntaxHighlighterThemeSelect);
                         $setting.find('select').attr('id', `${module.id}_syntax_theme`);
                         $setting.append($(`
                     <textarea class="tb-input syntax-example" id="${module.id}_syntax_theme_css">
@@ -775,7 +899,7 @@ body {
                             // Syntax highlighter selection stuff
                             $body.addClass('mod-syntax');
                             let editorSettings;
-                            const enableWordWrap = await TBStorage.getSettingAsync('Syntax', 'enableWordWrap', true);
+                            const enableWordWrap = settingsObject['Toolbox.Syntax.enableWordWrap'] ?? true;
                             $setting.find(`#${module.id}_syntax_theme_css`).each(async (index, elem) => {
                                 // Editor setup.
                                 editorSettings = CodeMirror.fromTextArea(elem, {
@@ -818,13 +942,13 @@ body {
                     case 'achievement_save': {
                         noWrap = true;
 
-                        logger.debug('----------');
-                        logger.debug('GENERATING ACHIEVEMENT PAGE');
+                        log.debug('----------');
+                        log.debug('GENERATING ACHIEVEMENT PAGE');
                         const total = module.manager.getAchievementTotal();
                         const unlocked = module.manager.getUnlockedCount();
 
-                        logger.debug(`  total=${total}`);
-                        logger.debug(`  unlocked=${unlocked}`);
+                        log.debug(`  total=${total}`);
+                        log.debug(`  unlocked=${unlocked}`);
 
                         $setting = $('<div>').attr('class', 'achievements');
                         $setting.append($('<h1>').text('Mod Achievements'));
@@ -836,9 +960,9 @@ body {
 
                         const $list = $('<div>').attr('class', 'achievements-list');
                         for (let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
-                            logger.debug(`  saveIndex: ${saveIndex}`);
+                            log.debug(`  saveIndex: ${saveIndex}`);
                             for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
-                                logger.debug(`  index: ${index}`);
+                                log.debug(`  index: ${index}`);
                                 let aTitle = '???';
                                 let aDescr = '??????';
                                 let aClass = '';
@@ -852,7 +976,7 @@ body {
                                 }
 
                                 const $a = $('<div>').attr('class', `achievement ${aClass}`);
-                                $a.append($('<p>').attr('class', 'title').html(TBStorage.purify(aTitle)));
+                                $a.append($('<p>').attr('class', 'title').html(purify(aTitle)));
                                 $a.append($('<p>').attr('class', 'description').text(aDescr));
                                 $list.append($a);
                             }
@@ -881,7 +1005,7 @@ body {
                     $setting.append(
                         `&nbsp;<a ${
                             displaySetting ? '' : 'style="display:none;"'
-                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${TBConstants.icons.tbSettingLink}</a>`
+                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${icons.tbSettingLink}</a>`
                             + `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">`
                             + `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>`
                             + `<input  type="text" class="tb-input" readonly="readonly" value="${internetLink}"/></div>`,
@@ -996,7 +1120,7 @@ body {
                 const $moduleEnabled = $(
                     `.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.id}Enabled`,
                 ).prop('checked');
-                TBStorage.setSetting(module.id, 'enabled', $moduleEnabled);
+                settingsObject[`Toolbox.${module.id}.enabled`] = $moduleEnabled;
 
                 // handle the regular settings tab
                 const $settings_page = $(`.tb-window-tab.${module.id.toLowerCase()} .tb-window-content`);
@@ -1059,7 +1183,7 @@ body {
                             value = JSON.parse($this.find('textarea').val());
                             break;
                     }
-                    module.set($this.data('setting'), value, false);
+                    settingsObject[`Toolbox.${module.id}.${$this.data('setting')}`] = value;
                 });
             });
         }
@@ -1172,9 +1296,6 @@ export class Module {
                 ...setting,
             });
         }
-
-        // Add logging functions
-        Object.assign(this, TBLog(this));
     }
 
     /**
@@ -1188,13 +1309,16 @@ export class Module {
             throw new TypeError(`Module ${this.name} does not have a setting ${id} to get`);
         }
 
-        // TBStorage doesn't actually accept straight storage keys, so we have
-        // to split the key into a module name and the rest of the key
+        // The settings utils don't actually accept straight storage keys, so we
+        // have to split the key into a module name and the rest of the key
         const mod = setting.storageKey.split('.')[0];
-        const value = await TBStorage.getSettingAsync(mod, setting.storageKey.slice(mod.length + 1));
 
-        // TODO: TBStorage should return `undefined` instead of `null` for unset
-        //       settings, and this check should only be for `undefined`
+        // We don't use the `defaultVal` option here because for some reason we
+        // support defaults being functions, and we want to avoid running
+        // defaults that are functions unless we actually don't have another
+        // value - eagerly evaluating those could cause problems
+        const value = await getSettingAsync(mod, setting.storageKey.slice(mod.length + 1));
+
         if (value == null) {
             if (typeof setting.default === 'function') {
                 return setting.default();
@@ -1217,10 +1341,10 @@ export class Module {
             throw new TypeError(`Module ${this.name} does not have a setting ${id} to set`);
         }
 
-        // TBStorage doesn't actually accept straight storage keys, so we have
-        // to split the key into a module name and the rest of the key
+        // The settings utils don't actually accept straight storage keys, so we
+        // have to split the key into a module name and the rest of the key
         const mod = setting.storageKey.split('.')[0];
-        return TBStorage.setSettingAsync(mod, setting.storageKey.slice(mod.length + 1), value);
+        return setSettingAsync(mod, setting.storageKey.slice(mod.length + 1), value);
     }
 
     /**
@@ -1246,7 +1370,7 @@ export class Module {
         if (this.alwaysEnabled) {
             return true;
         }
-        return !!await TBStorage.getSettingAsync(this.id, 'enabled', this.enabledByDefault);
+        return !!await getSettingAsync(this.id, 'enabled', this.enabledByDefault);
     }
 
     /**
@@ -1261,6 +1385,6 @@ export class Module {
             throw new Error(`Cannot disable module ${this.id} which is always enabled`);
         }
 
-        return TBStorage.setSettingAsync(this.id, 'enabled', !!enable);
+        return setSettingAsync(this.id, 'enabled', !!enable);
     }
 }

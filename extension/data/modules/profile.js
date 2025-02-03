@@ -5,8 +5,13 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
+import {purifyObject} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('Profile');
 
 export default new Module({
     name: 'Profile Pro',
@@ -35,29 +40,28 @@ export default new Module({
         {
             id: 'subredditColor',
             type: 'boolean',
-            default: () => TBStorage.getSettingAsync('QueueTools', 'subredditColor', false),
+            default: () => getSettingAsync('QueueTools', 'subredditColor', false),
             hidden: true,
         },
         {
             id: 'onlyshowInhover',
             type: 'boolean',
-            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            default: () => getSettingAsync('GenSettings', 'onlyshowInhover', true),
             hidden: true,
         },
     ],
-}, function init ({
+}, ({
     alwaysTbProfile,
     directProfileToLegacy,
     subredditColor,
     profileButtonEnabled,
     onlyshowInhover,
-}) {
+}) => {
     const $body = $('body');
     let filterModThings = false;
     let hideModActions = false;
     let cancelSearch = true;
     const listingTypes = ['overview', 'submitted', 'comments'];
-    const self = this;
 
     // When profile links are clicked open them in the legacy view directly
     if (directProfileToLegacy) {
@@ -207,7 +211,7 @@ export default new Module({
         const inputURL = `/user/${user}/trophies.json`;
         TBApi.getJSON(inputURL).then(data => {
             if (Object.keys(data).length > 0 && data.constructor === Object) {
-                TBStorage.purifyObject(data);
+                purifyObject(data);
                 const $userTrophies = $(`<div class="tb-user-trophies">
                         <h3> Trophies </h3>
                     </div>`).appendTo($sidebar);
@@ -255,7 +259,7 @@ export default new Module({
         const inputURL = `/user/${user}/moderated_subreddits.json`;
         TBApi.getJSON(inputURL).then(data => {
             if (Object.keys(data).length > 0 && data.constructor === Object) {
-                TBStorage.purifyObject(data);
+                purifyObject(data);
                 const $userModSubs = $(`<div class="tb-user-modsubs">
                         <h3> ${data.data.length} Moderated subreddits </h3>
                     </div>`).appendTo($sidebar);
@@ -337,7 +341,7 @@ export default new Module({
         const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
         const inputURL = `/user/${user}/about.json`;
         TBApi.getJSON(inputURL).then(data => {
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             const userThumbnail = data.data.icon_img;
             const userCreated = data.data.created_utc;
             const verifiedMail = data.data.has_verified_email;
@@ -372,7 +376,7 @@ export default new Module({
 
             addModSubsToSidebar(user, $sidebar);
         }).catch(error => {
-            self.error('Error fetching user information:', inputURL, error);
+            log.error('Error fetching user information:', inputURL, error);
             // This CSS uses inline-block and having whitespace screws it
             // up, so this HTML has to start immediately after the quote :|
             $tabWrapper.after(`<div class="tb-profile-sidebar">
@@ -430,7 +434,7 @@ export default new Module({
                 `Searching profile page ${pageCount} with ${data.data.children.length} items`,
                 TBui.FEEDBACK_NEUTRAL,
             );
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             data.data.children.forEach(value => {
                 let hit = false;
                 let subredditMatch = false;
@@ -791,7 +795,7 @@ export default new Module({
                 sort,
                 limit: 25,
             }).then(data => {
-                TBStorage.purifyObject(data);
+                purifyObject(data);
                 let after = false;
                 if (data.data.after) {
                     after = data.data.after;
@@ -801,7 +805,7 @@ export default new Module({
                     $options.show();
                 });
             }).catch(error => {
-                self.error('Error fetching profile activity:', inputURL, error);
+                log.error('Error fetching profile activity:', inputURL, error);
                 $('.tb-profile-overlay .tb-window-content').html(`
                         <h1>No activity found</h1>
                         <p>Reddit doesn't seem to have anything for this account. Try checking your subreddit's moderation log to find posts and comments from them.</p>
@@ -875,7 +879,7 @@ export default new Module({
             TBui.contextTrigger('tb-user-profile', {
                 addTrigger: true,
                 triggerText: 'toolbox profile',
-                triggerIcon: TBui.icons.profile,
+                triggerIcon: icons.profile,
                 title: `Show toolbox profile for /u/${user}`,
                 dataAttributes: {
                     user,

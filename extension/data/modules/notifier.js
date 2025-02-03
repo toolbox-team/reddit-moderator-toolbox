@@ -5,7 +5,11 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
+import createLogger from '../util/logging.ts';
+import {purifyObject} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('Notifier');
 
 export default new Module({
     name: 'Notifier',
@@ -194,7 +198,7 @@ export default new Module({
 
     const NOTIFICATION_SOUND =
         'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3';
-    const unmoderatedOn = await TBStorage.getSettingAsync('Modbar', 'unmoderatedon', true); // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
+    const unmoderatedOn = await getSettingAsync('Modbar', 'unmoderatedon', true); // why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
     const checkIntervalMillis = TBHelpers.minutesToMilliseconds(checkInterval); // setting is in seconds, convert to milliseconds.
     const $body = $('body');
     let newLoad = true;
@@ -212,7 +216,7 @@ export default new Module({
     //
 
     TBCore.catchEvent(TBCore.events.TB_SAMPLE_SOUND, () => {
-        this.log('playing sound');
+        log.debug('playing sound');
 
         const audio = new Audio(NOTIFICATION_SOUND);
         audio.play();
@@ -316,7 +320,7 @@ export default new Module({
     }
 
     const updateAllTabs = async () => {
-        this.log('updating all counters accross tabs');
+        log.debug('updating all counters accross tabs');
         await browser.runtime.sendMessage({
             action: 'tb-global',
             globalEvent: TBCore.events.TB_UPDATE_COUNTERS,
@@ -345,7 +349,7 @@ export default new Module({
                     updateAllTabs();
                     activeNewMMcheck = false;
                 }).catch(error => {
-                    this.log(error);
+                    log.debug(error);
                     activeNewMMcheck = false;
                 });
             }, 500);
@@ -368,14 +372,14 @@ export default new Module({
                 .ThreadViewerHeader__right
             `,
             () => {
-                this.log('Checking modmail count based on click on specific element.');
+                log.debug('Checking modmail count based on click on specific element.');
                 newModMailCheck();
             },
         );
     }
 
     window.addEventListener(TBCore.events.TB_UPDATE_COUNTERS, event => {
-        this.log('updating counters from background');
+        log.debug('updating counters from background');
         updateMessagesCount(event.detail.unreadMessageCount);
         updateModqueueCount(event.detail.modqueueCount);
         updateUnmodCount(event.detail.unmoderatedCount);
@@ -383,7 +387,7 @@ export default new Module({
     });
 
     const getmessages = async () => {
-        this.log('getting messages');
+        log.debug('getting messages');
 
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
         const lastchecked = await this.get('lastChecked');
@@ -432,7 +436,7 @@ export default new Module({
             unreadcommentid,
         ) {
             TBApi.getJSON(unreadcontexturl).then(jsondata => {
-                TBStorage.purifyObject(jsondata);
+                purifyObject(jsondata);
                 const commenttitle = jsondata[0].data.children[0].data.title;
                 if (straightToInbox && messageUnreadLink) {
                     TBCore.notification(
@@ -459,7 +463,7 @@ export default new Module({
 
         // getting unread messages
         TBApi.getJSON('/message/unread.json').then(async json => {
-            TBStorage.purifyObject(json);
+            purifyObject(json);
             const count = json.data.children.length || 0; // TODO: what does `|| 0` do in this case? if children is an array, length will alwaus be a number, so `|| 0` does nothing
             this.set('unreadMessageCount', count);
             updateMessagesCount(count);
@@ -567,7 +571,7 @@ export default new Module({
                 }
                 this.set('unreadPushed', pushedunread);
             }
-        }).catch(error => this.error(error));
+        }).catch(error => log.error(error));
 
         //
         // Modqueue
@@ -575,7 +579,7 @@ export default new Module({
         // wrapper around getJSON so it can be part of a loop
         function procesmqcomments (mqlinkid, mqreportauthor, mqidname) {
             TBApi.getJSON(mqlinkid).then(jsondata => {
-                TBStorage.purifyObject(jsondata);
+                purifyObject(jsondata);
                 let infopermalink = jsondata.data.children[0].data.permalink;
                 const infotitle = jsondata.data.children[0].data.title;
                 const infosubreddit = jsondata.data.children[0].data.subreddit;
@@ -597,7 +601,7 @@ export default new Module({
         }
 
         TBApi.getJSON(`${modQueueURL}.json?limit=100`).then(async json => {
-            TBStorage.purifyObject(json);
+            purifyObject(json);
             const count = json.data.children.length || 0;
             updateModqueueCount(count);
 
@@ -707,7 +711,7 @@ export default new Module({
             }
 
             TBApi.getJSON(`${unModeratedURL}.json?limit=100`).then(async json => {
-                TBStorage.purifyObject(json);
+                purifyObject(json);
                 const count = json.data.children.length || 0;
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
@@ -803,7 +807,7 @@ export default new Module({
                 updateAllTabs();
             }
         }).catch(error => {
-            this.log(error);
+            log.debug(error);
         });
     };
 

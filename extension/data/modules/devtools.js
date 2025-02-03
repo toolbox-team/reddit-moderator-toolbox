@@ -5,8 +5,9 @@ import * as TBCore from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {icons} from '../util/icons.ts';
+import {purifyObject} from '../util/purify.js';
 
 export default new Module({
     name: 'Developer Tools',
@@ -84,7 +85,7 @@ export default new Module({
         TBui.contextTrigger('tb-testCommentUI-link', {
             addTrigger: true,
             triggerText: 'Show ze overlay!',
-            triggerIcon: TBui.icons.overlay,
+            triggerIcon: icons.overlay,
         });
     }
 
@@ -145,7 +146,7 @@ export default new Module({
             // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
             const inputURL = $body.find('#tb-testCommentUI-input-url').val();
             const data = await TBApi.getJSON(inputURL, {raw_json: 1});
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             const commentOptions = {
                 parentLink: true,
                 contextLink: true,
@@ -168,7 +169,7 @@ export default new Module({
             $siteTable.empty();
             const inputURL = $body.find('#tb-testCommentUI-input-url').val();
             const data = await TBApi.getJSON(inputURL, {raw_json: 1});
-            TBStorage.purifyObject(data);
+            purifyObject(data);
             TBCore.forEachChunkedDynamic(data.data.children, entry => {
                 if (entry.kind === 't3') {
                     const $submission = TBui.makeSubmissionEntry(entry);

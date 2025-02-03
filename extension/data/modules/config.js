@@ -5,10 +5,16 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {clearCache} from '../util/cache.ts';
+import {icons} from '../util/icons.ts';
+import createLogger from '../util/logging.ts';
+import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
+import {purify, purifyObject} from '../util/purify.js';
 
-const self = new Module({
+const log = createLogger('TBConfig');
+
+export default new Module({
     name: 'toolbox Config',
     id: 'TBConfig',
     enabledByDefault: true,
@@ -19,7 +25,7 @@ const self = new Module({
 
     // Set up some base variables
     const $body = $('body');
-    const unManager = TBStorage.getSetting('UserNotes', 'unManagerLink', true);
+    const unManager = getSettingSync('UserNotes', 'unManagerLink', true);
     let config = TBCore.config;
     let sortReasons = [];
     let subreddit;
@@ -211,7 +217,7 @@ const self = new Module({
                         </ul>
                     </div>
                     <a href="javascript:;" class="advanced-enable show-advanced tb-general-button" ${
-                        TBStorage.getSetting('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'
+                        getSettingSync('Utils', 'advancedMode', false) ? '' : 'style="display:none;"'
                     }>show advanced settings</a>
                     <h3 class="rr-advanced">Advanced settings</h3>
                     <div class="rr-advanced">
@@ -258,7 +264,7 @@ const self = new Module({
                     title: 'edit removal reasons',
                     tooltip: 'Edit and add your removal reasons here.',
                     content: `
-                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new removal reason</a>
+                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${icons.addCircle}</i> Add new removal reason</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form" class="tb-removal-reason-field">
                     <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
@@ -305,7 +311,7 @@ const self = new Module({
                     title: 'edit mod macros',
                     tooltip: 'Edit and add your mod macros here.',
                     content: `
-                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
+                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <div id="tb-add-mod-macro-form">
                     <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
@@ -420,7 +426,7 @@ const self = new Module({
                 TBui.contextTrigger('tb-config-link', {
                     addTrigger: true,
                     triggerText: `/r/${subreddit} config`,
-                    triggerIcon: TBui.icons.tbSubConfig,
+                    triggerIcon: icons.tbSubConfig,
                     title: `toolbox configuration for /r/${subreddit}`,
                     dataAttributes: {
                         subreddit,
@@ -440,13 +446,13 @@ const self = new Module({
 
         TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
             if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                self.log('Failed: wiki config');
+                log.debug('Failed: wiki config');
 
                 config = TBCore.config;
                 showConfig(subreddit, config);
             } else {
                 config = resp;
-                TBStorage.purifyObject(config);
+                purifyObject(config);
                 if (TBCore.isConfigValidVersion(subreddit, config)) {
                     showConfig(subreddit, config);
                 } else {
@@ -477,26 +483,26 @@ const self = new Module({
 
     // Considering that this is a config page we want to be able to save whatever we do. This function takes care of that.
     function postToWiki (page, data, reason, isJSON, updateAM) {
-        self.log('posting to wiki');
+        log.debug('posting to wiki');
         TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
         TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(async () => {
-            self.log('save succ = true');
+            log.debug('save succ = true');
             if (page === 'config/automoderator') {
                 $body.find('.edit_automoderator_config .error').hide();
             }
-            self.log('clearing cache');
-            await TBStorage.clearCache();
+            log.debug('clearing cache');
+            await clearCache();
 
             TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
         }).catch(async err => {
-            self.log(err);
+            log.debug(err);
             if (page === 'config/automoderator') {
                 const $error = $body.find('.edit_automoderator_config .error');
                 $error.show();
 
                 const responseJSON = await err.response.json();
                 const saveError = responseJSON.special_errors[0];
-                $error.find('.errorMessage').html(TBStorage.purify(saveError));
+                $error.find('.errorMessage').html(purify(saveError));
 
                 TBui.textFeedback('Config not saved!', TBui.FEEDBACK_NEGATIVE);
             } else {
@@ -530,12 +536,12 @@ const self = new Module({
         const $textArea = $wikiContentArea.find('.edit-wikidata');
         const $saveButton = $wikiFooterArea.find('.save-wiki-data');
 
-        if (TBStorage.getSetting('Syntax', 'enabled', true)) {
+        if (getSettingSync('Syntax', 'enabled', true)) {
             $body.addClass('mod-syntax');
             let configEditor;
             let defaultMode = 'default';
-            const selectedTheme = TBStorage.getSetting('Syntax', 'selectedTheme') || 'dracula';
-            const enableWordWrap = TBStorage.getSetting('Syntax', 'enableWordWrap');
+            const selectedTheme = getSettingSync('Syntax', 'selectedTheme') || 'dracula';
+            const enableWordWrap = getSettingSync('Syntax', 'enableWordWrap');
 
             if (page === 'automoderator') {
                 defaultMode = 'text/x-yaml';
@@ -712,7 +718,7 @@ const self = new Module({
                 <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${key}"></td>
                 <td><input class="color" name="type-color" type="color" value="${safeColor}"></td>
                 <td>
-                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortUp}</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortDown}</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">${TBui.icons.delete}</a>
+                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${icons.sortUp}</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${icons.sortDown}</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">${icons.delete}</a>
                 </td>
                 <td class="usernote-error error"></td>
 		    </tr>
@@ -796,8 +802,8 @@ const self = new Module({
                 const removalReasonTemplate = `
                 <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="removal-reasons-buttons">
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${TBui.icons.edit}</a> <br>
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${TBui.icons.delete}</a>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${icons.edit}</a> <br>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${icons.delete}</a>
                     </td>
                     <td class="removal-reasons-content" data-reason="{{i}}">
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
@@ -856,8 +862,8 @@ const self = new Module({
                 const removalReasonTemplateHTML = `
                 <tr class="removal-reason" data-reason="${index}" data-subreddit="${subreddit}">
                     <td class="removal-reasons-sort-buttons">
-                        <a href="javascript:;" class="tb-sort-up tb-icons">${TBui.icons.sortUp}</a>
-                        <a href="javascript:;" class="tb-sort-down tb-icons">${TBui.icons.sortDown}</a>
+                        <a href="javascript:;" class="tb-sort-up tb-icons">${icons.sortUp}</a>
+                        <a href="javascript:;" class="tb-sort-down tb-icons">${icons.sortDown}</a>
                     </td>
                     <td class="removal-reasons-content">
                         <span class="removal-reason-label">${removalReasonTitle}</span>
@@ -891,8 +897,8 @@ const self = new Module({
                 const modMacroTemplate = `
                 <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="mod-macros-buttons">
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${TBui.icons.edit}</a> <br>
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${TBui.icons.delete}</a>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${icons.edit}</a> <br>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${icons.delete}</a>
                     </td>
                     <td class="mod-macros-content" data-macro="{{i}}">
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>
@@ -1046,7 +1052,7 @@ const self = new Module({
             try {
                 text = JSON.parse(text);
             } catch (e) {
-                self.log(`Error saving JSON page ${e.toString()}`);
+                log.debug(`Error saving JSON page ${e.toString()}`);
                 TBui.textFeedback(`Page not saved, JSON is not correct.<br> ${e.toString()}`, TBui.FEEDBACK_NEGATIVE);
                 return;
             }
@@ -1094,12 +1100,12 @@ const self = new Module({
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                        self.log('Failed: wiki config');
+                        log.debug('Failed: wiki config');
                         return;
                     }
 
                     config = resp;
-                    TBStorage.purifyObject(config);
+                    purifyObject(config);
                     populateUsernoteTypes();
                 });
             } else {
@@ -1163,15 +1169,15 @@ const self = new Module({
     });
 
     $body.on('click', '#save-usernote-types', () => {
-        self.log('Saving usernote types');
+        log.debug('Saving usernote types');
 
         const $rows = $('#tb-config-usernote-type-list').find('.usernote-type');
-        self.log(`  Num types: ${$rows.length}`);
+        log.debug(`  Num types: ${$rows.length}`);
         $rows.find('input').removeClass('error');
         $rows.find('.usernote-error').text('');
 
         // Validate
-        self.log('  Validating type settings');
+        log.debug('  Validating type settings');
         let error = false;
         const seenKeys = [];
         $rows.each(function () {
@@ -1211,7 +1217,7 @@ const self = new Module({
             }
         });
         if (error) {
-            self.log('  Failed validation');
+            log.debug('  Failed validation');
             return;
         }
 
@@ -1222,7 +1228,7 @@ const self = new Module({
             const key = $row.find('.key').val();
             const text = $row.find('.name').val();
             const color = $row.find('.color').val();
-            self.log(`  key=${key}, text="${text}", color=${color}`);
+            log.debug(`  key=${key}, text="${text}", color=${color}`);
 
             config.usernoteColors.push({
                 key,
@@ -1244,12 +1250,12 @@ const self = new Module({
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                        self.log('Failed: wiki config');
+                        log.debug('Failed: wiki config');
                         return;
                     }
 
                     config = resp;
-                    TBStorage.purifyObject(config);
+                    purifyObject(config);
                     removalReasonsContent();
                 });
             } else {
@@ -1344,7 +1350,7 @@ const self = new Module({
 
         const $removalReasonLabel = $removalContent.find('.removal-reason-label');
         $removalReasonLabel.html(
-            TBStorage.purify(
+            purify(
                 `<span><h3 class="removal-title">${TBHelpers.htmlEncode(reasonTitle)}</h3>${label}</span>`,
             ),
         );
@@ -1495,12 +1501,12 @@ const self = new Module({
         if ($body.hasClass('toolbox-wiki-edited')) {
             TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                 if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                    self.log('Failed: wiki config');
+                    log.debug('Failed: wiki config');
                     return;
                 }
 
                 config = resp;
-                TBStorage.purifyObject(config);
+                purifyObject(config);
                 removalReasonsEditContent();
             });
         } else {
@@ -1578,12 +1584,12 @@ const self = new Module({
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                        self.log('Failed: wiki config');
+                        log.debug('Failed: wiki config');
                         return;
                     }
 
                     config = resp;
-                    TBStorage.purifyObject(config);
+                    purifyObject(config);
                     modMacrosContent();
                 });
             } else {
@@ -1710,7 +1716,7 @@ const self = new Module({
         }
 
         const $modMacroLabel = $macroContent.find('.mod-macro-label');
-        $modMacroLabel.html(TBStorage.purify(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`));
+        $modMacroLabel.html(purify(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`));
 
         $modMacroLabel.show();
         $macroContent.find('.mod-macro-edit').hide();
@@ -1881,7 +1887,7 @@ const self = new Module({
     // When the import button is clicked on the domain tags thing.
     $body.on('click', '.domain_tags .import', async () => {
         const json = await TBApi.getJSON(`/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`);
-        TBStorage.purifyObject(json);
+        purifyObject(json);
         if (json.data.content_md) {
             const tags = JSON.parse(json.data.content_md).domainTags;
             if (tags) {
@@ -1902,5 +1908,3 @@ const self = new Module({
         TBui.textFeedback('Ban macro is saved.', TBui.FEEDBACK_POSITIVE);
     });
 });
-
-export default self;

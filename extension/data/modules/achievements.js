@@ -3,7 +3,10 @@ import $ from 'jquery';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import {getSettingAsync} from '../tbstorage.js';
+import createLogger from '../util/logging.ts';
+import {getSettingAsync} from '../util/settings.ts';
+
+const log = createLogger('Achievements');
 
 const self = new Module({
     name: 'Achievements',
@@ -65,12 +68,12 @@ function Manager () {
             const title = titles[i];
             const maxValue = maxValues[i];
 
-            self.log('Registering Achievement');
+            log.debug('Registering Achievement');
             if (debugMode) {
-                self.log(`  name=${title}`);
+                log.debug(`  name=${title}`);
             } // spoilers
-            self.log(`  maxValue=${maxValue}`);
-            self.log(`  saveIndex=${saveIndex}`);
+            log.debug(`  maxValue=${maxValue}`);
+            log.debug(`  saveIndex=${saveIndex}`);
 
             achievementsBlock.push({
                 title,
@@ -89,19 +92,19 @@ function Manager () {
         if (value === undefined) {
             value = 1;
         }
-        self.log(`Unlocking achievement block: index=${saveIndex}, value=${value}`);
+        log.debug(`Unlocking achievement block: index=${saveIndex}, value=${value}`);
 
         const old = saves[saveIndex];
-        self.log(`  Old value: ${saves[saveIndex]}`);
+        log.debug(`  Old value: ${saves[saveIndex]}`);
         saves[saveIndex] += value;
-        self.log(`  New value: ${saves[saveIndex]}`);
+        log.debug(`  New value: ${saves[saveIndex]}`);
 
         const achievementsBlock = achievements[saveIndex];
         let achievement;
         for (let index = 0; index < achievementsBlock.length; index++) {
-            self.log(`  Checking achievement ${index}`);
+            log.debug(`  Checking achievement ${index}`);
             achievement = achievementsBlock[index];
-            self.log(`    Comparing to max value: ${achievement.maxValue}`);
+            log.debug(`    Comparing to max value: ${achievement.maxValue}`);
             if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
                 let title = achievement.title;
 
@@ -111,10 +114,10 @@ function Manager () {
                 try {
                     title = $(achievement.title).text() || achievement.title;
                 } catch (e) {
-                    self.log(`error: ${e}`);
+                    log.debug(`error: ${e}`);
                 }
 
-                self.log(`${title} Unlocked!`);
+                log.debug(`${title} Unlocked!`);
                 TBCore.notification(
                     'Mod achievement unlocked!',
                     title,
@@ -206,7 +209,7 @@ function init ({lastSeen}) {
     const $body = $('body');
 
     // Achievement definitions
-    self.log('Registering achievements');
+    log.debug('Registering achievements');
 
     // Random awesome
     self.manager.register(
@@ -216,7 +219,7 @@ function init ({lastSeen}) {
             const awesome = 7;
             const chanceOfBeingAwesome = TBHelpers.getRandomNumber(10000);
 
-            self.log(`You rolled a: ${chanceOfBeingAwesome}`);
+            log.debug(`You rolled a: ${chanceOfBeingAwesome}`);
             if (awesome === chanceOfBeingAwesome) {
                 self.manager.unlock(saveIndex);
             }
@@ -233,10 +236,10 @@ function init ({lastSeen}) {
             const now = TBHelpers.getTime();
             const timeSince = now - lastSeen;
             const daysSince = TBHelpers.millisecondsToDays(timeSince);
-            self.log(`daysSince: ${daysSince}`);
+            log.debug(`daysSince: ${daysSince}`);
 
             if (daysSince >= 7) {
-                // self.log("you've got an award!");
+                // log.debug("you've got an award!");
                 self.manager.unlock(saveIndex);
             }
 
@@ -278,7 +281,7 @@ function init ({lastSeen}) {
             }
             // TODO: wait for 'yes' click.
             // $body.on('click', '.yes', function(){
-            //  self.log('yes clicked');
+            //  log.debug('yes clicked');
             // });
         });
     });

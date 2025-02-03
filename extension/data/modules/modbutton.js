@@ -6,9 +6,13 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import createLogger from '../util/logging.ts';
+import {purifyObject} from '../util/purify.js';
+import {getSettingAsync} from '../util/settings.ts';
 import {JQueryRenderer} from '../util/ui_interop.tsx';
+
+const log = createLogger('ModButton');
 
 const MAX_BAN_REASON_LENGTH = 300;
 const MAX_BAN_MESSAGE_LENGTH = 5000;
@@ -48,7 +52,7 @@ const self = new Module({
         {
             id: 'onlyshowInhover',
             type: 'boolean',
-            default: () => TBStorage.getSettingAsync('GenSettings', 'onlyshowInhover', true),
+            default: () => getSettingAsync('GenSettings', 'onlyshowInhover', true),
             hidden: true,
         },
         {
@@ -161,7 +165,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
     async function openModPopup (event, info) {
         const benbutton = event.target; // huehuehue
         const $benbutton = $(benbutton);
-        self.log('displaying mod button popup');
+        log.debug('displaying mod button popup');
 
         const lastaction = await self.get('lastAction');
 
@@ -320,18 +324,18 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
         // get pre-definded ban message/note
         if (subreddit) {
-            self.log('getting ban macros');
+            log.debug('getting ban macros');
             TBCore.getConfig(subreddit).then(config => {
                 if (!config || !config.banMacros) {
                     return;
                 }
                 const macros = config.banMacros;
                 if (macros.banNote) {
-                    self.log(macros.banNote);
+                    log.debug(macros.banNote);
                     $popup.find('.ban-note').val(TBHelpers.replaceTokens(info, macros.banNote));
                 }
                 if (macros.banMessage) {
-                    self.log(macros.banMessage);
+                    log.debug(macros.banMessage);
                     $popup.find('.ban-message').val(TBHelpers.replaceTokens(info, macros.banMessage));
                 }
             });
@@ -363,7 +367,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                         type: 'banuser',
                         limit: '1000',
                     });
-                    TBStorage.purifyObject(logData);
+                    purifyObject(logData);
                     const logged = logData.data.children;
                     for (let i = 0; i < logged.length; i++) {
                         if (logged[i].data.target_fullname === user_fullname) {
@@ -376,7 +380,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                 }
             } catch (error) {
                 // We don't have permission to check the user's ban information
-                self.warn(`Error looking up ban information for ${user}:`, error);
+                log.warn(`Error looking up ban information for ${user}:`, error);
             }
         }
 
@@ -578,19 +582,19 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
 
         function completeCheck (failedSubs) {
             const failed = failedSubs.length;
-            self.log(`${failed} subs failed`);
+            log.debug(`${failed} subs failed`);
             if (failed > 0) {
-                self.log(`${failed} subs failed`);
+                log.debug(`${failed} subs failed`);
                 const retry = confirm(`Action complete, however ${failed} failed.  Would you like to retry these?`);
                 if (retry) {
-                    self.log('retrying');
+                    log.debug('retrying');
                     massAction(failedSubs);
                 } else {
-                    self.log('not retrying');
+                    log.debug('not retrying');
                     $('.mod-popup').remove();
                 }
             } else {
-                self.log('complete');
+                log.debug('complete');
                 $('.mod-popup').remove();
                 // TBui.textFeedback('Mod actions complete' + subreddit, TBui.FEEDBACK_POSITIVE);
             }
@@ -604,7 +608,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             Promise.all(subs.map(async subreddit => {
                 TBui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TBui.FEEDBACK_POSITIVE);
 
-                self.log(`performing action in: ${subreddit}`);
+                log.debug(`performing action in: ${subreddit}`);
                 if (settingState) {
                     const params = {
                         user,
@@ -625,13 +629,13 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                         }
                     }).catch(() => {
                         // catches the above `errors.length` condition as well as network errors
-                        self.log('missed one');
+                        log.debug('missed one');
                         failedSubs.push(subreddit);
                     });
                 } else {
                     await TBApi.unfriendUser(user, action, subreddit, false).catch(() => {
                         // only catches network errors because unfriend is weird
-                        self.log('missed one');
+                        log.debug('missed one');
                         failedSubs.push(subreddit);
                     });
                 }
@@ -705,7 +709,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             return;
         }
 
-        TBStorage.purifyObject(userFlairInfo);
+        purifyObject(userFlairInfo);
         $textinput.val(userFlairInfo.current.flair_text);
         $classinput.val(userFlairInfo.current.flair_css_class);
 
@@ -767,7 +771,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
         TBApi.flairUser(user, subreddit, text, css_class, templateID).then(() => {
             TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
         }).catch(error => {
-            self.error('Error saving user flair:', error);
+            log.error('Error saving user flair:', error);
             TBui.textFeedback(`failed to save user flair: ${error.message}`, TBui.FEEDBACK_NEGATIVE);
             $status.text(`error: ${error.message}`);
         });

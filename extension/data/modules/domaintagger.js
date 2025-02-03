@@ -4,8 +4,12 @@ import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
-import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
+import {getCache, setCache} from '../util/cache.ts';
+import createLogger from '../util/logging.ts';
+import {purifyObject} from '../util/purify.js';
+
+const log = createLogger('DTagger');
 
 export default new Module({
     name: 'Domain Tagger',
@@ -21,20 +25,19 @@ export default new Module({
             default: 'title_dot',
         },
     ],
-}, function init ({displayType}) {
+}, ({displayType}) => {
     const $body = $('body');
-    const self = this;
 
     $body.addClass(`tb-dt-type-${displayType}`);
 
-    self.log('run called from first init');
+    log.debug('run called from first init');
     run(true);
 
     function postToWiki (sub, json, reason) {
         // Update config cache to contain the new configuration
-        TBStorage.getCache('Utils', 'configCache', {}).then(cachedConfigs => {
+        getCache('Utils', 'configCache', {}).then(cachedConfigs => {
             cachedConfigs[sub] = json;
-            TBStorage.setCache('Utils', 'configCache', cachedConfigs);
+            setCache('Utils', 'configCache', cachedConfigs);
         });
 
         // Save the edit to the wiki
@@ -42,20 +45,20 @@ export default new Module({
             $('div.thing.link.dt-processed').removeClass('dt-processed');
             run(false);
         }).catch(err => {
-            self.log(err.responseText);
+            log.debug(err.responseText);
         });
     }
 
     // NER support.
     window.addEventListener('TBNewThings', () => {
-        self.log('run called from NER support');
+        log.debug('run called from NER support');
         run(true);
     });
 
     // Main stuff
 
     async function run (addButton) {
-        self.log(`run called with addButton=${addButton}`);
+        log.debug(`run called with addButton=${addButton}`);
         const $things = $('div.thing.link:not(.dt-processed)');
 
         // Build object lists per subreddit
@@ -81,13 +84,13 @@ export default new Module({
 
         // Process subreddit objects' lists
 
-        self.log('Processing subreddits');
-        self.log(Object.keys(subs));
+        log.debug('Processing subreddits');
+        log.debug(Object.keys(subs));
 
         TBCore.forEachChunkedDynamic(Object.entries(subs), ([sub, tags]) => {
             processSubreddit(sub, tags);
         }).then(() => {
-            self.log('Done processing things');
+            log.debug('Done processing things');
         });
     }
 
@@ -103,16 +106,16 @@ export default new Module({
     }
 
     async function processSubreddit (sub, things) {
-        self.log(`  Processing subreddit: /r/${sub}`);
+        log.debug(`  Processing subreddit: /r/${sub}`);
         const config = await TBCore.getConfig(sub);
-        self.log(`    Config retrieved for /r/${sub}`);
+        log.debug(`    Config retrieved for /r/${sub}`);
         if (config && config.domainTags && config.domainTags.length > 0) {
             setTags(config.domainTags, things);
         }
     }
 
     function setTags (domainTags, things) {
-        self.log('    Setting tags');
+        log.debug('    Setting tags');
 
         function applyTag ($domain, d, $entry) {
             $domain.attr('data-color', d.color);
@@ -267,7 +270,7 @@ export default new Module({
 
             // if we got this far, we have valid JSON
             config = resp;
-            TBStorage.purifyObject(config);
+            purifyObject(config);
 
             if (config.domainTags) {
                 const tags = config.domainTags.filter(d => d.name === domainTag.name);
@@ -297,15 +300,15 @@ export default new Module({
     // Utilities
 
     function getThingDomain ($thing) {
-        self.log('Getting thing domain');
+        log.debug('Getting thing domain');
         let domain = $thing.find('span.domain a').attr('href').toLowerCase();
-        self.log(`  Raw = ${domain}`);
+        log.debug(`  Raw = ${domain}`);
         let match = /\/domain\/(.+)\//.exec(domain);
         if (!match) {
             match = /(\/r\/.+)\//.exec(domain);
         }
         domain = match[1];
-        self.log(`  Result = ${domain}`);
+        log.debug(`  Result = ${domain}`);
         return domain;
     }
 });

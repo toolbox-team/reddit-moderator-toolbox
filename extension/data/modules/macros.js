@@ -3,9 +3,12 @@ import $ from 'jquery';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
+import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {purify} from '../util/purify.js';
+
+const log = TBLog('ModMacros');
 
 export default new Module({
     name: 'Mod Macros',
@@ -19,9 +22,8 @@ export default new Module({
             default: true,
         },
     ],
-}, function init ({showMacroPreview}) {
+}, ({showMacroPreview}) => {
     const $body = $('body');
-    const self = this;
     const MACROS = 'TB-MACROS';
 
     async function getConfig (sub, callback) {
@@ -40,8 +42,8 @@ export default new Module({
             const $select = $(this);
             const sub = $select.attr('data-subreddit');
 
-            self.log($select);
-            self.log(`${sub} ${subreddit}`);
+            log.debug($select);
+            log.debug(`${sub} ${subreddit}`);
 
             if (sub === subreddit) {
                 if ($select.hasClass('tb-populated')) {
@@ -73,7 +75,7 @@ export default new Module({
                         );
                 });
             } else {
-                self.log('removing select');
+                log.debug('removing select');
                 $select.remove();
             }
         });
@@ -82,7 +84,7 @@ export default new Module({
     if (TBCore.isOldReddit) {
         TBCore.getModSubs(false).then(mySubs => {
             if (TBCore.post_site && mySubs.includes(TBCore.post_site)) {
-                self.log('getting config');
+                log.debug('getting config');
                 getConfig(TBCore.post_site, (success, config) => {
                     // if we're a mod, add macros to top level reply button.
                     if (success && config.length > 0) {
@@ -124,7 +126,7 @@ export default new Module({
                 if (!info.subreddit) {
                     return;
                 }
-                self.log(info.subreddit);
+                log.debug(info.subreddit);
 
                 // if we don't have a config, get it.  If it fails, return.
                 getConfig(info.subreddit, (success, config) => {
@@ -168,7 +170,7 @@ export default new Module({
         if (!info.subreddit) {
             return;
         }
-        self.log(info.subreddit);
+        log.debug(info.subreddit);
 
         // if we don't have a config, get it.  If it fails, return.
         getConfig(info.subreddit, (success, config) => {
@@ -340,7 +342,7 @@ export default new Module({
         const editMinHeight = minHeight - 74;
 
         const title = dropdown.find('option:selected').text();
-        self.log(title);
+        log.debug(title);
         const $macroPopup = TBui.popup({
             title: `Mod Macro: ${title}`,
             tabs: [
@@ -411,8 +413,8 @@ export default new Module({
             const editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
             if ($selectElement.val() !== MACROS) {
-                self.log('Replying with:');
-                self.log(`  ${editedcomment}`);
+                log.debug('Replying with:');
+                log.debug(`  ${editedcomment}`);
 
                 // We split of new modmail from the rest of reddit because... well easier.
                 if (TBCore.isNewModmail) {
@@ -426,7 +428,7 @@ export default new Module({
                         $body.find('.ThreadViewerReplyForm__replyButton').click();
                     }
 
-                    self.log('Performing user actions');
+                    log.debug('Performing user actions');
 
                     if (ban) {
                         TBApi.friendUser({
@@ -506,7 +508,7 @@ export default new Module({
                     });
 
                     if (!TBCore.isModmail && !TBCore.isNewModmail) {
-                        self.log('Performing non-modmail actions');
+                        log.debug('Performing non-modmail actions');
 
                         if (remove) {
                             TBApi.removeThing(info.id);
@@ -525,7 +527,7 @@ export default new Module({
                         }
                     }
 
-                    self.log('Performing user actions');
+                    log.debug('Performing user actions');
 
                     if (ban) {
                         TBApi.friendUser({
@@ -543,7 +545,7 @@ export default new Module({
                     }
 
                     if (mute) {
-                        self.log(`  Muting "${info.author}" from /r/${info.subreddit} @ ${info.permalink}`);
+                        log.debug(`  Muting "${info.author}" from /r/${info.subreddit} @ ${info.permalink}`);
                         TBApi.friendUser({
                             user: info.author,
                             action: 'muted',
@@ -578,20 +580,20 @@ export default new Module({
         const topLevel = $this.hasClass('tb-top-macro-select');
         let info;
 
-        self.log(`Macro selected: index=${index}`);
-        self.log(`  subreddit=${sub}`);
+        log.debug(`Macro selected: index=${index}`);
+        log.debug(`  subreddit=${sub}`);
 
         // disable the select box to prevent a mess with creating multiple popup boxes.
         $this.prop('disabled', 'disabled');
         // If it's a top-level reply we need to find the post's info.
         if (topLevel) {
-            self.log('toplevel');
+            log.debug('toplevel');
             info = await TBCore.getThingInfo($('#siteTable').find('.thing:first'));
         } else {
             info = await TBCore.getThingInfo($this.closest('.thing'));
         }
 
-        self.log(info);
+        log.debug(info);
 
         getConfig(sub, async (success, config) => {
             if (success && config.length > 0) {

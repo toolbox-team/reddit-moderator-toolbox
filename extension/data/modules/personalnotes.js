@@ -7,7 +7,10 @@ import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
 
+import TBLog from '../tblog.ts';
 import {modbarExists} from './modbar.js';
+
+const log = TBLog('PNotes');
 
 export default new Module({
     name: 'Personal Notes',
@@ -33,8 +36,8 @@ export default new Module({
             description: 'Use a monospace font in the text editor',
         },
     ],
-}, function init ({noteWiki: notewiki, popupHeight, monospace}) {
-    this.info('Personal notes loaded! Success!');
+}, ({noteWiki: notewiki, popupHeight, monospace}) => {
+    log.info('Personal notes loaded! Success!');
     if (TBCore.isEmbedded) {
         return;
     }
@@ -105,10 +108,10 @@ export default new Module({
     }
 
     const saveNoteWiki = (page, subreddit, data, reason, newnote) => {
-        this.log('posting to wiki');
+        log.debug('posting to wiki');
         TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
         TBApi.postToWiki(`notes/${page}`, subreddit, data, reason, false, false).then(() => {
-            this.log('clearing cache');
+            log.debug('clearing cache');
             TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
 
             if (newnote) {
@@ -124,7 +127,7 @@ export default new Module({
                 loadNoteWiki(page);
             }
         }).catch(err => {
-            this.log(err.responseText);
+            log.debug(err.responseText);
             TBui.textFeedback(err.responseText, TBui.FEEDBACK_NEGATIVE);
         });
     };

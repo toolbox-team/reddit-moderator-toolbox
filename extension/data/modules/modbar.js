@@ -3,11 +3,14 @@ import $ from 'jquery';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
+import TBLog from '../tblog.ts';
 import TBModule, {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {icons} from '../util/icons.ts';
 import {purify} from '../util/purify.js';
 import {getSettingAsync, setSettingAsync} from '../util/settings.ts';
+
+const log = TBLog('Modbar');
 
 // Hold onto the modbarExists resolver so we can call it when the time is right
 let resolveModbarExists = null;
@@ -345,8 +348,8 @@ export default new Module({
 
             const configEnabled = await getSettingAsync('TBConfig', 'enabled', false);
             const usernotesEnabled = await getSettingAsync('UserNotes', 'enabled', false);
-            this.log('got mod subs');
-            this.log(mySubsData.length);
+            log.debug('got mod subs');
+            log.debug(mySubsData.length);
 
             $(mySubsData).each(function () {
                 const subColor = TBHelpers.stringToColor(this.subreddit + subredditColorSalt);
@@ -494,7 +497,7 @@ export default new Module({
         );
 
         $body.on('click', '#tb-reload-link', () => {
-            this.log('reloading chrome');
+            log.debug('reloading chrome');
             TBui.reloadToolbox();
         });
     }
@@ -593,7 +596,7 @@ export default new Module({
         let module = event.detail.tbsettings;
         if (module) {
             let setting = event.detail.setting;
-            this.log(setting);
+            log.debug(setting);
             module = module.toLowerCase();
 
             if (setting) {

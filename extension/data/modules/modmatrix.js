@@ -3,9 +3,12 @@ import SnuOwnd from 'snuownd';
 
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
+import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {purify, purifyObject} from '../util/purify.js';
+
+const log = TBLog('ModMatrix');
 
 const self = new Module({
     name: 'Mod Log Matrix',
@@ -468,7 +471,7 @@ self.getActions = function (callback) {
         requestData.after = this.after;
     }
 
-    self.log(`Retreiving ${requestData.count} to ${requestData.count + requestData.limit}`);
+    log.debug(`Retreiving ${requestData.count} to ${requestData.count + requestData.limit}`);
     $('#mod-matrix-statistics').text(
         `loading entries ${requestData.count} to ${requestData.count + requestData.limit}...`,
     );
@@ -484,18 +487,18 @@ self.getActions = function (callback) {
     } else {
         TBApi.getJSON(url, requestData).then(response => {
             purifyObject(response);
-            self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
+            log.debug(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
             const data = response.data;
             self.processData(data, callback);
             self.dataCache[cacheKey] = data;
         })
             .catch(error => {
-                self.log(
+                log.debug(
                     `Mod log request ${requestData.count} to ${requestData.count + requestData.limit} failed:`,
                     error,
                 );
                 if (error.response && error.response.status === 504) {
-                    self.log('Retrying mod log request...');
+                    log.debug('Retrying mod log request...');
                     self.getActions(callback);
                 } else {
                     // End and display what we have with an error
@@ -606,7 +609,7 @@ self.processData = function (data, callback) {
             let moderator = self.subredditModerators[mod];
 
             if (self.minDate != null && self.minDate > item.created_utc * 1000) {
-                // self.log("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
+                // log.debug("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
                 finished = true;
                 break;
             } else if (
@@ -614,7 +617,7 @@ self.processData = function (data, callback) {
                 // (hasModFilter && $.inArray(mod, modLogMatrix.modFilter) == -1) ||
                 // (hasActionFilter && $.inArray(action, modLogMatrix.actionFilter)  == -1)
             ) {
-                // self.log("Item newer than toDate", item.created_utc, modLogMatrix.maxDate);
+                // log.debug("Item newer than toDate", item.created_utc, modLogMatrix.maxDate);
                 continue;
             }
 
@@ -798,7 +801,7 @@ function init () {
         return;
     }
 
-    self.log('Running Mod Matrix Module');
+    log.debug('Running Mod Matrix Module');
     self.run();
 
     const $body = $('body');

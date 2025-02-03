@@ -2,11 +2,14 @@ import $ from 'jquery';
 
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
+import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import {actionButton} from '../tbui.js';
 import {getSettingAsync} from '../util/settings.ts';
 
-const self = new Module({
+const log = TBLog('BButtons');
+
+export default new Module({
     name: 'Better Buttons',
     id: 'BButtons',
     enabledByDefault: true,
@@ -106,7 +109,6 @@ const self = new Module({
         initCommentLock();
     }
 });
-export default self;
 
 // Bread and buttons
 const $body = $('body');
@@ -116,7 +118,7 @@ function initModSave () {
     if (TBCore.isModmail) {
         return;
     }
-    self.log('Adding mod save buttons');
+    log.debug('Adding mod save buttons');
 
     // Watches for changes in the DOM
     let shouldSticky = false;
@@ -127,7 +129,7 @@ function initModSave () {
                     const $item = $(mutation.addedNodes[i]);
                     // Check if the added element is a comment
                     if ($item.is('div.comment')) {
-                        self.log('Clicking distinguish button');
+                        log.debug('Clicking distinguish button');
                         // Distinguish the comment, stickying if we need to
                         const things = $item.find('form[action="/post/distinguish"] > .option > a');
                         if (shouldSticky) {
@@ -163,7 +165,7 @@ function initModSave () {
 
     // Add actions to the mod save buttons
     $('body').on('click', 'button.save-mod', function () {
-        self.log('Mod save clicked!');
+        log.debug('Mod save clicked!');
         commentObserver.observe(document.body, {
             childList: true,
             subtree: true,
@@ -173,7 +175,7 @@ function initModSave () {
         $(this).closest('.usertext-buttons').find('button.save').click();
     });
     $('body').on('click', 'button.save-sticky', function () {
-        self.log('Mod save + sticky clicked!');
+        log.debug('Mod save + sticky clicked!');
         commentObserver.observe(document.body, {
             childList: true,
             subtree: true,
@@ -231,7 +233,7 @@ function initDistinguishToggle () {
         // User initiated click, this is the distinguish toggle on a top level comment
 
         if (Object.prototype.hasOwnProperty.call(e, 'originalEvent')) {
-            self.log('Top level comment distinguish has been clicked and it is the real deal!');
+            log.debug('Top level comment distinguish has been clicked and it is the real deal!');
 
             // Comment is already distinguished or stickied. So we'll simply undistinguish
             if (distinguished) {
@@ -256,7 +258,7 @@ function initDistinguishToggle () {
             // Otherwise the event is missing the origionalEvent property, meaning it was a code induced click.
             // In this case we want to sticky (or unsticky)
         } else {
-            self.log('Top level comment distinguish has been clicked by a robot!');
+            log.debug('Top level comment distinguish has been clicked by a robot!');
             // Really simple, only possible when nothing is distinguished or stickied.
             if (secondDistinguishButton) {
                 secondDistinguishButton.click();
@@ -286,7 +288,7 @@ function initDistinguishToggle () {
         $siblingDistinguish.find('form[action="/post/distinguish"]').click();
     }
 
-    self.log('Adding distinguish toggle events');
+    log.debug('Adding distinguish toggle events');
 
     // Add distinguish button listeners
     $body.on('click', 'form[action="/post/distinguish"]', distinguishClicked);
@@ -317,7 +319,7 @@ function initDistinguishToggle () {
 }
 
 function initRemoveConfirmation () {
-    self.log('Adding one-click remove events');
+    log.debug('Adding one-click remove events');
 
     // Approve
     $body.on('click', '.flat-list .approve-button .togglebutton', function () {
@@ -348,10 +350,10 @@ function initRemoveConfirmation () {
 }
 
 function initAutoApprove () {
-    self.log('Adding ignore reports toggle events');
+    log.debug('Adding ignore reports toggle events');
 
     $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
-        self.log('Ignore reports pressed');
+        log.debug('Ignore reports pressed');
         const $button = $(this).parent().find('> span > .positive');
         const button = $button[0];
         if (!$button.hasClass('pressed')) {
@@ -363,7 +365,7 @@ function initAutoApprove () {
 }
 
 function initAutoIgnoreReports () {
-    self.log('Adding approve toggle events');
+    log.debug('Adding approve toggle events');
 
     $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
         const $button = $(this).closest('.big-mod-buttons').find('> .neutral');
@@ -536,7 +538,7 @@ function initCommentLock () {
             $lockButton.attr('tb-action', newAction);
             $lockButton.text(newAction);
         } catch (error) {
-            self.error('Error toggling lock on comment:\n', error);
+            log.error('Error toggling lock on comment:\n', error);
         }
     });
 

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
+import TBLog from '../tblog.ts';
 import {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
 import {clearCache} from '../util/cache.ts';
@@ -11,7 +12,9 @@ import {icons} from '../util/icons.ts';
 import {getSettingSync} from '../util/oldLegacyStorageBullshit.ts';
 import {purify, purifyObject} from '../util/purify.js';
 
-const self = new Module({
+const log = TBLog('TBConfig');
+
+export default new Module({
     name: 'toolbox Config',
     id: 'TBConfig',
     enabledByDefault: true,
@@ -443,7 +446,7 @@ const self = new Module({
 
         TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
             if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                self.log('Failed: wiki config');
+                log.debug('Failed: wiki config');
 
                 config = TBCore.config;
                 showConfig(subreddit, config);
@@ -480,19 +483,19 @@ const self = new Module({
 
     // Considering that this is a config page we want to be able to save whatever we do. This function takes care of that.
     function postToWiki (page, data, reason, isJSON, updateAM) {
-        self.log('posting to wiki');
+        log.debug('posting to wiki');
         TBui.textFeedback('saving to wiki', TBui.FEEDBACK_NEUTRAL);
         TBApi.postToWiki(page, subreddit, data, reason, isJSON, updateAM).then(async () => {
-            self.log('save succ = true');
+            log.debug('save succ = true');
             if (page === 'config/automoderator') {
                 $body.find('.edit_automoderator_config .error').hide();
             }
-            self.log('clearing cache');
+            log.debug('clearing cache');
             await clearCache();
 
             TBui.textFeedback('wiki page saved', TBui.FEEDBACK_POSITIVE);
         }).catch(async err => {
-            self.log(err);
+            log.debug(err);
             if (page === 'config/automoderator') {
                 const $error = $body.find('.edit_automoderator_config .error');
                 $error.show();
@@ -1049,7 +1052,7 @@ const self = new Module({
             try {
                 text = JSON.parse(text);
             } catch (e) {
-                self.log(`Error saving JSON page ${e.toString()}`);
+                log.debug(`Error saving JSON page ${e.toString()}`);
                 TBui.textFeedback(`Page not saved, JSON is not correct.<br> ${e.toString()}`, TBui.FEEDBACK_NEGATIVE);
                 return;
             }
@@ -1097,7 +1100,7 @@ const self = new Module({
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                        self.log('Failed: wiki config');
+                        log.debug('Failed: wiki config');
                         return;
                     }
 
@@ -1166,15 +1169,15 @@ const self = new Module({
     });
 
     $body.on('click', '#save-usernote-types', () => {
-        self.log('Saving usernote types');
+        log.debug('Saving usernote types');
 
         const $rows = $('#tb-config-usernote-type-list').find('.usernote-type');
-        self.log(`  Num types: ${$rows.length}`);
+        log.debug(`  Num types: ${$rows.length}`);
         $rows.find('input').removeClass('error');
         $rows.find('.usernote-error').text('');
 
         // Validate
-        self.log('  Validating type settings');
+        log.debug('  Validating type settings');
         let error = false;
         const seenKeys = [];
         $rows.each(function () {
@@ -1214,7 +1217,7 @@ const self = new Module({
             }
         });
         if (error) {
-            self.log('  Failed validation');
+            log.debug('  Failed validation');
             return;
         }
 
@@ -1225,7 +1228,7 @@ const self = new Module({
             const key = $row.find('.key').val();
             const text = $row.find('.name').val();
             const color = $row.find('.color').val();
-            self.log(`  key=${key}, text="${text}", color=${color}`);
+            log.debug(`  key=${key}, text="${text}", color=${color}`);
 
             config.usernoteColors.push({
                 key,
@@ -1247,7 +1250,7 @@ const self = new Module({
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                        self.log('Failed: wiki config');
+                        log.debug('Failed: wiki config');
                         return;
                     }
 
@@ -1498,7 +1501,7 @@ const self = new Module({
         if ($body.hasClass('toolbox-wiki-edited')) {
             TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                 if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                    self.log('Failed: wiki config');
+                    log.debug('Failed: wiki config');
                     return;
                 }
 
@@ -1581,7 +1584,7 @@ const self = new Module({
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBApi.readFromWiki(subreddit, 'toolbox', true).then(resp => {
                     if (!resp || resp === TBApi.WIKI_PAGE_UNKNOWN || resp === TBApi.NO_WIKI_PAGE) {
-                        self.log('Failed: wiki config');
+                        log.debug('Failed: wiki config');
                         return;
                     }
 
@@ -1905,5 +1908,3 @@ const self = new Module({
         TBui.textFeedback('Ban macro is saved.', TBui.FEEDBACK_POSITIVE);
     });
 });
-
-export default self;

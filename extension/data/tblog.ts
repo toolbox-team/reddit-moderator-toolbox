@@ -63,7 +63,7 @@ function log (caller: string | {id: string} | undefined, type: LogType, ...args:
 
 /** A logger associated with an aribitrary caller. */
 type Logger = {
-    [type in LogType | 'log']: (...args: any[]) => void;
+    [type in LogType]: (...args: any[]) => void;
 };
 
 /**
@@ -79,8 +79,5 @@ export default function TBLog (caller?: string | {id: string}) {
         // `this` arg is not provided
         obj[type] = log.bind(undefined, caller, type);
     }
-    // This isn't a type, but we map it to debug for backwards compatibility
-    // Eventually we should remove this
-    obj.log = obj.debug;
     return obj as Logger;
 }

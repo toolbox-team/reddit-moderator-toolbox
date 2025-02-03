@@ -1296,9 +1296,6 @@ export class Module {
                 ...setting,
             });
         }
-
-        // Add logging functions
-        Object.assign(this, TBLog(this));
     }
 
     /**

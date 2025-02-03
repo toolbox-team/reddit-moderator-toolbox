@@ -296,13 +296,13 @@ async function doSettingsUpdates () {
     }
 
     // Create a logger
-    const logger = TBLog('Init');
+    const log = TBLog('Init');
 
     // Ensure that other conditions are met, and return early if not
     try {
         await checkLoadConditions();
     } catch (error) {
-        logger.error('Load condition not met:', error);
+        log.error('Load condition not met:', error);
         return;
     }
 
@@ -392,7 +392,7 @@ async function doSettingsUpdates () {
             OldReddit,
         ]
     ) {
-        logger.debug('Registering module', m);
+        log.debug('Registering module', m);
         TBModule.register_module(m);
     }
 

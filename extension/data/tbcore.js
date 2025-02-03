@@ -12,7 +12,7 @@ import {currentPlatform, RedditPlatform} from './util/platform.ts';
 import {purifyObject} from './util/purify.js';
 import {getSettingAsync, setSettingAsync} from './util/settings.ts';
 
-const logger = TBLog('TBCore');
+const log = TBLog('TBCore');
 
 // Build variables defined by Rollup
 /* global process */
@@ -40,7 +40,7 @@ export const notesMaxSchema = 6; // The non-default max version (to allow phase-
  */
 export function isConfigValidVersion (subreddit, config) {
     if (config.ver < configMinSchema || config.ver > configMaxSchema) {
-        logger.error(`Failed config version check:
+        log.error(`Failed config version check:
 \tsubreddit: ${subreddit}
 \tconfig.ver: ${config.ver}
 \tTBCore.configSchema: ${configSchema}
@@ -165,7 +165,7 @@ function waitForModSubsRefresh () {
  * @returns {Promise<array>} array with subreddit names or subreddit objects with details.
  */
 export async function getModSubs (data) {
-    logger.debug('getting mod subs');
+    log.debug('getting mod subs');
 
     // Are we already fetching subs? If so, wait for them to be refreshed before attempting to return anything.
     if (fetchModSubsActive) {
@@ -282,7 +282,7 @@ if (isModFakereddit || !post_site || invalidPostSites.indexOf(post_site) !== -1)
 // Page event management
 
 export function sendEvent (tbuEvent) {
-    logger.debug('Sending event:', tbuEvent);
+    log.debug('Sending event:', tbuEvent);
     window.dispatchEvent(new CustomEvent(tbuEvent));
 }
 
@@ -409,7 +409,7 @@ export function debugInformation () {
         }
     }
     // info level is always displayed
-    logger.info('Version/browser information:', debugObject);
+    log.info('Version/browser information:', debugObject);
     return debugObject;
 }
 /**
@@ -646,10 +646,10 @@ export function displayNotes () {
         return;
     }
 
-    fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(logger.warn);
+    fetchNewsNotes('toolbox').then(notes => notes.forEach(showNote)).catch(log.warn);
 
     if (buildType === 'beta') {
-        fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(logger.warn);
+        fetchNewsNotes('tb_beta').then(notes => notes.forEach(showNote)).catch(log.warn);
     }
 }
 
@@ -1117,7 +1117,7 @@ function findMessage (object, searchID) {
             }
             break;
         case 't4':
-            logger.debug('t4:', object.data.id);
+            log.debug('t4:', object.data.id);
             if (object.data.id === searchID) {
                 found = object;
             }
@@ -1382,7 +1382,7 @@ export async function setWikiPrivate (subreddit, page, failAlert) {
                 alert('error setting wiki page to mod only access');
                 window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
             } else {
-                logger.debug('error setting wiki page to mod only access');
+                log.debug('error setting wiki page to mod only access');
             }
         });
 }
@@ -1607,7 +1607,7 @@ getSettingAsync('Notifier', 'modqueuePushed', []).then(async pusheditems => {
 });
 getSettingAsync('Utils', 'seenNotes', []).then(async seenNotes => {
     if (seenNotes.length > 250) {
-        logger.debug('clearing seen notes');
+        log.debug('clearing seen notes');
         seenNotes.splice(150, seenNotes.length - 150);
         await setSettingAsync('Utils', 'seenNotes', seenNotes);
     }
@@ -1642,7 +1642,7 @@ if ($('#header').length) {
                 return;
             }
 
-            logger.debug(`TBNewThings firing from: ${$target.attr('class')}`);
+            log.debug(`TBNewThings firing from: ${$target.attr('class')}`);
             // It is entirely possible that TBNewThings is fired multiple times.
             // That is why we only set a new timeout if there isn't one set already.
             if (!newThingRunning) {
@@ -1672,5 +1672,5 @@ if ($('#header').length) {
 
 // NER support. todo: finish this.
 // window.addEventListener("neverEndingLoad", function () {
-//    logger.debug('NER! NER! NER! NER!');
+//    log.debug('NER! NER! NER! NER!');
 // });

@@ -9,7 +9,7 @@ import {getCache, setCache} from './util/cache.js';
 import TBLog from './util/logger';
 import {purifyObject} from './util/purify.js';
 
-const logger = TBLog('TBApi');
+const log = TBLog('TBApi');
 
 // Error codes used in lots of places
 export const NO_WIKI_PAGE = 'NO_WIKI_PAGE';
@@ -248,7 +248,7 @@ export const getRatelimit = () =>
         const ratelimitRemaining = response.headers.get('x-ratelimit-remaining')!;
         const ratelimitReset = response.headers.get('x-ratelimit-reset')!;
 
-        logger.debug(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
+        log.debug(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset (seconds): ${ratelimitReset}`);
 
         return {
             ratelimitRemaining,
@@ -309,7 +309,7 @@ export async function postToWiki (
         data = JSON.stringify(data);
     }
 
-    logger.debug(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
+    log.debug(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
 
     // If we update automoderator we want to replace any tabs with four spaces.
     if (updateAM) {
@@ -324,7 +324,7 @@ export async function postToWiki (
             uh: await getModhash(),
         });
     } catch (error) {
-        logger.error(error);
+        log.error(error);
         throw error;
     }
 
@@ -384,7 +384,7 @@ export const readFromWiki = (
                 parsedWikiData = JSON.parse(wikiData);
             } catch (err) {
                 // we should really have a INVAILD_DATA error for this.
-                logger.debug(err);
+                log.debug(err);
                 resolve(NO_WIKI_PAGE);
             }
             // Moved out of the try so random exceptions don't erase the entire wiki page
@@ -398,7 +398,7 @@ export const readFromWiki = (
         // We have valid data, but it's not JSON.
         resolve(wikiData);
     }).catch(async error => {
-        logger.error(`Wiki error (${subreddit}/${page}):`, error);
+        log.error(`Wiki error (${subreddit}/${page}):`, error);
         if (!error.response) {
             resolve(WIKI_PAGE_UNKNOWN);
             return;
@@ -735,15 +735,15 @@ export const postComment = async (parent: string, text: string) => {
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.debug(`Failed to post comment to on ${parent}`);
-            logger.debug(response.json.fails);
+            log.debug(`Failed to post comment to on ${parent}`);
+            log.debug(response.json.fails);
             throw response.json.errors;
         }
-        logger.debug(`Successfully posted comment on ${parent}`);
+        log.debug(`Successfully posted comment on ${parent}`);
         return response;
     } catch (error) {
-        logger.debug(`Failed to post link to on ${parent}`);
-        logger.debug(error);
+        log.debug(`Failed to post link to on ${parent}`);
+        log.debug(error);
         throw error;
     }
 };
@@ -768,15 +768,15 @@ export const postLink = async (link: string, title: string, subreddit: string) =
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.debug(`Failed to post link to /r/${subreddit}`);
-            logger.debug(response.json.errors);
+            log.debug(`Failed to post link to /r/${subreddit}`);
+            log.debug(response.json.errors);
             throw response.json.errors;
         }
-        logger.debug(`Successfully posted link to /r/${subreddit}`);
+        log.debug(`Successfully posted link to /r/${subreddit}`);
         return response;
     } catch (error) {
-        logger.debug(`Failed to post link to /r/${subreddit}`);
-        logger.debug(error);
+        log.debug(`Failed to post link to /r/${subreddit}`);
+        log.debug(error);
         throw error;
     }
 };
@@ -801,15 +801,15 @@ export const sendMessage = async (user: string, subject: string, message: string
             api_type: 'json',
         });
         if (Object.prototype.hasOwnProperty.call(response.json, 'errors') && response.json.errors.length > 0) {
-            logger.debug(`Failed to send link to /u/${user}`);
-            logger.debug(response.json.errors);
+            log.debug(`Failed to send link to /u/${user}`);
+            log.debug(response.json.errors);
             throw response.json.errors;
         }
-        logger.debug(`Successfully send link to /u/${user}`);
+        log.debug(`Successfully send link to /u/${user}`);
         return response;
     } catch (error) {
-        logger.debug(`Failed to send link to /u/${user}`);
-        logger.debug(error);
+        log.debug(`Failed to send link to /u/${user}`);
+        log.debug(error);
         throw error;
     }
 };

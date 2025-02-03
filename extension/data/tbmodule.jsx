@@ -147,13 +147,6 @@ const TBModule = {
                 return;
             }
 
-            // Don't do anything with beta modules unless this is a beta build
-            if (module.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
-                // skip this module entirely
-                log.debug(`Beta  mode not enabled. Skipping ${module.name} module`);
-                return;
-            }
-
             // Don't do anything with dev modules unless debug mode is enabled
             if (!await getSettingAsync('Utils', 'debugMode', false) && module.debugMode) {
                 // skip this module entirely
@@ -684,11 +677,6 @@ const TBModule = {
         // Sort the module list alphabetically
         const sortedModules = TBModule.modules.sort((a, b) => a.name.localeCompare(b.name));
         for (const module of sortedModules) {
-            // Don't do anything with beta modules unless this is a beta build
-            if (!['beta', 'dev'].includes(TBCore.buildType) && module.beta) {
-                continue;
-            }
-
             // Don't do anything with dev modules unless debug mode is enabled
             if (!debugMode && module.debugMode) {
                 continue;
@@ -764,11 +752,6 @@ const TBModule = {
                 // if (setting == "enabled") {
                 //     continue;
                 // }
-
-                // hide beta stuff unless this is a beta build
-                if (options.beta && !['beta', 'dev'].includes(TBCore.buildType)) {
-                    continue;
-                }
 
                 // hide debug stuff unless debug mode enabled
                 if (options.debug && !debugMode) {
@@ -1204,8 +1187,6 @@ export default TBModule;
  * @prop {any} default The default value of the setting, or a function (possibly
  * async) that returns a default value
  * @prop {string} [storageKey] The storage key associated with the setting
- * @prop {boolean} [beta=false] If true, the setting will only show up when beta
- * mode is enabled
  * @prop {boolean} [debug=false] If true, the setting will only show up when
  * debug mode is enabled
  * @prop {boolean} [advanced=false] If true, the setting will only show up when
@@ -1225,8 +1206,6 @@ export class Module {
      * will be enabled on fresh installs
      * @param {boolean} [options.alwaysEnabled=false] If true, the module cannot
      * be disabled
-     * @param {boolean} [options.beta=false] If true, the module will only show
-     * up in beta builds
      * @param {boolean} [options.debug=false] If true, the module will only show
      * up when debug mode is enabled
      * @param {boolean} [options.oldReddit=false] If true, the module will be
@@ -1241,7 +1220,6 @@ export class Module {
         id = name.replace(/\s/g, ''),
         enabledByDefault = false,
         alwaysEnabled = false,
-        beta = false,
         debug = false,
         oldReddit = false,
         settings = [],
@@ -1259,11 +1237,6 @@ export class Module {
          * @prop {boolean} alwaysEnabled If true, the module cannot be disabled
          */
         this.alwaysEnabled = alwaysEnabled;
-        /**
-         * @prop {boolean} beta If true, the module will only show up when beta
-         * mode is enabled
-         */
-        this.beta = beta;
         /**
          * @prop {boolean} debugMode If true, the module will only show up when
          * debug mode is enabled
@@ -1289,7 +1262,6 @@ export class Module {
             this.settings.set(setting.id, {
                 description: `(${setting.id})`,
                 storageKey: `${id}.${setting.id}`,
-                beta: false,
                 debug: false,
                 advanced: false,
                 hidden: false,

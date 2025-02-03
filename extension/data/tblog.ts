@@ -71,7 +71,7 @@ type Logger = {
  * @param caller A module serving as the caller, or a string
  * representing the name of non-module callers
  */
-function TBLog (caller?: string | {id: string}) {
+export default function TBLog (caller?: string | {id: string}) {
     // Create a new object
     const obj: Partial<Logger> = {};
     // The object gets a function for every log type
@@ -84,9 +84,3 @@ function TBLog (caller?: string | {id: string}) {
     obj.log = obj.debug;
     return obj as Logger;
 }
-
-// This is a bit of cleverness - we make a logger with no caller, and then
-// assign that logger's properties to the function, so it can be used as a
-// default logger instance
-Object.assign(TBLog, TBLog());
-export default TBLog as (typeof TBLog & ReturnType<typeof TBLog>);

@@ -235,13 +235,24 @@ export function popup ({
     return $popup;
 }
 
-export function drawPosition (event) {
-    const positions = {
-        leftPosition: '',
-        topPosition: '',
-    };
+// TODO: document (what are these offsets relative to exactly?)
+/**
+ * @typedef {object} DrawPosition
+ * @prop {number} leftPosition
+ * @prop {number} topPosition
+ */
 
-    const $overlay = $(event.target).closest('.tb-page-overlay');
+/**
+ * Gives a location where it would be appropriate to render a popup in response
+ * to some pointer event (usually a click). Tries to return a location close to
+ * the mosue cursor but may put it somewhere else if there's not likely to be
+ * enough room for the popup in the region of the screen where the cursor is.
+ * @param {PointerEvent} event The event we're responding to
+ * @returns {DrawPosition} Location
+ */
+export function drawPosition (event) {
+    /** @type {DrawPosition} */
+    const positions = {};
 
     if (document.documentElement.clientWidth - event.pageX < 400) {
         positions.leftPosition = event.pageX - 600;
@@ -261,6 +272,10 @@ export function drawPosition (event) {
         positions.topPosition = event.pageY - 50;
     }
 
+    // if we're rendering in an overlay, add the scroll offset to the top
+    // position we return
+    // TODO: this logic will present problems in non-jQuery overlays
+    const $overlay = $(event.target).closest('.tb-page-overlay');
     if ($overlay.length) {
         const scrollTop = $overlay.scrollTop();
         positions.topPosition = event.clientY + scrollTop;

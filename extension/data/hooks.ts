@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
+
 import {RootState} from './store';
+import {drawPosition} from './tbui';
 
 /** Hook to get the return value of a promise. */
 export const useFetched = <T>(promise: Promise<T>) => {
@@ -36,3 +38,31 @@ export const useSetting = (moduleName: string, settingName: string, defaultValue
 
     return savedValue;
 };
+
+/**
+ * Helper hook for managing the visibility of "popups"/draggable windows which
+ * are shown in response to pointer events.
+ * Provides functions to show and hide the window in response to events, and
+ * automatically computes an appropriate initial position for the window when
+ * it's first shown based on the click event that triggered it.
+ */
+export function usePopupState () {
+    const [initialPosition, setInitialPosition] = useState<{top: number; left: number}>();
+
+    return {
+        /** The popup's initial position. */
+        initialPosition,
+        /** Whether the popup should currently be shown. */
+        shown: !!initialPosition,
+        /** Shows the window in response to a pointer event (like a click). */
+        show: (event: PointerEvent) => {
+            const positions = drawPosition(event);
+            setInitialPosition({
+                top: positions.topPosition,
+                left: positions.leftPosition,
+            });
+        },
+        /** Hides the window. */
+        hide: () => setInitialPosition(undefined),
+    };
+}

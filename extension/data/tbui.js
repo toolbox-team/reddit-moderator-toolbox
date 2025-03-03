@@ -712,21 +712,32 @@ export function beforeunload () {
 let contextTimeout;
 
 /**
+ * @typedef {object} ContextTriggerOptionsDelete
+ * @prop {false} options.addTrigger `false` indicates the menu item will be
+ * removed.
+ */
+
+/**
+ * @typedef {object} ContextTriggerOptionsAdd
+ * @prop {true} options.addTrigger `true` indicates the menu item will be added.
+ * @prop {string} options.triggerText Text displayed in menu. Not needed when
+ * addTrigger is false.
+ * @prop {string} options.triggerIcon The material icon that needs to be
+ * displayed before the menu item. Defaults to 'label'
+ * @prop {string} options.title Title to be used in title attribute. If no title
+ * is given the triggerText will be used.
+ * @prop {object} options.dataAttributes Any data attribute that might be
+ * needed. Object keys will be used as the attribute name and value as value.
+ */
+
+/** @typedef {ContextTriggerOptionsAdd | ContextTriggerOptionsDelete} ContextTriggerOptions */
+
+/**
  * Add or remove a menu element to the context aware menu. Makes the menu
  * shows if it was empty before adding, hides menu if it is empty after removing.
  * @function
  * @param {string} triggerId This will be part of the id given to the element.
- * @param {object} options
- * @param {boolean} options.addTrigger Indicates of the menu item needs to
- * be added or removed.
- * @param {string} options.triggerText Text displayed in menu. Not needed
- * when addTrigger is false.
- * @param {string} options.triggerIcon The material icon that needs to be
- * displayed before the menu item. Defaults to 'label'
- * @param {string} options.title Title to be used in title attribute. If no
- * title is given the triggerText will be used.
- * @param {object} options.dataAttributes Any data attribute that might be
- * needed. Object keys will be used as the attribute name and value as value.
+ * @param {ContextTriggerOptions} options
  */
 export function contextTrigger (triggerId, options) {
     // We really don't need two context menus side by side.

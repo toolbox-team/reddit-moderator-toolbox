@@ -223,7 +223,7 @@ export function millisecondsToDays (milliseconds) {
  * Returns the difference between days in nice format like "1 year"
  * @function
  * @param {Date} origdate
- * @param {Date} newdate
+ * @param {Date} [newdate] Defaults to now
  * @returns {string} Formatted date difference
  */
 export function niceDateDiff (origdate, newdate) {

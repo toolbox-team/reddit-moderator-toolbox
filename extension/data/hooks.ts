@@ -46,7 +46,7 @@ export const useSetting = (moduleName: string, settingName: string, defaultValue
  * automatically computes an appropriate initial position for the window when
  * it's first shown based on the click event that triggered it.
  */
-export function usePopupState () {
+export function usePopupState<T extends HTMLElement> () {
     const [initialPosition, setInitialPosition] = useState<{top: number; left: number}>();
 
     return {
@@ -55,8 +55,10 @@ export function usePopupState () {
         /** Whether the popup should currently be shown. */
         shown: !!initialPosition,
         /** Shows the window in response to a pointer event (like a click). */
-        show: (event: PointerEvent) => {
-            const positions = drawPosition(event);
+        show: (event: React.MouseEvent<T>) => {
+            // NOTE: i don't know the details of comparing between
+            // React.MouseEvent and other mouse events but it's whatever for now
+            const positions = drawPosition(event as unknown as PointerEvent);
             setInitialPosition({
                 top: positions.topPosition,
                 left: positions.leftPosition,

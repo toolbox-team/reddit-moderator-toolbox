@@ -1,23 +1,23 @@
 import $ from 'jquery';
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import {Provider} from 'react-redux';
 
-import {useFetched, usePopupState, useSetting} from '../hooks.ts';
-import store from '../store/index.ts';
-import * as TBApi from '../tbapi.ts';
-import * as TBCore from '../tbcore.js';
-import {niceDateDiff} from '../tbhelpers.js';
-import TBListener from '../tblistener.js';
-import {Module} from '../tbmodule.jsx';
-import * as TBui from '../tbui.js';
-import {icons} from '../util/icons.ts';
-import createLogger from '../util/logging.ts';
-import {getSettingAsync} from '../util/settings.ts';
-import {classes, createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
+import {useFetched, usePopupState, useSetting} from '../hooks';
+import store from '../store/index';
+import * as TBApi from '../tbapi';
+import * as TBCore from '../tbcore';
+import {niceDateDiff} from '../tbhelpers';
+import TBListener from '../tblistener';
+import {Module} from '../tbmodule';
+import * as TBui from '../tbui';
+import {icons} from '../util/icons';
+import createLogger from '../util/logging';
+import {getSettingAsync} from '../util/settings';
+import {classes, createBodyShadowPortal, reactRenderer} from '../util/ui_interop';
 
-import {BracketButton} from '../components/controls/BracketButton.tsx';
-import {GeneralButton} from '../components/controls/GeneralButton.tsx';
-import {Window} from '../components/Window.tsx';
+import {BracketButton} from '../components/controls/BracketButton';
+import {GeneralButton} from '../components/controls/GeneralButton';
+import {Window} from '../components/Window';
 
 import css from './historybutton.module.css';
 
@@ -62,7 +62,7 @@ export default new Module({
             description: 'Include NSFW submissions in searches',
         },
     ],
-}, async options => {
+}, async (options: Record<string, unknown>) => {
     log.debug('init');
     if (!await TBCore.modSubCheck()) {
         log.debug('mscheck failed');
@@ -71,8 +71,8 @@ export default new Module({
 
     log.debug('mscheck passed');
 
-    TBListener.on('author', e => {
-        const $target = $(e.target);
+    TBListener.on('author', (e: CustomEvent) => {
+        const $target = $(e.target!);
         // Skip adding the button next to the username if:
         // - the onlyShowInHover preference is set,
         // - we're not on old reddit (since the preference doesn't work there), and
@@ -97,8 +97,8 @@ export default new Module({
         ));
     });
 
-    TBListener.on('userHovercard', e => {
-        const $target = $(e.target);
+    TBListener.on('userHovercard', (e: CustomEvent) => {
+        const $target = $(e.target!);
         const author = e.detail.data.user.username;
         const subreddit = e.detail.data.subreddit && e.detail.data.subreddit.name;
         if (author === '[deleted]') {
@@ -115,8 +115,8 @@ export default new Module({
     });
 
     window.addEventListener('TBNewPage', event => {
-        if (event.detail.pageType === 'userProfile') {
-            const user = event.detail.pageDetails.user;
+        if ((event as CustomEvent).detail.pageType === 'userProfile') {
+            const user = (event as CustomEvent).detail.pageDetails.user;
             TBui.contextTrigger('tb-user-history', {
                 addTrigger: true,
                 triggerText: 'user history',
@@ -132,7 +132,7 @@ export default new Module({
     });
 });
 
-function HistoryButtonUserRoot ({user, subreddit, label = 'H'}) {
+function HistoryButtonUserRoot ({user, subreddit, label = 'H'}: {user: string; subreddit: string; label?: string}) {
     const {shown, initialPosition, show, hide} = usePopupState();
 
     return (
@@ -143,7 +143,7 @@ function HistoryButtonUserRoot ({user, subreddit, label = 'H'}) {
             >
                 {label}
             </BracketButton>
-            {shown && createBodyShadowPortal(
+            {shown && initialPosition && createBodyShadowPortal(
                 <HistoryPopup
                     user={user}
                     subreddit={subreddit}
@@ -155,11 +155,16 @@ function HistoryButtonUserRoot ({user, subreddit, label = 'H'}) {
     );
 }
 
-const ratioClassName = (ratio, rawCount) =>
+const ratioClassName = (ratio: number, rawCount: number) =>
     ratio >= 0.1 && rawCount > 4 ? (ratio >= 0.2 ? css.danger : css.warning) : '';
-const asPercentage = ratio => `${Math.round(ratio * 100)}%`;
+const asPercentage = (ratio: number) => `${Math.round(ratio * 100)}%`;
 
-function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onClose}) {
+function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onClose}: {
+    user: string;
+    subreddit: string;
+    initialPosition: {top: number; left: number};
+    onClose?: () => void;
+}) {
     // TODO: aaa why is this a string
     const commentCount = parseInt(useSetting('HButton', 'commentCount', '1000'), 10);
     const includeNsfwSearches = useSetting('HButton', 'includeNsfwSearches', false);
@@ -238,7 +243,7 @@ function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onCl
                                     const domainSearchQuery = new URLSearchParams({
                                         sort: 'new',
                                         feature: 'legacy_search',
-                                        include_over_18: includeNsfwSearches ? 'on' : undefined,
+                                        ...includeNsfwSearches && {include_over_18: 'on'},
                                     });
                                     const selfDomainMatch = domain.match(/^self\.(\w+)$/);
                                     if (selfDomainMatch) {
@@ -294,7 +299,7 @@ function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onCl
                                         restrict_sr: 'on',
                                         sort: 'new',
                                         feature: 'legacy_search',
-                                        include_over_18: includeNsfwSearches ? 'on' : undefined,
+                                        ...includeNsfwSearches && {include_over_18: 'on'},
                                     })}`);
 
                                     return (
@@ -402,8 +407,8 @@ function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onCl
 }
 
 /** Fetch author information (karma, how long they've been a redditor for) */
-async function getUserInfo (author) {
-    const {data} = await TBApi.getJSON(`/user/${author}/about.json`);
+async function getUserInfo (username: string) {
+    const {data} = await TBApi.getJSON(`/user/${username}/about.json`);
 
     return {
         /** pass this through {@linkcode TBHelpers.niceDateDiff} */
@@ -413,14 +418,13 @@ async function getUserInfo (author) {
     };
 }
 
-/** @type {{PATH: 1, SUBDOMAIN: 2}}) */
 const TYPE = {
     PATH: 1, // e.g. example.org/path/user
     SUBDOMAIN: 2, // e.g. user.example.org
-};
+} as const;
 
 /** @type {{[domain: string]: {path?: string; provider: string; type: 1 | 2}}} */
-const domainSpecs = {
+const domainSpecs: Record<string, {path?: string; provider: string; type: 1 | 2}> = {
     // keys are the supported sites, and determine if we have a match
     'flickr.com': {
         path: 'photos/',
@@ -463,24 +467,18 @@ const domainSpecs = {
  * Fetches submission history data for a given user.
  * @param username Name of the user whose history we're fetching
  */
-async function getSubmissionHistoryData (username) {
+async function getSubmissionHistoryData (username: string) {
     let total = 0;
-    /** @type {{[domain: string]: {count: number}}} */
-    const domains = Object.create(null);
-    /** @type {{[subreddit: string]: {count: number; karma: number}}} */
-    const subreddits = Object.create(null);
-    /**
-     * @type {{
-     *     [url: string]: {
-     *         count: number;
-     *         name: string;
-     *         url: string;
-     *         provider: string;
-     *         provider_url: string;
-     *     }
-     * }}
-     */
-    const accounts = Object.create(null);
+    const domains: Record<string, {count: number}> = Object.create(null);
+    const subreddits: Record<string, {count: number; karma: number}> = Object.create(null);
+
+    const accounts: Record<string, {
+        count: number;
+        name: string;
+        url: string;
+        provider: string;
+        provider_url: string;
+    }> = Object.create(null);
 
     /** @type {string | undefined} */
     let after;
@@ -491,7 +489,7 @@ async function getSubmissionHistoryData (username) {
             d = await TBApi.getJSON(`/user/${username}/submitted.json`, {
                 after: after ?? '',
                 sort: 'new',
-                limit: 100,
+                limit: '100',
             });
         } catch {
             log.debug('Shadowbanned?');
@@ -506,7 +504,7 @@ async function getSubmissionHistoryData (username) {
         total += d.data.children.length;
 
         // For every submission, incremenet the count for the subreddit and domain by one.
-        d.data.children.forEach(value => {
+        d.data.children.forEach((value: any) => {
             const submission = value.data;
 
             domains[submission.domain] ??= {count: 0};
@@ -562,7 +560,7 @@ async function getSubmissionHistoryData (username) {
      *
      * @param details {Object}
      */
-    function addAccount (details) {
+    function addAccount (details: {name: string; url: string; provider: string; provider_url: string}) {
         details.url = details.url.replace('http://', 'https://');
         accounts[details.url] ??= {...details, count: 0};
         accounts[details.url].count++;
@@ -575,7 +573,11 @@ async function getSubmissionHistoryData (username) {
      * @param url {String}
      * @returns {Object|undefined}
      */
-    function getDomainDetails (domain, spec, url) {
+    function getDomainDetails (
+        domain: string,
+        spec: (typeof domainSpecs)[keyof typeof domainSpecs] & {rx?: RegExp},
+        url: string,
+    ) {
         // cache the dynamic rx's
         if (!spec.rx) {
             if (spec.type === TYPE.PATH) {
@@ -585,7 +587,7 @@ async function getSubmissionHistoryData (username) {
             }
         }
 
-        const match = url.match(spec.rx);
+        const match = url.match(spec.rx!);
         const author = match && match[1];
         let scheme;
         let author_url;
@@ -599,6 +601,8 @@ async function getSubmissionHistoryData (username) {
                 author_url = provider_url + (spec.path || '') + author;
             } else if (spec.type === TYPE.SUBDOMAIN) {
                 author_url = `${scheme + author}.${domain}`;
+            } else {
+                throw new Error('invalid domain spec type');
             }
 
             return {
@@ -615,21 +619,19 @@ async function getSubmissionHistoryData (username) {
  * @param {string} username Name of the user whose history we are fetching
  * @param {number} commentCount Maximum number of comments to retrieve
  */
-async function getCommentHistoryData (username, commentCount) {
+async function getCommentHistoryData (username: string, commentCount: number) {
     let total = 0;
     const onOwnPosts = 0;
-    /** @type {{[subreddit: string]: number}} */
-    const subreddits = Object.create(null);
+    const subreddits: Record<string, number> = Object.create(null);
 
-    /** @type {string | undefined} */
-    let after;
+    let after: string | undefined;
     while (true) {
         let d;
         try {
             d = await TBApi.getJSON(`/user/${username}/comments.json`, {
                 after,
                 sort: 'new',
-                limit: 100,
+                limit: '100',
             });
         } catch {
             throw new Error('unable to load userdata; shadowbanned?');
@@ -637,7 +639,7 @@ async function getCommentHistoryData (username, commentCount) {
         if (!d.data.children.length) {
             break;
         }
-        d.data.children.forEach(comment => {
+        d.data.children.forEach((comment: any) => {
             const {subreddit} = comment.data;
             total += 1;
             subreddits[subreddit] ??= 0;

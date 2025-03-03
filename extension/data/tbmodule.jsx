@@ -1183,9 +1183,10 @@ export default TBModule;
  * for settings of different `type`s.
  * @typedef SettingDefinition
  * @prop {string} id The setting ID, used to get and set the setting's value
- * @prop {string} description A human-readable description
- * @prop {any} default The default value of the setting, or a function (possibly
- * async) that returns a default value
+ * @prop {string} type The type of the setting
+ * @prop {string} [description] A human-readable description
+ * @prop {any | () => any} [default] The default value of the setting, or a
+ * function (possibly async) that returns a default value
  * @prop {string} [storageKey] The storage key associated with the setting
  * @prop {boolean} [debug=false] If true, the setting will only show up when
  * debug mode is enabled
@@ -1193,6 +1194,8 @@ export default TBModule;
  * advanced mode is enabled
  * @prop {boolean} [hidden=false] If true, the setting will not be configurable
  * or visible to users (can be used for module-specific persistent storage)
+ *
+ * @prop {string[]} [values] Used by `type: 'selector'`
  */
 
 /** A Toolbox feature module that can be enabled and disabled by the user. */

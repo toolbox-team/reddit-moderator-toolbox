@@ -163,7 +163,7 @@ export const apiOauthPOST = (endpoint: string, body?: RequestBody, options = {})
  * @param endpoint The endpoint to request
  * @param data Query parameters as an object
  */
-export const apiOauthGET = (endpoint: string, query: QueryParams) =>
+export const apiOauthGET = (endpoint: string, query?: QueryParams) =>
     sendRequest({
         method: 'GET',
         oauth: true,

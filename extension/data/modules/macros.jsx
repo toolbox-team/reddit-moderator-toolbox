@@ -1,5 +1,6 @@
 import $ from 'jquery';
 
+import {useFetched} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
@@ -8,6 +9,7 @@ import * as TBui from '../tbui.js';
 import createLogger from '../util/logging.ts';
 import {purify} from '../util/purify.js';
 import {getSettingAsync} from '../util/settings.ts';
+import {reactRenderer} from '../util/ui_interop.tsx';
 
 const log = createLogger('ModMacros');
 
@@ -24,48 +26,54 @@ async function getConfig (sub, callback) {
     callback(true, config.modMacros);
 }
 
-function populateSelect (selectClass, subreddit, config, type) {
-    $(selectClass).each(function () {
-        const $select = $(this);
-        const sub = $select.attr('data-subreddit');
-
-        log.debug($select);
-        log.debug(`${sub} ${subreddit}`);
-
-        if (sub === subreddit) {
-            if ($select.hasClass('tb-populated')) {
-                return;
-            }
-            $select.addClass('tb-populated');
-            let context = 'contextpost';
-            switch (type) {
-                case 'post':
-                    context = 'contextpost';
-                    break;
-                case 'comment':
-                    context = 'contextcomment';
-                    break;
-                case 'modmail':
-                    context = 'contextmodmail';
-                    break;
-            }
-            $(config).each((idx, item) => {
-                if (item[context] !== undefined && !item[context]) {
-                    return;
+/**
+ * @param {object} props
+ * @param {string} props.subreddit
+ * @param {'modmail' | 'post' | 'comment'} props.type
+ * @param {boolean} [props.topLevel = false]
+ * @param {string | undefined} [props.thingFullname]
+ */
+function MacroSelect ({subreddit, type, topLevel = false}) {
+    const config = useFetched(
+        new Promise(resolve => {
+            getConfig(subreddit, (success, config) => {
+                if (success && config.length > 0) {
+                    resolve(config);
+                } else {
+                    resolve(undefined);
                 }
-                $($select)
-                    .append(
-                        $('<option>', {
-                            value: idx,
-                        })
-                            .text(item.title),
-                    );
             });
-        } else {
-            log.debug('removing select');
-            $select.remove();
-        }
-    });
+        }),
+    );
+
+    if (config == null) {
+        return <></>;
+    }
+
+    let context = 'contextpost';
+    switch (type) {
+        case 'post':
+            context = 'contextpost';
+            break;
+        case 'comment':
+            context = 'contextcomment';
+            break;
+        case 'modmail':
+            context = 'contextmodmail';
+            break;
+    }
+
+    return (
+        <select>
+            <option value={MACROS}>macros</option>
+            {Object.entries(config).map(([i, item]) => {
+                if (item[context] !== undefined && !item[context]) {
+                    return <></>;
+                }
+                return <option key={i} value={i}>{item.title}</option>;
+            })}
+        </select>
+    );
 }
 
 // Add macro button in new modmail
@@ -84,28 +92,20 @@ async function addNewMMMacro () {
         return;
     }
     log.debug(info.subreddit);
-
-    // if we don't have a config, get it.  If it fails, return.
-    getConfig(info.subreddit, (success, config) => {
-        // if we're a mod, add macros to top level reply button.
-        if (success && config.length > 0) {
-            const macroButtonHtml = `
-                <select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}">
-                    <option value=${MACROS}>macros</option>
-                </select>
-            `;
-            $body.find(`
-                :is(
-                    .ThreadViewerReplyForm__replyFooter,
-                    .ThreadViewerReplyForm__replyFooterGroup
-                ) .selectWrapper
-            `).before(`
-                <div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>
-            `);
-
-            populateSelect('.tb-macro-select', info.subreddit, config, 'modmail');
-        }
-    });
+    const macroButtonEl = reactRenderer(
+        <MacroSelect subreddit={info.subreddit} type='modmail' />,
+    );
+    macroButtonEl.classList.add('tb-macro-select');
+    $body.find(`
+        :is(
+            .ThreadViewerReplyForm__replyFooter,
+            .ThreadViewerReplyForm__replyFooterGroup
+        ) .selectWrapper
+    `).before(
+        $(`
+            <div class="tb-usertext-buttons tb-macro-newmm"></div>
+        `).append(macroButtonEl),
+    );
 }
 
 /**
@@ -471,25 +471,26 @@ export default new Module({
         TBCore.getModSubs(false).then(mySubs => {
             if (!TBCore.post_site || !mySubs.includes(TBCore.post_site)) {
                 log.debug('getting config');
-                getConfig(TBCore.post_site, (success, config) => {
-                    // if we're a mod, add macros to top level reply button.
-                    if (success && config.length > 0) {
-                        const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
-                        const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons');
-                        const macroButtonHtml =
-                            `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TBCore.post_site}"><option value=${MACROS}>macros</option></select>`;
+                const macroButtonEl = reactRenderer(
+                    <MacroSelect
+                        subreddit={TBCore.post_site}
+                        type='post'
+                        topLevel
+                    />,
+                );
+                macroButtonEl.classList.add('tb-top-macro-select');
+                const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
+                const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons');
 
-                        if ($tbUsertextButtons.length) {
-                            $tbUsertextButtons.append(macroButtonHtml);
-                        } else {
-                            $usertextButtons.find('.status').before(
-                                `<div class="tb-usertext-buttons">${macroButtonHtml}</div>`,
-                            );
-                        }
-
-                        populateSelect('.tb-top-macro-select', TBCore.post_site, config, 'post');
-                    }
-                });
+                if ($tbUsertextButtons.length) {
+                    $tbUsertextButtons.append(macroButtonEl);
+                } else {
+                    $usertextButtons.find('.status').before(
+                        $(`
+                            <div class="tb-usertext-buttons"></div>
+                        `).append(macroButtonEl),
+                    );
+                }
             }
         });
 
@@ -514,30 +515,23 @@ export default new Module({
                 }
                 log.debug(info.subreddit);
 
-                // if we don't have a config, get it.  If it fails, return.
-                getConfig(info.subreddit, (success, config) => {
-                    // if we're a mod, add macros to top level reply button.
-                    if (success && config.length > 0) {
-                        const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons');
-                        const macroButtonHtml =
-                            `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
-
-                        if ($tbUsertextButtons.length) {
-                            $tbUsertextButtons.append(macroButtonHtml);
-                        } else {
-                            $thing.find('.usertext-buttons .status').before(
-                                `<div class="tb-usertext-buttons">${macroButtonHtml}</div>`,
-                            );
-                        }
-                        // populates for comment and old modmail
-                        populateSelect(
-                            '.tb-macro-select',
-                            info.subreddit,
-                            config,
-                            TBCore.isModmail ? 'modmail' : 'comment',
-                        );
-                    }
-                });
+                const macroButtonEl = reactRenderer(
+                    <MacroSelect
+                        subreddit={info.subreddit}
+                        type={TBCore.isModmail ? 'modmail' : 'comment'}
+                    />,
+                );
+                macroButtonEl.classList.add('tb-macro-select');
+                const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons');
+                if ($tbUsertextButtons.length) {
+                    $tbUsertextButtons.append(macroButtonEl);
+                } else {
+                    $thing.find('.usertext-buttons .status').before(
+                        $(`
+                            <div class="tb-usertext-buttons"></div>
+                        `).append(macroButtonEl),
+                    );
+                }
             }
         });
     }
@@ -558,17 +552,16 @@ export default new Module({
 
             const isMod = await TBCore.isModSub(subreddit);
             if (isMod) {
-                getConfig(subreddit, (success, config) => {
-                    // if we're a mod, add macros to top level reply button.
-                    if (success && config.length > 0) {
-                        $body.find('span:contains("Comment as")').closest('div').after(`
-                            <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
-                                <option value=${MACROS}>macros</option>
-                            </select>
-                        `);
-                        populateSelect('.tb-top-macro-select', subreddit, config, 'post');
-                    }
-                });
+                const macroButtonEl = reactRenderer(
+                    <MacroSelect
+                        subreddit={subreddit}
+                        type='post'
+                        topLevel
+                        thingFullname={`t3_${event.detail.pageDetails.submissionID}`}
+                    />,
+                );
+                macroButtonEl.classList.add('tb-top-macro-select');
+                $body.find('span:contains("Comment as")').closest('div').after(macroButtonEl);
             } else {
                 // Remove all macros
                 $body.find('.tb-macro-select').remove();

@@ -469,7 +469,7 @@ export default new Module({
 
     if (TBCore.isOldReddit) {
         TBCore.getModSubs(false).then(mySubs => {
-            if (!TBCore.post_site || !mySubs.includes(TBCore.post_site)) {
+            if (TBCore.post_site && mySubs.includes(TBCore.post_site)) {
                 log.debug('getting config');
                 const macroButtonEl = reactRenderer(
                     <MacroSelect

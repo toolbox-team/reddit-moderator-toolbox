@@ -565,19 +565,14 @@ export async function friendUser ({
     banDuration?: number;
     banContext?: string;
 }) {
-    let trimmedBanMessage,
-        trimmedBanReason;
-    if (action === 'banned') {
-        trimmedBanMessage = banMessage!.substring(0, 999);
-        trimmedBanReason = banReason!.substring(0, 300);
-        if (banDuration) {
-            if (banDuration > 999) {
-                banDuration = 999;
-            }
-            if (banDuration < 0) {
-                banDuration = 0;
-            }
-        }
+    if (banMessage != null) {
+        banMessage = banMessage.substring(0, 999);
+    }
+    if (banReason != null) {
+        banReason = banReason.substring(0, 300);
+    }
+    if (banDuration != null) {
+        banDuration = Math.max(0, Math.min(banDuration, 999));
     }
 
     return post('/api/friend', {
@@ -586,9 +581,9 @@ export async function friendUser ({
         type: action,
         name: user,
         r: subreddit,
-        note: trimmedBanReason,
-        ban_message: trimmedBanMessage,
-        duration: '' + banDuration,
+        note: banReason,
+        ban_message: banMessage,
+        duration: banDuration == null ? undefined : '' + banDuration,
         ban_context: banContext,
     });
 }

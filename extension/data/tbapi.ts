@@ -486,12 +486,14 @@ export const flairPost = async (
  * @param cssClass The flair's CSS class
  * @param templateID The flair's template ID
  */
+// TODO: convert this to an object parameter to avoid passing `undefined`s all
+//       over the place
 export const flairUser = async (
     user: string,
     subreddit: string,
-    text: string,
-    cssClass: string,
-    templateID: string,
+    text: string | undefined,
+    cssClass: string | undefined,
+    templateID: string | undefined,
 ) => post('/api/selectflair', {
     api_type: 'json',
     name: user,
@@ -524,6 +526,7 @@ export async function friendUser (options: {
     action: 'muted';
     subreddit: string;
     /** The private reason for the mute. Just... don't worry about the name */
+    // TODO: Accept `note` here instead of `banReason`. Clean up all these names
     banReason?: string;
     // TODO: do mutes acept banDuration as well to set mute duration?
 }): Promise<any>;

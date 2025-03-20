@@ -122,7 +122,7 @@ export const actionButton = (text, classes) => `
  * popup
  * @param {string} [options.defaultTabID] If provided, the tab with this ID
  * will be displayed initially; otherwise, the first tab will be shown
- * @returns {jQuery}
+ * @returns {JQuery}
  */
 export function popup ({
     title,

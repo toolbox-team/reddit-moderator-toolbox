@@ -1,51 +1,43 @@
 import $ from 'jquery';
 
-import {useState} from 'react';
-import {useFetched} from '../hooks.ts';
-import * as TBApi from '../tbapi.ts';
-import * as TBCore from '../tbcore.js';
-import * as TBHelpers from '../tbhelpers.js';
-import {Module} from '../tbmodule.jsx';
-import * as TBui from '../tbui.js';
-import createLogger from '../util/logging.ts';
-import {purify} from '../util/purify.js';
-import {getSettingAsync} from '../util/settings.ts';
-import {reactRenderer} from '../util/ui_interop.tsx';
+import {ChangeEvent, ReactEventHandler, useState} from 'react';
+import {useFetched} from '../hooks';
+import * as TBApi from '../tbapi';
+import * as TBCore from '../tbcore';
+import * as TBHelpers from '../tbhelpers';
+import {Module} from '../tbmodule';
+import * as TBui from '../tbui';
+import createLogger from '../util/logging';
+import {purify} from '../util/purify';
+import {getSettingAsync} from '../util/settings';
+import {reactRenderer} from '../util/ui_interop';
 
 const log = createLogger('ModMacros');
 
 const MACROS = 'TB-MACROS';
 
-async function getConfig (sub, callback) {
+/**
+ * Gets the config for the given sub and returns the macro configuration. If
+ * there is none, returns `undefined`.
+ */
+async function getMacroConfig (sub: string) {
     const config = await TBCore.getConfig(sub);
 
     if (!config || !config.modMacros || config.modMacros.length < 1) {
-        callback(false);
-        return;
+        return undefined;
     }
 
-    callback(true, config.modMacros);
+    return config.modMacros;
 }
 
-/**
- * @param {object} props
- * @param {string} props.subreddit
- * @param {'modmail' | 'post' | 'comment'} props.type
- * @param {string} props.thingFullname
- * @param {boolean} [props.topLevel = false]
- */
-function MacroSelect ({subreddit, type, thingFullname, topLevel = false}) {
-    const config = useFetched(
-        new Promise(resolve => {
-            getConfig(subreddit, (success, config) => {
-                if (success && config.length > 0) {
-                    resolve(config);
-                } else {
-                    resolve(undefined);
-                }
-            });
-        }),
-    );
+/** The main button for triggering macros. */
+function MacroSelect ({subreddit, type, thingFullname, topLevel = false}: {
+    subreddit: string;
+    type: 'modmail' | 'post' | 'comment';
+    thingFullname: string;
+    topLevel?: boolean;
+}) {
+    const config = useFetched(getMacroConfig(subreddit));
 
     const [disabled, setDisabled] = useState(false);
 
@@ -66,7 +58,7 @@ function MacroSelect ({subreddit, type, thingFullname, topLevel = false}) {
             break;
     }
 
-    const handleChange = async event => {
+    const handleChange: React.ChangeEventHandler<HTMLSelectElement> = async event => {
         const index = event.target.value;
 
         log.debug(`Macro selected: index=${index}`);
@@ -81,13 +73,19 @@ function MacroSelect ({subreddit, type, thingFullname, topLevel = false}) {
         //          via $.closest(), which doesn't traverse shadow DOM
         //          boundaries, so we have to trick it by passing it the react
         //          renderer element that the dropdown is inside
-        await editMacro($(event.target.parentNode.host), thingInfo, config[index], topLevel);
+        await editMacro(
+            $((event.target!.parentNode! as ShadowRoot).host! as HTMLElement),
+            thingInfo,
+            config[index],
+            topLevel,
+        );
     };
 
     return (
         <select defaultValue={MACROS} disabled={disabled} onChange={handleChange}>
             <option value={MACROS}>macros</option>
-            {Object.entries(config).map(([i, item]) => {
+            // TODO: config types
+            {Object.entries(config).map(([i, item]: [string, any]) => {
                 if (item[context] !== undefined && !item[context]) {
                     return <></>;
                 }
@@ -118,7 +116,7 @@ async function addNewMMMacro () {
         <MacroSelect
             subreddit={info.subreddit}
             type='modmail'
-            thingFullname={$thing.attr('data-fullname')}
+            thingFullname={$thing.attr('data-fullname')!}
         />,
     );
     macroButtonEl.classList.add('tb-macro-select');
@@ -134,13 +132,9 @@ async function addNewMMMacro () {
     );
 }
 
-/**
- * @param {JQuery<HTMLSelectElement>} dropdown
- * @param {unknown} info
- * @param {object} macro
- * @param {boolean} topLevel
- */
-async function editMacro (dropdown, info, macro, topLevel) {
+// TODO: apiThingInfo types; macro config types
+// NOMERGE: purge this function off the planet
+async function editMacro (dropdown: JQuery, info: any, macro: any, topLevel: boolean) {
     const showMacroPreview = await getSettingAsync('ModMacros', 'showMacroPreview', true);
 
     const $body = $('body');
@@ -240,11 +234,11 @@ async function editMacro (dropdown, info, macro, topLevel) {
     // replace token.
     comment = TBHelpers.replaceTokens(info, comment);
 
-    const offset = $usertext.offset();
+    const offset = $usertext.offset()!;
     const offsetLeft = offset.left;
     const offsetTop = offset.top;
-    const minHeight = $usertext.outerHeight();
-    const editMinWidth = $usertext.outerWidth();
+    const minHeight = $usertext.outerHeight()!;
+    const editMinWidth = $usertext.outerWidth()!;
     const editMinHeight = minHeight - 74;
 
     const title = macro.title;
@@ -282,7 +276,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
 
     if (showMacroPreview) {
         $macroPopup.on(
-            'input',
+            'input', // JQuery doesn't recognize this as an event??
             '.macro-edit-area',
             TBHelpers.debounce(e => {
                 let $previewArea;
@@ -313,10 +307,10 @@ async function editMacro (dropdown, info, macro, topLevel) {
         $macroPopup.find('.macro-edit-area').trigger('input');
     }
 
-    $macroPopup.on('click', `.macro-send-${info.id}`, function () {
+    $macroPopup.on('click', `.macro-send-${info.id}`, function (event) {
         const $currentMacroPopup = $(this).closest('.macro-popup');
         const $selectElement = $body.find(`#macro-dropdown-${info.id}`);
-        const editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
+        const editedcomment = $currentMacroPopup.find('.macro-edit-area').val() as string;
 
         if ($selectElement.val() !== MACROS) {
             log.debug('Replying with:');
@@ -341,6 +335,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
                         user: info.author,
                         action: 'banned',
                         subreddit: info.subreddit,
+                        banDuration: 0,
                         banReason: `Banned from: ${info.permalink}`,
                         banMessage: `For the following ${kind}: ${info.permalink}`,
                         banContext: info.id,
@@ -348,7 +343,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
                 }
 
                 if (unban) {
-                    TBApi.unfriendUser(info.id, info.author, 'banned', info.subreddit);
+                    TBApi.unfriendUser(info.author, 'banned', info.subreddit);
                 }
 
                 if (mute) {
@@ -357,7 +352,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
                 }
 
                 if (userflair) {
-                    TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
+                    TBApi.flairUser(info.author, info.subreddit, undefined, undefined, userflair).catch(() => {
                         TBui.textFeedback(`error, failed to flair user (${userflair})`, TBui.FEEDBACK_NEGATIVE);
                     });
                 }
@@ -440,6 +435,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
                         user: info.author,
                         action: 'banned',
                         subreddit: info.subreddit,
+                        banDuration: 0,
                         banReason: `Banned from: ${info.permalink}`,
                         banMessage: `For the following ${kind}: ${info.permalink}`,
                         banContext: info.id,
@@ -461,7 +457,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
                 }
 
                 if (userflair) {
-                    TBApi.flairUser(info.author, info.subreddit, null, null, userflair).catch(() => {
+                    TBApi.flairUser(info.author, info.subreddit, undefined, undefined, userflair).catch(() => {
                         TBui.textFeedback(`error, failed to flair user (${userflair})`, TBui.FEEDBACK_NEGATIVE);
                     });
                 }
@@ -499,10 +495,10 @@ export default new Module({
                 log.debug('getting config');
                 const macroButtonEl = reactRenderer(
                     <MacroSelect
-                        subreddit={TBCore.post_site}
+                        subreddit={TBCore.post_site as string}
                         type='post'
                         topLevel
-                        thingFullname={$('#siteTable').find('.thing:first').attr('data-fullname')}
+                        thingFullname={$('#siteTable').find('.thing:first').attr('data-fullname')!}
                     />,
                 );
                 macroButtonEl.classList.add('tb-top-macro-select');
@@ -547,7 +543,7 @@ export default new Module({
                     <MacroSelect
                         subreddit={info.subreddit}
                         type={TBCore.isModmail ? 'modmail' : 'comment'}
-                        thingFullname={$thing.attr('data-fullname')}
+                        thingFullname={$thing.attr('data-fullname')!}
                     />,
                 );
                 macroButtonEl.classList.add('tb-macro-select');
@@ -566,7 +562,7 @@ export default new Module({
     }
 
     if (TBCore.isNewModmail) {
-        window.addEventListener('TBNewPage', event => {
+        window.addEventListener('TBNewPage', (event: any) => {
             if (event.detail.pageType === 'modmailConversation') {
                 setTimeout(() => {
                     addNewMMMacro();
@@ -575,7 +571,7 @@ export default new Module({
         });
     }
 
-    window.addEventListener('TBNewPage', async event => {
+    window.addEventListener('TBNewPage', async (event: any) => {
         if (event.detail.pageType === 'subredditCommentsPage') {
             const subreddit = event.detail.pageDetails.subreddit;
 

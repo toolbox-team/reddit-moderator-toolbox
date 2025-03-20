@@ -479,7 +479,7 @@ export default new Module({
                     />,
                 );
                 macroButtonEl.classList.add('tb-top-macro-select');
-                const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
+                const $usertextButtons = $('.commentarea > .usertext .usertext-buttons');
                 const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons');
 
                 if ($tbUsertextButtons.length) {
@@ -522,11 +522,11 @@ export default new Module({
                     />,
                 );
                 macroButtonEl.classList.add('tb-macro-select');
-                const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons');
+                const $tbUsertextButtons = $thing.find('> .child > .usertext .usertext-buttons .tb-usertext-buttons');
                 if ($tbUsertextButtons.length) {
                     $tbUsertextButtons.append(macroButtonEl);
                 } else {
-                    $thing.find('.usertext-buttons .status').before(
+                    $thing.find('> .child > .usertext .usertext-buttons .status').before(
                         $(`
                             <div class="tb-usertext-buttons"></div>
                         `).append(macroButtonEl),

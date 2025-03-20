@@ -518,6 +518,15 @@ export async function friendUser (options: {
     banDuration: number;
     banContext: string;
 }): Promise<any>;
+/** Mutes a user in a subreddit's modmail. */
+export async function friendUser (options: {
+    user: string;
+    action: 'muted';
+    subreddit: string;
+    /** The private reason for the mute. Just... don't worry about the name */
+    banReason?: string;
+    // TODO: do mutes acept banDuration as well to set mute duration?
+}): Promise<any>;
 /**
  * Creates a relationship between a user and a subreddit. This is used for:
  * - Banning users
@@ -539,7 +548,7 @@ export async function friendUser (options: {
  * @param options.action The string for the desired action (see
  * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
  * @param options.subreddit The sub to apply the relationship in
- * @param [options.banReason] If banning, the private mod note
+ * @param [options.banReason] If banning or muting, the private mod note
  * @param [options.banMessage] If banning, the note sent to the user
  * @param [options.banDuration] If banning, the length of the ban (0
  * or undefined for a permanent ban)

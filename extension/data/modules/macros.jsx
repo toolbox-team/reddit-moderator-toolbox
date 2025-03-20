@@ -1,5 +1,6 @@
 import $ from 'jquery';
 
+import {useState} from 'react';
 import {useFetched} from '../hooks.ts';
 import * as TBApi from '../tbapi.ts';
 import * as TBCore from '../tbcore.js';
@@ -30,10 +31,10 @@ async function getConfig (sub, callback) {
  * @param {object} props
  * @param {string} props.subreddit
  * @param {'modmail' | 'post' | 'comment'} props.type
+ * @param {string} props.thingFullname
  * @param {boolean} [props.topLevel = false]
- * @param {string | undefined} [props.thingFullname]
  */
-function MacroSelect ({subreddit, type, topLevel = false}) {
+function MacroSelect ({subreddit, type, thingFullname, topLevel = false}) {
     const config = useFetched(
         new Promise(resolve => {
             getConfig(subreddit, (success, config) => {
@@ -45,6 +46,8 @@ function MacroSelect ({subreddit, type, topLevel = false}) {
             });
         }),
     );
+
+    const [disabled, setDisabled] = useState(false);
 
     if (config == null) {
         return <></>;
@@ -63,8 +66,26 @@ function MacroSelect ({subreddit, type, topLevel = false}) {
             break;
     }
 
+    const handleChange = async event => {
+        const index = event.target.value;
+
+        log.debug(`Macro selected: index=${index}`);
+        log.debug(`  subreddit=${subreddit}`);
+
+        // disable the select box to prevent a mess with creating multiple popup boxes.
+        setDisabled(true);
+
+        // Get info about the thing we're replying to
+        const thingInfo = await TBCore.getApiThingInfo(thingFullname, subreddit, false);
+        // NOMERGE: eugh. editMacro relies on finding the context of the button
+        //          via $.closest(), which doesn't traverse shadow DOM
+        //          boundaries, so we have to trick it by passing it the react
+        //          renderer element that the dropdown is inside
+        await editMacro($(event.target.parentNode.host), thingInfo, config[index], topLevel);
+    };
+
     return (
-        <select>
+        <select defaultValue={MACROS} disabled={disabled} onChange={handleChange}>
             <option value={MACROS}>macros</option>
             {Object.entries(config).map(([i, item]) => {
                 if (item[context] !== undefined && !item[context]) {
@@ -80,6 +101,7 @@ function MacroSelect ({subreddit, type, topLevel = false}) {
 async function addNewMMMacro () {
     const $body = $('body');
     const $thing = $body.find('.InfoBar');
+    // NOMERGE: i think this might actually be totally useless
     const info = await TBCore.getThingInfo($thing, true);
 
     // Don't add macro button twice.
@@ -93,7 +115,11 @@ async function addNewMMMacro () {
     }
     log.debug(info.subreddit);
     const macroButtonEl = reactRenderer(
-        <MacroSelect subreddit={info.subreddit} type='modmail' />,
+        <MacroSelect
+            subreddit={info.subreddit}
+            type='modmail'
+            thingFullname={$thing.attr('data-fullname')}
+        />,
     );
     macroButtonEl.classList.add('tb-macro-select');
     $body.find(`
@@ -221,7 +247,7 @@ async function editMacro (dropdown, info, macro, topLevel) {
     const editMinWidth = $usertext.outerWidth();
     const editMinHeight = minHeight - 74;
 
-    const title = dropdown.find('option:selected').text();
+    const title = macro.title;
     log.debug(title);
     const $macroPopup = TBui.popup({
         title: `Mod Macro: ${title}`,
@@ -476,6 +502,7 @@ export default new Module({
                         subreddit={TBCore.post_site}
                         type='post'
                         topLevel
+                        thingFullname={$('#siteTable').find('.thing:first').attr('data-fullname')}
                     />,
                 );
                 macroButtonEl.classList.add('tb-top-macro-select');
@@ -499,6 +526,7 @@ export default new Module({
             const $this = $(this);
             if ($this.text() === 'reply') {
                 const $thing = $this.closest('.thing');
+                // NOMERGE: I think this info call might actually be completely useless
                 const info = await TBCore.getThingInfo($thing, true);
 
                 // This is because reddit clones the top-level reply box for all reply boxes.
@@ -519,6 +547,7 @@ export default new Module({
                     <MacroSelect
                         subreddit={info.subreddit}
                         type={TBCore.isModmail ? 'modmail' : 'comment'}
+                        thingFullname={$thing.attr('data-fullname')}
                     />,
                 );
                 macroButtonEl.classList.add('tb-macro-select');
@@ -570,46 +599,5 @@ export default new Module({
             // Remove all macros
             $body.find('.tb-macro-select').remove();
         }
-    });
-
-    // Detect when the user selects a macro from the dropdown
-    $body.on('change', '.tb-top-macro-select, .tb-macro-select', async function () {
-        const $this = $(this);
-        const sub = $this.closest('select').attr('data-subreddit');
-        const thingID = $this.closest('select').attr('data-thingID');
-        const index = $this.val();
-        const topLevel = $this.hasClass('tb-top-macro-select');
-        let info;
-
-        log.debug(`Macro selected: index=${index}`);
-        log.debug(`  subreddit=${sub}`);
-
-        // disable the select box to prevent a mess with creating multiple popup boxes.
-        $this.prop('disabled', 'disabled');
-        // If it's a top-level reply we need to find the post's info.
-        if (topLevel) {
-            log.debug('toplevel');
-            info = await TBCore.getThingInfo($('#siteTable').find('.thing:first'));
-        } else {
-            info = await TBCore.getThingInfo($this.closest('.thing'));
-        }
-
-        log.debug(info);
-
-        getConfig(sub, async (success, config) => {
-            if (success && config.length > 0) {
-                const macro = config[index];
-
-                if (thingID) {
-                    const thinginfo = await TBCore.getApiThingInfo(thingID, sub, false);
-                    $this.attr('id', `macro-dropdown-${thinginfo.id}`);
-                    await editMacro($this, thinginfo, macro, topLevel);
-                } else {
-                    // add unique id to the dropdown
-                    $this.attr('id', `macro-dropdown-${info.id}`);
-                    await editMacro($this, info, macro, topLevel);
-                }
-            }
-        });
     });
 });

@@ -1,16 +1,16 @@
 import {map, page, pipeAsync} from 'iter-ops';
 import $ from 'jquery';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef} from 'react';
 import {Provider} from 'react-redux';
 
-import {useFetched, useSetting} from '../hooks.ts';
+import {useFetched, usePopupState, useSetting} from '../hooks.ts';
 import store from '../store/index.ts';
 import * as TBApi from '../tbapi.ts';
 import {isModSub, isNewModmail, link} from '../tbcore.js';
 import {escapeHTML} from '../tbhelpers.js';
 import TBListener from '../tblistener.js';
 import {Module} from '../tbmodule.jsx';
-import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
+import {textFeedback, TextFeedbackKind} from '../tbui.js';
 import createLogger from '../util/logging.ts';
 import {setSettingAsync} from '../util/settings.ts';
 import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
@@ -550,28 +550,7 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
     // Fetch the latest note for the user
     const note = useFetched(getLatestModNote(subreddit, user));
 
-    const [popupShown, setPopupShown] = useState(false);
-    const [popupClickEvent, setPopupClickEvent] = useState(null);
-
-    /** @type {{top: number; left: number} | undefined} */
-    let initialPosition = undefined;
-    if (popupClickEvent) {
-        const positions = drawPosition(popupClickEvent);
-        initialPosition = {
-            top: positions.topPosition,
-            left: positions.leftPosition,
-        };
-    }
-
-    function showPopup (event) {
-        setPopupShown(true);
-        setPopupClickEvent(event);
-    }
-
-    function hidePopup () {
-        setPopupShown(false);
-        setPopupClickEvent(null);
-    }
+    const {shown, initialPosition, show, hide} = usePopupState();
 
     return (
         <>
@@ -580,15 +559,15 @@ const ModNotesUserRoot = ({user, subreddit, contextID}) => {
                 user={user}
                 subreddit={subreddit}
                 note={note}
-                onClick={showPopup}
+                onClick={show}
             />
-            {popupShown && createBodyShadowPortal(
+            {shown && createBodyShadowPortal(
                 <ModNotesPopup
                     user={user}
                     subreddit={subreddit}
                     contextID={contextID}
                     initialPosition={initialPosition}
-                    onClose={hidePopup}
+                    onClose={hide}
                 />,
             )}
         </>

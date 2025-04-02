@@ -23,7 +23,7 @@ export function PageNotificationContainer () {
 
     // We need to know the location of the context menu to know how to style the
     // notification area
-    const contextMenuLocation = useSetting('GenSettings', 'contextMenuLocation', 'left');
+    const contextMenuLocation = useSetting<'left' | 'right'>('GenSettings', 'contextMenuLocation', 'left');
 
     // Register listener for messages from the background page
     useEffect(() => {

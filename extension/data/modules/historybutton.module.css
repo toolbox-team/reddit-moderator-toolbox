@@ -1,0 +1,97 @@
+.inModmail {
+    vertical-align: middle;
+    margin-right: 3px;
+    margin-left: 2px;
+    font-size: x-small;
+    color: rgb(136, 136, 136);
+}
+
+.windowContent {
+	min-width: 650px;
+}
+
+.button {
+    float: right;
+}
+
+.row > div {
+    display: inline-block;
+    width: 310px;
+}
+
+table {
+    width: 100%;
+	border-collapse: collapse;
+}
+
+th, td {
+    padding: 5px !important;
+    border-right: none;
+}
+
+th {
+    border: 1px solid lightgray;
+    border-top: none;
+    font-weight: bold;
+    word-wrap: break-word;
+}
+
+td {
+    border: 1px dotted lightgray;
+    border-bottom: none;
+    word-wrap: break-word;
+    min-width: 30px !important;
+}
+
+th:first-child,
+td:first-child {
+    background-color: #fff;
+	max-width: 186px !important;
+	word-wrap: break-word;
+}
+
+.row > div {
+    margin: 10px;
+    max-height: 200px;
+    max-width: 300px;
+    vertical-align: top;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-bottom: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+}
+
+/* TODO */
+.submissionMarkdownText {
+    width: 97% !important;
+    min-height: 100px;
+}
+
+.submissionMarkdown {
+    margin: 0 10px;
+}
+
+.row > div .error {
+    text-align: center;
+}
+
+.disclaimer {
+    margin: 5px;
+    max-width: 500px;
+    background: #e6e6e6;
+    padding: 5px;
+}
+
+/* Highlight for the current subreddit */
+.currentSubreddit,
+.currentSubreddit td:first-child {
+    background: #EEE;
+    font-weight: bold;
+}
+/* Colors for severity levels */
+.warning {
+    background: #FFFC7F;/* TBui.standardColors.softyellow */
+}
+.danger {
+    background: #ED4337; /* TBui.standardColors.softred */
+}

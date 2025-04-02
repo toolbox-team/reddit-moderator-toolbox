@@ -399,7 +399,9 @@ function ModNotesPopup ({
         },
     ];
 
+    /** @type {'all_activity' | 'notes' | 'actions'} */
     const defaultTabName = useSetting('ModNotes', 'defaultTabName', 'all_activity');
+    /** @type {'none' | 'bot_ban' | 'permaban' | 'ban' | 'abuse_warning' | 'spam_warning' | 'spam_watch' | 'solid_contributor' | 'helpful_user'} */
     const defaultNoteLabel = useSetting('ModNotes', 'defaultNoteLabel', 'none');
 
     let defaultTabIndex = 0;

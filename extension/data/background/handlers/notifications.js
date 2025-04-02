@@ -41,20 +41,6 @@ function deleteNotificationMetaData (notificationID) {
     return browser.storage.session.remove(notificationMetaDataKey(notificationID));
 }
 
-// TODO: I know we've had this conversation before but I'm 99% sure this isn't
-// actually necessary anymore...
-/**
- * Generates a UUID. We use this instead of something simpler because Firefox
- * requires notification IDs to be UUIDs.
- * @returns {string}
- */
-function uuidv4 () {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(
-        /[018]/g,
-        c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16),
-    );
-}
-
 /**
  * Sends a native browser notification.
  * @param {object} options The notification options
@@ -69,7 +55,7 @@ async function sendNativeNotification ({title, body, url, modHash, markreadid}) 
             throw new Error('No permission to send native notifications');
         }
     }
-    const notificationID = await browser.notifications.create(uuidv4(), {
+    const notificationID = await browser.notifications.create(crypto.randomUUID(), {
         type: 'basic',
         iconUrl: browser.runtime.getURL('data/images/icon48.png'),
         title,
@@ -90,7 +76,7 @@ async function sendNativeNotification ({title, body, url, modHash, markreadid}) 
  * @param {object} options The notification options
  */
 async function sendPageNotification ({title, body, url, modHash, markreadid}) {
-    const notificationID = uuidv4();
+    const notificationID = crypto.randomUUID();
     await setNotificationMetaData(notificationID, {
         type: 'page',
         url,

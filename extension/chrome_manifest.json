@@ -4,7 +4,7 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "7.0.0.9",
+    "version": "7.0.0.10",
     "version_name": "7.0.0: \"Oh God Erin What Are You Doing\"",
     "incognito": "split",
     "permissions": [

@@ -269,7 +269,7 @@ const TBModule = {
             },
             {
                 settingName: 'showsettings',
-                content: $(TBui.actionButton('Show Settings')).attr('id', 'showRawSettings'),
+                content: '<button class="tb-action-button" id="showRawSettings">Show Settings</button>',
                 display: '',
             },
         ];

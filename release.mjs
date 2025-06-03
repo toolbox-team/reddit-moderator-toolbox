@@ -6,7 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 function runCommand (command) {
-    console.log('$', command);
+    console.log(`\x1b[1m$ ${command}\x1b[0m`);
     execSync(command, {stdio: 'inherit'});
     console.log();
 }
@@ -31,10 +31,6 @@ const manifestContentFirefox = JSON.parse(fs.readFileSync(firefoxManifestLocatio
 
 const currentVersion = manifestContentChrome.version;
 const currentVersionName = manifestContentChrome.version_name.match(versionNameRegex)[1];
-
-console.log('\n--------');
-console.log('Update version information');
-console.log('--------\n');
 
 inquirer
     .prompt([
@@ -93,6 +89,7 @@ inquirer
                 answers.releaseType === 'beta' ? `-beta.${versionParts.build}` : ''
             }`;
             console.log('Creating release commit and tag:', tagName);
+            console.log();
             runCommand(`git commit -am "${tagName}"`);
             runCommand(`git tag "${tagName}"`);
 

@@ -44,7 +44,7 @@
         "@tsconfig/recommended": "^1.0.3",
         "@types/jquery": "^3.5.29",
         "@types/jquery.timeago": "^1.0.33",
-        "@types/react": "^19.0.12",
+        "@types/react": "^19.1.6",
         "@types/react-dom": "^19.1.5",
         "@types/webextension-polyfill": "^0.12.1",
         "cross-env": "^7.0.3",

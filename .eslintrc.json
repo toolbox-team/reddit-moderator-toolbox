@@ -4,7 +4,7 @@
         "react"
     ],
     "parserOptions": {
-        "ecmaVersion": 11,
+        "ecmaVersion": 2024,
         "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true

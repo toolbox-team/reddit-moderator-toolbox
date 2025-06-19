@@ -46,9 +46,9 @@ export default ['chrome', 'firefox'].flatMap(platform => [
                     'process.env.NODE_ENV': JSON.stringify(process.env.BUILD_TYPE === 'dev' ? undefined : 'production'),
                     // used at runtime to control beta settings, prerelease
                     // version display in the modbar, etc
-                    'process.env.BUILD_TYPE': JSON.stringify(buildType),
+                    'BUILD_TYPE': JSON.stringify(buildType),
                     // the commit we're building from, mostly helpful in betas
-                    'process.env.BUILD_SHA': JSON.stringify(buildSha ?? null),
+                    'BUILD_SHA': JSON.stringify(buildSha ?? null),
                 },
             }),
             postcss({

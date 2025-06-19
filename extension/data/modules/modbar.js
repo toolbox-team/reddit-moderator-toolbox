@@ -5,6 +5,7 @@ import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import TBModule, {Module} from '../tbmodule.jsx';
 import * as TBui from '../tbui.js';
+import {buildType} from '../util/buildenv.ts';
 import {icons} from '../util/icons.ts';
 import createLogger from '../util/logging.ts';
 import {purify} from '../util/purify.js';
@@ -458,12 +459,12 @@ export default new Module({
     });
 
     // Always add version label to modbar on non-stable versions
-    if (TBCore.buildType !== 'stable') {
+    if (buildType !== 'stable') {
         $('#tb-bottombar').find('#tb-toolbarcounters').before(
             $(`
                 <button
                     id="tb-prerelease-link"
-                    title="this is a ${TBCore.buildType} build of toolbox. click to copy version information"
+                    title="this is a ${buildType} build of toolbox. click to copy version information"
                 />
                     <i class="tb-icons">${icons.prerelease}</i>
                     <span>${TBCore.toolboxVersion}</span>

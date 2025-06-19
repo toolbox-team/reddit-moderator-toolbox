@@ -4,6 +4,7 @@ import browser from 'webextension-polyfill';
 import * as TBApi from './tbapi.ts';
 import {getModhash} from './tbapi.ts';
 import * as TBHelpers from './tbhelpers.js';
+import {buildSha, buildType} from './util/buildenv.ts';
 import {getCache, setCache} from './util/cache.ts';
 import {icons} from './util/icons.ts';
 import createLogger from './util/logging.ts';
@@ -13,13 +14,6 @@ import {purifyObject} from './util/purify.js';
 import {getSettingAsync, setSettingAsync} from './util/settings.ts';
 
 const log = createLogger('TBCore');
-
-// Build variables defined by Rollup
-/* global process */
-/** @type {'stable' | 'beta' | 'dev'} */
-export const buildType = process.env.BUILD_TYPE;
-/** @type {string | null} */
-const buildSha = process.env.BUILD_SHA;
 
 // Schema versioning information
 // TODO: Put these into the files they're used in, rather than keeping them here
@@ -55,18 +49,20 @@ export function isConfigValidVersion (subreddit, config) {
 // Generated version strings
 const manifest = browser.runtime.getManifest();
 const versionRegex = /(?<major>\d\d?)\.(?<minor>\d\d?)\.(?<patch>\d\d?)\.(?<build>\d+)/;
-const {major, minor, patch, build} = manifest.version.match(versionRegex).groups;
+const {major, minor, patch, build} = /** @type {{[k: string]: string}} */ manifest.version.match(versionRegex).groups;
 
 /**
  * Concise version string which includes all possibly relevant information.
  * @example '6.1.13.0 stable 5546015'
  * @example '7.0.0.2 beta 893745b'
+ * @example '1.2.3.4 dev local'
  */
 export const toolboxVersion = `${manifest.version} ${buildType} ${buildSha?.slice(0, 7) || 'local'}`.trim();
 /**
  * User-friendly version string; stable releases exclude build and commit
  * @example '6.1.13 "Delaying Donkey"'
- * @example '7.0.0 "Rewriting Rattlesnake" (build 2 from 893745b)'
+ * @example '7.0.0 "Rewriting Rattlesnake" (beta build 2 from 893745b)'
+ * @example '1.2.3 "Unknown Urchin" (dev build 4 from local copy)'
  */
 export const toolboxVersionName = `${manifest.version_name}${
     buildType === 'stable'

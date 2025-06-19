@@ -3,6 +3,7 @@ import $ from 'jquery';
 import * as TBCore from '../tbcore.js';
 import * as TBHelpers from '../tbhelpers.js';
 import {Module} from '../tbmodule.jsx';
+import {buildType} from '../util/buildenv.ts';
 import createLogger from '../util/logging.ts';
 import {getSettingAsync} from '../util/settings.ts';
 
@@ -264,7 +265,7 @@ function init ({lastSeen}) {
 
     // Beta testers
     self.manager.register('bug hunter', 'Beta testing toolbox', saveIndex => {
-        if (TBCore.buildType === 'beta') {
+        if (buildType === 'beta') {
             self.manager.unlock(saveIndex, 1);
         }
     });

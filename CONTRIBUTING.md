@@ -36,6 +36,11 @@ You can find the documentation for all this on the following locations:
 
 ## Project structure
 
+The repo's structure is currently a bit volatile on `master` due to the ongoing React UI rewrite. The below summary of the folder structure applies to Toolbox pre-React and is still mostly relevant, though we're moving away from certain conventions ("core" files don't necessarily start with `tb`; CSS is no longer centralized in a single folder; there isn't yet a fully established structure for React component files).
+
+<details>
+<summary><strong>Old project structure</strong></summary>
+
 - `/`: root directory containing scripting for building toolbox and configuration for development related things (linting, git configuration files).
 - `extension/`: root directory of the extension itself. Contains the manifests. From here the unpacked extension can be loaded for development.
 - `extension/data/`: Directory containing the functional code of toolbox. All files starting with `tb` are toolbox core scripts.
@@ -49,6 +54,8 @@ You can find the documentation for all this on the following locations:
 - `extension/data/images/`: Images used by toolbox.
 - `extension/data/modules/`: Contains the individual toolbox modules.
 - `extension/data/styles/`: Contains all CSS
+
+</details>
 
 ## Building, testing, and dev scripts
 
@@ -92,12 +99,62 @@ The manifest `version` field combines the major.minor.patch and the build number
 
 As an example, a release timeline might look something like this:
 
-| Manifest `version` | Git tag         | Release type |
-| ------------------ | --------------- | ------------ |
-| `6.1.13.1`         | `v6.1.13`       | stable       |
-| `7.0.0.1`          | `v7.0.0-beta.1` | beta         |
-| `7.0.0.2`          | `v7.0.0-beta.2` | beta         |
-| `7.0.0.3`          | `v7.0.0`        | stable       |
+<table>
+    <thead>
+        <tr>
+            <th>Manifest <code>version</code></th>
+            <th>Git tag</th>
+            <th>Release type</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>7.0.0.1</code></td>
+            <td><code>v7.0.0-beta.1</code></td>
+            <td>beta</td>
+            <td>Development of 7.0.0 begins</td>
+        </tr>
+        <tr>
+            <td><code>7.0.0.2</code></td>
+            <td><code>v7.0.0-beta.2</code></td>
+            <td>beta</td>
+            <td rowspan=2>Iteration in the beta channel</td>
+        </tr>
+        <tr>
+            <td colspan=2 align=center>...</td>
+            <td>beta</td>
+        </tr>
+        <tr>
+            <td rowspan=2><code>7.0.0.21</code></td>
+            <td><code>v7.0.0-beta.21</code></td>
+            <td>beta</td>
+            <td>Last beta release of 7.0.0</td>
+        </tr>
+        <tr>
+            <td><code>v7.0.0</code></td>
+            <td>stable</td>
+            <td>Same build then released as stable</td>
+        </tr>
+        <tr>
+            <td><code>7.0.1.1</code></td>
+            <td><code>v7.0.1</code></td>
+            <td>stable</td>
+            <td rowspan=2>Hotfixes can be released without a beta test</td>
+        </tr>
+        <tr>
+            <td><code>7.0.2.1</code></td>
+            <td><code>v7.0.2</code></td>
+            <td>stable</td>
+        </tr>
+        <tr>
+            <td><code>7.1.0.1</code></td>
+            <td><code>v7.1.0-beta.1</code></td>
+            <td>beta</td>
+            <td>Development of 7.1.0 begins</td>
+        </tr>
+    </tbody>
+</table>
 
 ### Tagging a New Release
 

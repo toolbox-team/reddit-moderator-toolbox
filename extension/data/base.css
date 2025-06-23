@@ -20,3 +20,12 @@
 	font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px;
 }
+
+/*
+ * emulates old Reddit's style; it's comfy for toolbox too since so much of our
+ * style is based on that look
+ */
+a {
+	color: #369;
+	text-decoration: none;
+}

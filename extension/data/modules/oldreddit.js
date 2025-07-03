@@ -243,9 +243,10 @@ function newModmailSidebar () {
     setTimeout(() => {
         const $body = $('body');
         if ($body.find('.ThreadViewer').length) {
-            const $modmailSidebar = $body.find(
-                '.ThreadViewer__infobar:not(.tb-seen), .ThreadViewerHeader__infobar:not(.tb-seen), .InfoBar__idCard:not(.tb-seen)',
-            );
+            const $modmailSidebar = $body.find(`
+                .ThreadViewerHeader__infobar:not(.tb-seen),
+                .InfoBar__idCard:not(.tb-seen)
+            `);
             const jsApiPlaceHolder = `
                 <div class="tb-jsapi-container tb-modmail-sidebar-container">
                     <div class="InfoBar__recentsTitle">Toolbox functions:</div>

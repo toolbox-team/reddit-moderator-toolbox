@@ -49,12 +49,17 @@ export default new Module({
             description: 'Open modmail in nightmode',
         },
         {
-            id: 'noReplyAsSelf',
-            type: 'boolean',
-            default: false,
+            id: 'modmailReplyAs',
+            type: 'selector',
+            values: [
+                'Leave Unchanged',
+                'Reply as Myself',
+                'Reply as the subreddit',
+                'Create a Private Moderator Note',
+            ],
+            default: 'leave_unchanged',
             advanced: true,
-            description:
-                'Automatically switch "reply as" selection away from "Reply as myself" to "Reply as subreddit".',
+            description: 'Automatically switch "reply as" selection',
         },
         {
             id: 'showModmailPreview',
@@ -91,7 +96,7 @@ export default new Module({
 }, ({
     modmailnightmode: modMailNightmode,
     lastreplytypecheck: lastReplyTypeCheck,
-    noReplyAsSelf,
+    modmailReplyAs,
     showModmailPreview,
     clickableReason,
     sourceButton,
@@ -102,11 +107,23 @@ export default new Module({
 }) => {
     const $body = $('body');
 
-    function switchAwayFromReplyAsSelf () {
-        const current = $('.ThreadViewerReplyForm__replyOptions .FancySelect__valueText').text();
-        if (current === 'Reply as myself') {
-            $body.find('.FancySelect__value').click();
-            $body.find('.FancySelect__option:contains("Reply as the subreddit")').click();
+    function switchReplyAs () {
+        // Currently this is only working cosmetically; it'll change the text, but none of the ways I've tried here actually propogate and change
+        $body.find('#native-select-option').trigger('click');
+        switch (modmailReplyAs) {
+            case 'reply_as_myself':
+                $body.find('#native-select-option').val('null').trigger('click');
+                break;
+
+            case 'reply_as_the_subreddit':
+                $body.find('#native-select-option').val('isAuthorHidden').trigger('change');
+                break;
+
+            case 'create_a_private_moderator_note':
+                $body.find('#native-select-option').val('isInternal').trigger('change');
+                break;
+            default:
+                break;
         }
     }
 
@@ -249,11 +266,11 @@ export default new Module({
             submitReplyForm();
         };
 
-        if (noReplyAsSelf) {
+        if (modmailReplyAs !== 'leave_unchanged') {
             window.addEventListener('TBNewPage', event => {
                 if (event.detail.pageType === 'modmailConversation') {
                     setTimeout(() => {
-                        switchAwayFromReplyAsSelf();
+                        switchReplyAs();
                     }, 1000);
                 }
             });

@@ -2,7 +2,7 @@ name: "Publish to beta listings"
 on:
   push:
     tags:
-    - "v*"
+    - "v*-*"
 
 jobs:
   build-release:

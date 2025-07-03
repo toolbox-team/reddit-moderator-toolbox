@@ -31,6 +31,7 @@ jobs:
         ' | tee extension/chrome_manifest.json
 
     - env:
+        NODE_ENV: production
         BUILD_TYPE: beta
         BUILD_SHA: ${{ github.sha }}
       run: npm run build

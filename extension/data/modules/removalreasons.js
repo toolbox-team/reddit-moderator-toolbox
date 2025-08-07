@@ -1043,7 +1043,7 @@ export default new Module({
             if (errorResults.length) {
                 status.text(
                     `error${errorResults.length > 1 ? 's' : ''}: ${
-                        errorResults.map(result => result.reason).join('; ')
+                        errorResults.map(result => result.reason.message).join('; ')
                     }`,
                 );
             } else {

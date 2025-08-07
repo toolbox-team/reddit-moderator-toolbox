@@ -992,7 +992,6 @@ export default new Module({
 
         // Function to send PM and comment
         async function sendRemovalMessage (logLink) {
-            const mySubsData = await TBCore.getModSubs(true);
             // If there is no message to send, don't send one.
             if (reasonlength < 1) {
                 if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
@@ -1025,11 +1024,9 @@ export default new Module({
                 }
             }
 
-            const subredditData = mySubsData.find(s => s.subreddit === data.subreddit);
             const notifyByPM = notifyBy === 'pm' || notifyBy === 'both';
             const notifyByReply = notifyBy === 'reply' || notifyBy === 'both';
-            const notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData
-                && subredditData.is_enrolled_in_new_modmail;
+            const notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive;
 
             // Reply to submission/comment
             if (notifyByReply) {

@@ -1110,6 +1110,23 @@ export default new Module({
 
             // Send PM the user
             async function sendPM () {
+                // /message/compose was supposed to continue working for sending
+                // messages to users during the transition from PMs to chat, but
+                // it turns out that toolbox and other tools that piggyback on
+                // first-party auth sessions don't get this compatibility layer
+                // at all and just have no way of sending chats until a proper
+                // chat API comes out
+                //
+                // in order to continue using /message/compose to send chats we
+                // would need our own OAuth app. i'm not wasting my time
+                // developing an in-browser OAuth flow, and i'm not wasting my
+                // users' time dealing with it. try when the chat api is real
+                //
+                // https://www.reddit.com/r/redditdev/comments/1mi5ewj/_/n7goor4/?context=9
+                if (!false) { // eslint-disable-line
+                    throw new Error(`${PM_ERROR}: toolbox does not have access to the chat API`);
+                }
+
                 const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
                 log.debug('Sending removal message by PM');

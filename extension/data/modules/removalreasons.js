@@ -1034,7 +1034,7 @@ export default new Module({
                         : sendReplyAsSelf()
                 ),
                 notifyByPM && (
-                    (notifyAsSub && autoArchive)
+                    notifyAsSub
                         ? sendNewModmail()
                         : sendPM()
                 ),

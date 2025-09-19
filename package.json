@@ -48,7 +48,7 @@
         "@types/react-dom": "^19.1.5",
         "@types/webextension-polyfill": "^0.12.1",
         "cross-env": "^7.0.3",
-        "del-cli": "^6.0.0",
+        "del-cli": "^7.0.0",
         "docdash": "^2.0.2",
         "dprint": "^0.50.0",
         "eslint": "^8.57.0",

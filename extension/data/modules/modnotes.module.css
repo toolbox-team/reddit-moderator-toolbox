@@ -1,3 +1,9 @@
+.noteButton {
+	max-width: 200px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 .noteTable {
 	/* The modnote popup footer is very wide; fill up that extra width */
 	width: 100%;

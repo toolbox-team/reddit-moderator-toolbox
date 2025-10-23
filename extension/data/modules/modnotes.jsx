@@ -62,6 +62,7 @@ const labelColors = {
     SPAM_WATCH: 'fuchsia',
     SOLID_CONTRIBUTOR: 'green',
     HELPFUL_USER: 'lightseagreen',
+    USER_SUMMARY: 'darkgray',
 };
 
 /**
@@ -77,6 +78,7 @@ const labelNames = {
     SPAM_WATCH: 'Spam Watch',
     SOLID_CONTRIBUTOR: 'Solid Contributor',
     HELPFUL_USER: 'Helpful User',
+    USER_SUMMARY: 'AI-generated user summary',
 };
 
 /**
@@ -106,6 +108,7 @@ let fetchLatestNotesTimeout;
 
 /**
  * Fetches the most recent mod note on the given user in the given subreddit.
+ * Does not return AI-generated user summary "notes."
  * @param {string} subreddit The name of the subreddit
  * @param {string} user The name of the user
  * @returns {Promise} Resolves to a note object or `null`, or rejects an error
@@ -158,7 +161,10 @@ function getLatestModNote (subreddit, user) {
             const users = queuedRequests.map(entry => entry.user);
 
             // Perform the request to fetch the notes
-            const notes = await TBApi.getRecentModNotes(subreddits, users);
+            let notes = await TBApi.getRecentModNotes(subreddits, users);
+
+            // Remove AI summary notes from the result. reddit why
+            notes = notes.map(note => note?.user_note_data?.label === 'USER_SUMMARY' ? null : note);
 
             // We now have to pass each note to the appropriate caller's promise
             // resolver; since the arrays are in the same order, we can loop
@@ -488,7 +494,11 @@ function ModNotesPopup ({
  */
 function NoteTableRow ({note, onDelete}) {
     const createdAt = new Date(note.created_at * 1000);
-    const mod = note.operator; // TODO: can [deleted] show up here?
+    let mod = note.operator; // TODO: can [deleted] show up here?
+    if (note.user_note_data?.label === 'USER_SUMMARY') {
+        // Special handling for AI-generated user summaries
+        mod = 'reddit';
+    }
 
     const contextURL = useFetched(getContextURL(note));
 

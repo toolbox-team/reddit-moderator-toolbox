@@ -1,3 +1,9 @@
+.mod-toolbox-rd .tb-modnote-badge {
+	max-width: 200px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 .mod-toolbox-rd .tb-modnote-table {
 	/* The modnote popup footer is very wide; fill up that extra width */
 	width: 100%;

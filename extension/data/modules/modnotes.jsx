@@ -13,7 +13,7 @@ import {Module} from '../tbmodule.jsx';
 import {drawPosition, textFeedback, TextFeedbackKind} from '../tbui.js';
 import createLogger from '../util/logging.ts';
 import {setSettingAsync} from '../util/settings.ts';
-import {createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
+import {classes, createBodyShadowPortal, reactRenderer} from '../util/ui_interop.tsx';
 
 import {
     ActionButton,
@@ -308,7 +308,7 @@ function ModNotesBadge ({
     }
     return (
         <BracketButton
-            className='tb-bracket-button tb-modnote-badge'
+            className={classes('tb-bracket-button', 'tb-modnote-badge', css.noteButton)}
             tabIndex='0'
             title={`Mod notes for /u/${user} in /r/${subreddit}`}
             onClick={onClick}

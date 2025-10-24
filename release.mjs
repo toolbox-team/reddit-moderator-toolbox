@@ -1,9 +1,11 @@
 /* eslint-env node */
-import inquirer from 'inquirer';
 import {execSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+
+import input from '@inquirer/input';
+import select from '@inquirer/select';
 
 function runCommand (command) {
     console.log(`\x1b[1m$ ${command}\x1b[0m`);
@@ -32,67 +34,63 @@ const manifestContentFirefox = JSON.parse(fs.readFileSync(firefoxManifestLocatio
 const currentVersion = manifestContentChrome.version;
 const currentVersionName = manifestContentChrome.version_name.match(versionNameRegex)[1];
 
-inquirer
-    .prompt([
-        {
-            name: 'newVersion',
-            message: 'New version',
-            default: currentVersion,
-        },
-        {
-            name: 'newVersionName',
-            message: 'New version name',
-            default: currentVersionName,
-        },
-        {
-            name: 'releaseType',
-            message: 'Release type',
-            type: 'list',
-            choices: ['beta', 'stable'],
-        },
-    ])
-    .then(answers => {
-        if (answers.newVersion !== currentVersion || answers.newVersionName !== currentVersionName) {
-            console.log('Writing update version information to manifest');
-            manifestContentFirefox.version = answers.newVersion;
-            manifestContentChrome.version = answers.newVersion;
-
-            const versionParts = answers.newVersion.match(/(?<display>\d\d?\.\d\d?\.\d\d?)\.(?<build>\d+)$/).groups;
-            manifestContentFirefox.version_name = `${versionParts.display}: "${answers.newVersionName}"`;
-            manifestContentChrome.version_name = `${versionParts.display}: "${answers.newVersionName}"`;
-
-            fs.writeFileSync(
-                chromeManifestLocation,
-                // include trailing newline
-                `${JSON.stringify(manifestContentChrome, null, 4)}\n`,
-                'utf8',
-                err => {
-                    if (err) {
-                        throw err;
-                    }
-                },
-            );
-            fs.writeFileSync(
-                firefoxManifestLocation,
-                // include trailing newline
-                `${JSON.stringify(manifestContentFirefox, null, 4)}\n`,
-                'utf8',
-                err => {
-                    if (err) {
-                        throw err;
-                    }
-                },
-            );
-
-            // tag the release
-            const tagName = `v${versionParts.display}${
-                answers.releaseType === 'beta' ? `-beta.${versionParts.build}` : ''
-            }`;
-            console.log('Creating release commit and tag:', tagName);
-            console.log();
-            runCommand(`git commit -am "${tagName}"`);
-            runCommand(`git tag "${tagName}"`);
-
-            console.log('Commit and tag created! Verify everything looks good, then push new commit and tag');
-        }
+(async () => {
+    const newVersion = await input({
+        message: 'New version',
+        default: currentVersion,
     });
+    const newVersionName = await input({
+        message: 'New version name',
+        default: currentVersionName,
+    });
+    const releaseType = await select({
+        message: 'Release type',
+        type: 'list',
+        choices: ['beta', 'stable'],
+    });
+
+    if (newVersion === currentVersion && newVersionName === currentVersionName) {
+        console.log('Nothing to change');
+        process.exit(0);
+    }
+
+    console.log('Writing update version information to manifest');
+    manifestContentFirefox.version = newVersion;
+    manifestContentChrome.version = newVersion;
+
+    const versionParts = newVersion.match(/(?<display>\d\d?\.\d\d?\.\d\d?)\.(?<build>\d+)$/).groups;
+    manifestContentFirefox.version_name = `${versionParts.display}: "${newVersionName}"`;
+    manifestContentChrome.version_name = `${versionParts.display}: "${newVersionName}"`;
+
+    fs.writeFileSync(
+        chromeManifestLocation,
+        // include trailing newline
+        `${JSON.stringify(manifestContentChrome, null, 4)}\n`,
+        'utf8',
+        err => {
+            if (err) {
+                throw err;
+            }
+        },
+    );
+    fs.writeFileSync(
+        firefoxManifestLocation,
+        // include trailing newline
+        `${JSON.stringify(manifestContentFirefox, null, 4)}\n`,
+        'utf8',
+        err => {
+            if (err) {
+                throw err;
+            }
+        },
+    );
+
+    // tag the release
+    const tagName = `v${versionParts.display}${releaseType === 'beta' ? `-beta.${versionParts.build}` : ''}`;
+    console.log('Creating release commit and tag:', tagName);
+    console.log();
+    runCommand(`git commit -am "${tagName}"`);
+    runCommand(`git tag "${tagName}"`);
+
+    console.log('Commit and tag created! Verify everything looks good, then push new commit and tag');
+})();

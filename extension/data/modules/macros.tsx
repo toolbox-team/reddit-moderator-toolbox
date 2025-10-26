@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import {useState} from 'react';
+
 import {useFetched} from '../hooks';
 import * as TBApi from '../tbapi';
 import * as TBCore from '../tbcore';
@@ -11,6 +12,8 @@ import createLogger from '../util/logging';
 import {purify} from '../util/purify';
 import {getSettingAsync} from '../util/settings';
 import {reactRenderer} from '../util/ui_interop';
+
+import {ActionSelect} from '../components/controls';
 
 const log = createLogger('ModMacros');
 
@@ -82,7 +85,15 @@ function MacroSelect ({subreddit, type, thingFullname, topLevel = false}: {
     };
 
     return (
-        <select defaultValue={MACROS} disabled={disabled} onChange={handleChange}>
+        <ActionSelect
+            style={{
+                verticalAlign: 'middle',
+                maxWidth: '90px',
+            }} // TODO: clean this up if possible
+            defaultValue={MACROS}
+            disabled={disabled}
+            onChange={handleChange}
+        >
             <option value={MACROS}>macros</option>
             {/* TODO: config types */}
             {Object.entries(config).map(([i, item]: [string, any]) => {
@@ -91,7 +102,7 @@ function MacroSelect ({subreddit, type, thingFullname, topLevel = false}: {
                 }
                 return <option key={i} value={i}>{item.title}</option>;
             })}
-        </select>
+        </ActionSelect>
     );
 }
 

@@ -1143,31 +1143,28 @@ export default new Module({
                 log.debug('Sending removal message by New Modmail');
                 let res;
                 try {
-                    res = await TBApi.apiOauthPOST('/api/mod/conversations', {
+                    res = await TBApi.sendModmail({
+                        subreddit: data.subreddit,
                         to: data.author,
-                        isAuthorHidden: true,
                         subject,
                         body,
-                        srName: data.subreddit,
+                        isAuthorHidden: true,
                     });
                 } catch (error) {
                     throw new Error(MODMAIL_ERROR);
                 }
 
-                let resData;
-                try {
-                    resData = await res.json();
-                } catch {
-                    // Disable Send button as we already sent modmail successfully - avoids multiple modmails
-                    $('.save.tb-action-button').prop('disabled', true);
-                    throw new Error(MODMAIL_ARCHIVE_ERROR);
-                }
-
-                const id = resData.conversation.id;
+                const id = res.conversation.id;
                 // isInternal means mod conversation - can't archive that
-                const isInternal = resData.conversation.isInternal;
+                const isInternal = res.conversation.isInternal;
                 if (autoArchive && !isInternal) {
-                    await TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`);
+                    try {
+                        await TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`);
+                    } catch (error) {
+                        // Disable Send button as we already sent modmail successfully - avoids multiple modmails
+                        $('.save.tb-action-button').prop('disabled', true);
+                        throw new Error(MODMAIL_ARCHIVE_ERROR);
+                    }
                 }
             }
         }

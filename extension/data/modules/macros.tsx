@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import {ChangeEvent, ReactEventHandler, useState} from 'react';
+import {useState} from 'react';
 import {useFetched} from '../hooks';
 import * as TBApi from '../tbapi';
 import * as TBCore from '../tbcore';
@@ -84,10 +84,10 @@ function MacroSelect ({subreddit, type, thingFullname, topLevel = false}: {
     return (
         <select defaultValue={MACROS} disabled={disabled} onChange={handleChange}>
             <option value={MACROS}>macros</option>
-            // TODO: config types
+            {/* TODO: config types */}
             {Object.entries(config).map(([i, item]: [string, any]) => {
                 if (item[context] !== undefined && !item[context]) {
-                    return <></>;
+                    return null;
                 }
                 return <option key={i} value={i}>{item.title}</option>;
             })}

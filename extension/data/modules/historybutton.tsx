@@ -243,7 +243,7 @@ function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onCl
                                     const domainSearchQuery = new URLSearchParams({
                                         sort: 'new',
                                         feature: 'legacy_search',
-                                        ...includeNsfwSearches && {include_over_18: 'on'},
+                                        ...(includeNsfwSearches ? {include_over_18: 'on'} : {}),
                                     });
                                     const selfDomainMatch = domain.match(/^self\.(\w+)$/);
                                     if (selfDomainMatch) {
@@ -299,7 +299,7 @@ function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onCl
                                         restrict_sr: 'on',
                                         sort: 'new',
                                         feature: 'legacy_search',
-                                        ...includeNsfwSearches && {include_over_18: 'on'},
+                                        ...(includeNsfwSearches ? {include_over_18: 'on'} : {}),
                                     })}`);
 
                                     return (

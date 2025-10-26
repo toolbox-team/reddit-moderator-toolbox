@@ -163,7 +163,7 @@ export const apiOauthPOST = (endpoint: string, body?: RequestBody, options = {})
  * @param endpoint The endpoint to request
  * @param data Query parameters as an object
  */
-export const apiOauthGET = (endpoint: string, query: QueryParams) =>
+export const apiOauthGET = (endpoint: string, query?: QueryParams) =>
     sendRequest({
         method: 'GET',
         oauth: true,
@@ -486,12 +486,14 @@ export const flairPost = async (
  * @param cssClass The flair's CSS class
  * @param templateID The flair's template ID
  */
+// TODO: convert this to an object parameter to avoid passing `undefined`s all
+//       over the place
 export const flairUser = async (
     user: string,
     subreddit: string,
-    text: string,
-    cssClass: string,
-    templateID: string,
+    text: string | undefined,
+    cssClass: string | undefined,
+    templateID: string | undefined,
 ) => post('/api/selectflair', {
     api_type: 'json',
     name: user,
@@ -518,6 +520,16 @@ export async function friendUser (options: {
     banDuration: number;
     banContext: string;
 }): Promise<any>;
+/** Mutes a user in a subreddit's modmail. */
+export async function friendUser (options: {
+    user: string;
+    action: 'muted';
+    subreddit: string;
+    /** The private reason for the mute. Just... don't worry about the name */
+    // TODO: Accept `note` here instead of `banReason`. Clean up all these names
+    banReason?: string;
+    // TODO: do mutes acept banDuration as well to set mute duration?
+}): Promise<any>;
 /**
  * Creates a relationship between a user and a subreddit. This is used for:
  * - Banning users
@@ -539,7 +551,7 @@ export async function friendUser (options: {
  * @param options.action The string for the desired action (see
  * {@link https://www.reddit.com/dev/api#POST_api_friend} for a list)
  * @param options.subreddit The sub to apply the relationship in
- * @param [options.banReason] If banning, the private mod note
+ * @param [options.banReason] If banning or muting, the private mod note
  * @param [options.banMessage] If banning, the note sent to the user
  * @param [options.banDuration] If banning, the length of the ban (0
  * or undefined for a permanent ban)
@@ -565,19 +577,14 @@ export async function friendUser ({
     banDuration?: number;
     banContext?: string;
 }) {
-    let trimmedBanMessage,
-        trimmedBanReason;
-    if (action === 'banned') {
-        trimmedBanMessage = banMessage!.substring(0, 999);
-        trimmedBanReason = banReason!.substring(0, 300);
-        if (banDuration) {
-            if (banDuration > 999) {
-                banDuration = 999;
-            }
-            if (banDuration < 0) {
-                banDuration = 0;
-            }
-        }
+    if (banMessage != null) {
+        banMessage = banMessage.substring(0, 999);
+    }
+    if (banReason != null) {
+        banReason = banReason.substring(0, 300);
+    }
+    if (banDuration != null) {
+        banDuration = Math.max(0, Math.min(banDuration, 999));
     }
 
     return post('/api/friend', {
@@ -586,9 +593,9 @@ export async function friendUser ({
         type: action,
         name: user,
         r: subreddit,
-        note: trimmedBanReason,
-        ban_message: trimmedBanMessage,
-        duration: '' + banDuration,
+        note: banReason,
+        ban_message: banMessage,
+        duration: banDuration == null ? undefined : '' + banDuration,
         ban_context: banContext,
     });
 }

@@ -122,7 +122,7 @@ export const actionButton = (text, classes) => `
  * popup
  * @param {string} [options.defaultTabID] If provided, the tab with this ID
  * will be displayed initially; otherwise, the first tab will be shown
- * @returns {jQuery}
+ * @returns {JQuery}
  */
 export function popup ({
     title,
@@ -235,13 +235,24 @@ export function popup ({
     return $popup;
 }
 
-export function drawPosition (event) {
-    const positions = {
-        leftPosition: '',
-        topPosition: '',
-    };
+// TODO: document (what are these offsets relative to exactly?)
+/**
+ * @typedef {object} DrawPosition
+ * @prop {number} leftPosition
+ * @prop {number} topPosition
+ */
 
-    const $overlay = $(event.target).closest('.tb-page-overlay');
+/**
+ * Gives a location where it would be appropriate to render a popup in response
+ * to some pointer event (usually a click). Tries to return a location close to
+ * the mosue cursor but may put it somewhere else if there's not likely to be
+ * enough room for the popup in the region of the screen where the cursor is.
+ * @param {PointerEvent} event The event we're responding to
+ * @returns {DrawPosition} Location
+ */
+export function drawPosition (event) {
+    /** @type {DrawPosition} */
+    const positions = {};
 
     if (document.documentElement.clientWidth - event.pageX < 400) {
         positions.leftPosition = event.pageX - 600;
@@ -261,6 +272,10 @@ export function drawPosition (event) {
         positions.topPosition = event.pageY - 50;
     }
 
+    // if we're rendering in an overlay, add the scroll offset to the top
+    // position we return
+    // TODO: this logic will present problems in non-jQuery overlays
+    const $overlay = $(event.target).closest('.tb-page-overlay');
     if ($overlay.length) {
         const scrollTop = $overlay.scrollTop();
         positions.topPosition = event.clientY + scrollTop;
@@ -697,21 +712,32 @@ export function beforeunload () {
 let contextTimeout;
 
 /**
+ * @typedef {object} ContextTriggerOptionsDelete
+ * @prop {false} options.addTrigger `false` indicates the menu item will be
+ * removed.
+ */
+
+/**
+ * @typedef {object} ContextTriggerOptionsAdd
+ * @prop {true} options.addTrigger `true` indicates the menu item will be added.
+ * @prop {string} options.triggerText Text displayed in menu. Not needed when
+ * addTrigger is false.
+ * @prop {string} options.triggerIcon The material icon that needs to be
+ * displayed before the menu item. Defaults to 'label'
+ * @prop {string} options.title Title to be used in title attribute. If no title
+ * is given the triggerText will be used.
+ * @prop {object} options.dataAttributes Any data attribute that might be
+ * needed. Object keys will be used as the attribute name and value as value.
+ */
+
+/** @typedef {ContextTriggerOptionsAdd | ContextTriggerOptionsDelete} ContextTriggerOptions */
+
+/**
  * Add or remove a menu element to the context aware menu. Makes the menu
  * shows if it was empty before adding, hides menu if it is empty after removing.
  * @function
  * @param {string} triggerId This will be part of the id given to the element.
- * @param {object} options
- * @param {boolean} options.addTrigger Indicates of the menu item needs to
- * be added or removed.
- * @param {string} options.triggerText Text displayed in menu. Not needed
- * when addTrigger is false.
- * @param {string} options.triggerIcon The material icon that needs to be
- * displayed before the menu item. Defaults to 'label'
- * @param {string} options.title Title to be used in title attribute. If no
- * title is given the triggerText will be used.
- * @param {object} options.dataAttributes Any data attribute that might be
- * needed. Object keys will be used as the attribute name and value as value.
+ * @param {ContextTriggerOptions} options
  */
 export function contextTrigger (triggerId, options) {
     // We really don't need two context menus side by side.

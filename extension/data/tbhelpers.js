@@ -12,9 +12,10 @@ export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 /**
  * Debounces a given function based on a given timeout.
  * @function
- * @param {function} func input function
+ * @template {(...args: any[]) => void} T
+ * @param {T} func input function
  * @param {number} debounceTime the amount of time used to wait in ms.
- * @returns {function} the executed function
+ * @returns {T} the executed function
  */
 export function debounce (func, debounceTime = 100) {
     let timeout;
@@ -223,7 +224,7 @@ export function millisecondsToDays (milliseconds) {
  * Returns the difference between days in nice format like "1 year"
  * @function
  * @param {Date} origdate
- * @param {Date} newdate
+ * @param {Date} [newdate] Defaults to now
  * @returns {string} Formatted date difference
  */
 export function niceDateDiff (origdate, newdate) {

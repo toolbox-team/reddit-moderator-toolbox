@@ -15,20 +15,20 @@ const log = createLogger('RReasons');
 
 // Error messages
 const STATUS_DEFAULT_TEXT = 'saving...';
-const APPROVE_ERROR = 'error, failed to approve post';
-const FLAIR_ERROR = 'error, failed to flair post';
-const NO_REASON_ERROR = 'error, no reason selected';
-const NO_REPLY_TYPE_ERROR = 'error, no reply type selected';
-const REPLY_ERROR = 'error, failed to post reply';
-const REPLY_ERROR_SUBREDDIT = 'error, failed to post reply as ModTeam account';
-const PM_ERROR = 'error, failed to send PM';
-const MODMAIL_ERROR = 'error, failed to send Modmail';
-const MODMAIL_ARCHIVE_ERROR = 'error, failed to archive sent Modmail';
-const DISTINGUISH_ERROR = 'error, failed to distinguish reply';
-const LOCK_POST_ERROR = 'error, failed to lock post';
-const LOCK_COMMENT_ERROR = 'error, failed to lock reply';
-const LOG_REASON_MISSING_ERROR = 'error, public log reason missing';
-const LOG_POST_ERROR = 'error, failed to create log post';
+const APPROVE_ERROR = 'failed to approve post';
+const FLAIR_ERROR = 'failed to flair post';
+const NO_REASON_ERROR = 'no reason selected';
+const NO_REPLY_TYPE_ERROR = 'no reply type selected';
+const REPLY_ERROR = 'failed to post reply';
+const REPLY_ERROR_SUBREDDIT = 'failed to post reply as ModTeam account';
+const PM_ERROR = 'failed to send PM';
+const MODMAIL_ERROR = 'failed to send Modmail';
+const MODMAIL_ARCHIVE_ERROR = 'failed to archive sent Modmail';
+const DISTINGUISH_ERROR = 'failed to distinguish reply';
+const LOCK_POST_ERROR = 'failed to lock post';
+const LOCK_COMMENT_ERROR = 'failed to lock reply';
+const LOG_REASON_MISSING_ERROR = 'public log reason missing';
+const LOG_POST_ERROR = 'failed to create log post';
 
 // Default texts
 const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}';
@@ -992,7 +992,6 @@ export default new Module({
 
         // Function to send PM and comment
         async function sendRemovalMessage (logLink) {
-            const mySubsData = await TBCore.getModSubs(true);
             // If there is no message to send, don't send one.
             if (reasonlength < 1) {
                 if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
@@ -1025,25 +1024,44 @@ export default new Module({
                 }
             }
 
-            const subredditData = mySubsData.find(s => s.subreddit === data.subreddit);
             const notifyByPM = notifyBy === 'pm' || notifyBy === 'both';
             const notifyByReply = notifyBy === 'reply' || notifyBy === 'both';
-            const notifyByNewModmail = notifyByPM && notifyAsSub && autoArchive && subredditData
-                && subredditData.is_enrolled_in_new_modmail;
+
+            const results = await Promise.allSettled([
+                notifyByReply && (
+                    reasonCommentAsSubreddit
+                        ? sendReplyAsSubreddit()
+                        : sendReplyAsSelf()
+                ),
+                notifyByPM && (
+                    notifyAsSub
+                        ? sendNewModmail()
+                        : sendPM()
+                ),
+            ]);
+            const errorResults = results.filter(result => result.status === 'rejected');
+            if (errorResults.length) {
+                status.text(
+                    `error${errorResults.length > 1 ? 's' : ''}: ${
+                        errorResults.map(result => result.reason.message).join('; ')
+                    }`,
+                );
+            } else {
+                removeOverlay($overlay);
+            }
 
             // Reply to submission/comment
-            if (notifyByReply) {
-                log.debug('Sending removal message by comment reply.');
-                if (reasonCommentAsSubreddit) {
-                    log.debug('Commenting as subreddit.');
-                    let modactionsEndpoint;
-                    if (data.fullname.startsWith('t1')) {
-                        modactionsEndpoint = '/api/v1/modactions/removal_comment_message';
-                    } else {
-                        modactionsEndpoint = '/api/v1/modactions/removal_link_message';
-                    }
+            async function sendReplyAsSubreddit () {
+                log.debug('Commenting as subreddit.');
+                let modactionsEndpoint;
+                if (data.fullname.startsWith('t1')) {
+                    modactionsEndpoint = '/api/v1/modactions/removal_comment_message';
+                } else {
+                    modactionsEndpoint = '/api/v1/modactions/removal_link_message';
+                }
 
-                    TBApi.apiOauthPOST(
+                try {
+                    await TBApi.apiOauthPOST(
                         modactionsEndpoint,
                         JSON.stringify({
                             item_id: [
@@ -1054,97 +1072,100 @@ export default new Module({
                             type: 'public_as_subreddit',
                             lock_comment: actionLockComment,
                         }),
-                    ).then(() => {
-                        if (notifyByNewModmail) {
-                            sendNewModmail();
-                        } else if (notifyByPM) {
-                            sendPM();
-                        } else {
-                            removeOverlay($overlay);
-                        }
-                    }).catch(() => {
-                        status.text(REPLY_ERROR_SUBREDDIT);
-                    });
-                } else {
-                    TBApi.postComment(data.fullname, reason).then(response => {
-                        if (response.json.errors.length > 0) {
-                            status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
-                        } else {
-                            // Distinguish the new reply, stickying if necessary
-                            TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky).then(() => {
-                                if (notifyByNewModmail) {
-                                    sendNewModmail();
-                                } else if (notifyByPM) {
-                                    sendPM();
-                                } else {
-                                    removeOverlay($overlay);
-                                }
-                            }).catch(() => {
-                                status.text(DISTINGUISH_ERROR);
-                            });
-                            // Lock reply if requested
-                            if (actionLockComment) {
-                                const commentId = response.json.data.things[0].data.id;
-                                log.debug(`Fullname of reply: ${commentId}`);
-                                TBApi.lock(commentId).then(() => {
-                                    removeOverlay($overlay);
-                                }).catch(() => {
-                                    status.text(LOCK_COMMENT_ERROR);
-                                });
-                            }
-                        }
-                    }).catch(() => {
-                        status.text(REPLY_ERROR);
-                    });
+                    );
+                } catch {
+                    throw new Error(REPLY_ERROR_SUBREDDIT);
                 }
-            } else if (notifyByNewModmail) {
-                sendNewModmail();
-            } else if (notifyByPM) {
-                sendPM();
+            }
+
+            async function sendReplyAsSelf () {
+                let response;
+                try {
+                    response = await TBApi.postComment(data.fullname, reason);
+                } catch {
+                    throw new Error(REPLY_ERROR);
+                }
+                if (response.json.errors.length > 0) {
+                    throw new Error(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
+                }
+
+                // Distinguish the new reply, stickying if necessary
+                try {
+                    await TBApi.distinguishThing(response.json.data.things[0].data.id, notifySticky);
+                } catch {
+                    status.text(DISTINGUISH_ERROR);
+                }
+
+                // Lock reply if requested
+                if (actionLockComment) {
+                    const commentId = response.json.data.things[0].data.id;
+                    log.debug(`Fullname of reply: ${commentId}`);
+                    try {
+                        await TBApi.lock(commentId);
+                    } catch {
+                        throw new Error(LOCK_COMMENT_ERROR);
+                    }
+                }
             }
 
             // Send PM the user
-            function sendPM () {
+            async function sendPM () {
+                // /message/compose was supposed to continue working for sending
+                // messages to users during the transition from PMs to chat, but
+                // it turns out that toolbox and other tools that piggyback on
+                // first-party auth sessions don't get this compatibility layer
+                // at all and just have no way of sending chats until a proper
+                // chat API comes out
+                //
+                // in order to continue using /message/compose to send chats we
+                // would need our own OAuth app. i'm not wasting my time
+                // developing an in-browser OAuth flow, and i'm not wasting my
+                // users' time dealing with it. try when the chat api is real
+                //
+                // https://www.reddit.com/r/redditdev/comments/1mi5ewj/_/n7goor4/?context=9
+                if (!false) { // eslint-disable-line
+                    throw new Error(`${PM_ERROR}: toolbox does not have access to the chat API`);
+                }
+
                 const text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
                 log.debug('Sending removal message by PM');
-                TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined).then(() => {
-                    removeOverlay($overlay);
-                }).catch(() => {
-                    status.text(PM_ERROR);
-                });
+                try {
+                    await TBApi.sendMessage(data.author, subject, text, notifyAsSub ? data.subreddit : undefined);
+                } catch {
+                    throw new Error(PM_ERROR);
+                }
             }
 
-            function sendNewModmail () {
+            async function sendNewModmail () {
                 const body = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
                 log.debug('Sending removal message by New Modmail');
-                TBApi.apiOauthPOST('/api/mod/conversations', {
-                    to: data.author,
-                    isAuthorHidden: true,
-                    subject,
-                    body,
-                    srName: data.subreddit,
-                }).then(res => {
-                    res.json().then(data => {
-                        const id = data.conversation.id;
-                        // isInternal means mod conversation - can't archive that
-                        const isInternal = data.conversation.isInternal;
-                        if (autoArchive && !isInternal) {
-                            TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`).then(() => {
-                                removeOverlay($overlay);
-                            });
-                        } else {
-                            removeOverlay($overlay);
-                        }
-                    }).catch(() => {
-                        status.text(MODMAIL_ARCHIVE_ERROR);
+                let res;
+                try {
+                    res = await TBApi.sendModmail({
+                        subreddit: data.subreddit,
+                        to: data.author,
+                        subject,
+                        body,
+                        isAuthorHidden: true,
+                    });
+                } catch (error) {
+                    throw new Error(MODMAIL_ERROR);
+                }
+
+                const id = res.conversation.id;
+                // isInternal means mod conversation - can't archive that
+                const isInternal = res.conversation.isInternal;
+                if (autoArchive && !isInternal) {
+                    try {
+                        await TBApi.apiOauthPOST(`/api/mod/conversations/${id}/archive`);
+                    } catch (error) {
                         // Disable Send button as we already sent modmail successfully - avoids multiple modmails
                         $('.save.tb-action-button').prop('disabled', true);
-                    });
-                }).catch(() => {
-                    status.text(MODMAIL_ERROR);
-                });
+                        throw new Error(MODMAIL_ARCHIVE_ERROR);
+                    }
+                }
             }
         }
     });

@@ -790,6 +790,11 @@ export const postLink = async (link: string, title: string, subreddit: string) =
 
 /**
  * Sends a private message to a user.
+ * @deprecated We can't use this underlying API method due to new restrictions
+ * on the messaging API introduced during the removal of the old private
+ * messaging system. The `/api/compose` endpoint still works, but only with
+ * proper OAuth authorization which we don't do. For more information see
+ * https://www.reddit.com/r/redditdev/comments/1mi5ewj/_/n7hx4ym/?context=2
  * @param user The name of the user to send the message to
  * @param subject The message's subject
  * @param message The message's content
@@ -831,6 +836,36 @@ export const markMessageRead = async (id: string) =>
         id,
         uh: await getModhash(),
     });
+
+/**
+ * Creates a modmail conversation.
+ * @param options
+ * @param options.subreddit Name of the subreddit sending the message
+ * @param options.to Recipient of the message. Can be a bare username, a
+ * username prefixed by `u/`, a subreddit name prefixed by `r/` (for
+ * subreddit-to-subreddit messages), or `null` (for an internal discussion)
+ * @param options.subject Subject of the message
+ * @param options.body Body of the message
+ * @param options.isAuthorHidden If `true`, author's name will not be visible
+ * except to other moderators of the subreddit
+ * @returns Information about the created conversation
+ */
+export async function sendModmail ({subreddit, to, subject, body, isAuthorHidden}: {
+    subreddit: string;
+    to: string | null;
+    subject: string;
+    body: string;
+    isAuthorHidden: boolean;
+}) {
+    const response = await apiOauthPOST('/api/mod/conversations', {
+        srName: subreddit,
+        to: to ?? undefined,
+        subject,
+        body,
+        isAuthorHidden: '' + isAuthorHidden,
+    });
+    return response.json() as Promise<{conversation: {id: string; isInternal?: boolean}}>; // trust
+}
 
 /**
  * Gets information about a user.

@@ -194,7 +194,6 @@ export async function getModSubs (data) {
             created_utc: data.created_utc,
             subreddit_type: data.subreddit_type,
             submission_type: data.submission_type,
-            is_enrolled_in_new_modmail: data.is_enrolled_in_new_modmail,
         })),
         'subscribers',
     );

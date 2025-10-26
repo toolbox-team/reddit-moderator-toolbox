@@ -682,7 +682,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             message = $subredditMessage.val();
         }
 
-        TBApi.sendMessage(user, subject, message, subreddit).then(response => {
+        TBApi.sendModmail({subreddit, to: user, subject, body: message}).then(response => {
             if (response.json.errors.length) {
                 $callbackSpan.text(response.json.errors[1]);
                 TBui.textFeedback(response.json.errors[1], TBui.FEEDBACK_NEGATIVE);
@@ -693,8 +693,17 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                 $callbackSpan.css('color', 'green');
                 TBui.longLoadSpinner(false);
             }
-        }).catch(error => {
-            $callbackSpan.text(`an error occurred: ${error[0][1]}`);
+        }).catch(async error => {
+            let message = error.message;
+            if (error.response) {
+                const responseData = await error.response.json();
+                if (responseData.fields && Array.isArray(responseData.fields)) {
+                    message = `${responseData.fields.join(', ')}: ${responseData.explanation}`;
+                } else {
+                    message = responseData.message;
+                }
+            }
+            $callbackSpan.text(`an error occurred: ${message}`);
             TBui.longLoadSpinner(false);
         });
     });

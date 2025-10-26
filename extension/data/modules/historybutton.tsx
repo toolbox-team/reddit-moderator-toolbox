@@ -198,7 +198,8 @@ function HistoryPopup ({user, subreddit: currentSubreddit, initialPosition, onCl
                         comment history
                     </GeneralButton>
                 )}
-                <GeneralButton className={css.button}>view report in markdown</GeneralButton>
+                {/* TODO: either remove this entirely, or implement it again */}
+                {/* <GeneralButton className={css.button}>view report in markdown</GeneralButton> */}
                 <br />
                 <span>redditor for {niceDateDiff(userInfo.createdAt)}</span>
                 <br />

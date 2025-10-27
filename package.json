@@ -42,7 +42,7 @@
         "@rollup/plugin-commonjs": "^28.0.0",
         "@rollup/plugin-node-resolve": "^16.0.0",
         "@rollup/plugin-replace": "^6.0.1",
-        "@rollup/plugin-typescript": "^12.1.1",
+        "@rollup/plugin-typescript": "^12.3.0",
         "@tsconfig/recommended": "^1.0.3",
         "@types/jquery": "^3.5.29",
         "@types/jquery.timeago": "^1.0.33",

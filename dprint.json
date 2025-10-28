@@ -16,7 +16,8 @@
         "functionExpression.spaceBeforeParentheses": true,
         "getAccessor.spaceBeforeParentheses": true,
         "setAccessor.spaceBeforeParentheses": true,
-        "method.spaceBeforeParentheses": true
+        "method.spaceBeforeParentheses": true,
+        "jsx.multiLineParens": "never"
     },
     "json": {
         "indentWidth": 4

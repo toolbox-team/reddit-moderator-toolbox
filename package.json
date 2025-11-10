@@ -37,7 +37,7 @@
         "webextension-polyfill": "^0.12.0"
     },
     "devDependencies": {
-        "@inquirer/input": "^4.2.5",
+        "@inquirer/input": "^4.3.0",
         "@inquirer/select": "^4.4.0",
         "@rollup/plugin-commonjs": "^28.0.0",
         "@rollup/plugin-node-resolve": "^16.0.0",

@@ -144,7 +144,7 @@ const self = new Module({
             type: 'boolean',
             default: true,
             description:
-                'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
+                'Highlight words in bot mods report and action reasons which are enclosed in []. Can be used to highlight bot mods regex matches.',
             oldReddit: true,
         },
         {
@@ -1168,7 +1168,8 @@ Action reason: ${value.data.details}
             if (!$this.hasClass('hl-processed')) {
                 $this.addClass('hl-processed');
                 const reportText = $this.text();
-                if (reportText.indexOf('AutoModerator:') >= 0) {
+
+                if (botCheckmark.some(bot => reportText.includes(`${bot}:`))) {
                     let matches;
                     const matchesArray = [];
                     while ((matches = regexMatchFinder.exec(reportText))) {

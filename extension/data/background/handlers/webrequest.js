@@ -7,11 +7,7 @@ import {messageHandlers} from '../messageHandling';
  * @returns {Promise<Object>} An object with properties `accessToken` and `expires`.
  */
 async function getOAuthTokens (tries = 1) {
-    const cachedToken = await browser.storage.local.get('tb-accessToken') || {
-        accessToken: null,
-        expires: 0
-    }
-
+    const cachedToken = await browser.storage.local.get('tb-accessToken');
     if (cachedToken && cachedToken.expires > Date.now()) {
         return cachedToken;
     }
@@ -29,27 +25,26 @@ async function getOAuthTokens (tries = 1) {
         csrf_token = await browser.cookies.get(cookieInfo);
     }
 
-    // If we have a valid cookie, get a token using it and return those
+    // If we have a valid cookie, exchange CSRF token for OAuth token and return
     if (csrf_token) {
-        const resp = await fetch("https://www.reddit.com/svc/shreddit/token", {
-            headers: { "Content-Type": "application/json" },
-            method: "POST",
-            body: JSON.stringify({ csrf_token: csrf_token.value }),
+        const resp = await fetch('https://www.reddit.com/svc/shreddit/token', {
+            headers: {'Content-Type': 'application/json'},
+            method: 'POST',
+            body: JSON.stringify({csrf_token: csrf_token.value}),
         });
-        if (resp.ok && resp.headers.get("content-type").startsWith("application/json")) {
+        if (resp.ok && resp.headers.get('content-type').startsWith('application/json')) {
             const tokenData = await resp.json();
             cachedToken.accessToken = tokenData.token;
             cachedToken.expires = tokenData.expires;
-            await browser.storage.local.set({ "tb-accessToken": cachedToken });
+            await browser.storage.local.set({'tb-accessToken': cachedToken});
             return cachedToken;
         } else {
-            throw new Error(`Error getting accessToken from /svc/shreddit/token. Response text: ${await resp.text()}`)
+            throw new Error(`Error getting accessToken from /svc/shreddit/token. Response text: ${await resp.text()}`);
         }
-    };
+    }
 
-    // Generate a csrf_token by visiting the new site.
-    // The regular shitreddit page is filled with crap no one wants and takes long to load.
-    // The 404 page is the lightest page in shreddit so we're intentionally triggering a 404.
+    // If there's no CSRF token cookie yet, make a request to any shreddit page
+    // to set the cookie, then try again
     if (tries < 3) {
         await makeRequest({
             endpoint: 'https://sh.reddit.com/not_found',
@@ -57,7 +52,7 @@ async function getOAuthTokens (tries = 1) {
         });
         return getOAuthTokens(tries + 1);
     } else {
-        throw new Error("error getting csrf_token");
+        throw new Error('error getting csrf_token');
     }
 }
 

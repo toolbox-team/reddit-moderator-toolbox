@@ -1,8 +1,5 @@
 import browser from 'webextension-polyfill';
-
 import {messageHandlers} from '../messageHandling';
-
-let cachedToken = null;
 
 /**
  * Retrieves an OAuth token from /svc/shreddit/token
@@ -10,13 +7,12 @@ let cachedToken = null;
  * @returns {Promise<Object>} An object with properties `accessToken` and `expires`.
  */
 async function getOAuthTokens (tries = 1) {
-    if (!cachedToken) {
-        cachedToken = await browser.storage.local.get('tb-accessToken') || {
-            accessToken: null,
-            expires: 0
-        }
+    const cachedToken = await browser.storage.local.get('tb-accessToken') || {
+        accessToken: null,
+        expires: 0
     }
-    if (cachedToken.expires > Date.now()) {
+
+    if (cachedToken && cachedToken.expires > Date.now()) {
         return cachedToken;
     }
 

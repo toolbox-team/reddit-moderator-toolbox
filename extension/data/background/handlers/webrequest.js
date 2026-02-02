@@ -7,7 +7,8 @@ import {messageHandlers} from '../messageHandling';
  * @returns {Promise<Object>} An object with properties `accessToken` and `expires`.
  */
 async function getOAuthTokens (tries = 1) {
-    const cachedToken = await browser.storage.local.get('tb-accessToken');
+    // HACK: the storage API is so so dumb but I do not have the energy to do this properly rn
+    const cachedToken = (await browser.storage.local.get('tb-accessToken'))['tb-accessToken'];
     if (cachedToken && cachedToken.expires > Date.now()) {
         return cachedToken;
     }
@@ -34,10 +35,12 @@ async function getOAuthTokens (tries = 1) {
         });
         if (resp.ok && resp.headers.get('content-type').startsWith('application/json')) {
             const tokenData = await resp.json();
-            cachedToken.accessToken = tokenData.token;
-            cachedToken.expires = tokenData.expires;
-            await browser.storage.local.set({'tb-accessToken': cachedToken});
-            return cachedToken;
+            const result = {
+                accessToken: tokenData.token,
+                expires: tokenData.expires,
+            };
+            await browser.storage.local.set({'tb-accessToken': result});
+            return result;
         } else {
             throw new Error(`Error getting accessToken from /svc/shreddit/token. Response text: ${await resp.text()}`);
         }

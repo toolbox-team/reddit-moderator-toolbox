@@ -2,63 +2,66 @@ import browser from 'webextension-polyfill';
 
 import {messageHandlers} from '../messageHandling';
 
+let cachedToken = null;
+
 /**
- * Retrieves the user's OAuth tokens from cookies.
+ * Retrieves an OAuth token from /svc/shreddit/token
  * @param {number} [tries=1] Number of tries to get the token (recursive)
- * @returns {Promise<Object>} An object with properties `accessToken`,
- * `refreshToken`, `scope`, and some others
+ * @returns {Promise<Object>} An object with properties `accessToken` and `expires`.
  */
 async function getOAuthTokens (tries = 1) {
-    // This function will fetch the cookie and if there is no cookie attempt to create one by visiting modmail.
-    // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
+    if (!cachedToken) {
+        cachedToken = await browser.storage.local.get('tb-accessToken') || {
+            accessToken: null,
+            expires: 0
+        }
+    }
+    if (cachedToken.expires > Date.now()) {
+        return cachedToken;
+    }
 
-    // Grab the current token cookie
-    const cookieInfo = {url: 'https://mod.reddit.com', name: 'token'};
-    let rawCookie;
+    // Grab the csrf_token cookie
+    const cookieInfo = {url: 'https://sh.reddit.com', name: 'csrf_token'};
+    let csrf_token;
     try {
-        rawCookie = await browser.cookies.get(cookieInfo);
+        csrf_token = await browser.cookies.get(cookieInfo);
     } catch (error) {
         // If first-party isolation is enabled in Firefox, `cookies.get`
         // throws when not provided a `firstPartyDomain`, so we try again
         // passing the first-party domain for the cookie we're looking for.
         cookieInfo.firstPartyDomain = 'reddit.com';
-        rawCookie = await browser.cookies.get(cookieInfo);
+        csrf_token = await browser.cookies.get(cookieInfo);
     }
 
-    // Make sure the cookie is still valid
-    let validCookie = false;
-    if (rawCookie) {
-        const cookieExpiration = rawCookie.expirationDate * 1000;
-        const timeNow = Date.now();
-        // The cookie is valid if it's younger than its expiration date
-        validCookie = timeNow < cookieExpiration;
-    }
+    // If we have a valid cookie, get a token using it and return those
+    if (csrf_token) {
+        const resp = await fetch("https://www.reddit.com/svc/shreddit/token", {
+            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            body: JSON.stringify({ csrf_token: csrf_token.value }),
+        });
+        if (resp.ok && resp.headers.get("content-type").startsWith("application/json")) {
+            const tokenData = await resp.json();
+            cachedToken.accessToken = tokenData.token;
+            cachedToken.expires = tokenData.expires;
+            await browser.storage.local.set({ "tb-accessToken": cachedToken });
+            return cachedToken;
+        } else {
+            throw new Error(`Error getting accessToken from /svc/shreddit/token. Response text: ${await resp.text()}`)
+        }
+    };
 
-    // If we have a valid cookie, get the tokens from it and return those
-    if (validCookie) {
-        // The cookie we grab has a base64 encoded string with data. Sometimes is invalid data at the end.
-        // This RegExp should take care of that.
-        const base64Cookie = rawCookie.value.replace(/[^A-Za-z0-9+/].*?$/, '');
-        const tokenData = atob(base64Cookie);
-        return JSON.parse(tokenData);
-    }
-
-    // If we don't have a valid cookie, we need to generate a new one. If the user
-    // is logged in, we can do this by sending a request to the modmail page, and
-    // it'll send back a new cookie that the browser will write for us. We'll then
-    // be able to read the new cookie and all is well, without having to deal with
-    // the Reddit OAuth flow ourselves.
+    // Generate a csrf_token by visiting the new site.
+    // The regular shitreddit page is filled with crap no one wants and takes long to load.
+    // The 404 page is the lightest page in shreddit so we're intentionally triggering a 404.
     if (tries < 3) {
         await makeRequest({
-            endpoint: 'https://mod.reddit.com/mail/all',
+            endpoint: 'https://sh.reddit.com/not_found',
             absolute: true,
         });
         return getOAuthTokens(tries + 1);
     } else {
-        // If we tried that 3 times and still no dice, the user probably isn't logged
-        // into modmail, which means this trick won't work. Prompt the user to log
-        // into modmail so we can get their token.
-        throw new Error('user not logged into new modmail');
+        throw new Error("error getting csrf_token");
     }
 }
 

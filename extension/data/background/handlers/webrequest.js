@@ -1,17 +1,46 @@
 import browser from 'webextension-polyfill';
 import {messageHandlers} from '../messageHandling';
 
+async function getSessionPrefix () {
+    const cookieInfo = {url: 'https://reddit.com', name: 'reddit_session'};
+    let redditSessionCookie;
+    try {
+        redditSessionCookie = await browser.cookies.get(cookieInfo);
+    } catch (error) {
+        // retry with first-party domain
+        cookieInfo.firstPartyDomain = 'reddit.com';
+        redditSessionCookie = await browser.cookies.get(cookieInfo);
+    }
+
+    if (redditSessionCookie) {
+        // use the decoded JWT ID changing as a sign that we need to get a new
+        // access token, because changing users invalidates the old token
+        const decodedJWTPayload = JSON.parse(atob(redditSessionCookie.value.split('.')[1]));
+        return decodedJWTPayload.jti;
+    } else {
+        return 'noSessionFallback';
+    }
+}
+
 /**
  * Retrieves an OAuth token from /svc/shreddit/token
  * @param {number} [tries=1] Number of tries to get the token (recursive)
  * @returns {Promise<Object>} An object with properties `accessToken` and `expires`.
  */
 async function getOAuthTokens (tries = 1) {
+    // Attempt to use cached token if it hasn't expired
+
+    // make currently-logged-in user part of the storage key so we don't
+    // accidentally use the wrong access token after switching accounts
+    const currentUserID = await getSessionPrefix();
+    const storageKey = `tb-accessToken-${currentUserID}`;
     // HACK: the storage API is so so dumb but I do not have the energy to do this properly rn
-    const cachedToken = (await browser.storage.local.get('tb-accessToken'))['tb-accessToken'];
+    const cachedToken = (await browser.storage.local.get(storageKey))[storageKey];
     if (cachedToken && cachedToken.expires > Date.now()) {
         return cachedToken;
     }
+
+    // No luck, fetch new token
 
     // Grab the csrf_token cookie
     const cookieInfo = {url: 'https://sh.reddit.com', name: 'csrf_token'};
@@ -39,7 +68,7 @@ async function getOAuthTokens (tries = 1) {
                 accessToken: tokenData.token,
                 expires: tokenData.expires,
             };
-            await browser.storage.local.set({'tb-accessToken': result});
+            await browser.storage.local.set({[storageKey]: result});
             return result;
         } else {
             throw new Error(`Error getting accessToken from /svc/shreddit/token. Response text: ${await resp.text()}`);

@@ -27,9 +27,11 @@ const __dirname = path.dirname(__filename);
 
 const chromeManifestLocation = path.resolve(__dirname, 'extension/chrome_manifest.json');
 const firefoxManifestLocation = path.resolve(__dirname, 'extension/firefox_manifest.json');
+const safariManifestLocation = path.resolve(__dirname, 'extension/safari_manifest.json');
 
 const manifestContentChrome = JSON.parse(fs.readFileSync(chromeManifestLocation).toString());
 const manifestContentFirefox = JSON.parse(fs.readFileSync(firefoxManifestLocation).toString());
+const manifestContentSafari = JSON.parse(fs.readFileSync(safariManifestLocation).toString());
 
 const currentVersion = manifestContentChrome.version;
 const currentVersionName = manifestContentChrome.version_name.match(versionNameRegex)[1];
@@ -57,10 +59,12 @@ const currentVersionName = manifestContentChrome.version_name.match(versionNameR
     console.log('Writing update version information to manifest');
     manifestContentFirefox.version = newVersion;
     manifestContentChrome.version = newVersion;
+    manifestContentSafari.version = newVersion;
 
     const versionParts = newVersion.match(/(?<display>\d\d?\.\d\d?\.\d\d?)\.(?<build>\d+)$/).groups;
     manifestContentFirefox.version_name = `${versionParts.display}: "${newVersionName}"`;
     manifestContentChrome.version_name = `${versionParts.display}: "${newVersionName}"`;
+    manifestContentSafari.version_name = `${versionParts.display}: "${newVersionName}"`;
 
     fs.writeFileSync(
         chromeManifestLocation,
@@ -77,6 +81,17 @@ const currentVersionName = manifestContentChrome.version_name.match(versionNameR
         firefoxManifestLocation,
         // include trailing newline
         `${JSON.stringify(manifestContentFirefox, null, 4)}\n`,
+        'utf8',
+        err => {
+            if (err) {
+                throw err;
+            }
+        },
+    );
+    fs.writeFileSync(
+        safariManifestLocation,
+        // include trailing newline
+        `${JSON.stringify(manifestContentSafari, null, 4)}\n`,
         'utf8',
         err => {
             if (err) {

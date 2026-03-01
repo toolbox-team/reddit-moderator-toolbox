@@ -12,12 +12,21 @@ import {makeRequest} from './webrequest';
  */
 const notificationMetaDataKey = notificationID => `notifmeta-${notificationID}`;
 
+// Safari does not support browser.storage.session. Use an in-memory Map as a
+// session-scoped fallback for notification metadata (ephemeral by design).
+const sessionStorageFallback = new Map();
+const hasSessionStorage = browser.storage.session != null;
+
 /**
  * Sets the notification ID and meta data object for a given notification.
  * @param notificationID string notificationID
  * @param notificationObject object containing the meta data
  */
 function setNotificationMetaData (notificationID, notificationObject) {
+    if (!hasSessionStorage) {
+        sessionStorageFallback.set(notificationMetaDataKey(notificationID), notificationObject);
+        return Promise.resolve();
+    }
     return browser.storage.session.set({
         [notificationMetaDataKey(notificationID)]: notificationObject,
     });
@@ -29,6 +38,10 @@ function setNotificationMetaData (notificationID, notificationObject) {
  * @returns {Promise<object>}
  */
 function getNotificationMetaData (notificationID) {
+    if (!hasSessionStorage) {
+        const key = notificationMetaDataKey(notificationID);
+        return Promise.resolve({[key]: sessionStorageFallback.get(key) ?? null});
+    }
     return browser.storage.session.get({[notificationMetaDataKey(notificationID)]: null});
 }
 
@@ -38,6 +51,10 @@ function getNotificationMetaData (notificationID) {
  * @returns {promise<object>}
  */
 function deleteNotificationMetaData (notificationID) {
+    if (!hasSessionStorage) {
+        sessionStorageFallback.delete(notificationMetaDataKey(notificationID));
+        return Promise.resolve();
+    }
     return browser.storage.session.remove(notificationMetaDataKey(notificationID));
 }
 
@@ -114,7 +131,8 @@ browser.alarms.onAlarm.addListener(alarmInfo => {
 
 // Handle notification creation
 messageHandlers.set('tb-notification', async request => {
-    const sendNotification = request.native ? sendNativeNotification : sendPageNotification;
+    const useNative = request.native && browser.notifications != null;
+    const sendNotification = useNative ? sendNativeNotification : sendPageNotification;
     const notificationID = await sendNotification(request.details);
     // The Alarms API is baffling simplistic and limited.
     // Because of that the ID will be send back to the tab that requested the notification and a timeout used there to relay back to the background worker.
@@ -135,7 +153,7 @@ async function clearNotification (notificationID) {
         // Notification has already been cleared
         return;
     }
-    if (metadata.type === 'native') {
+    if (metadata.type === 'native' && browser.notifications != null) {
         // Clear a native notification
         browser.notifications.clear(notificationID);
     } else {
@@ -202,9 +220,11 @@ messageHandlers.set('tb-page-notification-clear', request => {
 });
 
 // Handle events on native notifications
-browser.notifications.onClicked.addListener(onClickNotification);
-browser.notifications.onClosed.addListener(id => {
-    // Clearing native notifications is done for us, so we don't need to call
-    // clearNotification, but we do still need to clean up metadata.
-    deleteNotificationMetaData(id);
-});
+if (browser.notifications != null) {
+    browser.notifications.onClicked.addListener(onClickNotification);
+    browser.notifications.onClosed.addListener(id => {
+        // Clearing native notifications is done for us, so we don't need to call
+        // clearNotification, but we do still need to clean up metadata.
+        deleteNotificationMetaData(id);
+    });
+}

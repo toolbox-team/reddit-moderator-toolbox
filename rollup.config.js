@@ -30,7 +30,7 @@ if (buildType !== 'dev' && !buildSha) {
 }
 
 // TODO: Pull entry point info and copied files from manifest itself
-export default ['chrome', 'firefox'].flatMap(platform => [
+export default ['chrome', 'firefox', 'safari'].flatMap(platform => [
     {
         input: 'extension/data/init.ts',
         output: {

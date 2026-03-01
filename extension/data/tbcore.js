@@ -295,6 +295,7 @@ const CHROME = 'chrome';
 const FIREFOX = 'firefox';
 const OPERA = 'opera';
 const EDGE = 'edge';
+const SAFARI = 'safari';
 const UNKNOWN_BROWSER = 'unknown';
 /** The name of the current browser. */
 export const browserName = typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style
@@ -305,6 +306,8 @@ export const browserName = typeof InstallTrigger !== 'undefined' || 'MozBoxSizin
         : navigator.userAgent.includes(' Edg/')
         ? EDGE
         : CHROME
+    : navigator.vendor.includes('Apple')
+    ? SAFARI
     : UNKNOWN_BROWSER;
 
 /**
@@ -593,6 +596,7 @@ export async function showNote (note) {
         || note.platform === 'chrome' && browserName !== CHROME
         || note.platform === 'opera' && browserName !== OPERA
         || note.platform === 'edge' && browserName !== EDGE
+        || note.platform === 'safari' && browserName !== SAFARI
     ) {
         return;
     }

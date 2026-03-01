@@ -393,6 +393,20 @@ export function debugInformation () {
             debugObject.platformInformation = browserMatchedInfo[1];
             break;
         }
+        case SAFARI: {
+            const safariRegex = /\((.*?)\).*Version\/([0-9.]*).*Safari\//;
+            if (safariRegex.test(browserUserAgent)) {
+                browserMatchedInfo = browserUserAgent.match(safariRegex);
+                debugObject.browser = 'Safari';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+            } else {
+                debugObject.browser = 'Safari';
+                debugObject.browserVersion = 'Unknown';
+                debugObject.platformInformation = browserUserAgent;
+            }
+            break;
+        }
         case UNKNOWN_BROWSER: {
             debugObject.browser = 'Unknown';
             debugObject.browserVersion = 'Unknown';

@@ -1,3 +1,6 @@
+> [!CAUTION]
+> Unmaintained. Please read [the announcement post](https://www.reddit.com/r/toolbox/comments/1rke87g/toolbox_is_no_longer_maintained/) before forking.
+
 <img align="right" width="128" src="extension/data/images/icon256.png">
 
 # toolbox for reddit
